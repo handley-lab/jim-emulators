@@ -3,7 +3,7 @@
 Parameter sensitivity analysis for IMRPhenomXPHM waveforms.
 
 Generates colorbar plots showing how waveform properties (amplitude, phase,
-real, imaginary parts) vary as individual parameters are changed.
+real, imaginary parts, time domain) vary as individual parameters are changed.
 
 Usage:
     python scripts/parameter_sensitivity.py [--output-dir figures/]
@@ -83,6 +83,26 @@ def masses_from_total_and_eta(M_total, eta):
     return m1, m2
 
 
+def format_fiducial_params(fid_params):
+    """Format fiducial parameters as a display string."""
+    m1 = fid_params["mass_1"]
+    m2 = fid_params["mass_2"]
+    chi1z = fid_params["chi1z"]
+    chi2z = fid_params["chi2z"]
+    iota = fid_params["inclination"]
+
+    # Compute derived quantities
+    M_total = m1 + m2
+    eta = (m1 * m2) / (M_total ** 2)
+
+    return (
+        f"$m_1={m1:.1f}M_\\odot$, $m_2={m2:.1f}M_\\odot$, "
+        f"$\\chi_{{1z}}={chi1z:.2f}$, $\\chi_{{2z}}={chi2z:.2f}$, "
+        f"$\\iota={iota:.2f}$ rad\n"
+        f"$M_{{\\rm tot}}={M_total:.1f}M_\\odot$, $\\eta={eta:.3f}$"
+    )
+
+
 def generate_waveform_grid(
     fiducial: dict,
     param_name: str,
@@ -145,89 +165,150 @@ def generate_waveform_grid(
     return freqs_common, np.array(hp_list), param_values
 
 
-def plot_parameter_sensitivity(
+def plot_unified_sensitivity(
     frequencies: np.ndarray,
     hp_grid: np.ndarray,
     param_values: np.ndarray,
+    param_name: str,
     param_label: str,
+    fiducial_params: dict,
     fiducial_name: str,
     output_dir: Path,
     f_plot_min: float = 20.0,
     f_plot_max: float = 300.0,
+    t_plot_range: float = 0.1,  # seconds around merger
 ):
     """
-    Create colorbar plots showing how waveform varies with parameter.
+    Create a unified 5-panel plot showing all representations:
+    - Log amplitude (physical frequency)
+    - Unwrapped phase (physical frequency)
+    - Real part (physical frequency)
+    - Imaginary part (physical frequency)
+    - Time domain waveform (physical time)
 
-    Creates a 2x2 figure with:
-    - Log amplitude
-    - Unwrapped phase
-    - Real part
-    - Imaginary part
+    Includes fiducial parameter values in the title.
     """
-    # Mask for plotting frequency range
+    import jax.numpy as jnp
+
+    # Frequency masking for plotting
     mask = (frequencies >= f_plot_min) & (frequencies <= f_plot_max)
     freqs_plot = frequencies[mask]
+    delta_f = frequencies[1] - frequencies[0]
 
-    # Prepare data
-    n_params = len(param_values)
+    # Prepare frequency domain data
     amplitude = np.abs(hp_grid[:, mask])
     phase = np.array([np.unwrap(np.angle(hp[mask])) for hp in hp_grid])
     real_part = hp_grid[:, mask].real
     imag_part = hp_grid[:, mask].imag
 
-    # Create figure
-    fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+    # Prepare time domain data
+    h_td_list = []
+    times = None
+    for hp in hp_grid:
+        t, h_td = fd_to_td(jnp.array(hp), delta_f, center=True)
+        h_td_list.append(np.array(h_td))
+        if times is None:
+            times = np.array(t)
+
+    t_mask = np.abs(times) < t_plot_range
+
+    # Create figure - 2 rows x 3 cols (last slot for time domain)
+    fig = plt.figure(figsize=(18, 10))
+
+    # Create grid spec for flexible layout
+    gs = fig.add_gridspec(2, 3, width_ratios=[1, 1, 1], height_ratios=[1, 1],
+                          left=0.05, right=0.88, bottom=0.08, top=0.85,
+                          wspace=0.25, hspace=0.3)
+
+    axes = [
+        fig.add_subplot(gs[0, 0]),  # Amplitude
+        fig.add_subplot(gs[0, 1]),  # Phase
+        fig.add_subplot(gs[0, 2]),  # Time domain
+        fig.add_subplot(gs[1, 0]),  # Real
+        fig.add_subplot(gs[1, 1]),  # Imaginary
+        fig.add_subplot(gs[1, 2]),  # Time domain envelope
+    ]
+
+    # Title with fiducial parameters
+    fiducial_str = format_fiducial_params(fiducial_params)
     fig.suptitle(
-        f"Waveform Sensitivity to {param_label}\n(Fiducial: {fiducial_name})",
-        fontsize=14,
+        f"Waveform Sensitivity to {param_label}\n"
+        f"Fiducial ({fiducial_name}): {fiducial_str}",
+        fontsize=12,
+        y=0.98,
     )
 
     # Color normalization
     norm = Normalize(vmin=param_values.min(), vmax=param_values.max())
     cmap = cm.viridis
 
-    # Plot each component
-    titles = [
-        "Log Amplitude",
-        "Unwrapped Phase",
-        "Real Part",
-        "Imaginary Part",
-    ]
-    data_arrays = [
-        np.log10(amplitude + 1e-50),  # Avoid log(0)
-        phase,
-        real_part,
-        imag_part,
-    ]
-    ylabels = [
-        "$\\log_{10}|h_+(f)|$",
-        "$\\Phi(f)$ [rad]",
-        "$\\mathrm{Re}[h_+(f)]$",
-        "$\\mathrm{Im}[h_+(f)]$",
-    ]
+    # Panel 1: Log Amplitude
+    ax = axes[0]
+    for row, val in zip(np.log10(amplitude + 1e-50), param_values):
+        ax.plot(freqs_plot, row, color=cmap(norm(val)), alpha=0.7, linewidth=0.8)
+    ax.set_xlabel("Frequency [Hz]")
+    ax.set_ylabel("$\\log_{10}|h_+(f)|$")
+    ax.set_title("Log Amplitude")
+    ax.set_xlim(f_plot_min, f_plot_max)
+    ax.grid(True, alpha=0.3)
 
-    for ax, title, data, ylabel in zip(axes.flat, titles, data_arrays, ylabels):
-        for i, (row, val) in enumerate(zip(data, param_values)):
-            color = cmap(norm(val))
-            ax.plot(freqs_plot, row, color=color, alpha=0.7, linewidth=0.8)
+    # Panel 2: Phase
+    ax = axes[1]
+    for row, val in zip(phase, param_values):
+        ax.plot(freqs_plot, row, color=cmap(norm(val)), alpha=0.7, linewidth=0.8)
+    ax.set_xlabel("Frequency [Hz]")
+    ax.set_ylabel("$\\Phi(f)$ [rad]")
+    ax.set_title("Unwrapped Phase")
+    ax.set_xlim(f_plot_min, f_plot_max)
+    ax.grid(True, alpha=0.3)
 
-        ax.set_xlabel("Frequency [Hz]")
-        ax.set_ylabel(ylabel)
-        ax.set_title(title)
-        ax.set_xlim(f_plot_min, f_plot_max)
-        ax.grid(True, alpha=0.3)
+    # Panel 3: Time domain waveform
+    ax = axes[2]
+    for h_td, val in zip(h_td_list, param_values):
+        ax.plot(times[t_mask] * 1000, h_td[t_mask], color=cmap(norm(val)), alpha=0.7, linewidth=0.8)
+    ax.set_xlabel("Time [ms]")
+    ax.set_ylabel("$h(t)$")
+    ax.set_title("Time Domain")
+    ax.grid(True, alpha=0.3)
 
-    # Adjust layout to make room for colorbar on the right
-    plt.tight_layout(rect=[0, 0, 0.9, 0.96])
+    # Panel 4: Real part
+    ax = axes[3]
+    for row, val in zip(real_part, param_values):
+        ax.plot(freqs_plot, row, color=cmap(norm(val)), alpha=0.7, linewidth=0.8)
+    ax.set_xlabel("Frequency [Hz]")
+    ax.set_ylabel("$\\mathrm{Re}[h_+(f)]$")
+    ax.set_title("Real Part")
+    ax.set_xlim(f_plot_min, f_plot_max)
+    ax.grid(True, alpha=0.3)
 
-    # Add colorbar in the reserved space
-    cbar_ax = fig.add_axes([0.92, 0.15, 0.02, 0.7])
+    # Panel 5: Imaginary part
+    ax = axes[4]
+    for row, val in zip(imag_part, param_values):
+        ax.plot(freqs_plot, row, color=cmap(norm(val)), alpha=0.7, linewidth=0.8)
+    ax.set_xlabel("Frequency [Hz]")
+    ax.set_ylabel("$\\mathrm{Im}[h_+(f)]$")
+    ax.set_title("Imaginary Part")
+    ax.set_xlim(f_plot_min, f_plot_max)
+    ax.grid(True, alpha=0.3)
+
+    # Panel 6: Time domain envelope
+    ax = axes[5]
+    for h_td, val in zip(h_td_list, param_values):
+        envelope = np.abs(h_td)
+        ax.semilogy(times[t_mask] * 1000, envelope[t_mask], color=cmap(norm(val)), alpha=0.7, linewidth=0.8)
+    ax.set_xlabel("Time [ms]")
+    ax.set_ylabel("$|h(t)|$")
+    ax.set_title("Time Domain Envelope")
+    ax.grid(True, alpha=0.3)
+
+    # Add colorbar
+    cbar_ax = fig.add_axes([0.91, 0.15, 0.02, 0.65])
     sm = cm.ScalarMappable(cmap=cmap, norm=norm)
     sm.set_array([])
     cbar = fig.colorbar(sm, cax=cbar_ax)
     cbar.set_label(param_label)
 
-    # Save - use full param name for unique filename
+    # Save
     param_safe = param_label.replace("$", "").replace("\\", "").replace(" ", "_")
     param_safe = "".join(c for c in param_safe if c.isalnum() or c == "_")
     filename = f"sensitivity_{fiducial_name}_{param_safe}.png"
@@ -238,209 +319,149 @@ def plot_parameter_sensitivity(
     print(f"  Saved: {filepath}")
 
 
-def plot_geometric_frequency_sensitivity(
+def plot_geometric_unified_sensitivity(
     frequencies: np.ndarray,
     hp_grid: np.ndarray,
     param_values: np.ndarray,
+    param_name: str,
     param_label: str,
-    total_mass: float,
+    fiducial_params: dict,
     fiducial_name: str,
     output_dir: Path,
     Mf_min: float = 0.005,
     Mf_max: float = 0.15,
+    t_plot_range: float = 0.1,
 ):
     """
-    Create colorbar plots in geometric frequency Mf.
+    Create a unified 5-panel plot in geometric units:
+    - Log amplitude (geometric frequency Mf)
+    - Unwrapped phase (geometric frequency Mf)
+    - Real part (geometric frequency Mf)
+    - Imaginary part (geometric frequency Mf)
+    - Time domain waveform (geometric time t/M)
 
-    This is the natural coordinate for emulation since waveforms
-    become mass-independent in these units.
+    Includes fiducial parameter values in the title.
     """
+    import jax.numpy as jnp
+
+    M_total = fiducial_params["mass_1"] + fiducial_params["mass_2"]
+
     # Convert to geometric frequency
-    Mf = physical_to_geometric_frequency(frequencies, total_mass)
+    Mf = physical_to_geometric_frequency(frequencies, M_total)
 
     # Mask for plotting frequency range
     mask = (Mf >= Mf_min) & (Mf <= Mf_max)
     Mf_plot = Mf[mask]
 
-    # Prepare data
+    # Prepare frequency domain data
     amplitude = np.abs(hp_grid[:, mask])
     phase = np.array([np.unwrap(np.angle(hp[mask])) for hp in hp_grid])
     real_part = hp_grid[:, mask].real
     imag_part = hp_grid[:, mask].imag
 
-    # Create figure - 2x2 grid like physical frequency plots
-    fig, axes = plt.subplots(2, 2, figsize=(14, 10))
-    fig.suptitle(
-        f"Waveform in Geometric Frequency: Sensitivity to {param_label}\n"
-        f"(Fiducial: {fiducial_name}, M_total = {total_mass:.1f} $M_\\odot$)",
-        fontsize=14,
-    )
-
-    # Color normalization
-    norm = Normalize(vmin=param_values.min(), vmax=param_values.max())
-    cmap = cm.viridis
-
-    # Plot each component
-    titles = [
-        "Log Amplitude",
-        "Unwrapped Phase",
-        "Real Part",
-        "Imaginary Part",
-    ]
-    data_arrays = [
-        np.log10(amplitude + 1e-50),  # Avoid log(0)
-        phase,
-        real_part,
-        imag_part,
-    ]
-    ylabels = [
-        "$\\log_{10}|h_+(Mf)|$",
-        "$\\Phi(Mf)$ [rad]",
-        "$\\mathrm{Re}[h_+(Mf)]$",
-        "$\\mathrm{Im}[h_+(Mf)]$",
-    ]
-
-    for ax, title, data, ylabel in zip(axes.flat, titles, data_arrays, ylabels):
-        for i, (row, val) in enumerate(zip(data, param_values)):
-            color = cmap(norm(val))
-            ax.plot(Mf_plot, row, color=color, alpha=0.7, linewidth=0.8)
-
-        ax.set_xlabel("Geometric Frequency $Mf$")
-        ax.set_ylabel(ylabel)
-        ax.set_title(title)
-        ax.grid(True, alpha=0.3)
-
-    # Adjust layout to make room for colorbar on the right
-    plt.tight_layout(rect=[0, 0, 0.9, 0.96])
-
-    # Add colorbar in the reserved space
-    cbar_ax = fig.add_axes([0.92, 0.15, 0.02, 0.7])
-    sm = cm.ScalarMappable(cmap=cmap, norm=norm)
-    sm.set_array([])
-    cbar = fig.colorbar(sm, cax=cbar_ax)
-    cbar.set_label(param_label)
-
-    # Save - use full param name for unique filename
-    param_safe = param_label.replace("$", "").replace("\\", "").replace(" ", "_")
-    param_safe = "".join(c for c in param_safe if c.isalnum() or c == "_")
-    filename = f"sensitivity_Mf_{fiducial_name}_{param_safe}.png"
-    filepath = output_dir / filename
-    plt.savefig(filepath, dpi=150)
-    plt.close()
-
-    print(f"  Saved: {filepath}")
-
-
-def plot_time_domain_sensitivity(
-    frequencies: np.ndarray,
-    hp_grid: np.ndarray,
-    param_values: np.ndarray,
-    param_label: str,
-    total_mass: float,
-    fiducial_name: str,
-    output_dir: Path,
-    t_plot_range: float = 0.1,  # seconds around merger
-):
-    """
-    Create colorbar plots in time domain (both physical and geometric).
-
-    Shows waveform centered on merger.
-    """
-    import jax.numpy as jnp
-
-    # Get frequency spacing
-    delta_f = frequencies[1] - frequencies[0]
-
-    # Color normalization
-    norm = Normalize(vmin=param_values.min(), vmax=param_values.max())
-    cmap = cm.viridis
-
-    # Create figure with 2 rows: physical time, geometric time
-    fig, axes = plt.subplots(2, 2, figsize=(14, 10))
-    fig.suptitle(
-        f"Time Domain Waveform: Sensitivity to {param_label}\n"
-        f"(Fiducial: {fiducial_name}, M_total = {total_mass:.1f} $M_\\odot$)",
-        fontsize=14,
-    )
-
-    # Process each waveform
-    h_td_list = []
-    t_list = []
-    tM_list = []
+    # Prepare geometric time domain data
     h_tM_list = []
-
+    tM = None
     for hp in hp_grid:
-        # Physical time domain
-        times, h_td = fd_to_td(jnp.array(hp), delta_f, center=True)
-        h_td_list.append(np.array(h_td))
-        t_list.append(np.array(times))
-
-        # Geometric time domain - need uniform Mf grid
-        Mf = physical_to_geometric_frequency(jnp.array(frequencies), total_mass)
-        # Interpolate to uniform Mf grid for FFT
-        Mf_uniform, hp_Mf = interpolate_to_uniform_grid(
-            jnp.array(hp), Mf, n_points=len(Mf)
-        )
-        tM, h_tM = geometric_fd_to_td(hp_Mf, Mf_uniform, center=True)
-        tM_list.append(np.array(tM))
+        Mf_full = physical_to_geometric_frequency(jnp.array(frequencies), M_total)
+        Mf_uniform, hp_Mf = interpolate_to_uniform_grid(jnp.array(hp), Mf_full, n_points=len(Mf_full))
+        t_M, h_tM = geometric_fd_to_td(hp_Mf, Mf_uniform, center=True)
         h_tM_list.append(np.array(h_tM))
+        if tM is None:
+            tM = np.array(t_M)
 
-    # Use first waveform's time array as reference
-    times = t_list[0]
-    tM = tM_list[0]
-
-    # Physical time plots
-    t_mask = np.abs(times) < t_plot_range
-    ax = axes[0, 0]
-    for h_td, val in zip(h_td_list, param_values):
-        color = cmap(norm(val))
-        ax.plot(times[t_mask] * 1000, h_td[t_mask], color=color, alpha=0.7, linewidth=0.8)
-    ax.set_xlabel("Time [ms]")
-    ax.set_ylabel("$h(t)$")
-    ax.set_title("Physical Time Domain")
-    ax.grid(True, alpha=0.3)
-
-    # Envelope in physical time
-    ax = axes[0, 1]
-    for h_td, val in zip(h_td_list, param_values):
-        color = cmap(norm(val))
-        envelope = np.abs(h_td)  # Hilbert envelope approximation
-        ax.semilogy(times[t_mask] * 1000, envelope[t_mask], color=color, alpha=0.7, linewidth=0.8)
-    ax.set_xlabel("Time [ms]")
-    ax.set_ylabel("$|h(t)|$")
-    ax.set_title("Envelope (Physical Time)")
-    ax.grid(True, alpha=0.3)
-
-    # Geometric time plots - determine appropriate range
     # Convert physical time range to geometric
     MTSUN_SI = 4.925491025543576e-6
-    M_seconds = total_mass * MTSUN_SI
-    tM_plot_range = t_plot_range / M_seconds  # geometric time range
+    M_seconds = M_total * MTSUN_SI
+    tM_plot_range = t_plot_range / M_seconds
     tM_mask = np.abs(tM) < min(tM_plot_range, np.max(np.abs(tM)) * 0.8)
 
-    ax = axes[1, 0]
+    # Create figure - 2 rows x 3 cols
+    fig = plt.figure(figsize=(18, 10))
+
+    gs = fig.add_gridspec(2, 3, width_ratios=[1, 1, 1], height_ratios=[1, 1],
+                          left=0.05, right=0.88, bottom=0.08, top=0.85,
+                          wspace=0.25, hspace=0.3)
+
+    axes = [
+        fig.add_subplot(gs[0, 0]),
+        fig.add_subplot(gs[0, 1]),
+        fig.add_subplot(gs[0, 2]),
+        fig.add_subplot(gs[1, 0]),
+        fig.add_subplot(gs[1, 1]),
+        fig.add_subplot(gs[1, 2]),
+    ]
+
+    # Title with fiducial parameters
+    fiducial_str = format_fiducial_params(fiducial_params)
+    fig.suptitle(
+        f"Waveform Sensitivity (Geometric Units) to {param_label}\n"
+        f"Fiducial ({fiducial_name}): {fiducial_str}",
+        fontsize=12,
+        y=0.98,
+    )
+
+    # Color normalization
+    norm = Normalize(vmin=param_values.min(), vmax=param_values.max())
+    cmap = cm.viridis
+
+    # Panel 1: Log Amplitude
+    ax = axes[0]
+    for row, val in zip(np.log10(amplitude + 1e-50), param_values):
+        ax.plot(Mf_plot, row, color=cmap(norm(val)), alpha=0.7, linewidth=0.8)
+    ax.set_xlabel("Geometric Frequency $Mf$")
+    ax.set_ylabel("$\\log_{10}|h_+(Mf)|$")
+    ax.set_title("Log Amplitude")
+    ax.grid(True, alpha=0.3)
+
+    # Panel 2: Phase
+    ax = axes[1]
+    for row, val in zip(phase, param_values):
+        ax.plot(Mf_plot, row, color=cmap(norm(val)), alpha=0.7, linewidth=0.8)
+    ax.set_xlabel("Geometric Frequency $Mf$")
+    ax.set_ylabel("$\\Phi(Mf)$ [rad]")
+    ax.set_title("Unwrapped Phase")
+    ax.grid(True, alpha=0.3)
+
+    # Panel 3: Time domain waveform (geometric)
+    ax = axes[2]
     for h_tM, val in zip(h_tM_list, param_values):
-        color = cmap(norm(val))
-        ax.plot(tM[tM_mask], h_tM[tM_mask], color=color, alpha=0.7, linewidth=0.8)
+        ax.plot(tM[tM_mask], h_tM[tM_mask], color=cmap(norm(val)), alpha=0.7, linewidth=0.8)
     ax.set_xlabel("Geometric Time $t/M$")
     ax.set_ylabel("$h(t/M)$")
-    ax.set_title("Geometric Time Domain (mass-independent)")
+    ax.set_title("Time Domain (mass-independent)")
     ax.grid(True, alpha=0.3)
 
-    # Envelope in geometric time
-    ax = axes[1, 1]
+    # Panel 4: Real part
+    ax = axes[3]
+    for row, val in zip(real_part, param_values):
+        ax.plot(Mf_plot, row, color=cmap(norm(val)), alpha=0.7, linewidth=0.8)
+    ax.set_xlabel("Geometric Frequency $Mf$")
+    ax.set_ylabel("$\\mathrm{Re}[h_+(Mf)]$")
+    ax.set_title("Real Part")
+    ax.grid(True, alpha=0.3)
+
+    # Panel 5: Imaginary part
+    ax = axes[4]
+    for row, val in zip(imag_part, param_values):
+        ax.plot(Mf_plot, row, color=cmap(norm(val)), alpha=0.7, linewidth=0.8)
+    ax.set_xlabel("Geometric Frequency $Mf$")
+    ax.set_ylabel("$\\mathrm{Im}[h_+(Mf)]$")
+    ax.set_title("Imaginary Part")
+    ax.grid(True, alpha=0.3)
+
+    # Panel 6: Time domain envelope (geometric)
+    ax = axes[5]
     for h_tM, val in zip(h_tM_list, param_values):
-        color = cmap(norm(val))
         envelope = np.abs(h_tM)
-        ax.semilogy(tM[tM_mask], envelope[tM_mask], color=color, alpha=0.7, linewidth=0.8)
+        ax.semilogy(tM[tM_mask], envelope[tM_mask], color=cmap(norm(val)), alpha=0.7, linewidth=0.8)
     ax.set_xlabel("Geometric Time $t/M$")
     ax.set_ylabel("$|h(t/M)|$")
-    ax.set_title("Envelope (Geometric Time)")
+    ax.set_title("Time Domain Envelope")
     ax.grid(True, alpha=0.3)
 
-    # Adjust layout and add colorbar
-    plt.tight_layout(rect=[0, 0, 0.9, 0.96])
-    cbar_ax = fig.add_axes([0.92, 0.15, 0.02, 0.7])
+    # Add colorbar
+    cbar_ax = fig.add_axes([0.91, 0.15, 0.02, 0.65])
     sm = cm.ScalarMappable(cmap=cmap, norm=norm)
     sm.set_array([])
     cbar = fig.colorbar(sm, cax=cbar_ax)
@@ -449,7 +470,7 @@ def plot_time_domain_sensitivity(
     # Save
     param_safe = param_label.replace("$", "").replace("\\", "").replace(" ", "_")
     param_safe = "".join(c for c in param_safe if c.isalnum() or c == "_")
-    filename = f"sensitivity_td_{fiducial_name}_{param_safe}.png"
+    filename = f"sensitivity_geometric_{fiducial_name}_{param_safe}.png"
     filepath = output_dir / filename
     plt.savefig(filepath, dpi=150)
     plt.close()
@@ -525,28 +546,25 @@ def main():
                     delta_f=0.125,
                 )
 
-                # Plot in physical frequency
-                plot_parameter_sensitivity(
+                # Unified plot in physical units
+                plot_unified_sensitivity(
                     freqs, hp_grid, param_values,
-                    param_label, fid_name, output_dir,
+                    param_name, param_label,
+                    fid_params, fid_name, output_dir,
                     f_plot_min=20.0, f_plot_max=300.0,
                 )
 
-                # Plot in geometric frequency
-                M_total = fid_params["mass_1"] + fid_params["mass_2"]
-                plot_geometric_frequency_sensitivity(
+                # Unified plot in geometric units
+                plot_geometric_unified_sensitivity(
                     freqs, hp_grid, param_values,
-                    param_label, M_total, fid_name, output_dir,
-                )
-
-                # Plot in time domain (physical and geometric)
-                plot_time_domain_sensitivity(
-                    freqs, hp_grid, param_values,
-                    param_label, M_total, fid_name, output_dir,
+                    param_name, param_label,
+                    fid_params, fid_name, output_dir,
                 )
 
             except Exception as e:
                 print(f"    Error: {e}")
+                import traceback
+                traceback.print_exc()
                 continue
 
     print("\n" + "=" * 60)

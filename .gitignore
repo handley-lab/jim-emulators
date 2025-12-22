@@ -47,3 +47,4 @@ htmlcov/
 
 # Generated figures (can be regenerated with scripts/parameter_sensitivity.py)
 # figures/
+.DS_Store

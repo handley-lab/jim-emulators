@@ -628,13 +628,236 @@ The survey skewed toward fancier architectures (transformers, diffusion, HNNs) r
 
 ---
 
+## Session: 2024-12-22 (Parallel Branch: ja-session-1059)
+
+### 29. Unified Sensitivity Plots
+
+Refactored parameter sensitivity plots to show all representations in a single figure:
+- 2×3 grid: Amplitude, Phase, Time Domain / Real, Imaginary, Envelope
+- Both physical units (Hz, ms) and geometric units (Mf, t/M) versions
+- Fiducial parameter values displayed in title
+
+### 30. XAS vs XPHM Comparison
+
+Generated parallel sensitivity plots for IMRPhenomXAS to compare against XPHM:
+- XAS: Aligned-spin, dominant (2,2) mode only
+- XPHM: Higher modes + precession
+- Same fiducial parameters for direct comparison
+- Output: `figures/sensitivity/` (XPHM) and `figures/sensitivity_xas/` (XAS)
+
+**Key observations:**
+- Higher modes visible as "wiggles" in amplitude at high frequencies
+- Most pronounced for unequal mass ratios and edge-on inclinations
+
+### 31. Mode Selection Implementation
+
+Added mode selection functionality to the LAL wrapper:
+
+```python
+from jim_emulators.waveforms import generate_fd_waveform, WaveformParameters
+
+params = WaveformParameters(mass_1=35.0, mass_2=25.0, ...)
+
+# Generate with all modes (default)
+freqs, hp, hc = generate_fd_waveform(params)
+
+# Generate with only (2,±2) mode
+freqs, hp, hc = generate_fd_waveform(params, mode_array=[(2, 2), (2, -2)])
+```
+
+**New functions:**
+- `generate_fd_waveform(params, mode_array=None)` - now accepts mode selection
+- `create_mode_array(modes)` - creates LAL ModeArray from list of (l, m) tuples
+- `get_available_modes(approximant)` - returns available modes for an approximant
+
+### 32. Mode Additivity Test
+
+**Question:** Is h(f) = Σ_{lm} h_lm(f) for XPHM?
+
+**Test:** Generated waveforms with individual mode groups and compared sum to full waveform.
+
+**Results:**
+```
+Max |h_full - sum(h_lm)|:    1.4e-31 (machine precision)
+Match(h_full, sum(h_lm)):    1.000000000000000
+```
+
+**Conclusion: ✓ Modes ARE additive** (to machine precision)
+
+### 33. XPHM(2,2) vs XAS Comparison
+
+**Question:** Does XPHM with only (2,±2) modes equal XAS?
+
+**Test:** Generated both and computed match.
+
+**Results:**
+| Comparison | Match | Mismatch |
+|------------|-------|----------|
+| XAS vs XPHM (all modes) | 0.9966 | 3.4×10⁻³ |
+| XAS vs XPHM (2,±2 only) | 0.9983 | 1.7×10⁻³ |
+
+**Conclusion:** XPHM(2,2) is closer to XAS than XPHM(all), but **not identical** (mismatch ~1.7×10⁻³). This is because XAS and XPHM are separately calibrated models, not the same code with mode selection.
+
+### 34. Important LAL Convention Discovery
+
+**Finding:** When requesting individual modes in LAL:
+- Positive m modes (2,2), (3,3), etc. include BOTH +m and -m contributions
+- Negative m modes (2,-2), (3,-3), etc. return ZERO
+
+This means for mode selection, use only positive m values:
+```python
+mode_array = [(2, 2), (2, 1), (3, 3), (3, 2), (4, 4)]  # Correct
+# NOT: [(2, 2), (2, -2), (2, 1), (2, -1), ...]  # Redundant
+```
+
+### 35. Mode-by-Mode Sensitivity Plots
+
+Generated sensitivity plots for each individual spherical harmonic mode to understand if amplitude/phase are smoother when viewed per-mode.
+
+**Output structure:**
+```
+figures/sensitivity_modes/
+├── mode_22/   # (2,±2) dominant quadrupole - 36 plots
+├── mode_21/   # (2,±1) subdominant - 34 plots
+├── mode_33/   # (3,±3) octupole - 34 plots
+├── mode_32/   # (3,±2) mixed - 36 plots
+└── mode_44/   # (4,±4) hexadecapole - 36 plots
+```
+
+**Key Finding: Individual modes are MUCH smoother than the full waveform!**
+
+| Mode | Amplitude | Phase | Notes |
+|------|-----------|-------|-------|
+| (2,2) | Smooth, monotonic | Smooth | Dominant, easy to emulate |
+| (2,1) | Smooth | Smooth | Subdominant, vanishes at ι=0 |
+| (3,3) | Smooth | Smooth | Higher frequency oscillations in time |
+| (3,2) | Smooth | Smooth | Mixed mode |
+| (4,4) | Smooth | Smooth | Highest frequency content |
+| **Full** | **Wiggly** | Complex | Mode interference creates oscillations |
+
+**Implication for emulation:** The wiggles in the full waveform come from **mode interference**, not intrinsic complexity. Emulating each mode separately then summing (since modes ARE additive) may be much easier than emulating the full waveform directly.
+
+### 36. LAL Default Modes and Numerical Settings
+
+**Default modes for IMRPhenomXPHM/XHM** (from `LALSimIMRPhenomXHM.c:142-151`):
+```
+(2, ±2)  - Dominant quadrupole (from XAS calibration)
+(2, ±1)  - Subdominant quadrupole
+(3, ±3)  - Octupole
+(3, ±2)  - Mixed
+(4, ±4)  - Hexadecapole
+```
+
+**Multibanding (numerical optimization):**
+
+LAL uses "multibanding" to speed up waveform generation by computing on a coarser frequency grid and interpolating. This can introduce numerical artifacts, especially at low amplitudes.
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `PhenomXHMThresholdMband` | 10⁻³ | Threshold for XHM multibanding |
+| `PhenomXPHMThresholdMband` | varies | Threshold for XPHM Euler angles |
+
+**To disable multibanding (for maximum precision):**
+```python
+import lal
+import lalsimulation as lalsim
+
+laldict = lal.CreateDict()
+lalsim.SimInspiralWaveformParamsInsertPhenomXHMThresholdMband(laldict, 0.0)
+lalsim.SimInspiralWaveformParamsInsertPhenomXPHMThresholdMband(laldict, 0.0)
+# Pass laldict to SimInspiralChooseFDWaveform
+```
+
+Setting threshold to 0 disables multibanding entirely, giving exact (but slower) evaluation. This may improve smoothness at low amplitudes.
+
+**Other numerical thresholds found in LAL:**
+- Ringdown denominator floor: `1e-16` (prevents division by zero)
+- Amplitude thresholds: `0.1/ampNorm` (mode 32), `0.01/ampNorm` (others)
+- Mass ratio validation: `1e-12` tolerance for boundary checks
+
+### 37. Multibanding Test and Precision Mode Generation
+
+**Test: Effect of disabling multibanding** (`scripts/test_multibanding.py`)
+
+| Metric | Value |
+|--------|-------|
+| Match (h_multibanding, h_exact) | 0.999999930627155 |
+| Mismatch | 6.9×10⁻⁸ |
+| Max phase difference | ~1.5 rad (at high frequency) |
+| Max relative amplitude diff | ~10⁻⁶ |
+
+**Conclusion:** Multibanding is NOT the source of the amplitude "wiggles" in the full waveform. The wiggles are real physics from mode interference, not numerical artifacts. Disabling multibanding improves precision but doesn't fundamentally change smoothness.
+
+**Generated mode-by-mode plots with BOTH multibanding settings:**
+
+Updated `scripts/parameter_sensitivity_by_mode.py` to support command-line control:
+```bash
+# With multibanding (LAL default, faster):
+python scripts/parameter_sensitivity_by_mode.py --multibanding
+
+# Without multibanding (maximum precision):
+python scripts/parameter_sensitivity_by_mode.py
+```
+
+Generated 352 total plots (176 per setting) for side-by-side comparison:
+```
+figures/
+├── sensitivity_modes_multibanding/   # 176 plots (LAL default)
+│   ├── mode_22/  # 36 plots
+│   ├── mode_21/  # 34 plots
+│   ├── mode_33/  # 34 plots
+│   ├── mode_32/  # 36 plots
+│   └── mode_44/  # 36 plots
+│
+└── sensitivity_modes_precise/        # 176 plots (multibanding disabled)
+    ├── mode_22/  # 36 plots
+    ├── mode_21/  # 34 plots
+    ├── mode_33/  # 34 plots
+    ├── mode_32/  # 36 plots
+    └── mode_44/  # 36 plots
+```
+
+**Key insight confirmed:** Individual modes remain smooth with both settings. The difference between multibanding ON/OFF is minimal (mismatch ~7×10⁻⁸). Smoothness is intrinsic to the physics of each mode, not an artifact of numerical interpolation.
+
+---
+
+### Current State
+
+**New files added:**
+```
+scripts/
+├── parameter_sensitivity_xas.py      # XAS sensitivity plots
+├── parameter_sensitivity_by_mode.py  # Mode-by-mode analysis (supports --multibanding flag)
+├── test_mode_selection.py            # XPHM(2,2) vs XAS test
+├── test_mode_additivity.py           # Mode additivity verification
+└── test_multibanding.py              # Multibanding effect comparison
+
+figures/
+├── sensitivity/                      # XPHM full waveform plots (36)
+├── sensitivity_xas/                  # XAS plots (36)
+├── sensitivity_modes_multibanding/   # Per-mode with multibanding (176)
+├── sensitivity_modes_precise/        # Per-mode without multibanding (176)
+├── mode_selection_test.png
+├── mode_additivity_test.png
+├── multibanding_comparison.png
+├── multibanding_modes_comparison.png
+└── multibanding_smoothness_comparison.png
+```
+
+**Updated files:**
+- `src/jim_emulators/waveforms/lal_waveforms.py` - added mode selection + multibanding control
+- `src/jim_emulators/waveforms/__init__.py` - exported new functions
+
+---
+
 ### Next Steps
 
-1. ☐ Create data generation script (LAL XPHM → HDF5 training data)
-2. ☐ Implement PCA compression for amplitude/phase
-3. ☐ Build neural network with Speculator activation (Flax)
-4. ☐ Training pipeline with optax
-5. ☐ Validation: mismatch < 10⁻³ target
-6. ☐ Integration with ripple interface
-7. ☐ XAS comparison plots (verify XPHM aligned-spin ≈ XAS)
-8. ☒ Literature review: existing GW emulation approaches
+1. ☑ Add multibanding control to wrapper (done)
+2. ☐ Create data generation script (LAL XPHM → HDF5 training data)
+3. ☐ Implement PCA compression for amplitude/phase (per-mode)
+4. ☐ Build neural network with Speculator activation (Flax)
+5. ☐ Training pipeline with optax
+6. ☐ Validation: mismatch < 10⁻³ target
+7. ☐ Integration with ripple interface
+8. ☑ XAS comparison plots (verify XPHM aligned-spin ≈ XAS)
+9. ☒ Literature review: existing GW emulation approaches
