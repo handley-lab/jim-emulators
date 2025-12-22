@@ -6,6 +6,30 @@
 
 **Documentation**: See `docs/project-overview.md` for full project details.
 
+## Why This Project Exists
+
+Nobody else is doing frequency-domain, aligned-spin, higher-mode emulation with PCA + MLP. The literature focuses on harder problems:
+
+| Paper | Domain | Physics | Why Different |
+|-------|--------|---------|---------------|
+| Grimbergen (2402.06587) | Time | HOMs | TD not FD; uses SEOBNRv4HM |
+| Thomas (2205.14066) | Time | Precessing | TD; precessing focus |
+| Shi (2411.14893) | Time | Eccentric | TD; eccentric focus |
+| gwharmone (2504.12420) | Frequency | Eccentric | Eccentric, uses GPR |
+| Chase Orbits (2510.00116) | Both | Eccentric | Eccentric focus |
+
+**The gap exists because IMRPhenomXHM is already fast** — it's an analytic phenomenological model, not an ODE solver like EOB. People don't emulate something that's already O(ms).
+
+**Why we're doing it anyway:**
+
+1. **JAX differentiability** — IMRPhenomXHM exists in LAL (C/Python), not JAX. We need gradients for jim's HMC sampler.
+
+2. **Faster than hand-porting** — ripple rewrote IMRPhenomD in JAX by hand. We're testing whether emulation is a faster path to get more models (XHM, XPHM) into JAX.
+
+3. **Proof of concept** — if PCA + MLP works for the "easy" aligned-spin case, the same infrastructure extends to precessing/eccentric.
+
+**We're filling a gap that exists because of different motivations (JAX ecosystem) rather than because the problem is unsolved.**
+
 ## Development Log
 
 **IMPORTANT**: Maintain `docs/development-log.md` as work progresses. This project aims to publish both the emulators and the AI-assisted workflow used to create them.
