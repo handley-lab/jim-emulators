@@ -1,0 +1,68 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jim-emulators"
+version = "0.1.0"
+description = "JAX-based neural network emulators for gravitational wave waveforms"
+readme = "docs/project-overview.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [
+    {name = "Handley Lab"}
+]
+keywords = ["gravitational-waves", "emulator", "jax", "neural-network"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+
+dependencies = [
+    "numpy>=1.21",
+    "jax>=0.4",
+    "jaxlib>=0.4",
+    "lalsuite>=7.0",
+    "matplotlib>=3.5",
+    "h5py>=3.0",
+    "scipy>=1.7",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov",
+    "black",
+    "isort",
+    "flake8",
+]
+train = [
+    "flax>=0.7",
+    "optax>=0.1",
+    "tqdm",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/handley-lab/jim-emulators"
+"Repository" = "https://github.com/handley-lab/jim-emulators"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+addopts = "-v"
+
+[tool.black]
+line-length = 88
+target-version = ['py39']
+
+[tool.isort]
+profile = "black"
