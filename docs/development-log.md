@@ -1009,6 +1009,68 @@ theory/
     └── gemini-review.md
 ```
 
+### 14. Iterative Review and Document Refinement
+
+The theory document underwent iterative review using external LLMs (OpenAI GPT-5.2 and Gemini-3-pro) following the `iterative-review` skill workflow.
+
+**Iteration 1 → 2 Changes (addressing initial reviews):**
+- Added comprehensive Conventions section (§2): complex strain definition, ZYZ Euler angles, active rotation convention, Wigner D-matrix definition, inertial frame specification
+- Fixed Wigner-D notation with explicit indices throughout
+- Added phase parameter degeneracy note (φ₀ and φ_c partially degenerate)
+- Expanded Option 3 with gauge-fixing: regularization term with 4 components, frame anchoring, initialization strategy
+- Added NR Surrogate citations (Blackman 2015/2017, Varma 2019, Boyle 2011, Schmidt 2011)
+- Changed Option 3 "convention dependence" from "No" to "Implicit†"
+
+**Iteration 2 → 3 Changes (final fixes):**
+- Fixed L_angle: changed ‖γ̈‖² to ‖γ̇‖² for consistency (penalize velocities, not acceleration)
+- Fixed phase regularization: changed from ‖φ̈‖² to ‖ω̈‖² where ω = φ̇ is instantaneous frequency (regularizing raw phase curvature would fight the physical chirp)
+
+**Final Review Status:**
+| Reviewer | Iteration 2 | Iteration 3 |
+|----------|-------------|-------------|
+| Gemini-3-pro | APPROVED | - |
+| GPT-5.2 | 2 fixes needed | APPROVED |
+
+**Key equations in final document:**
+```
+L_reg = λ₁ L_mode + λ₂ L_angle + λ₃ L_minrot + λ₄ L_anchor
+
+L_mode = Σ_ℓm (‖Ä_ℓm‖² + ‖ω̈_ℓm‖²)     # smooth modes (frequency, not phase!)
+L_angle = ‖α̇‖² + ‖β̇‖² + ‖γ̇‖²          # slow angle evolution
+L_minrot = ‖γ̇ + α̇ cos β‖²              # minimal rotation frame
+L_anchor = α(t_ref)² + γ(t_ref)²        # frame anchoring
+```
+
+**Document statistics:**
+- Final: 12 pages, ~510 lines
+- Added: +165 lines from initial version
+- Reviews stored: `theory/reviews/openai-review.md`, `theory/reviews/gemini-review.md`
+
+---
+
+### Current State
+
+**Theory document:** `theory/general-waveform-decomposition.tex` (12 pages, approved by both reviewers)
+
+Key content:
+- General waveform decomposition framework (spherical harmonic → coprecessing → amplitude/phase)
+- Clear separation of coordinate choices vs restrictive assumptions
+- Three NN architecture options with Option 3 (end-to-end learning) recommended
+- Comprehensive regularization addressing gauge non-identifiability
+- Initialization strategy for training stability
+- Full conventions specification
+
+**Files:**
+```
+theory/
+├── general-waveform-decomposition.tex  # Main document (approved)
+├── general-waveform-decomposition.pdf  # Compiled (12 pages)
+├── .gitignore                          # LaTeX ephemera
+└── reviews/
+    ├── openai-review.md                # GPT-5.2 review (iteration 1)
+    └── gemini-review.md                # Gemini review (iteration 1)
+```
+
 ---
 
 ### Next Steps
@@ -1024,8 +1086,4 @@ theory/
 9. ☒ Literature review: existing GW emulation approaches
 10. ☒ General waveform decomposition theory document
 
-**Theory document updates needed:**
-- Address gauge/identifiability with regularization section
-- Add conventions subsection
-- Add NR surrogate citations (Blackman, Varma, Boyle)
-- Clarify eccentricity + precession interaction
+**Theory document:** Complete and approved. Ready to proceed with implementation.

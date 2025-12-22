@@ -13,7 +13,6 @@
 \newcommand{\Alm}{A_{\ell m}}
 \newcommand{\philm}{\phi_{\ell m}}
 \newcommand{\Ylm}{{}^{-2}Y_{\ell m}}
-\newcommand{\Dlm}{D^\ell_{mm'}}
 \newcommand{\veclambda}{\bm{\lambda}}
 \newcommand{\vecchi}{\vec{\chi}}
 
@@ -43,6 +42,39 @@ Existing neural network emulators for gravitational waveforms make simplifying a
 \end{itemize}
 
 This document presents a framework that can accommodate any level of complexity, and addresses practical concerns about deploying such a framework on arbitrary waveform models.
+
+The approach of decomposing waveforms into coprecessing-frame modes plus frame dynamics has a long history in the numerical relativity surrogate community \cite{blackman2015,blackman2017,varma2019,boyle2011}, and the minimal rotation frame was established by \cite{boyle2011,schmidt2011}. This document aims to synthesise these ideas into a unified framework for neural network emulation.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conventions}
+\label{sec:conventions}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+We adopt the following conventions throughout:
+
+\paragraph{Complex strain.} The complex gravitational wave strain is defined as
+\begin{equation}
+    h \equiv h_+ - i h_\times
+    \label{eq:strain_def}
+\end{equation}
+Under a polarisation rotation by angle $\psi$, this transforms as $h \to e^{-2i\psi} h$.
+
+\paragraph{Euler angles.} We use the $z$-$y$-$z$ (ZYZ) active rotation convention. The rotation $R(\alpha, \beta, \gamma)$ is interpreted as: first rotate by $\gamma$ about $z$, then by $\beta$ about the new $y$, then by $\alpha$ about the final $z$. This convention is standard in the gravitational wave literature \cite{boyle2011,schmidt2011}. We treat $R(\alpha,\beta,\gamma)$ as an \emph{active} rotation acting on the physical field; equivalently, it corresponds to a passive change of basis by $R^{-1}$. All formulas below use the active convention.
+
+\paragraph{Wigner D-matrices.} For active rotations, the spherical harmonic modes transform as
+\begin{equation}
+    h^{\text{rotated}}_{\ell m} = \sum_{m'=-\ell}^{+\ell} D^\ell_{m m'}(\alpha, \beta, \gamma) \, h_{\ell m'}
+    \label{eq:wigner_convention}
+\end{equation}
+where $D^\ell_{m m'}(\alpha, \beta, \gamma) = e^{-i m \alpha} d^\ell_{m m'}(\beta) e^{-i m' \gamma}$ and $d^\ell_{m m'}(\beta)$ are the reduced Wigner matrices. We use the standard GW convention for $\Ylm$ as in \cite{boyle2011}; with this choice the modes mix under rotations according to \eqref{eq:wigner_convention}.
+
+\paragraph{Inertial frame.} The inertial-frame modes $\hlm$ are defined with respect to an inertial triad whose $\hat{z}$ axis is aligned with $\hat{J}(t_{\rm ref})$, the total angular momentum at a reference time. The inclination angle $\iota$ and reference azimuth $\varphi_0$ are the spherical angles of the line-of-sight vector in this triad. The choice $\iota = 0$ corresponds to ``face-on'' (viewing along $\hat{J}$).
+
+\paragraph{Time and mass scaling.} Unless otherwise stated, time $t$ is in units of the total mass $M$ (i.e., dimensionless time $t/M$ in geometric units $G = c = 1$). Physical time in seconds is recovered via $t_{\text{phys}} = (M/M_\odot) \times 4.926 \times 10^{-6}\,\text{s} \times t$.
+
+\paragraph{Coalescence time and phase.} The coalescence time $t_c$ and coalescence phase $\phi_c$ are extrinsic parameters that shift the waveform in time and rotate the complex modes: $h_{\ell m}(t) \to h_{\ell m}(t - t_c) e^{-i m \phi_c}$ (sign consistent with \eqref{eq:wigner_convention} and the LAL/Boyle convention \cite{boyle2011}).
+
+\paragraph{Phase parameter degeneracy.} The reference azimuth $\varphi_0$ and coalescence phase $\phi_c$ are convention-dependent and partially degenerate: a shift in one can be compensated by a shift in the other. In practice, we fix one by a reference-phase alignment choice (e.g., $\phi_{22}(t_{\rm ref}) = 0$).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{General Decomposition}
@@ -86,11 +118,13 @@ where $q = m_1/m_2$ is the mass ratio, $\vecchi_1, \vecchi_2$ are the dimensionl
 For precessing systems, we decompose each inertial-frame mode into coprecessing-frame modes via a time-dependent rotation:
 \begin{equation}
     \boxed{
-    \hlm(t; \veclambda) = \sum_{m'=-\ell}^{+\ell} \Dlm\bigl(\alpha(t), \beta(t), \gamma(t); \veclambda\bigr) \, h^{\mathrm{cp}}_{\ell m'}(t; \veclambda)
+    h_{\ell m}(t; \veclambda) = \sum_{m'=-\ell}^{+\ell} D^\ell_{m m'}\bigl(\alpha(t), \beta(t), \gamma(t)\bigr) \, h^{\mathrm{cp}}_{\ell m'}(t; \veclambda)
     }
     \label{eq:coprecessing}
 \end{equation}
-where $\Dlm$ are the Wigner D-matrices parameterised by Euler angles $\{\alpha(t), \beta(t), \gamma(t)\}$ that track the evolution of the orbital angular momentum $\hat{L}(t)$.
+where $D^\ell_{m m'}(\alpha, \beta, \gamma) = e^{-i m \alpha} d^\ell_{m m'}(\beta) e^{-i m' \gamma}$ are the Wigner D-matrices (see \S\ref{sec:conventions}). The Euler angles $\{\alpha(t), \beta(t), \gamma(t)\}$ define a time-dependent rotation from the coprecessing frame to the inertial frame.
+
+The coprecessing frame is typically chosen to track the instantaneous orbital angular momentum $\hat{L}(t)$, though alternative definitions exist (see \S\ref{sec:frame_nonunique}). For non-precessing systems, the rotation is trivial ($D^\ell_{m m'} \to \delta_{m m'}$) and the coprecessing modes equal the inertial modes.
 
 \subsection{Amplitude--Phase Decomposition}
 
@@ -104,20 +138,33 @@ Each coprecessing mode is decomposed into amplitude and phase:
 
 This decomposition is advantageous because $\Alm(t)$ and $\philm(t)$ are smooth functions that are easier for neural networks to learn than the oscillatory complex waveform.
 
+\paragraph{Practical considerations.} Several subtleties arise in practice:
+\begin{itemize}
+    \item \textbf{Phase unwrapping}: The phase $\philm(t)$ must be unwrapped to avoid $2\pi$ discontinuities. This requires careful handling, especially near merger.
+    \item \textbf{Log amplitude}: Learning $\log \Alm(t)$ rather than $\Alm(t)$ can improve conditioning, particularly given the $\sim5$ orders of magnitude dynamic range.
+    \item \textbf{Amplitude zeros}: When $\Alm(t) \to 0$, the phase becomes ill-defined. Modes with amplitude zeros require special treatment.
+    \item \textbf{Instantaneous frequency}: For some applications, learning $\dot{\phi}_{\ell m}(t)$ and integrating may be more stable than learning $\philm(t)$ directly.
+\end{itemize}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{What is a Coordinate Choice vs a Restrictive Assumption}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Coordinate Choices (Not Restrictive)}
 
-The following are \emph{coordinate transformations} that can be applied to any waveform without loss of generality:
+The following are \emph{coordinate transformations} that can be applied to any waveform without loss of generality. They are always \emph{mathematically} valid, though some choices are more \emph{numerically} stable for machine learning than others.
 
 \begin{enumerate}
-    \item \textbf{Spherical harmonic expansion} \eqref{eq:spherical_harmonic}: Always valid for any radiation field.
+    \item \textbf{Spherical harmonic expansion} \eqref{eq:spherical_harmonic}: Always valid for any radiation field. The expansion converges for smooth functions on the sphere.
 
-    \item \textbf{Coprecessing frame rotation} \eqref{eq:coprecessing}: This is just a time-dependent rotation of coordinates. The coprecessing frame is defined by tracking $\hat{L}(t)$, which exists for any binary orbit. The transformation is invertible and lossless.
+    \item \textbf{Coprecessing frame rotation} \eqref{eq:coprecessing}: This is a time-dependent rotation of coordinates. While mathematically always valid and invertible, the \emph{choice} of frame convention affects numerical stability:
+    \begin{itemize}
+        \item Some frames (e.g., the instantaneous $\hat{L}(t)$ frame) can exhibit rapid variations near merger or during transitional precession.
+        \item The minimal rotation frame \cite{boyle2011} imposes $\dot{\gamma} + \dot{\alpha}\cos\beta = 0$, reducing frame oscillations.
+        \item Different choices give different Euler angles but are all physically equivalent.
+    \end{itemize}
 
-    \item \textbf{Amplitude--phase decomposition} \eqref{eq:amp_phase}: Any complex function can be written in polar form.
+    \item \textbf{Amplitude--phase decomposition} \eqref{eq:amp_phase}: Any complex function can be written in polar form. However, this representation is ill-conditioned when amplitudes approach zero (phase undefined) or when phase wrapping occurs.
 \end{enumerate}
 
 \subsection{Restrictive Assumptions}
@@ -174,17 +221,20 @@ Circular orbits & Approximation & No \\
 
 Precession is handled by the coprecessing frame transformation. The Euler angles $\alpha(t), \beta(t), \gamma(t)$ encode the precession dynamics---the time-dependent orientation of the orbital plane.
 
-\textbf{Key point}: The coprecessing frame transformation \emph{handles} precession but doesn't \emph{add} it. If the underlying modes don't contain precession physics, the transformation is trivial ($\Dlm \to \delta_{mm'}$).
+\textbf{Key point}: The coprecessing frame transformation \emph{handles} precession but doesn't \emph{add} it. If the underlying modes don't contain precession physics, the transformation is trivial ($D^\ell_{m m'} \to \delta_{mm'}$).
 
 \subsection{Eccentricity}
 
 Eccentricity affects the \emph{intrinsic} time evolution of the modes. It enters through:
 \begin{enumerate}
-    \item Mode amplitudes $\Alm(t)$: Eccentric orbits produce amplitude modulations at the orbital frequency
-    \item Mode phases $\philm(t)$: More complex orbital phase evolution with periastron advance
-    \item Euler angles $\alpha(t), \beta(t), \gamma(t)$: Precession dynamics couple to eccentricity
-    \item The coprecessing frame definition: $\hat{L}(t)$ has more complex trajectory
+    \item Mode amplitudes $\Alm(t)$: Eccentric orbits produce amplitude modulations at the orbital and radial frequencies, and excite additional harmonic content (sidebands).
+    \item Mode phases $\philm(t)$: More complex orbital phase evolution with periastron advance.
+    \item Mode structure: Eccentric waveforms have power in many more $(\ell, m)$ modes than circular waveforms at the same orbital frequency.
 \end{enumerate}
+
+\textbf{Eccentricity and precession.} When both eccentricity and precession are present, the Euler angles $\alpha(t), \beta(t), \gamma(t)$ develop additional modulations. However, for non-precessing eccentric systems (aligned spins), the orbital plane is fixed and the Euler angles are constant---eccentricity alone does not induce frame rotation.
+
+\textbf{Conjugate symmetry and eccentricity.} The conjugate symmetry relation \eqref{eq:conjugate_inertial} depends on reflection symmetry about the orbital plane. For non-precessing systems with aligned spins, this symmetry is preserved even with eccentricity. Eccentricity alone does not break conjugate symmetry; precession does.
 
 \textbf{Key point}: Eccentricity cannot be added by coordinate transformations. It must be present in the underlying waveform model being emulated.
 
@@ -210,6 +260,7 @@ For emulation, we assume the input is a ``black box'' waveform code that outputs
 The coprecessing modes and Euler angles are \emph{not} provided. Some codes (e.g., SEOBNRv4PHM in LALSuite) do expose these internally, but this cannot be assumed in general.
 
 \subsection{Non-Uniqueness of the Coprecessing Frame}
+\label{sec:frame_nonunique}
 
 There is no single ``correct'' definition of the coprecessing frame. Valid choices include:
 \begin{itemize}
@@ -289,8 +340,73 @@ Build the Wigner rotation into the network architecture:
 
 The loss function is computed on the inertial-frame output:
 \begin{equation}
-    \mathcal{L} = \sum_{\ell m} \left\| \hlm^{\text{pred}}(t) - \hlm^{\text{true}}(t) \right\|^2
+    \mathcal{L} = \mathcal{L}_{\text{data}} + \mathcal{L}_{\text{reg}}
+    \label{eq:loss}
 \end{equation}
+where the data term is
+\begin{equation}
+    \mathcal{L}_{\text{data}} = \sum_{\ell m} \left\| \hlm^{\text{pred}}(t) - \hlm^{\text{true}}(t) \right\|^2
+\end{equation}
+
+\paragraph{The gauge problem.}
+A critical issue with Option 3 is \textbf{gauge non-identifiability}: the decomposition into Euler angles and coprecessing modes is not unique. Without constraints, the network could learn a pathological decomposition---for example, setting $\alpha = \beta = \gamma = 0$ and absorbing all oscillatory behaviour into the ``coprecessing'' modes. This defeats the purpose of the architecture, which aims to make the coprecessing modes slowly varying.
+
+\paragraph{Regularization.}
+To encourage meaningful decompositions, we add a regularization term:
+\begin{equation}
+    \mathcal{L}_{\text{reg}} = \lambda_1 \mathcal{L}_{\text{mode}} + \lambda_2 \mathcal{L}_{\text{angle}} + \lambda_3 \mathcal{L}_{\text{minrot}} + \lambda_4 \mathcal{L}_{\text{anchor}}
+    \label{eq:regularization}
+\end{equation}
+where:
+\begin{align}
+    \mathcal{L}_{\text{mode}} &= \sum_{\ell m} \left( \left\| \ddot{A}_{\ell m} \right\|^2 + \left\| \ddot{\omega}_{\ell m} \right\|^2 \right) && \text{(smooth coprecessing modes)} \\
+    \mathcal{L}_{\text{angle}} &= \left\| \dot{\alpha} \right\|^2 + \left\| \dot{\beta} \right\|^2 + \left\| \dot{\gamma} \right\|^2 && \text{(slow angle evolution)} \\
+    \mathcal{L}_{\text{minrot}} &= \left\| \dot{\gamma} + \dot{\alpha}\cos\beta \right\|^2 && \text{(minimal rotation \cite{boyle2011})} \\
+    \mathcal{L}_{\text{anchor}} &= \alpha(t_{\rm ref})^2 + \gamma(t_{\rm ref})^2 && \text{(frame anchoring)}
+\end{align}
+Here $\omega_{\ell m} = \dot{\phi}_{\ell m}$ is the instantaneous frequency of each coprecessing mode.
+
+The mode regularization penalises rapid oscillations in coprecessing amplitudes and \emph{instantaneous frequencies} (not raw phases). This is essential: the phase $\phi_{\ell m}(t)$ naturally has large curvature during inspiral (the chirp), which is physical. Regularizing $\ddot{\phi}$ directly would fight real dynamics. Instead, regularizing $\ddot{\omega} = \dddot{\phi}$ encourages smooth frequency evolution without penalising the secular chirp.
+
+The angle regularization penalises angular \emph{velocities} $\dot{\alpha}, \dot{\beta}, \dot{\gamma}$, ensuring the Euler angles vary on the slow precession timescale rather than stealing the fast orbital frequency. The minimal-rotation term encourages the standard frame convention. The anchor term fixes the global rotational freedom at the reference time, ensuring a unique decomposition.
+
+\textbf{Derivatives}: When using basis-coefficient outputs, derivatives in $\mathcal{L}_{\text{reg}}$ should be computed analytically from the basis functions $B_k(t)$ rather than finite differences, for numerical stability.
+
+\paragraph{Angle representation.}
+Directly predicting angles $\alpha, \gamma \in [0, 2\pi)$ is numerically fragile due to the discontinuity at $2\pi$. Instead, the network should output:
+\begin{align}
+    \text{For } \alpha, \gamma&: \quad (\sin\alpha, \cos\alpha), \quad (\sin\gamma, \cos\gamma) \\
+    \text{For } \beta&: \quad \cos\beta \in [-1, 1] \quad \text{(or } \beta \text{ directly since } \beta \in [0, \pi])
+\end{align}
+Alternatively, quaternion representations avoid gimbal lock and singularities entirely.
+
+\paragraph{Time-series parameterization.}
+The network does not output raw time series $A_{\ell m}(t)$, $\phi_{\ell m}(t)$, $\alpha(t)$, etc.\ directly. Instead, outputs are \emph{coefficients} in a reduced basis:
+\begin{equation}
+    A_{\ell m}(t) = \sum_{k=1}^{K} c^{(A)}_{\ell m, k} \, B_k(t)
+\end{equation}
+where $B_k(t)$ are basis functions (e.g., from PCA/SVD of training data, empirical interpolation nodes, or spline control points). The network predicts the coefficients $c^{(A)}_{\ell m, k}$. This reduces the output dimensionality from $\mathcal{O}(N_t)$ to $\mathcal{O}(K)$ per function, where typically $K \ll N_t$.
+
+\paragraph{Initialization and training stability.}
+The multiplicative structure of Option 3 (Wigner D-matrix combining outputs of two networks) makes training from random initialisation challenging. If the angle-prediction branch outputs random noise at epoch 0, gradients flowing to the mode-prediction branch become chaotic, often causing the network to collapse to a trivial decomposition ($\alpha = \beta = \gamma = 0$).
+
+\textbf{Recommended initialization strategy}:
+\begin{itemize}
+    \item Initialize the angle-prediction branch to output the identity rotation: $(\sin\alpha, \cos\alpha) \to (0, 1)$, etc.
+    \item This encourages the network to first learn an approximate waveform in the ``coprecessing'' branch, then gradually ``turn on'' the rotation to reduce loss.
+    \item Alternatively, warm-start with a Newtonian chirp approximation for the angles.
+\end{itemize}
+
+\paragraph{Data preprocessing.}
+Training data must be consistently aligned:
+\begin{itemize}
+    \item \textbf{Time alignment}: Align waveforms to a common reference (e.g., peak of $|h_{22}|$, or merger time).
+    \item \textbf{Phase alignment}: Fix the orbital phase at reference time (e.g., $\phi_{22}(t_{\text{ref}}) = 0$).
+    \item \textbf{Frame anchoring}: The training targets should be consistent with the anchor constraint $\alpha(t_{\rm ref}) = \gamma(t_{\rm ref}) = 0$.
+\end{itemize}
+
+\paragraph{Basis considerations for eccentricity.}
+SVD/PCA bases rely on features appearing at consistent times. Eccentricity introduces frequency shifts that can de-phase waveforms significantly across the training set. For eccentric waveforms, the basis $B_k(t)$ may need to be derived from phase-aligned (rather than time-aligned) waveforms, or a larger basis dimension $K$ may be required.
 
 \textbf{Key features}:
 \begin{itemize}
@@ -299,10 +415,11 @@ The loss function is computed on the inertial-frame output:
     \item Network learns whatever internal decomposition works best
     \item The learned ``Euler angles'' are latent variables---they need not match any standard convention
     \item Works with any code that outputs $\hlm(t)$ in the inertial frame
+    \item Regularization encourages physically meaningful decomposition
 \end{itemize}
 
 \textbf{Pros}: General, no preprocessing, physics-informed architecture \\
-\textbf{Cons}: More complex architecture, learned angles may not be interpretable
+\textbf{Cons}: More complex architecture, requires careful regularization, learned angles may not be interpretable
 
 \subsection{Comparison}
 
@@ -313,14 +430,14 @@ The loss function is computed on the inertial-frame output:
 \textbf{Criterion} & \textbf{Option 1} & \textbf{Option 2} & \textbf{Option 3} \\
 \midrule
 External extraction needed & Yes & No & No \\
-Convention dependence & Yes & No & No \\
+Convention dependence & Yes & No & Implicit$^\dagger$ \\
 Physics structure exploited & Yes & No & Yes \\
 Interpretable intermediates & Yes & N/A & No \\
 Network complexity & Medium & High & Medium \\
 Training difficulty & Medium & Hard & Medium \\
 \bottomrule
 \end{tabular}
-\caption{Comparison of architectural options.}
+\caption{Comparison of architectural options. $^\dagger$Option 3 still depends on conventions through the Wigner-D definition, basis representation, and regularization choices, but these are implicit rather than requiring explicit frame extraction.}
 \label{tab:options}
 \end{table}
 
@@ -360,21 +477,23 @@ If conjugate symmetry can be assumed (aligned spins or mild precession), only $m
 The complete general decomposition is:
 \begin{align}
     h(t; \veclambda; \iota, \varphi_0) &= \sum_{\ell, m} \hlm(t; \veclambda) \, \Ylm(\iota, \varphi_0) \label{eq:summary1} \\[0.5em]
-    \hlm(t; \veclambda) &= \sum_{m'} \Dlm\bigl(\alpha, \beta, \gamma; t, \veclambda\bigr) \, h^{\mathrm{cp}}_{\ell m'}(t; \veclambda) \label{eq:summary2} \\[0.5em]
+    \hlm(t; \veclambda) &= \sum_{m'=-\ell}^{+\ell} D^\ell_{m m'}\bigl(\alpha(t), \beta(t), \gamma(t)\bigr) \, h^{\mathrm{cp}}_{\ell m'}(t; \veclambda) \label{eq:summary2} \\[0.5em]
     \hcp(t; \veclambda) &= \Alm(t; \veclambda) \, e^{i\philm(t; \veclambda)} \label{eq:summary3}
 \end{align}
 
 \textbf{Key points}:
 \begin{enumerate}
     \item Inclination and reference phase are extrinsic---handled analytically via spherical harmonics.
-    \item The coprecessing frame decomposition is a coordinate choice, not a restrictive assumption.
+    \item The coprecessing frame decomposition is a coordinate choice, not a restrictive assumption---though the choice of frame convention affects numerical stability.
     \item Conjugate symmetry (in either frame) IS a restrictive assumption.
-    \item Eccentricity must be in the underlying model---it cannot be added by coordinate transformations.
-    \item For practical emulation, we recommend learning the frame decomposition end-to-end (Option 3), avoiding the need for external Euler angle extraction.
+    \item Eccentricity must be in the underlying model---it cannot be added by coordinate transformations. Eccentricity alone does not break conjugate symmetry; precession does.
+    \item For practical emulation, we recommend learning the frame decomposition end-to-end (Option 3), with appropriate regularization to address gauge non-identifiability.
+    \item Euler angles should be represented as $(\sin\alpha, \cos\alpha)$ pairs to avoid $2\pi$ discontinuities.
+    \item Network outputs should be basis coefficients, not raw time series.
 \end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{thebibliography}{9}
+\begin{thebibliography}{99}
 
 \bibitem{mlgw_nn}
 T.~Grimbergen, S.~Schmidt, C.~Kalaghatgi, C.~Van Den Broeck,
@@ -390,6 +509,31 @@ arXiv:2205.14066 (2022).
 R.~Shi et al.,
 ``Rapid eccentric spin-aligned binary black hole waveform generation based on deep learning,''
 arXiv:2411.14893 (2024).
+
+\bibitem{blackman2015}
+J.~Blackman, S.~E.~Field, C.~R.~Galley, B.~Szil\'agyi, M.~A.~Scheel, M.~Tiglio, D.~A.~Hemberger,
+``Fast and Accurate Prediction of Numerical Relativity Waveforms from Binary Black Hole Coalescences Using Surrogate Models,''
+Phys.\ Rev.\ Lett.\ \textbf{115}, 121102 (2015), arXiv:1502.07758.
+
+\bibitem{blackman2017}
+J.~Blackman, S.~E.~Field, M.~A.~Scheel, C.~R.~Galley, C.~D.~Ott, M.~Boyle, L.~E.~Kidder, H.~P.~Pfeiffer, B.~Szil\'agyi,
+``Numerical relativity waveform surrogate model for generically precessing binary black hole mergers,''
+Phys.\ Rev.\ D \textbf{96}, 024058 (2017), arXiv:1705.07089.
+
+\bibitem{varma2019}
+V.~Varma, S.~E.~Field, M.~A.~Scheel, J.~Blackman, D.~Gerosa, L.~C.~Stein, L.~E.~Kidder, H.~P.~Pfeiffer,
+``Surrogate models for precessing binary black hole simulations with unequal masses,''
+Phys.\ Rev.\ Research \textbf{1}, 033015 (2019), arXiv:1905.09300.
+
+\bibitem{boyle2011}
+M.~Boyle, R.~Owen, H.~P.~Pfeiffer,
+``A geometric approach to the precession of compact binaries,''
+Phys.\ Rev.\ D \textbf{84}, 124011 (2011), arXiv:1110.2965.
+
+\bibitem{schmidt2011}
+P.~Schmidt, M.~Hannam, S.~Husa, P.~Ajith,
+``Tracking the precession of compact binaries from their gravitational-wave signal,''
+Phys.\ Rev.\ D \textbf{84}, 024046 (2011), arXiv:1012.2879.
 
 \end{thebibliography}
 

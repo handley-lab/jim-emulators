@@ -121,3 +121,22 @@ See `docs/literature/deep-research/` for survey of advanced NN architectures for
 **Design principle**: "Bake domain knowledge into architecture" - use physics-informed decomposition (coprecessing frame, amp/phase split) rather than learning raw physics.
 
 **Training data insight**: All papers train on semi-analytical approximants (SEOBNR, IMRPhenom, EOB), not raw NR. This validates our approach of emulating IMRPhenomXPHM directly.
+
+## Theory Document
+
+**`theory/general-waveform-decomposition.tex`** (12 pages, approved)
+
+Comprehensive framework for NN emulation of arbitrary GW waveforms:
+- General decomposition: spherical harmonic → coprecessing frame → amplitude/phase
+- Coordinate choices vs restrictive assumptions (conjugate symmetry, circular orbits)
+- Three architecture options with Option 3 (end-to-end learning) recommended
+- Regularization addressing gauge non-identifiability: L_mode + L_angle + L_minrot + L_anchor
+- Initialization strategy for training stability
+
+**Key design decisions:**
+- Regularize instantaneous frequency (ω̈), not raw phase (φ̈) - avoids fighting physical chirp
+- Penalize angle velocities (α̇, β̇, γ̇) to prevent stealing orbital frequency
+- Anchor frame at reference time: α(t_ref) = γ(t_ref) = 0
+- Use sin/cos representation for angles to avoid 2π discontinuities
+
+**Citations:** Blackman (2015/2017), Varma (2019), Boyle (2011), Schmidt (2011)
