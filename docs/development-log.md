@@ -194,6 +194,16 @@ A third transcript (`transcript-0944`) captured further strategic decisions:
 - Save Claude Code conversation exports for workflow documentation
 - Development log should be narrative, capturing the story of the build
 
+### 11. Handover Prepared
+
+Created `HANDOVER_INSTRUCTIONS.md` for continuation on a different machine:
+- Quick start commands (clone repo + reference codebases)
+- Key files to read
+- Current state summary
+- Next steps checklist
+- Key decisions already made
+- LAL calling convention reference
+
 ---
 
 ### Next Steps
