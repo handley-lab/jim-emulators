@@ -17,8 +17,8 @@ import optax
 from typing import Sequence, Callable
 from functools import partial
 
-# Enable 64-bit precision for GW applications
-jax.config.update("jax_enable_x64", True)
+# Note: Don't set jax_enable_x64 in library modules (per GPT-5 review)
+# Configuration should happen once at process start in the main script
 
 
 # =============================================================================
@@ -54,7 +54,8 @@ class SpeculatorActivation(nn.Module):
         alpha = self.param('alpha', nn.initializers.ones, (features,))
 
         # γ stored as logits, mapped through sigmoid to (0,1)
-        # Initialize logits to -2.0 so sigmoid(-2) ≈ 0.12 (mostly gated, slight linear)
+        # Initialize logits to -2.0 so sigmoid(-2) ≈ 0.12 (mostly gated)
+        # Empirically: -2.0 outperforms +2.0 on toy task (1330x vs 176x improvement)
         gamma_logits = self.param('gamma_logits',
                                    nn.initializers.constant(-2.0),
                                    (features,))
@@ -405,9 +406,9 @@ if __name__ == "__main__":
     print(f"Output shape: {output.shape}")
     print(f"Number of parameters: {sum(p.size for p in jax.tree_util.tree_leaves(params))}")
 
-    # Test Speculator activation
+    # Test Speculator activation (uses shape inference, no features arg)
     x = jnp.linspace(-3, 3, 100)
-    act = SpeculatorActivation(features=100)
+    act = SpeculatorActivation()
     act_params = act.init(rng, x.reshape(1, -1))
     y = act.apply(act_params, x.reshape(1, -1))
     print(f"\nSpeculator activation test:")

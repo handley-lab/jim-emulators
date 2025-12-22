@@ -551,6 +551,34 @@ Submitted the Flax code to GPT-5 and Gemini (with grounding) for critical review
 
 These improvements will be incorporated when we move to real waveform training.
 
+### 27. Implementing Review Recommendations
+
+Applied fixes based on GPT-5 and Gemini reviews:
+
+**Changes Made:**
+1. **Constrained γ to (0,1)** via sigmoid on learnable `gamma_logits`
+2. **Added gradient clipping** with `optax.clip_by_global_norm(1.0)`
+3. **Shape inference** - removed explicit `features` argument
+4. **Removed `jax_enable_x64`** from library module (should be set only at process start)
+5. **Fixed `__main__` bug** - removed obsolete `features=100` argument
+
+**Empirical Test: Gamma Initialization**
+
+Both reviewers suggested starting more linear (+2.0 logits) would improve convergence. We tested both:
+
+| Init | sigmoid(logits) | Behavior | Improvement | Final Val Loss |
+|------|-----------------|----------|-------------|----------------|
+| -2.0 | ≈ 0.12 | Mostly gated | 1330x | 0.000349 |
+| +2.0 | ≈ 0.88 | Mostly linear | 176x | 0.003791 |
+
+**Surprising Result:** The mostly-gated initialization (-2.0) significantly outperformed the mostly-linear start, contrary to theoretical expectations. For our toy task with nonlinear mappings, the gated activation helps the network learn complex transformations more effectively.
+
+**Conclusion:** Keep -2.0 initialization. The theory ("linear is easier to optimize") may apply to simpler tasks, but for scientific emulation with nonlinear structure, allowing the network to start gated is beneficial.
+
+**Updated Documentation:**
+- `docs/jax-flax-best-practices.md` updated with empirical findings
+- Added initialization comparison data
+
 ---
 
 ### Next Steps
