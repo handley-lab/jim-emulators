@@ -2,17 +2,13 @@
 """
 Train the gravitational waveform emulator.
 
-This script trains TWO separate neural networks:
-1. Amplitude network: params → amplitude PCA coefficients
-2. Phase network: params → phase PCA coefficients
-
-This separation is important because amplitude and phase have very different
-characteristics and scales.
+Trains ONE network per mode for amplitude only (phase handled separately).
 
 Usage:
     python scripts/train.py                           # Default config
     python scripts/train.py --epochs 200 --batch_size 512
-    python scripts/train.py --data data/waveforms_22mode.h5
+    python scripts/train.py --data data/waveforms_multimode.h5
+    python scripts/train.py --mode 22                 # Train single mode
 """
 
 import argparse
@@ -44,19 +40,24 @@ def load_training_data(path: str):
     """Load training data from HDF5 file."""
     with h5py.File(path, "r") as f:
         freqs = f["freqs"][:]
+        modes = list(f.attrs["modes"])
+
         data = {
             "train_params": f["train/parameters"][:],
-            "train_log_amp": f["train/log_amplitude"][:],
-            "train_phase": f["train/phase"][:],
             "val_params": f["validation/parameters"][:],
-            "val_log_amp": f["validation/log_amplitude"][:],
-            "val_phase": f["validation/phase"][:],
             "freqs": freqs,
+            "modes": modes,
             "f_min": float(f.attrs.get("f_min", freqs[0])),
             "f_max": float(f.attrs.get("f_max", freqs[-1])),
             "delta_f": float(f.attrs.get("delta_f", freqs[1] - freqs[0])),
             "M_ref": float(f.attrs.get("M_ref", 50.0)),
         }
+
+        # Load amplitude for each mode
+        for mode in modes:
+            data[f"train_amp_{mode}"] = f[f"train/log_amplitude_{mode}"][:]
+            data[f"val_amp_{mode}"] = f[f"validation/log_amplitude_{mode}"][:]
+
     return data
 
 
@@ -97,11 +98,7 @@ def train_single_network(
     patience: int,
     rng: jax.random.PRNGKey,
 ):
-    """
-    Train a single network (amplitude or phase).
-
-    Returns trained state and training history.
-    """
+    """Train a single network for one mode's amplitude."""
     n_outputs = train_targets.shape[1]
 
     # Normalize targets for stable training
@@ -176,6 +173,7 @@ def train_single_network(
 
 def train_emulator(
     data: dict,
+    modes_to_train: list = None,
     n_hidden: int = 4,
     n_units: int = 512,
     batch_size: int = 256,
@@ -184,113 +182,83 @@ def train_emulator(
     patience: int = 30,
     output_dir: str = "outputs",
 ):
-    """
-    Train the waveform emulator with separate amplitude and phase networks.
-    """
+    """Train the waveform emulator with one network per mode."""
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
+    all_modes = data["modes"]
+    if modes_to_train is None:
+        modes_to_train = all_modes
+
     print("=" * 60)
-    print("Training Waveform Emulator (Separate Amp/Phase Networks)")
+    print("Training Waveform Emulator (Amplitude Only, Per-Mode)")
     print("=" * 60)
+    print(f"Modes to train: {modes_to_train}")
 
     # ==========================================================================
-    # Step 1: Fit PCA on training data
+    # Step 1: Normalize input parameters (shared across modes)
     # ==========================================================================
-    print("\n[1/4] Fitting PCA on amplitude and phase...")
+    print("\n[1/3] Preparing input parameters...")
 
-    pca_amplitude = WaveformPCA(explained_variance_target=0.9999)
-    pca_phase = WaveformPCA(explained_variance_target=0.9999)
-
-    pca_amplitude.fit(data["train_log_amp"])
-    pca_phase.fit(data["train_phase"])
-
-    print(f"  Amplitude PCA: {pca_amplitude.n_components} components "
-          f"({np.sum(pca_amplitude.explained_variance_ratio_):.4f} variance)")
-    print(f"  Phase PCA: {pca_phase.n_components} components "
-          f"({np.sum(pca_phase.explained_variance_ratio_):.4f} variance)")
-
-    # Check reconstruction error
-    amp_mse, _ = pca_amplitude.reconstruction_error(data["train_log_amp"])
-    phase_mse, _ = pca_phase.reconstruction_error(data["train_phase"])
-    print(f"  Amplitude reconstruction MSE: {amp_mse:.2e}")
-    print(f"  Phase reconstruction MSE: {phase_mse:.2e}")
-
-    # ==========================================================================
-    # Step 2: Prepare training data
-    # ==========================================================================
-    print("\n[2/4] Preparing training data...")
-
-    # Transform waveforms to PCA coefficients
-    train_amp_coeffs = pca_amplitude.transform(data["train_log_amp"])
-    train_phase_coeffs = pca_phase.transform(data["train_phase"])
-
-    val_amp_coeffs = pca_amplitude.transform(data["val_log_amp"])
-    val_phase_coeffs = pca_phase.transform(data["val_phase"])
-
-    # Normalize input parameters
     params_mean = np.mean(data["train_params"], axis=0)
     params_std = np.std(data["train_params"], axis=0)
 
     train_params_norm = (data["train_params"] - params_mean) / params_std
     val_params_norm = (data["val_params"] - params_mean) / params_std
 
-    # Convert to JAX arrays
     train_params_jax = jnp.array(train_params_norm)
     val_params_jax = jnp.array(val_params_norm)
-    train_amp_jax = jnp.array(train_amp_coeffs)
-    train_phase_jax = jnp.array(train_phase_coeffs)
-    val_amp_jax = jnp.array(val_amp_coeffs)
-    val_phase_jax = jnp.array(val_phase_coeffs)
 
     print(f"  Training samples: {len(train_params_jax)}")
     print(f"  Validation samples: {len(val_params_jax)}")
-    print(f"  Amplitude PCA coeffs: {train_amp_jax.shape[1]}")
-    print(f"  Phase PCA coeffs: {train_phase_jax.shape[1]}")
 
     # ==========================================================================
-    # Step 3: Train SEPARATE networks for amplitude and phase
+    # Step 2: Train one network per mode
     # ==========================================================================
-    print("\n[3/4] Training networks...")
+    print("\n[2/3] Training networks...")
 
     rng = jax.random.PRNGKey(42)
     start_time = time.time()
 
-    # Train amplitude network
-    print("\n--- Amplitude Network ---")
-    rng, amp_rng = jax.random.split(rng)
-    amp_result = train_single_network(
-        name="Amplitude",
-        train_params=train_params_jax,
-        train_targets=train_amp_jax,
-        val_params=val_params_jax,
-        val_targets=val_amp_jax,
-        n_hidden=n_hidden,
-        n_units=n_units,
-        batch_size=batch_size,
-        n_epochs=n_epochs,
-        learning_rate=learning_rate,
-        patience=patience,
-        rng=amp_rng,
-    )
+    mode_results = {}
+    pca_models = {}
 
-    # Train phase network
-    print("\n--- Phase Network ---")
-    rng, phase_rng = jax.random.split(rng)
-    phase_result = train_single_network(
-        name="Phase",
-        train_params=train_params_jax,
-        train_targets=train_phase_jax,
-        val_params=val_params_jax,
-        val_targets=val_phase_jax,
-        n_hidden=n_hidden,
-        n_units=n_units,
-        batch_size=batch_size,
-        n_epochs=n_epochs,
-        learning_rate=learning_rate,
-        patience=patience,
-        rng=phase_rng,
-    )
+    for mode in modes_to_train:
+        print(f"\n{'='*40}")
+        print(f"Mode {mode}")
+        print(f"{'='*40}")
+
+        # Fit PCA for this mode
+        train_amp = data[f"train_amp_{mode}"]
+        val_amp = data[f"val_amp_{mode}"]
+
+        pca = WaveformPCA(explained_variance_target=0.9999)
+        pca.fit(train_amp)
+        pca_models[mode] = pca
+
+        print(f"  PCA: {pca.n_components} components ({np.sum(pca.explained_variance_ratio_):.4f} variance)")
+
+        # Transform to PCA coefficients
+        train_coeffs = jnp.array(pca.transform(train_amp))
+        val_coeffs = jnp.array(pca.transform(val_amp))
+
+        # Train network
+        rng, mode_rng = jax.random.split(rng)
+        result = train_single_network(
+            name=f"Mode {mode}",
+            train_params=train_params_jax,
+            train_targets=train_coeffs,
+            val_params=val_params_jax,
+            val_targets=val_coeffs,
+            n_hidden=n_hidden,
+            n_units=n_units,
+            batch_size=batch_size,
+            n_epochs=n_epochs,
+            learning_rate=learning_rate,
+            patience=patience,
+            rng=mode_rng,
+        )
+        mode_results[mode] = result
 
     elapsed = time.time() - start_time
 
@@ -298,45 +266,45 @@ def train_emulator(
     print("Training Complete!")
     print("=" * 60)
     print(f"  Total time: {elapsed:.1f}s")
-    print(f"  Amplitude best val loss: {amp_result['best_val_loss']:.6f}")
-    print(f"  Phase best val loss: {phase_result['best_val_loss']:.6f}")
+    for mode in modes_to_train:
+        print(f"  Mode {mode} best val loss: {mode_results[mode]['best_val_loss']:.6f}")
 
     # ==========================================================================
-    # Step 4: Save emulator
+    # Step 3: Save emulator
     # ==========================================================================
-    print("\n[4/4] Saving emulator...")
+    print("\n[3/3] Saving emulator...")
 
     import pickle
 
     emulator_data = {
-        # Network configs
+        # Network config
         "n_hidden": n_hidden,
         "n_units": n_units,
-        # Amplitude network
-        "amp_n_outputs": pca_amplitude.n_components,
-        "amp_params": amp_result["state"].params,
-        "amp_target_mean": np.array(amp_result["target_mean"]),
-        "amp_target_std": np.array(amp_result["target_std"]),
-        # Phase network
-        "phase_n_outputs": pca_phase.n_components,
-        "phase_params": phase_result["state"].params,
-        "phase_target_mean": np.array(phase_result["target_mean"]),
-        "phase_target_std": np.array(phase_result["target_std"]),
-        # PCA
-        "pca_amplitude": pca_amplitude.to_dict(),
-        "pca_phase": pca_phase.to_dict(),
-        # Normalization
+        # Input normalization (shared)
         "params_mean": params_mean,
         "params_std": params_std,
-        # Frequency grid and metadata for validation
+        # Frequency grid and metadata
         "freqs": data["freqs"],
         "f_min": data["f_min"],
         "f_max": data["f_max"],
         "delta_f": data["delta_f"],
         "M_ref": data["M_ref"],
+        "modes": modes_to_train,
     }
 
-    model_path = output_dir / "emulator_22mode.pkl"
+    # Per-mode data
+    for mode in modes_to_train:
+        result = mode_results[mode]
+        pca = pca_models[mode]
+        emulator_data[f"mode_{mode}"] = {
+            "n_outputs": pca.n_components,
+            "params": result["state"].params,
+            "target_mean": np.array(result["target_mean"]),
+            "target_std": np.array(result["target_std"]),
+            "pca": pca.to_dict(),
+        }
+
+    model_path = output_dir / "emulator_multimode.pkl"
     with open(model_path, "wb") as f:
         pickle.dump(emulator_data, f)
     print(f"  Saved to: {model_path}")
@@ -346,84 +314,42 @@ def train_emulator(
     # ==========================================================================
     print("\nGenerating training plots...")
 
-    fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+    n_modes = len(modes_to_train)
+    fig, axes = plt.subplots(n_modes, 2, figsize=(12, 4 * n_modes))
+    if n_modes == 1:
+        axes = axes.reshape(1, -1)
 
-    # Plot 1: Amplitude training curves
-    ax = axes[0, 0]
-    epochs = range(1, len(amp_result["train_losses"]) + 1)
-    ax.semilogy(epochs, amp_result["train_losses"], label='Train', linewidth=2)
-    ax.semilogy(epochs, amp_result["val_losses"], label='Validation', linewidth=2)
-    ax.axhline(amp_result["best_val_loss"], color='r', linestyle='--', alpha=0.5)
-    ax.set_xlabel('Epoch')
-    ax.set_ylabel('MSE Loss (normalized)')
-    ax.set_title(f'Amplitude Network (best: {amp_result["best_val_loss"]:.2e})')
-    ax.legend()
-    ax.grid(True, alpha=0.3)
+    for i, mode in enumerate(modes_to_train):
+        result = mode_results[mode]
+        pca = pca_models[mode]
 
-    # Plot 2: Phase training curves
-    ax = axes[0, 1]
-    epochs = range(1, len(phase_result["train_losses"]) + 1)
-    ax.semilogy(epochs, phase_result["train_losses"], label='Train', linewidth=2)
-    ax.semilogy(epochs, phase_result["val_losses"], label='Validation', linewidth=2)
-    ax.axhline(phase_result["best_val_loss"], color='r', linestyle='--', alpha=0.5)
-    ax.set_xlabel('Epoch')
-    ax.set_ylabel('MSE Loss (normalized)')
-    ax.set_title(f'Phase Network (best: {phase_result["best_val_loss"]:.2e})')
-    ax.legend()
-    ax.grid(True, alpha=0.3)
+        # Training curves
+        ax = axes[i, 0]
+        epochs = range(1, len(result["train_losses"]) + 1)
+        ax.semilogy(epochs, result["train_losses"], label='Train', linewidth=2)
+        ax.semilogy(epochs, result["val_losses"], label='Validation', linewidth=2)
+        ax.axhline(result["best_val_loss"], color='r', linestyle='--', alpha=0.5)
+        ax.set_xlabel('Epoch')
+        ax.set_ylabel('MSE Loss (normalized)')
+        ax.set_title(f'Mode {mode} (best: {result["best_val_loss"]:.2e})')
+        ax.legend()
+        ax.grid(True, alpha=0.3)
 
-    # Plot 3: PCA explained variance
-    ax = axes[1, 0]
-    ax.bar(range(pca_amplitude.n_components),
-           pca_amplitude.explained_variance_ratio_,
-           alpha=0.7, label='Amplitude')
-    ax.bar(np.arange(pca_phase.n_components) + 0.4,
-           pca_phase.explained_variance_ratio_,
-           alpha=0.7, label='Phase')
-    ax.set_xlabel('PCA Component')
-    ax.set_ylabel('Explained Variance Ratio')
-    ax.set_title('PCA Component Importance')
-    ax.legend()
-    ax.set_yscale('log')
-    ax.grid(True, alpha=0.3)
-
-    # Plot 4: Prediction quality check
-    ax = axes[1, 1]
-
-    # Quick prediction check on validation set
-    amp_pred_norm = amp_result["state"].apply_fn(amp_result["state"].params, val_params_jax)
-    amp_pred = amp_pred_norm * amp_result["target_std"] + amp_result["target_mean"]
-    amp_true = val_amp_jax
-
-    phase_pred_norm = phase_result["state"].apply_fn(phase_result["state"].params, val_params_jax)
-    phase_pred = phase_pred_norm * phase_result["target_std"] + phase_result["target_mean"]
-    phase_true = val_phase_jax
-
-    # Reconstruct waveforms and compute residuals
-    amp_recon_pred = pca_amplitude.inverse_transform(np.array(amp_pred))
-    amp_recon_true = pca_amplitude.inverse_transform(np.array(amp_true))
-    phase_recon_pred = pca_phase.inverse_transform(np.array(phase_pred))
-    phase_recon_true = pca_phase.inverse_transform(np.array(phase_true))
-
-    amp_residual = np.mean((amp_recon_pred - amp_recon_true) ** 2)
-    phase_residual = np.mean((phase_recon_pred - phase_recon_true) ** 2)
-
-    ax.bar(['Amplitude', 'Phase'], [amp_residual, phase_residual], alpha=0.7)
-    ax.set_ylabel('Reconstruction MSE')
-    ax.set_title(f'Waveform Reconstruction MSE\nAmp: {amp_residual:.2e}, Phase: {phase_residual:.2e}')
-    ax.set_yscale('log')
-    ax.grid(True, alpha=0.3)
+        # PCA variance
+        ax = axes[i, 1]
+        ax.bar(range(pca.n_components), pca.explained_variance_ratio_, alpha=0.7)
+        ax.set_xlabel('PCA Component')
+        ax.set_ylabel('Explained Variance Ratio')
+        ax.set_title(f'Mode {mode} PCA ({pca.n_components} components)')
+        ax.set_yscale('log')
+        ax.grid(True, alpha=0.3)
 
     plt.tight_layout()
     plt.savefig(output_dir / "training_summary.png", dpi=150)
     plt.close()
     print(f"  Saved: {output_dir}/training_summary.png")
 
-    return emulator_data, {
-        "amp": amp_result,
-        "phase": phase_result,
-        "elapsed_time": elapsed,
-    }
+    return emulator_data, mode_results
 
 
 # =============================================================================
@@ -432,10 +358,12 @@ def train_emulator(
 
 def main():
     parser = argparse.ArgumentParser(description="Train waveform emulator")
-    parser.add_argument("--data", type=str, default="data/waveforms_22mode.h5",
+    parser.add_argument("--data", type=str, default="data/waveforms_multimode.h5",
                         help="Input HDF5 file")
     parser.add_argument("--output", type=str, default="outputs",
                         help="Output directory")
+    parser.add_argument("--mode", type=str, default=None,
+                        help="Train single mode (e.g., '22')")
     parser.add_argument("--n_hidden", type=int, default=4,
                         help="Number of hidden layers")
     parser.add_argument("--n_units", type=int, default=512,
@@ -453,10 +381,15 @@ def main():
     # Load data
     print(f"Loading data from {args.data}...")
     data = load_training_data(args.data)
+    print(f"  Modes available: {data['modes']}")
+
+    # Determine which modes to train
+    modes_to_train = [args.mode] if args.mode else None
 
     # Train
     train_emulator(
         data=data,
+        modes_to_train=modes_to_train,
         n_hidden=args.n_hidden,
         n_units=args.n_units,
         batch_size=args.batch_size,
