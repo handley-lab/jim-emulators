@@ -592,6 +592,8 @@ Both reviewers suggested starting more linear (+2.0 logits) would improve conver
 
 Received comprehensive literature survey on advanced NN architectures for GW emulation from Google Deep Research. Organized into `docs/literature/deep-research/`.
 
+**First Survey:** [Gemini Deep Research](https://gemini.google.com/share/ce2032c993f4)
+
 **Papers Downloaded (12 total):**
 
 | Category | ArXiv IDs |
@@ -633,7 +635,7 @@ This validates our CosmoPower/Speculator approach - simple SVD+MLP achieves stat
 
 The first survey skewed toward fancier architectures (transformers, diffusion, HNNs) rather than the straightforward approaches that actually work well for this problem. Notably, it missed `2402.06587` (mlgw_NN) - a February 2024 paper using the exact same methodology we're pursuing (amp/phase → PCA → NN), achieving 10⁻⁴ mismatch with higher modes.
 
-**Second Survey (seeded with 2402.06587):**
+**Second Survey (seeded with 2402.06587):** [Gemini Deep Research](https://gemini.google.com/share/b4a663061349)
 
 A follow-up deep research seeded with the mlgw_NN paper found the actual PCA+NN lineage:
 
@@ -659,7 +661,9 @@ Key insight from second survey: The PCA+NN architecture is a "stable design patt
 
 This paper provides the template for handling precession in our emulator.
 
-**Third Survey (seeded with 2205.14066 - SEOBNN deep-dive):**
+**Third Survey (seeded with 2205.14066):** [Gemini Deep Research](https://gemini.google.com/share/9a2971557222)
+
+**Fourth Survey (SEOBNN deep-dive):** [Gemini Deep Research](https://gemini.google.com/share/59343e3a7d1b)
 
 The best survey - detailed technical breakdown of the coprecessing frame technique:
 
