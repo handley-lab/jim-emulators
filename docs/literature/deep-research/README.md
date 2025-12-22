@@ -8,12 +8,13 @@ Literature survey on neural network approaches beyond standard SVD+MLP.
 
 ## Papers by Category
 
-### SVD-NN Interpolants (Most Relevant)
+### SVD-NN / PCA-NN Interpolants (Most Relevant)
 
 | ArXiv ID | Title | Notes |
 |----------|-------|-------|
 | `2408.02470/` | obiwann: NN-based GW interpolant for low-latency | 4-layer MLP, 10⁻⁴ mismatch, ms generation |
 | `2008.12932/` | ANN-Sur: Gravitational-wave surrogate models | SVD + NN interpolation |
+| `2402.06587/` | **mlgw_NN**: ML model for time-domain GW with HM | Amp/phase → PCA → NN, SEOBNRv4HM, 10⁻⁴ mismatch |
 
 ### Latent Manifold / Autoencoders
 
@@ -58,6 +59,7 @@ Literature survey on neural network approaches beyond standard SVD+MLP.
 |-------|---------------|
 | `2408.02470` (obiwann) | SEOBNRv4_ROM (BBH), TaylorF2 (BNS) |
 | `2008.12932` (ANN-Sur) | SEOBNRv4 |
+| `2402.06587` (mlgw_NN) | SEOBNRv4HM (time domain, higher modes) |
 | `2101.06685` (cAE) | EOB waveforms |
 | `2107.04312` (Spiral) | SEOBNRv4, EOBNRv2 |
 | `2102.12695` (UDE) | **NR trajectories** (SXS) - learns dynamics, not waveforms |
