@@ -12,6 +12,12 @@ from .lal_waveforms import (
     generate_fd_waveform,
     WaveformParameters,
     SUPPORTED_APPROXIMANTS,
+    # Mode selection
+    create_mode_array,
+    get_available_modes,
+    DEFAULT_MODES_XPHM,
+    DEFAULT_MODES_XHM,
+    DEFAULT_MODES_XAS,
 )
 from .utils import (
     get_frequency_array,

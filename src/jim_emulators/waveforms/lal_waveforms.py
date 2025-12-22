@@ -4,10 +4,24 @@ LAL waveform generation wrapper.
 Provides a clean, testable interface to LALSimulation frequency-domain waveforms.
 All physical quantities use SI units internally, with convenient input in
 astrophysical units (solar masses, Mpc).
+
+Mode Selection
+--------------
+Higher-mode waveforms (XPHM, XHM) support mode selection via the `mode_array`
+parameter. This allows generating waveforms with only specific (l, m) modes.
+
+Available modes for IMRPhenomXPHM/XHM:
+    (2, 2), (2, -2)  - Dominant quadrupole
+    (2, 1), (2, -1)  - Subdominant quadrupole
+    (3, 3), (3, -3)  - Octupole
+    (3, 2), (3, -2)  - Mixed
+    (4, 4), (4, -4)  - Hexadecapole
+
+Note: XAS only contains the (2, ±2) mode by construction.
 """
 
-from dataclasses import dataclass
-from typing import Tuple, Optional, Dict, Any
+from dataclasses import dataclass, field
+from typing import Tuple, Optional, Dict, Any, List
 import numpy as np
 
 import lal
@@ -26,6 +40,56 @@ SUPPORTED_APPROXIMANTS = {
     "IMRPhenomXAS": lalsim.IMRPhenomXAS,
     "IMRPhenomD": lalsim.IMRPhenomD,
 }
+
+# Default modes for higher-mode approximants
+DEFAULT_MODES_XPHM = [(2, 2), (2, -2), (2, 1), (2, -1), (3, 3), (3, -3), (3, 2), (3, -2), (4, 4), (4, -4)]
+DEFAULT_MODES_XHM = [(2, 2), (2, -2), (2, 1), (2, -1), (3, 3), (3, -3), (3, 2), (3, -2), (4, 4), (4, -4)]
+DEFAULT_MODES_XAS = [(2, 2), (2, -2)]  # XAS only has dominant mode
+
+
+def create_mode_array(modes: List[Tuple[int, int]]) -> "lal.ModeArray":
+    """
+    Create a LAL ModeArray from a list of (l, m) tuples.
+
+    Parameters
+    ----------
+    modes : list of (l, m) tuples
+        Spherical harmonic modes to include.
+        Example: [(2, 2), (2, -2)] for dominant quadrupole only.
+
+    Returns
+    -------
+    lal_mode_array : LAL ModeArray object
+        Mode array for use with SimInspiralWaveformParamsInsertModeArray.
+    """
+    lal_mode_array = lalsim.SimInspiralCreateModeArray()
+    for l, m in modes:
+        lalsim.SimInspiralModeArrayActivateMode(lal_mode_array, l, m)
+    return lal_mode_array
+
+
+def get_available_modes(approximant: str) -> List[Tuple[int, int]]:
+    """
+    Get the list of available modes for a given approximant.
+
+    Parameters
+    ----------
+    approximant : str
+        Waveform approximant name.
+
+    Returns
+    -------
+    modes : list of (l, m) tuples
+        Available spherical harmonic modes.
+    """
+    if approximant == "IMRPhenomXPHM":
+        return DEFAULT_MODES_XPHM.copy()
+    elif approximant == "IMRPhenomXHM":
+        return DEFAULT_MODES_XHM.copy()
+    elif approximant in ("IMRPhenomXAS", "IMRPhenomD"):
+        return DEFAULT_MODES_XAS.copy()
+    else:
+        raise ValueError(f"Unknown approximant: {approximant}")
 
 
 @dataclass
@@ -137,6 +201,8 @@ class WaveformParameters:
 
 def generate_fd_waveform(
     params: WaveformParameters,
+    mode_array: Optional[List[Tuple[int, int]]] = None,
+    disable_multibanding: bool = False,
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     Generate a frequency-domain waveform using LALSimulation.
@@ -145,6 +211,14 @@ def generate_fd_waveform(
     ----------
     params : WaveformParameters
         Waveform parameters dataclass.
+    mode_array : list of (l, m) tuples, optional
+        Spherical harmonic modes to include. If None, uses all available modes
+        for the approximant. Only relevant for higher-mode approximants (XPHM, XHM).
+        Example: [(2, 2), (2, -2)] for dominant quadrupole only.
+    disable_multibanding : bool, optional
+        If True, disables LAL's multibanding optimization for maximum numerical
+        precision. This is slower but produces smoother waveforms, especially
+        at low amplitudes. Default is False (use LAL defaults).
 
     Returns
     -------
@@ -164,6 +238,12 @@ def generate_fd_waveform(
     ...     f_min=20.0, f_max=1024.0, delta_f=0.125
     ... )
     >>> freqs, hp, hc = generate_fd_waveform(params)
+
+    # Generate with only (2,2) mode:
+    >>> freqs, hp, hc = generate_fd_waveform(params, mode_array=[(2, 2), (2, -2)])
+
+    # Generate with maximum precision (no multibanding):
+    >>> freqs, hp, hc = generate_fd_waveform(params, disable_multibanding=True)
     """
     # Convert to SI units
     mass_1_si = params.mass_1 * MSUN_SI
@@ -172,6 +252,20 @@ def generate_fd_waveform(
 
     # Get approximant enum
     approximant = SUPPORTED_APPROXIMANTS[params.approximant]
+
+    # Create LAL dictionary for extra parameters
+    laldict = None
+    if mode_array is not None or disable_multibanding:
+        laldict = lal.CreateDict()
+
+        if mode_array is not None:
+            lal_mode_array = create_mode_array(mode_array)
+            lalsim.SimInspiralWaveformParamsInsertModeArray(laldict, lal_mode_array)
+
+        if disable_multibanding:
+            # Setting threshold to 0 disables multibanding entirely
+            lalsim.SimInspiralWaveformParamsInsertPhenomXHMThresholdMband(laldict, 0.0)
+            lalsim.SimInspiralWaveformParamsInsertPhenomXPHMThresholdMband(laldict, 0.0)
 
     # Call LALSimulation
     hp_lal, hc_lal = lalsim.SimInspiralChooseFDWaveform(
@@ -193,7 +287,7 @@ def generate_fd_waveform(
         float(params.f_min),
         float(params.f_max),
         float(params.f_ref),
-        None,  # LAL dictionary for extra parameters
+        laldict,  # LAL dictionary for extra parameters (mode selection)
         approximant,
     )
 
