@@ -206,12 +206,183 @@ Created `HANDOVER_INSTRUCTIONS.md` for continuation on a different machine:
 
 ---
 
+## Session: 2024-12-22 (Continued - Machine Handover)
+
+### 12. Machine Handover & Environment Setup
+
+Project continued on a new machine. Following the handover instructions:
+
+```bash
+# Cloned reference repositories
+git clone git@github.com:alessiospuriomancini/cosmopower.git
+git clone git@github.com:GW-JAX-Team/ripple.git  # Note: correct repo is GW-JAX-Team, not tedwards2412
+git clone --filter=blob:none --sparse https://git.ligo.org/lscsoft/lalsuite.git
+cd lalsuite && git sparse-checkout set lalsimulation
+```
+
+Verified LAL installation: `lalsimulation.__version__ = 6.2.0`
+
+### 13. LAL Waveform Wrapper Implementation
+
+Created a clean, testable LAL simulation wrapper with proper unit handling.
+
+**Package Structure:**
+```
+src/jim_emulators/
+├── __init__.py
+└── waveforms/
+    ├── __init__.py
+    ├── lal_waveforms.py    # LAL wrapper with WaveformParameters dataclass
+    └── utils.py            # Frequency grids, match calculations, PSD loading
+```
+
+**Key Design Decisions:**
+
+1. **WaveformParameters Dataclass**: Clean interface encapsulating all waveform parameters
+   - Automatic mass/spin swapping to ensure m1 >= m2
+   - Derived quantities (chirp mass, eta, chi_eff) as properties
+   - Input in astrophysical units (solar masses, Mpc), internal conversion to SI
+
+2. **Supported Approximants**: IMRPhenomXPHM, IMRPhenomXHM, IMRPhenomXAS, IMRPhenomD
+
+3. **JAX-Compatible Utilities**:
+   - `noise_weighted_inner_product()`: For match calculations
+   - `compute_match()`, `compute_mismatch()`: Waveform comparison
+   - `get_geometric_frequency_grid()`: Log-spaced Mf grid for emulation
+   - `physical_to_geometric_frequency()`: Unit conversion
+
+**Reference Sources:**
+- `ripple/tests/old_tests/test_IMRPhenomX.py`: LAL calling conventions
+- `ripple/tests/benchmark_waveform.py`: Match calculation patterns
+- `bilby/gw/utils.py:663-705`: Clean wrapper design
+
+### 14. Test Suite
+
+Created comprehensive test suite (`tests/test_lal_waveforms.py`):
+
+```bash
+pytest tests/test_lal_waveforms.py -v
+# Result: 14 passed in 7.25s
+```
+
+**Tests Cover:**
+- Parameter dataclass creation and validation
+- Mass/spin swapping
+- Derived quantities (eta, chirp mass, chi_eff)
+- Waveform generation for all approximants
+- Distance scaling (amplitude ∝ 1/D_L)
+- Amplitude/phase extraction
+- Self-match = 1.0
+- Match calculation consistency
+
+### 15. Parameter Sensitivity Analysis
+
+Created `scripts/parameter_sensitivity.py` to visualize waveform dependence on parameters.
+
+**Fiducial Parameter Sets:**
+1. `equal_mass_nonspinning`: m1=m2=30 M☉, chi1z=chi2z=0
+2. `unequal_mass_aligned_spin`: m1=35, m2=25, chi1z=0.3, chi2z=-0.2
+3. `high_mass_high_spin`: m1=60, m2=40, chi1z=0.8, chi2z=0.6
+
+**Parameters Varied:**
+- Primary mass m1
+- Secondary mass m2
+- Primary spin chi1z
+- Secondary spin chi2z
+- Inclination iota
+- Symmetric mass ratio eta (at fixed total mass)
+
+**Output:**
+Generated 36 figures in `figures/sensitivity/`:
+- 2x2 grids showing: log amplitude, unwrapped phase, real part, imaginary part
+- Both physical frequency (Hz) and geometric frequency (Mf) representations
+- Color gradient indicates parameter variation
+
+**Key Observations:**
+- Mass changes shift merger frequency (lower mass = higher frequency)
+- Spin affects both amplitude and phase evolution
+- Inclination primarily affects amplitude through antenna pattern
+- Geometric frequency Mf provides mass-independent representation (crucial for emulation)
+
+### 16. Project Configuration
+
+Created `pyproject.toml` with:
+- Package metadata
+- Dependencies: numpy, jax, jaxlib, lalsuite, matplotlib, h5py, scipy
+- Optional dev dependencies: pytest, black, isort, flake8
+- Optional training dependencies: flax, optax, tqdm
+
+### 17. Time Domain Utilities
+
+Added frequency-to-time-domain conversion utilities to enable visualization and analysis in both physical and geometric time domains.
+
+**New functions in `utils.py`:**
+- `fd_to_td()` - Frequency to time domain with automatic centering at merger
+- `fd_to_td_centered_at_merger()` - Uses phase shift property for exact positioning
+- `geometric_fd_to_td()` - Transforms h(Mf) → h(t/M) for mass-independent representation
+- `geometric_time_to_physical()` / `physical_time_to_geometric()` - Unit conversions
+- `interpolate_to_uniform_grid()` - For non-uniform grids (e.g., log-spaced Mf) before FFT
+
+**Key insight:** Transforming from geometric frequency Mf to geometric time t/M gives a **mass-independent time-domain waveform**. All systems with the same intrinsic parameters (η, χ₁, χ₂) produce identical waveforms in t/M coordinates. Physical time is then simply:
+```
+t_seconds = (t/M) × M_total × 4.926×10⁻⁶ s
+```
+
+### 18. Extended Parameter Sensitivity Plots
+
+Extended the sensitivity analysis to include time-domain visualizations:
+
+**Plot types (54 total = 3 fiducials × 6 parameters × 3 types):**
+1. `sensitivity_*.png` - Physical frequency domain (4 panels: log amplitude, phase, real, imaginary)
+2. `sensitivity_Mf_*.png` - Geometric frequency domain (4 panels: log amplitude, phase, real, imaginary)
+3. `sensitivity_td_*.png` - Time domain (4 panels: h(t), |h(t)|, h(t/M), |h(t/M)|)
+
+Increased grid resolution from 15 to 30 parameter samples for smoother color gradients.
+
+**Observations from time-domain plots:**
+- Waveforms in geometric time t/M are mass-independent (only η and spins matter)
+- Higher mass systems have longer duration in physical time but identical shape in t/M
+- Spin affects the ringdown oscillation frequency visible in the envelope
+- Inclination changes amplitude but not the intrinsic waveform shape
+
+---
+
+### Current State
+
+**Implemented:**
+```
+jim-emulators/
+├── src/jim_emulators/
+│   ├── __init__.py
+│   └── waveforms/
+│       ├── __init__.py
+│       ├── lal_waveforms.py    # LAL wrapper, WaveformParameters
+│       └── utils.py            # Match, PSD, time domain utilities
+├── tests/
+│   └── test_lal_waveforms.py   # 14 tests passing
+├── scripts/
+│   └── parameter_sensitivity.py
+├── figures/
+│   └── sensitivity/            # 54 parameter sensitivity plots
+├── psds/
+│   └── ET-D-psd.txt            # Einstein Telescope PSD
+├── pyproject.toml
+└── (documentation + papers)
+```
+
+**Validated:**
+- LAL waveform generation works correctly (all 4 approximants)
+- All 14 unit tests pass
+- Parameter sensitivity plots generated in frequency and time domains
+- Time domain centering works correctly
+
+---
+
 ### Next Steps
 
-Per `gemini-plan.md` (updated with XPHM decision):
-1. Repository structure setup (src/jim_emulators/)
-2. Data generation script (LAL XPHM → HDF5)
-3. PCA and network components (Flax/JAX)
-4. Training pipeline
-5. Validation against LAL
-6. Integration with ripple interface
+1. ☐ Create data generation script (LAL XPHM → HDF5 training data)
+2. ☐ Implement PCA compression for amplitude/phase
+3. ☐ Build neural network with Speculator activation (Flax)
+4. ☐ Training pipeline with optax
+5. ☐ Validation: mismatch < 10⁻³ target
+6. ☐ Integration with ripple interface
