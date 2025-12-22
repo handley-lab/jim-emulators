@@ -189,9 +189,10 @@ def main():
 
     # Setup time/frequency grid
     # Choose sampling rate > 2 * f_max and duration long enough for the chirp
+    # For 50 Msun starting at ~12 Hz, inspiral takes 5-6 seconds - need longer buffer
     Fs = 4096.0  # Hz - sufficient for 50 Msun (ringdown ~300 Hz)
     dt = 1.0 / Fs
-    T_obs = 4.0  # seconds - plenty for BBH at this mass
+    T_obs = 16.0  # seconds - must be > inspiral time (~6s for 50 Msun at 12 Hz)
     N = int(T_obs * Fs)
 
     # Create exact FFT frequency grid (rfftfreq gives [0, df, ..., Nyquist])
@@ -257,8 +258,9 @@ def main():
     h_pred_fft *= taper
 
     # IFFT to time domain (irfft includes 1/N, multiply by Fs to recover integral)
-    h_true_td = np.fft.irfft(h_true_fft) * Fs
-    h_pred_td = np.fft.irfft(h_pred_fft) * Fs
+    # Conjugate to fix time direction: LAL uses exp(+i*phase) but irfft expects exp(-i*2πft)
+    h_true_td = np.fft.irfft(np.conj(h_true_fft)) * Fs
+    h_pred_td = np.fft.irfft(np.conj(h_pred_fft)) * Fs
 
     # Roll arrays to center the waveform - FFT wraps "past" to end of array
     n_samples = len(h_true_td)
