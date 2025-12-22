@@ -1,0 +1,98 @@
+\section{Proposed Griffin-Lim Diffusion Extension}
+\label{sec:GLA-Grad}
+
+
+\subsection{Griffin-Lim Algorithm}
+
+The Griffin-Lim Algorithm (GLA) \cite{griffin1984signal} iteratively reconstructs a time-domain signal $s\in\RR^{L}$ of length $L$ from a given magnitude spectrogram $\hat{\mbS}\in \RR^{T\times F}$ by estimating a phase that is most consistent with that magnitude \cite{LeRoux2008SAPA09b}. $T$ and $F$ denote the time and frequency dimensions of the time-frequency (TF) representation.
+For simplicity, we use the same notations $\mbT$ and $\mbT^{\dagger}$ for the STFT and iSTFT operators as for their matrix representations introduced earlier.
+GLA relies on two projection operations in the complex time-frequency domain $\CC^{T\times F}$,
+%applied to a complex spectrogram $\mbC\in \CC^{T\timesF}$, 
+the first onto the subset $\mathcal{C}\subset \CC^{T\times F}$ of consistent spectrograms (the elements of  $\CC^{T\times F}$ that can be obtained as STFT of a signal in $\RR^{L}$):
+\begin{equation}
+P_{\mathcal{C}}(\mbC)=\mbT\mbT^{\dagger} \mbC,
+\label{eq:Pc1}
+\end{equation}
+and the second onto the subset $\{\mbC \in \CC^{T\times F} \mid |\mbC|=\hat{\mbS} \}$ of spectrograms with magnitude equal to $\hat{\mbS}$: 
+\begin{equation} 
+P_{|\cdot|=\hat{\mbS}}(\mbC)=\hat{\mbS} \odot \frac{\mbC}{\left|\mbC\right|},
+\label{eq:Pc2}
+\end{equation} 
+where $\odot, \frac{\cdot}{\cdot}$ are element-wise product and division respectively. %, $\mathcal{C}$ the collection of all STFT coefficients, while $|\cdot|=\hat{\mbS}$ is a subset of $\mathcal{C}$, specifically containing the STFT coefficients with magnitude $\mbS$. 
+The algorithm is initialized with $\mbC_0=\hat{\mbS}\odot e^{i\mbPh_0}$ where $\mbPh_0$ is typically random.
+The $k$-th iteration can be summarized as: %phase reconstructed complex-valued spectrogram after $n$ iterations boils down to 
+\begin{equation}
+\mbC_k=P_{\mathcal{C}} \circ P_{|\cdot|=\hat{\mbS}}\left(\mbC_{k-1}\right).
+\label{eq:GLA}
+\end{equation}
+Note that in practice, we use the Fast Griffin-Lim Algorithm (FGLA) \cite{perraudin2013fast}, a slightly modified version of GLA which accelerates the optimization and can be readily integrated in the modifications of the diffusion model based on GLA described below.
+
+
+\subsection{GLA-Grad: Griffin-Lim corrected diffusion model}
+We propose to introduce an inference-time improvement to a trained WaveGrad model. 
+In current diffusion models such as WaveGrad, the iteration process (cf.\ Eq.~\eqref{eq:wavegrad_gen}) may lead to a signal $\mby_{n-1}$ that is out of distribution of the training data if not carefully considered, as introduced in \cite{graham2023denoising}. We believe that only conditioning on $\tilde{\mbX}$ may not be sufficient to solve the problem and a stronger constraint could be beneficial. 
+ Our goal is to use GLA to fix the bias between the generated signal and our expected signal (see Fig.~\ref{fig:method}). 
+\if 0 %% change this to 1 for the scaling version
+We propose to introduce GLA into each step of the diffusion process, in which 
+% the minimization of the distance between the actual magnitude spectrogram $|\mbT \mby_n|$ of the signal estimate $\mby_n$ at step $n$ and 
+an estimate of the desired magnitude spectrogram  is used to guide the generation of the signal estimate $\mby_{n-1}$ at step $n-1$,
+enabling the inference to have a better convergence.
+ 
+Because the signal at step $n-1$ of the forward diffusion process is supposed to be obtained from a scaled version of the original $\mby_0$, the part of the magnitude $|\mbT \mby_{n-1}|$ that corresponds to the desired signal is a rescaled version of the desired magnitude as well: 
+
+\begin{equation}
+        \left|\mbT\mby_{n-1}\right| = \left|\sqrt{\bar{\alpha}_{n-1}}\mbT  \mby_0+ \sqrt{\left(1-\bar{\alpha}_{n-1}\right)} \mbT  \mbep \right|,
+\label{equ-Tyn}
+\end{equation}
+with the signal component's magnitude corresponding to $\sqrt{\bar{\alpha}_{n-1}}|\mbT  \mby_0| $.
+
+We do not have access to the desired magnitude $|\mbT \mby_0|$, but can consider the magnitude spectrogram estimate $\hat{\mbS}$ obtained from the desired mel spectrogram $\tilde{\mbX}$ 
+%by approximately inverting the mel transform using gradient descent. 
+through the pseudo-inverse $\mbM^\dagger$ of the mel transform as $\hat{\mbS} = \mbM^\dagger \tilde{\mbX}$. 
+
+At diffusion time step $n-1$, we can then use GLA with the rescaled magnitude spectrogram $\hat{\mbS}_{n-1}$ as desired magnitude:
+\begin{equation}
+\hat{\mbS}_{n-1} = \sqrt{\bar{\alpha}_{n-1}}\hat{\mbS}.
+\end{equation}
+
+
+Our approach aims to minimize the disparity between the magnitude of the generated signal $|\mbT\mby_{n-1}|$ and the estimate  $\hat{\mbS}_{n-1}$ of the desired magnitude spectrogram at every iteration. 
+
+We replace the original $P_{|\cdot|=\hat{\mbS}}$ projection given in Eq.~\eqref{eq:Pc2} by a new projection $P_{|\cdot|=\hat{\mbS}_{n-1}}$ onto the subset of spectrograms whose magnitude is $\hat{\mbS}_{n-1}$:
+
+\begin{equation}
+\begin{split}
+    P_{|\cdot|=\hat{\mbS}_{n-1}}(\mbC)&=\hat{\mbS}_n \odot \frac{\mbC}{\left|\mbC\right|} =\sqrt{\bar{\alpha}_{n-1}}\mbM^\dagger\tilde{\mbX} \odot\frac{\mbC}{\left|\mbC\right|}. \\
+\end{split}
+\label{equ-QC2}
+\end{equation}
+
+Starting from the current diffusion estimate $\mby_{n-1}$ obtained using WaveGrad with Eq.~\eqref{eq:wavegrad_gen}, we can introduce a Griffin-Lim correction leading to a new estimate $\mby_{n-1}^{\text{GLA}}$ defined as:
+\begin{equation}
+\begin{split}
+   
+   \mby_{n-1}^{\text{GLA}} & =\mbT^{\dagger} (P_{\mathcal{C}} \circ  P_{|\cdot|=\hat{\mbS}_{n-1}})^K \left(\mbT\mby_{n-1} \right),
+   \label{eq:y_gla}
+\end{split}
+\end{equation}
+where $(P_{\mathcal{C}} \circ  P_{|\cdot|=\hat{\mbS}_{n-1}})^K$ indicates the application of $K$ iterations of GLA, starting from the spectrogram $\mbT\mby_{n-1}$ of $\mby_{n-1}$ as initial value.
+\else We propose to introduce GLA into each step of the diffusion process, in which an estimate of the desired magnitude spectrogram  is used to guide the generation of the signal estimate $\mby_{n-1}$ at step $n-1$ by minimizing the disparity with its magnitude $|\mbT\mby_{n-1}|$, enabling the inference to have a better convergence.
+We do not have access to the desired magnitude, but can consider the magnitude spectrogram estimate $\hat{\mbS}$ obtained from the desired mel spectrogram $\tilde{\mbX}$ 
+%by approximately inverting the mel transform using gradient descent. 
+through the pseudo-inverse $\mbM^\dagger$ of the mel transform as $\hat{\mbS} = \mbM^\dagger \tilde{\mbX}$. 
+At diffusion time step $n-1$, we can then use GLA with the magnitude spectrogram $\hat{\mbS}$ as desired magnitude.
+
+
+Starting from the current diffusion estimate $\mby_{n-1}$ obtained using WaveGrad with Eq.~\eqref{eq:wavegrad_gen}, we can introduce a Griffin-Lim correction leading to a new estimate $\mby_{n-1}^{\text{GLA}}$ defined as:
+\begin{equation}
+\begin{split}
+   % \mby_{n-1}^{\text{GLA}} & =\mbT^{\dagger} P_{|\cdot|=\hat{\mbS}_n}\left(P_{\mathcal{C}}\left(\mbC_n\right)\right),
+   \mby_{n-1}^{\text{GLA}} & =\mbT^{\dagger} (P_{\mathcal{C}} \circ  P_{|\cdot|=\hat{\mbS}})^K \left(\mbT\mby_{n-1} \right),
+   \label{eq:y_gla}
+\end{split}
+\end{equation}
+where $(P_{\mathcal{C}} \circ  P_{|\cdot|=\hat{\mbS}})^K$ indicates the application of $K$ iterations of GLA, starting from the spectrogram $\mbT\mby_{n-1}$ of $\mby_{n-1}$ as initial value.
+\fi
+
+
+In practical implementation, our algorithm comprises two distinct phases, as depicted in Fig. \ref{fig:method}, showcasing the entire workflow. The initial phase employs the GLA-corrected approach outlined in this subsection at each sampling step of the diffusion process. More precisely, we obtain $\mby_{n-1}$ using the original WaveGrad update in Eq.~\eqref{eq:wavegrad_gen}, then correct it with GLA to obtain $\mby_{n-1}^{\text{GLA}}$ using Eq.~\eqref{eq:y_gla}. We posit that commencing the diffusion process with a projection method like GLA aids in maintaining signal consistency. Subsequently, the second phase involves a conventional diffusion process, exclusively considering the diffusion update. The proposed overall scheme is referred to as GLA-Grad.

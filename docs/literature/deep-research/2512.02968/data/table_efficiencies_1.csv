@@ -1,0 +1,25 @@
+Event,Detectors,baseline,random,data
+\text{GW190408\_181802},HLV,\text{\gradient{0.63}},\text{\gradient{0.73}},\text{\gradient{8.07}}
+\text{GW190413\_052954},HLV,\text{\gradient{5.38}},\text{\gradient{9.33}},\text{\gradient{11.77}}
+\text{GW190413\_134308}$^{*\dagger \mathrm{L}}$,HLV,\text{\gradient{1.19}},\text{\gradient{5.2}},\text{\gradient{4.52}}
+\text{GW190426\_190642},HLV,\text{\gradient{0.97}},\text{\gradient{0.39}},\text{\gradient{0.79}}
+\text{GW190503\_185404}$^{* \mathrm{L}}$,HLV,\text{\gradient{0.18}},\text{\gradient{0.5}},\text{\gradient{1.57}}
+\text{GW190513\_205428}$^{* \mathrm{L}}$,HLV,\text{\gradient{0.2}},\text{\gradient{1.54}},\text{\gradient{0.16}}
+\text{GW190517\_055101},HLV,\text{\gradient{0.06}},\text{\gradient{1.61}},\text{\gradient{2.17}}
+\text{GW190519\_153544},HLV,\text{\gradient{1.87}},\text{\gradient{1.93}},\text{\gradient{4.26}}
+\text{GW190602\_175927},HLV,\text{\gradient{10.33}},\text{\gradient{13.13}},\text{\gradient{13.09}}
+\text{GW190701\_203306}$^{* \mathrm{L}}$,HLV,\text{\gradient{2.17}},\text{\gradient{2.81}},\text{\gradient{14.83}}
+\text{GW190706\_222641},HLV,\text{\gradient{3.5}},\text{\gradient{2.35}},\text{\gradient{2.49}}
+\text{GW190727\_060333}$^{\dagger \mathrm{L}}$,HLV,\text{\gradient{0.77}},\text{\gradient{1.41}},\text{\gradient{0.84}}
+\text{GW190803\_022701},HLV,\text{\gradient{11.55}},\text{\gradient{16.86}},\text{\gradient{16.39}}
+\text{GW190828\_063405},HLV,\text{\gradient{0.92}},\text{\gradient{4.27}},\text{\gradient{3.99}}
+\text{GW190915\_235702},HLV,\text{\gradient{3.42}},\text{\gradient{5.29}},\text{\gradient{8.23}}
+\text{GW190916\_200658},HLV,\text{\gradient{11.0}},\text{\gradient{19.37}},\text{\gradient{19.41}}
+\text{GW190926\_050336},HLV,\text{\gradient{1.23}},\text{\gradient{3.52}},\text{\gradient{1.63}}
+\text{GW190929\_012149},HLV,\text{\gradient{1.64}},\text{\gradient{1.16}},\text{\gradient{3.04}}
+\text{GW191127\_050227}$^{\diamond \mathrm{H}}$,HLV,\text{\gradient{0.16}},\text{\gradient{0.4}},\text{\gradient{0.28}}
+\text{GW191215\_223052},HLV,\text{\gradient{0.07}},\text{\gradient{0.2}},\text{\gradient{4.05}}
+\text{GW191230\_180458},HLV,\text{\gradient{5.5}},\text{\gradient{9.83}},\text{\gradient{14.61}}
+\text{GW200129\_065458}$^{\ddagger \mathrm{L}}$,HLV,\text{\gradient{0.05}},\text{\gradient{0.01}},\text{\gradient{0.29}}
+\text{GW200208\_130117},HLV,\text{\gradient{1.46}},\text{\gradient{2.12}},\text{\gradient{11.58}}
+\text{GW200208\_222617},HLV,\text{\gradient{2.49}},\text{\gradient{2.71}},\text{\gradient{2.86}}

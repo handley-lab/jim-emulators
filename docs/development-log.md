@@ -579,6 +579,53 @@ Both reviewers suggested starting more linear (+2.0 logits) would improve conver
 - `docs/jax-flax-best-practices.md` updated with empirical findings
 - Added initialization comparison data
 
+## Session: 2024-12-22 (Parallel Branch: wh-session-1251)
+
+### 28. Deep Research Literature Review
+
+Received comprehensive literature survey on advanced NN architectures for GW emulation from Google Deep Research. Organized into `docs/literature/deep-research/`.
+
+**Papers Downloaded (12 total):**
+
+| Category | ArXiv IDs |
+|----------|-----------|
+| SVD-NN interpolants | `2408.02470` (obiwann), `2008.12932` (ANN-Sur) |
+| Latent manifolds | `2107.04312` (spiral), `2101.06685` (cAE) |
+| Hamiltonian/symplectic | `2502.20881` (HNN), `2102.12695` (UDE dynamics) |
+| FNO | `2511.19364` (detector design) |
+| Generative models | `2410.19956` (SLIC), `2208.05003` (wavelet), `2402.15516` (GLA-Grad) |
+| Time-frequency/transformers | `2511.20731` (denoising), `2512.02968` (Dingo-T1) |
+
+**Key Finding - Training Data Sources:**
+
+Almost all papers train on semi-analytical approximants, not raw NR:
+
+| Paper | Training Data |
+|-------|---------------|
+| obiwann | SEOBNRv4_ROM, TaylorF2 |
+| ANN-Sur | SEOBNRv4 |
+| cAE | EOB |
+| Spiral | SEOBNRv4, EOBNRv2 |
+| UDE | NR trajectories (exception - learns dynamics) |
+| SLIC | IMRPhenomD |
+| Dingo-T1 | **IMRPhenomXPHM** |
+
+**Important Validation:** Dingo-T1 uses IMRPhenomXPHM - the same model we're targeting. Confirms XPHM is tractable for neural network approaches.
+
+**obiwann paper details (2408.02470):**
+- Architecture: 4-layer MLP × 512 neurons, ReLU activations
+- Input: 4D intrinsic parameters (m₁, m₂, s₁z, s₂z)
+- Output: SVD coefficients for waveform reconstruction
+- Performance: 10⁻⁴ mismatch (BBH), 10⁻⁵ mismatch (BNS)
+- Speed: 0.28 ms/waveform (GPU), 0.84 ms for 10⁴ batch
+- Training: 10⁵ samples, ~10 min on GPU
+
+This validates our CosmoPower/Speculator approach - simple SVD+MLP achieves state-of-the-art results.
+
+**Appraisal of Deep Research:**
+
+The survey skewed toward fancier architectures (transformers, diffusion, HNNs) rather than the straightforward approaches that actually work well for this problem. Notably, it missed `2402.06587` (mlgw_NN) - a February 2024 paper using the exact same methodology we're pursuing (amp/phase → PCA → NN), achieving 10⁻⁴ mismatch with higher modes. This should have been a top hit for any survey on "neural network gravitational wave emulation." Paper was added manually after the survey.
+
 ---
 
 ### Next Steps
@@ -590,4 +637,4 @@ Both reviewers suggested starting more linear (+2.0 logits) would improve conver
 5. ☐ Validation: mismatch < 10⁻³ target
 6. ☐ Integration with ripple interface
 7. ☐ XAS comparison plots (verify XPHM aligned-spin ≈ XAS)
-8. ☐ Literature review: existing GW emulation approaches
+8. ☒ Literature review: existing GW emulation approaches

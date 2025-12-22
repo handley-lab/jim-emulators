@@ -1,0 +1,53 @@
+\section{Related Work}\label{sec:background}
+
+\textbf{DDPM:} Let $\mby_0 \sim q(\mby_0)$ be a data sample. The denoising diffusion probabilistic model (DDPM) \cite{ho2020denoising} involves the gradual addition of noise to $\mby_0$ in the forward process and then learning how to recover it in the reverse process. Specifically, in the forward process, $\mby_n$ at each time step $n \in \![\![1, N\!]\!]$ is derived via $q(\mby_n\mid \mby_{n-1})=\mathcal{N}(\mby_n; \sqrt{1-\beta_{n}} \mby_{n-1})$, where $(\beta_n)_n$ is a variance schedule and $N$ is the maximum number of time steps. Therefore we have:
+\begin{align}
+\label{eqn:diff_proc_forward}
+\mby_0 \sim q (\mby_0), \quad &q\left(\mby_{1:N} \mid \mby_0\right) \triangleq \prod_{n=1}^{N}q\left(\mby_n\mid \mby_{n-1}\right).
+\end{align}
+Denoting $\alpha_n\triangleq 1-\beta_n, \bar{\alpha}_n\triangleq\prod_{s=1}^n \alpha_s$ and ${\mbep} \sim \mathcal{N}(\mbep;\mathbf{0}, \mbI)$, $\mby_n$ can be obtained in closed form for any given time $n$ as follows:
+\begin{equation}
+\label{eq:closed_form}
+    \mby_n=\sqrt{\bar{\alpha}_n} \mby_0+\sqrt{1-\bar{\alpha}_n} {\mbep}.
+\end{equation} 
+
+In the reverse process, we want to reconstruct $\mby_0$. Since $q(\mby_{n-1}|\mby_{n})$ is intractable, a neural network model is trained to match the true denoising distribution. The equation of the reverse process is given by:
+\begin{align}
+\label{eqn:diff_proc_reverse}
+p_{\theta}(\mby_{0:N})\triangleq p(\mby_N)\prod_{n=1}^{N}p_\theta\left(\mby_{n-1}\mid \mby_{n}\right), \quad 
+\end{align}
+where, assuming $N$ is large enough, $p_{\theta}(\mby_{n-1} | \mby_{n})$ is modeled as a Gaussian distribution with mean and variance determined by the neural network, and $\theta$ represents the parameters of the model, and $p(\mby_N) = \mathcal{N}(\mby_N; \mathbf{0}, \mbI)$.
+
+In practice, the neural network, denoted by $\mbep_\theta(\mby_n, n)$, is parameterized to estimate the noise added to $\mby_0$ in Equation \ref{eq:closed_form}, and thus minimizes the following training objective, which bears resemblance to the concept of denoising score-matching:
+\begin{equation}
+    \mathbb{E}_{n, \mbep}\left[\left\|\mbep_\theta\left(\sqrt{\bar{\alpha}_n} \mby_0+\sqrt{1-\bar{\alpha}_n} \mbep, n\right)-\mbep\right\|_2^2\right]. \label{eq:diff_model}
+\end{equation}
+
+\textbf{WaveGrad:}  WaveGrad \cite{chen2020wavegrad} is based on DDPM and proposes to perform waveform generation with a conditional diffusion process $p_\theta(\mby_{0:n} \mid \tilde{\bold{X}})$ where $\tilde{\bold{X}}$ is a mel spectrogram.
+Starting from a Gaussian white noise signal, it progressively enhances the signal through an iterative refinement process using a gradient-based sampler that takes into account $\tilde{\mbX}$ as a conditioning factor.
+WaveGrad provides a flexible mechanism for balancing inference speed against sample quality by controlling the number of refinement steps. 
+In contrast with DDPM~\cite{ho2020denoising}, WaveGrad \cite{chen2020wavegrad} reparameterized the model to condition on a continuous noise level $\bar \alpha$ instead of the discrete iteration index $n$. The loss function is then modified as follows:
+\begin{equation}
+    \mathbb{E}_{\bar{\alpha}, \mbep}\left[\left\|\mbep_\theta\left(\sqrt{\bar{\alpha}} \mby_0+\sqrt{1-\bar{\alpha}} \mbep, \tilde{\mbX}, \sqrt{\bar{\alpha}}\right)-\mbep\right\|_1\right].
+\end{equation}
+Considering $\mbz \sim \mathcal{N}(\mbz; \mathbf{0}, \mathbf{I})$ for $n > 1$, $\mbz = \mathbf{0}$ for $n=1$ and $\sigma_n = \frac{1 - \bar{\alpha}_{n - 1}}{1 - \bar{\alpha}_n}\beta_n$, Wavegrad applies the following iterative procedure to generate $\mby_{n-1}$:
+\begin{equation}
+\mby_{n-1}=\frac{\left(\mby_n-\frac{1-\alpha_n}{\sqrt{1-\bar{\alpha}_n}} \mbep_\theta\left(\mby_n, \tilde{\mbX}, \sqrt{\bar{\alpha}_n}\right)\right)}{\sqrt{\alpha_n}} + \sigma_n \mbz. \label{eq:wavegrad_gen}
+\end{equation}
+
+\textbf{SpecGrad:} Based on WaveGrad, SpecGrad \cite{koizumi2022specgrad} proposed to adjust the diffusion noise in a way that aligns its dynamic spectral characteristics with those of the conditioning mel spectrogram. The adaptation performed by SpecGrad through time-varying filtering results in notable enhancements in audio fidelity, particularly in the higher frequency regions. SpecGrad uses the implementation of a time-varying filter within the time-frequency domain.
+We denote by $\mbT$ a matrix representation of the short-time Fourier transform (STFT) expressed from the time-domain to a flattened version of the time-frequency domain where all frames are concatenated, and by $\mbT^{\dagger}$ the similar matrix representation of the inverse STFT (iSTFT).
+% In the time-frequency domain, t
+The time-varying filter can be expressed as: 
+\begin{equation}
+    \mbL=\mbT^{\dagger} \mbD \mbT,
+\end{equation}
+where $\mbD$ is a diagonal matrix determining the filter in the time-frequency domain, here obtained from the spectral envelope.
+From $\mbL$, we can obtain the covariance matrix $\mbSi=\mbL\mbL^\Tr$ of the Gaussian noise 
+$\mathcal{N}(\mathbf{0},\mbSi)$ in the diffusion process.
+The loss function is then obtained as:
+\begin{equation}
+    \mathbb{E}_{\bar{\alpha}, \mbep}
+    \left[
+    \left\|\mbL^{-1}\left(\mbep_\theta\left(\sqrt{\bar{\alpha}} \mby_0+\sqrt{1-\bar{\alpha}} \mbep, \tilde{\mbX}, \sqrt{\bar{\alpha}}\right)-\mbep \right)\right\|_2^2\right]. \\
+\end{equation}

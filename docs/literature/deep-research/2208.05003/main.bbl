@@ -1,0 +1,268 @@
+\begin{thebibliography}{}
+
+\bibitem[Bakry et~al., 2014]{bakry:gentil:ledoux:2014}
+Bakry, D., Gentil, I., and Ledoux, M. (2014).
+\newblock {\em Analysis and Geometry of {M}arkov Diffusion Operators}, volume
+  348.
+\newblock Springer.
+
+\bibitem[Cattiaux et~al., 2021]{cattiaux2021time}
+Cattiaux, P., Conforti, G., Gentil, I., and L{\'e}onard, C. (2021).
+\newblock Time reversal of diffusion processes under a finite entropy
+  condition.
+\newblock {\em arXiv preprint arXiv:2104.07708}.
+
+\bibitem[De~Bortoli et~al., 2021]{debortoli2021diffusion}
+De~Bortoli, V., Thornton, J., Heng, J., and Doucet, A. (2021).
+\newblock Diffusion schr{\"o}dinger bridge with applications to score-based
+  generative modeling.
+\newblock {\em Advances in Neural Information Processing Systems}, 34.
+
+\bibitem[Dhariwal and Nichol, 2021]{nichol2021beatgans}
+Dhariwal, P. and Nichol, A. (2021).
+\newblock Diffusion models beat {GAN} on image synthesis.
+\newblock {\em arXiv preprint arXiv:2105.05233}.
+
+\bibitem[Gal et~al., 2021]{gal2021swagan}
+Gal, R., Hochberg, D.~C., Bermano, A., and Cohen-Or, D. (2021).
+\newblock Swagan: A style-based wavelet-driven generative model.
+\newblock {\em ACM Transactions on Graphics (TOG)}, 40(4):1--11.
+
+\bibitem[Gross, 1975]{gross1975logarithmic}
+Gross, L. (1975).
+\newblock Logarithmic sobolev inequalities.
+\newblock {\em American Journal of Mathematics}, 97(4):1061--1083.
+
+\bibitem[Haussmann and Pardoux, 1986]{haussmann1986time}
+Haussmann, U.~G. and Pardoux, E. (1986).
+\newblock Time reversal of diffusions.
+\newblock {\em The Annals of Probability}, 14(4):1188--1205.
+
+\bibitem[Heusel et~al., 2017]{fid}
+Heusel, M., Ramsauer, H., Unterthiner, T., Nessler, B., Klambauer, G., and
+  Hochreiter, S. (2017).
+\newblock Gans trained by a two time-scale update rule converge to a nash
+  equilibrium.
+\newblock {\em CoRR}, abs/1706.08500.
+
+\bibitem[Ho et~al., 2020]{ho2020denoising}
+Ho, J., Jain, A., and Abbeel, P. (2020).
+\newblock Denoising diffusion probabilistic models.
+\newblock {\em Advances in Neural Information Processing Systems}.
+
+\bibitem[Ho et~al., 2022]{ho2022cascaded}
+Ho, J., Saharia, C., Chan, W., Fleet, D.~J., Norouzi, M., and Salimans, T.
+  (2022).
+\newblock Cascaded diffusion models for high fidelity image generation.
+\newblock {\em Journal of Machine Learning Research}, 23(47):1--33.
+
+\bibitem[Huang et~al., 2017]{huang2017wavelet}
+Huang, H., He, R., Sun, Z., and Tan, T. (2017).
+\newblock Wavelet-srnet: A wavelet-based cnn for multi-scale face super
+  resolution.
+\newblock In {\em Proceedings of the IEEE International Conference on Computer
+  Vision}, pages 1689--1697.
+
+\bibitem[Hyv{\"a}rinen and Dayan, 2005]{hyvarinen2005estimation}
+Hyv{\"a}rinen, A. and Dayan, P. (2005).
+\newblock Estimation of non-normalized statistical models by score matching.
+\newblock {\em Journal of Machine Learning Research}, 6(4).
+
+\bibitem[Ikeda and Watanabe, 1989]{ikeda1989sto}
+Ikeda, N. and Watanabe, S. (1989).
+\newblock {\em Stochastic Differential Equations and Diffusion Processes},
+  volume~24 of {\em North-Holland Mathematical Library}.
+\newblock North-Holland Publishing Co., Amsterdam; Kodansha, Ltd., Tokyo,
+  second edition.
+
+\bibitem[Jing et~al., 2022]{jing2022subspace}
+Jing, B., Corso, G., Berlinghieri, R., and Jaakkola, T. (2022).
+\newblock Subspace diffusion generative models.
+
+\bibitem[Jolicoeur-Martineau et~al., 2021]{jolicoeur2021gotta}
+Jolicoeur-Martineau, A., Li, K., Pich{\'e}-Taillefer, R., Kachman, T., and
+  Mitliagkas, I. (2021).
+\newblock Gotta go fast when generating data with score-based models.
+\newblock {\em arXiv preprint arXiv:2105.14080}.
+
+\bibitem[Kadkhodaie and Simoncelli, 2020]{kadkhodaie2020solving}
+Kadkhodaie, Z. and Simoncelli, E.~P. (2020).
+\newblock Solving linear inverse problems using the prior implicit in a
+  denoiser.
+\newblock {\em arXiv preprint arXiv:2007.13640}.
+
+\bibitem[Karras et~al., 2018]{celeba-hq}
+Karras, T., Aila, T., Laine, S., and Lehtinen, J. (2018).
+\newblock Progressive growing of gans for improved quality, stability, and
+  variation. arxiv 2017.
+\newblock {\em arXiv preprint arXiv:1710.10196}, pages 1--26.
+
+\bibitem[Kaupu{\v{z}}s et~al., 2016]{kaupuvzs2016corrections}
+Kaupu{\v{z}}s, J., Melnik, R., and Rim{\v{s}}{\=a}ns, J. (2016).
+\newblock Corrections to finite-size scaling in the $\varphi$ 4 model on square
+  lattices.
+\newblock {\em International Journal of Modern Physics C}, 27(09):1650108.
+
+\bibitem[Kolmogorov, 1962]{kolmogorov_1962}
+Kolmogorov, A.~N. (1962).
+\newblock A refinement of previous hypotheses concerning the local structure of
+  turbulence in a viscous incompressible fluid at high reynolds number.
+\newblock {\em Journal of Fluid Mechanics}, 13(1):82–85.
+
+\bibitem[Kong and Ping, 2021]{kong2021fast}
+Kong, Z. and Ping, W. (2021).
+\newblock On fast sampling of diffusion probabilistic models.
+\newblock {\em arXiv preprint arXiv:2106.00132}.
+
+\bibitem[L{\'e}onard, 2014]{leonard2014some}
+L{\'e}onard, C. (2014).
+\newblock Some properties of path measures.
+\newblock In {\em S{\'e}minaire de Probabilit{\'e}s XLVI}, pages 207--230.
+  Springer.
+
+\bibitem[Liu et~al., 2022]{liu2022pseudo}
+Liu, L., Ren, Y., Lin, Z., and Zhao, Z. (2022).
+\newblock Pseudo numerical methods for diffusion models on manifolds.
+
+\bibitem[Liu et~al., 2015]{liu2015faceattributes}
+Liu, Z., Luo, P., Wang, X., and Tang, X. (2015).
+\newblock Deep learning face attributes in the wild.
+\newblock In {\em International Conference on Computer Vision}.
+
+\bibitem[Luhman and Luhman, 2021]{luhman2021knowledge}
+Luhman, E. and Luhman, T. (2021).
+\newblock Knowledge distillation in iterative generative models for improved
+  sampling speed.
+\newblock {\em arXiv preprint arXiv:2101.02388}.
+
+\bibitem[Mallat, 1999]{mallat1999wavelet}
+Mallat, S. (1999).
+\newblock {\em A wavelet tour of signal processing}.
+\newblock Elsevier.
+
+\bibitem[Mallat, 1989]{Mallat:89}
+Mallat, S. (July 1989).
+\newblock A theory for multiresolution signal decomposition: the wavelet
+  representation.
+\newblock 11(7):674--693.
+
+\bibitem[Mandelbrot, 1983]{mandelbrot1983fractal}
+Mandelbrot, B. (1983).
+\newblock The fractal geometry of nature/revised and enlarged edition.
+\newblock {\em New York}.
+
+\bibitem[Marchand et~al., 2022]{WCRG}
+Marchand, T., Ozawa, M., Biroli, G., and Mallat, S. (2022).
+\newblock Wavelet conditional renormalization group.
+\newblock {\em arXiv preprint arXiv:2207.04941}.
+
+\bibitem[Meyer, 1992]{Meyer:92c}
+Meyer, Y. (1992).
+\newblock {\em Wavelets and Operators}.
+\newblock Advanced mathematics. Cambridge university press.
+
+\bibitem[Meyn and Tweedie, 1993]{meyn1993criteria_iii}
+Meyn, S.~P. and Tweedie, R.~L. (1993).
+\newblock Stability of {M}arkovian processes. {III}. {F}oster-{L}yapunov
+  criteria for continuous-time processes.
+\newblock {\em Advances in Applied Probability}, 25(3):518--548.
+
+\bibitem[Milchev et~al., 1986]{milchev1986finite}
+Milchev, A., Heermann, D., and Binder, K. (1986).
+\newblock Finite-size scaling analysis of the $\varphi$4 field theory on the
+  square lattice.
+\newblock {\em Journal of statistical physics}, 44(5):749--784.
+
+\bibitem[Nachmani et~al., 2021]{nachmani2021non}
+Nachmani, E., Roman, R.~S., and Wolf, L. (2021).
+\newblock Non gaussian denoising diffusion models.
+\newblock {\em arXiv preprint arXiv:2106.07582}.
+
+\bibitem[Nichol and Dhariwal, 2021]{nichol2021improved}
+Nichol, A. and Dhariwal, P. (2021).
+\newblock Improved denoising diffusion probabilistic models.
+\newblock {\em arXiv preprint arXiv:2102.09672}.
+
+\bibitem[Rahaman et~al., 2019]{rahaman2019spectral}
+Rahaman, N., Baratin, A., Arpit, D., Draxler, F., Lin, M., Hamprecht, F.,
+  Bengio, Y., and Courville, A. (2019).
+\newblock On the spectral bias of neural networks.
+\newblock In {\em International Conference on Machine Learning}, pages
+  5301--5310. PMLR.
+
+\bibitem[Saharia et~al., 2021]{saharia2021image}
+Saharia, C., Ho, J., Chan, W., Salimans, T., Fleet, D.~J., and Norouzi, M.
+  (2021).
+\newblock Image super-resolution via iterative refinement.
+\newblock {\em arXiv preprint arXiv:2104.07636}.
+
+\bibitem[Salimans and Ho, 2022]{salimans2022progressive}
+Salimans, T. and Ho, J. (2022).
+\newblock Progressive distillation for fast sampling of diffusion models.
+\newblock {\em arXiv preprint arXiv:2202.00512}.
+
+\bibitem[San-Roman et~al., 2021]{san2021noise}
+San-Roman, R., Nachmani, E., and Wolf, L. (2021).
+\newblock Noise estimation for generative diffusion models.
+\newblock {\em arXiv preprint arXiv:2104.02600}.
+
+\bibitem[Song et~al., 2020]{song2020denoising}
+Song, J., Meng, C., and Ermon, S. (2020).
+\newblock Denoising diffusion implicit models.
+\newblock {\em arXiv preprint arXiv:2010.02502}.
+
+\bibitem[Song and Ermon, 2019]{song2019generative}
+Song, Y. and Ermon, S. (2019).
+\newblock Generative modeling by estimating gradients of the data distribution.
+\newblock In {\em Advances in Neural Information Processing Systems}.
+
+\bibitem[Song and Ermon, 2020]{song2020improved}
+Song, Y. and Ermon, S. (2020).
+\newblock Improved techniques for training score-based generative models.
+\newblock In {\em Advances in Neural Information Processing Systems}.
+
+\bibitem[Song et~al., 2021]{song2020score}
+Song, Y., Sohl{-}Dickstein, J., Kingma, D.~P., Kumar, A., Ermon, S., and Poole,
+  B. (2021).
+\newblock Score-based generative modeling through stochastic differential
+  equations.
+\newblock In {\em International Conference on Learning Representations}.
+
+\bibitem[Vincent, 2011]{vincent2011connection}
+Vincent, P. (2011).
+\newblock A connection between score matching and denoising autoencoders.
+\newblock {\em Neural Computation}, 23(7):1661--1674.
+
+\bibitem[Wainwright and Simoncelli, 1999]{wainwright1999scale}
+Wainwright, M.~J. and Simoncelli, E. (1999).
+\newblock Scale mixtures of gaussians and the statistics of natural images.
+\newblock {\em Advances in neural information processing systems}, 12.
+
+\bibitem[Wilson, 1971]{wilson1971renormalization}
+Wilson, K.~G. (1971).
+\newblock Renormalization group and critical phenomena. ii. phase-space cell
+  analysis of critical behavior.
+\newblock {\em Physical Review B}, 4(9):3184.
+
+\bibitem[Wilson, 1983]{wilson1983renormalization}
+Wilson, K.~G. (1983).
+\newblock The renormalization group and critical phenomena.
+\newblock {\em Reviews of Modern Physics}, 55(3):583.
+
+\bibitem[Xiao et~al., 2021]{xiao2021tackling}
+Xiao, Z., Kreis, K., and Vahdat, A. (2021).
+\newblock Tackling the generative learning trilemma with denoising diffusion
+  gans.
+\newblock {\em arXiv preprint arXiv:2112.07804}.
+
+\bibitem[Yu et~al., 2020]{yu2020wavelet}
+Yu, J.~J., Derpanis, K.~G., and Brubaker, M.~A. (2020).
+\newblock Wavelet flow: Fast training of high resolution normalizing flows.
+\newblock {\em Advances in Neural Information Processing Systems},
+  33:6184--6196.
+
+\bibitem[Zhang and Chen, 2022]{zhang2022exponential}
+Zhang, Q. and Chen, Y. (2022).
+\newblock Fast sampling of diffusion models with exponential integrator.
+
+\end{thebibliography}

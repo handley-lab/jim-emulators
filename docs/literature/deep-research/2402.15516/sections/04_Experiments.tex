@@ -1,0 +1,201 @@
+\section{Evaluation}\label{sec:experiments}
+\subsection{Datasets and Metrics}
+
+
+For our experiments, we selected two widely used speech datasets, namely: 
+\begin{itemize} %[leftmargin=*]
+    \item \textit{LJ Speech dataset} \cite{ljspeech17}, a public collection of 13,100 short audio clips featuring a single speaker reading passages from 7 non-fiction books. %All the clips, along with their corresponding transcriptions, are available in the public domain. 
+    The duration of the clips ranges from 1 to 10 seconds, resulting in a total length of approximately 24 hours. The sampling frequency is $22050$ Hz. We employ $150$ files for testing and allocate the remainder for training.
+    \item \textit{Centre for Speech Technology Voice Cloning Toolkit (VCTK)} dataset \cite{Yamagishi2019CSTRVC}, a speech dataset spoken by 109 native English speakers representing various accents.
+    Each speaker was prompted to read approximately 400 sentences. % primarily sourced from a newspaper article. 
+    We resample the VCTK dataset at the same sample rate as LJ Speech.
+\end{itemize}
+For all datasets, we use an STFT with $2048$ FFT points, a hop size of $300$, and a Hann window of length $1200$.
+For the mel filterbank, $128$ filterbanks were considered with a lower frequency cutoff at $20$ Hz. The mel spectrograms were computed from the ground-truth audio.%: $\frac{\text{sample rate}}{2}$. 
+
+% \subsubsection{\textbf{Metrics}}
+The three metrics used for evaluation are: 
+\begin{itemize} %[leftmargin=*]
+    \item \textit{Perceptual Evaluation of Speech Quality (PESQ)} \cite{pesq},
+    a family of standards comprising a test methodology for automated assessment of speech quality as experienced by a user of a telephony system. 
+    \item \textit{Short Term Objective Intelligibility measure (STOI)} \cite{stoi}, a metric to predict intelligibility of (quite) noisy speech.% - not speech quality (which is typically evaluated in silence). 
+    \item \textit{WARP-Q} \cite{warpQ}, an objective speech quality metric based on a subsequence dynamic time warping (SDTW) algorithm which yields a raw quality score of the similarity between the ground truth and the generated speech signal.
+\end{itemize}
+
+
+\subsection{Methods}
+The four models considered for this evaluation include our GLA-Grad model and three baseline algorithms, namely WaveGrad, SpecGrad, and the original Griffin-Lim Algorithm (GLA) applied to the magnitude spectrogram obtained as pseudo-inverse of the conditioning mel spectrogram. % by approximately inverting the mel transform.
+We provide further implementation details on all four algorithms below.
+
+\textbf{WaveGrad:} We train and evaluate a WaveGrad Base model \cite{chen2020wavegrad}. The noise schedule is set to the WaveGrad 6-step schedule, which is denoted as WG-6 and specified as %[7e-6, 1.4e-4, 2.1e-3, 2.8e-2, 3.5e-1, 7e-1].  
+$[\num{7e-6}, \num{1.4E-4}, \num{2.1E-3}, \num{2.8E-2}, \num{3.5E-1}, \num{7E-1}]$. 
+This schedule is also employed and evaluated by SpecGrad \cite{koizumi2022specgrad}.
+The rest of the parameters (batch size, sample rate) are all set as given in \cite{chen2020wavegrad} for the original WaveGrad model. We also report results with the much longer 50-step inference schedule WG-50  \cite{chen2020wavegrad}, to investigate whether a longer reverse diffusion process can lead to better results, at the expense of speed. This latter model is referred to as WaveGrad-50 in the results.
+
+\textbf{SpecGrad:} For fair comparison, the same parameters as WaveGrad are used for training SpecGrad, and we keep the same noise-shaping parameters as in the original SpecGrad algorithm. 
+SpecGrad actually introduced conditioning information into the sampling process since the noise-shaping could be regarded as a reconstruction. 
+Its goal is thus somehow aligned with our approach for minimizing the conditioning error. The same WG-6 inference schedule is used, as in \cite{koizumi2022specgrad}.
+
+\textbf{Griffin-Lim Algorithm:} We employ the Fast Griffin-Lim Algorithm \cite{perraudin2013fast} for phase reconstruction, whose implementation is available in torchaudio. A total of 1000 iterations is used to estimate the phase and get the reconstructed signal. %as best as pure alternative projection based method could reach.
+
+\textbf{GLA-Grad}: GLA-Grad itself does not require training, and is built on top of a WaveGrad model trained as described above. The same WG-6 noise schedule %($[\num{7E-6}, \num{1.4E-4}, \num{2.1E-3}, \num{2.8E-2}, \num{3.5E-1}, \num{7E-1}]$) 
+is used in this experiment for comparing with WaveGrad and SpecGrad. We find that the alternative projection cannot keep correcting the signal in the entire reverse process. On the contrary, the projection may be harmful when the quality of the generated wave is high enough. Thus, we only apply the correction at the first $3$ reverse steps, then using the unmodified diffusion update for the remaining steps.
+A total of $K=32$ alternative projections are used in Eq.~\ref{eq:y_gla}  for the correction during each reverse step in the first phase.  %It is worth underlining that the total iteration is also much lower than the number of Griffin-Lim Algorithm iterations.
+% For all hyper-parameters (learning rate, batch size, etc.), we adopted the same values as those used in WaveGrad \cite{chen2020wavegrad}. 
+We use the pseudo-inverse of the mel matrix to convert mel spectrogram to magnitude STFT.
+%inverse implementation\footnote{\url{https://pytorch.org/audio/stable/transforms}} to convert mel spectrogram to magnitude STFT.
+
+Audio examples as well as the full code of our model released as open-source software are available on our demo page\footnote{\url{https://GLA-Grad.github.io/}}.
+ 
+\subsection{Experiments and discussion}
+
+We propose several experiments %regarding domain adaptation for speech generation, especially measuring different models' performance on generating the speech of unseen speakers. 
+with the objective to assess the performance and effectiveness of the proposed approach in addressing generation efficiency, in particular for speech generation of unseen speakers at training time. 
+
+\noindent We conducted experiments under three setups, training WaveGrad and SpecGrad and estimating all methods in each scenario:
+\begin{itemize}
+    \item \textit{Closed single speaker:} We train and evaluate on the LJ Speech Dataset, using the isolated validation set for test. 
+    \item \textit{Generalization from a single speaker:} The models trained on LJ Speech as above are evaluated on the VCTK multi-speaker dataset for testing the generalization capability of the model from a single speaker's data. We select 19 speakers from VCTK and use 150 utterances for evaluation.
+    \item \textit{Adaptation to new speakers:} We train and evaluate the models on VCTK, for further evaluating their domain adaption ability when given a larger variety of training data. The speech recordings of 19 Speakers (7400 utterances in total) are used as the training set, while we pick 150 utterances from the remaining 90 speakers for evaluation.
+\end{itemize}
+
+\begin{table}[t]
+\centering
+    \sisetup{
+    detect-weight, % Make siunitx detect align bold cells correctly
+    mode=text, % Make siuntix print tables in text mode (causes width of bold characters to be the same as non-bold)
+    tight-spacing=true,
+    round-mode=places,
+    round-precision=3,
+    table-format=1.3,
+    table-number-alignment=center
+    }    
+        \caption{Results when training and evaluating on LJ Speech}
+    \resizebox{0.97\columnwidth}{!}{
+    \begin{tabular}{l
+    S[round-precision=2,table-format=1.2]@{\,\( \pm \)\,}S[round-precision=2,table-format=1.2]
+    *{2}{S@{\,\( \pm \)\,}S}}
+    \toprule
+    {\bfseries Model} & \multicolumn{2}{c}{\bfseries PESQ ($\uparrow$)} & \multicolumn{2}{c}{\bfseries STOI ($\uparrow$)} & \multicolumn{2}{c}{\bfseries WARP-Q ($\downarrow$)}\\ \midrule
+        GLA-Grad & 3.460 & 0.112 & 0.963 & 0.005  &  1.677&0.076 \\ %pinv
+        WaveGrad  & 3.592&0.128 & 0.970&0.004 & 1.654 & 0.075\\
+        WaveGrad-50  & \bfseries 3.72&0.110 & \bfseries 0.978&0.004 & \bfseries 1.363&0.054 \\
+        SpecGrad  & 3.618&0.142 & 0.963&0.005 & 1.408 & 0.054\\
+        Griffin-lim  & 1.023&0.004 & 0.565&0.042 & 3.234 & 0.118\\
+    \bottomrule
+    \end{tabular}
+    }
+    \label{tab:Experiment1}
+\end{table}
+
+\begin{table}[t]
+   \centering
+       \sisetup{
+    detect-weight, % Make siunitx detect align bold cells correctly
+    mode=text, % Make siuntix print tables in text mode (causes width of bold characters to be the same as non-bold)
+    tight-spacing=true,
+    round-mode=places,
+    round-precision=3,
+    table-format=1.3,
+    table-number-alignment=center
+    }    
+     \caption{Results when training on LJ Speech and evaluating on 19 speakers of VCTK}
+    \resizebox{0.97\columnwidth}{!}{
+    \begin{tabular}{l
+    S[round-precision=2,table-format=1.2]@{\,\( \pm \)\,}S[round-precision=2,table-format=1.2]
+    *{2}{S@{\,\( \pm \)\,}S}}
+    \toprule
+    {\bfseries Model} & \multicolumn{2}{c}{\bfseries PESQ ($\uparrow$)} & \multicolumn{2}{c}{\bfseries STOI ($\uparrow$)} & \multicolumn{2}{c}{\bfseries WARP-Q ($\downarrow$)}\\ \midrule
+         GLA-Grad & \bfseries 2.734 & 0.283 &\bfseries 0.944&0.017  &  1.722&0.132 \\ %pinv
+         WaveGrad  & 2.076&0.310 & 0.873&0.035 & 1.913&0.128 \\
+         WaveGrad-50  & 1.997&0.293 & 0.670&0.111 & 2.122&0.411 \\
+         SpecGrad  & 2.481&0.380  & 0.812&0.066 & \bfseries 1.593&0.103\\
+         Griffin-lim & 1.036&0.013 & 0.522&0.098 & 3.411&0.164 \\
+    \bottomrule
+    \end{tabular}
+    }
+    \label{tab:Experiment2}
+\end{table}
+
+WaveGrad and SpecGrad slightly outperform GLA-Grad on LJ Speech (see Table \ref{tab:Experiment1}), which confirms their performance on speakers known at training time. In our experiments, we observed that the performance of our model varies with the number of GLA steps in inference, especially for the  % In the process of our tuning for experiments, we also find that the loss would be more intensive if we insist introducing more GLA steps into the inference process, especially 
+steps near $\mby_0$. An optimisation of this amount of GLA steps should help the model be more stable. Note though that GLA-Grad has the lowest standard deviation on PESQ, indicating a superior stability in output quality. %which is also validated in Tables \ref{tab:Experiment2} and \ref{tab:Experiment3}.
+
+When considering generalization from a single speaker, GLA-Grad outperforms both WaveGrad and SpecGrad (see Table \ref{tab:Experiment2}). SpecGrad outperforms other models on WARP-Q metric, while GLA-Grad has far higher score on PESQ and STOI. As in the closed speaker setup, %The result of stability of GLA-Grad is similar to experiment 1 
+GLA-Grad has the lowest standard deviation on both PESQ and STOI. It can be observed that the performance of WaveGrad and SpecGrad drops dramatically due to the external evaluation data set which includes more speakers, unseen at training, whereas GLA-Grad sees a much smaller decrease in performance.
+The results for adaptation to new speakers on VCTK, presented in Table \ref{tab:Experiment3}, show that GLA-Grad also outperforms other models for a larger unseen speaker set, and that its generalization capability is not limited to the extreme scenario where only data from a single speaker is used for training. 
+
+Looking at the results of the more computationally intensive WaveGrad-50 across the various settings, we see that it does improve performance in the closed single-speaker setting, but actually resulted in a significantly decreased performance in the open speaker settings, the longer inference process harming the generalization ability of the WaveGrad model.
+
+In summary, it can be noticed that, while WaveGrad and SpecGrad perform best in the closed single-speaker setting, %our model is not 
+% surpassing other models by a significant margin for experiment 1 %(see Table \ref{tab:Experiment1}), 
+GLA-Grad clearly outperforms all baselines in cross-domain situations where there exists important speaker differences between training and evaluation sets. 
+%(see Table \ref{tab:Experiment2} and \ref{tab:Experiment3}).
+This indicates that our Griffin-Lim corrected WaveGrad model exhibits stronger generalization performance to speakers who are unseen at training, without needing fine-tuning or modification to the training. 
+
+\begin{table}[t]
+\centering
+    \sisetup{
+    detect-weight, % Make siunitx detect align bold cells correctly
+    mode=text, % Make siuntix print tables in text mode (causes width of bold characters to be the same as non-bold)
+    tight-spacing=true,
+    round-mode=places,
+    round-precision=3,
+    table-format=1.3,
+    table-number-alignment=center
+    }    
+     \caption{Results when training on 19 speakers of VCTK and evaluating on 90 other speakers of VCTK}
+     \resizebox{0.97\columnwidth}{!}{
+    \begin{tabular} {l
+    S[round-precision=2,table-format=1.2]@{\,\( \pm \)\,}S[round-precision=2,table-format=1.2]
+    *{2}{S@{\,\( \pm \)\,}S}}
+    \toprule
+    {\bfseries Model} & \multicolumn{2}{c}{\bfseries PESQ ($\uparrow$)} & \multicolumn{2}{c}{\bfseries STOI ($\uparrow$)} & \multicolumn{2}{c}{\bfseries WARP-Q ($\downarrow$)}\\ \midrule
+         GLA-Grad & \bfseries 2.883&0.44 & \bfseries 0.856&0.081 & 1.520&1.102 \\ %pinv
+         WaveGrad  & 2.093&0.476 & 0.803&0.076 & 1.801&0.133 \\
+         WaveGrad-50  & 1.994&0.376 & 0.706&0.093 & 2.024&0.157 \\
+         SpecGrad  & 2.563&0.354 & 0.814&0.080 & \bfseries 1.492& 0.127 \\
+         Griffin-lim  & 1.036&0.019 &0.542&0.112 & 3.410&0.169\\
+    \bottomrule
+    \end{tabular}
+    }
+    \label{tab:Experiment3}
+\end{table}
+
+\subsection{Complexity}
+
+Table \ref{tab:ComplexityStudy} shows the inference speed compared to real-time evaluated with 150 utterances in our 3 setups on an NVIDIA A100 GPU. In terms of complexity, the proposed model is comparable in speed with SpecGrad on LJ Speech and somewhat slower on VCTK, while the difference with the baseline WaveGrad model is higher. The computation of the pseudo-inverse of the mel spectrogram accounts for a significant amount of the speed difference between the methods, while the extra Griffin-Lim steps performed at a given diffusion step are not that computationally intensive, and are in fact faster than the diffusion model sampling iteration itself. Adding these Griffin-Lim iterations in GLA-Grad does reduce speed, but it is both an effective and efficient way to improve performance, as adding more diffusion steps has a higher cost in terms of speed, while potentially leading to worse performance as shown in the results of WaveGrad-50.
+The proposed GLA-Grad thus provides a good trade-off between quality and inference speed.
+
+
+\begin{table}[t]
+\centering
+    \sisetup{
+    detect-weight, % Make siunitx detect align bold cells correctly
+    mode=text, % Make siuntix print tables in text mode (causes width of bold characters to be the same as non-bold)
+    tight-spacing=true,
+    round-mode=places,
+    round-precision=1,
+    table-format=2.1,
+    table-number-alignment=center
+    }
+    \caption{Inference speed compared to real-time ($\uparrow$)}
+    \setlength{\tabcolsep}{5pt}
+    \resizebox{0.97\columnwidth}{!}{
+    \begin{tabular}{l  *{3}{S}}
+    \toprule
+         {\bfseries Model} & 
+         {\bfseries LJ$\to$LJ} &
+         {\bfseries LJ$\to$VCTK} &
+         {\bfseries VCTK$\to$VCTK} \\ 
+    \midrule
+         GLA-Grad & 39.04 & 25.1 & 24.06\\ %pinv
+         WaveGrad  & \bfseries 54.28 & \bfseries 55.73 & \bfseries 56.05 \\
+         WaveGrad-50 & 7.28 & 7.45 & 7.46\\
+         SpecGrad & 40.51 & 42.71 & 43.29 \\
+         Griffin-lim & 26.35 & 11.62 & 10.81 \\
+    \bottomrule
+    \end{tabular}
+    }
+    \label{tab:ComplexityStudy}
+\end{table}
+

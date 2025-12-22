@@ -1,0 +1,241 @@
+\begin{thebibliography}{10}
+
+\bibitem{Abbott:2016blz}
+B.~Abbott et~al.
+\newblock {Observation of Gravitational Waves from a Binary Black Hole Merger}.
+\newblock {\em Phys. Rev. Lett.}, 116(6):061102, 2016.
+
+\bibitem{LIGOScientific:2018mvr}
+B.~Abbott et~al.
+\newblock {GWTC-1: A Gravitational-Wave Transient Catalog of Compact Binary
+  Mergers Observed by LIGO and Virgo during the First and Second Observing
+  Runs}.
+\newblock {\em Phys. Rev. X}, 9(3):031040, 2019.
+
+\bibitem{Abbott:2020niy}
+R.~Abbott et~al.
+\newblock {GWTC-2: Compact Binary Coalescences Observed by LIGO and Virgo
+  During the First Half of the Third Observing Run}.
+\newblock 10 2020.
+
+\bibitem{Ajith_2011}
+P.~Ajith, M.~Hannam, S.~Husa, Y.~Chen, B.~Brügmann, N.~Dorband, D.~Müller,
+  F.~Ohme, D.~Pollney, C.~Reisswig, and et~al.
+\newblock Inspiral-merger-ringdown waveforms for black-hole binaries with
+  nonprecessing spins.
+\newblock {\em Physical Review Letters}, 106(24), Jun 2011.
+
+\bibitem{Babak:2006uv}
+S.~Babak, H.~Fang, J.~R. Gair, K.~Glampedakis, and S.~A. Hughes.
+\newblock {'Kludge' gravitational waveforms for a test-body orbiting a Kerr
+  black hole}.
+\newblock {\em Phys. Rev. D}, 75:024005, 2007.
+\newblock [Erratum: Phys.Rev.D 77, 04990 (2008)].
+
+\bibitem{biwer2019pycbc}
+C.~M. Biwer, C.~D. Capano, S.~De, M.~Cabero, D.~A. Brown, A.~H. Nitz, and
+  V.~Raymond.
+\newblock Pycbc inference: A python-based parameter estimation toolkit for
+  compact binary coalescence signals.
+\newblock {\em Publications of the Astronomical Society of the Pacific},
+  131(996):024503, 2019.
+
+\bibitem{Blackman_2015}
+J.~Blackman, S.~E. Field, C.~R. Galley, B.~Szilágyi, M.~A. Scheel, M.~Tiglio,
+  and D.~A. Hemberger.
+\newblock Fast and accurate prediction of numerical relativity waveforms from
+  binary black hole coalescences using surrogate models.
+\newblock {\em Physical Review Letters}, 115(12), Sep 2015.
+
+\bibitem{Blanchet:2013haa}
+L.~Blanchet.
+\newblock {Gravitational Radiation from Post-Newtonian Sources and Inspiralling
+  Compact Binaries}.
+\newblock {\em Living Rev. Rel.}, 17:2, 2014.
+
+\bibitem{PhysRevD.59.084006}
+A.~Buonanno and T.~Damour.
+\newblock Effective one-body approach to general relativistic two-body
+  dynamics.
+\newblock {\em Phys. Rev. D}, 59:084006, Mar 1999.
+
+\bibitem{Buonanno_2000}
+A.~Buonanno and T.~Damour.
+\newblock Transition from inspiral to plunge in binary black hole coalescences.
+\newblock {\em Physical Review D}, 62(6), Aug 2000.
+
+\bibitem{Buonanno_2007}
+A.~Buonanno, Y.~Pan, J.~G. Baker, J.~Centrella, B.~J. Kelly, S.~T. McWilliams,
+  and J.~R. van Meter.
+\newblock Approaching faithful templates for nonspinning binary black holes
+  using the effective-one-body approach.
+\newblock {\em Physical Review D}, 76(10), Nov 2007.
+
+\bibitem{Carleo_2019}
+G.~Carleo, I.~Cirac, K.~Cranmer, L.~Daudet, M.~Schuld, N.~Tishby,
+  L.~Vogt-Maranto, and L.~Zdeborová.
+\newblock Machine learning and the physical sciences.
+\newblock {\em Reviews of Modern Physics}, 91(4), Dec 2019.
+
+\bibitem{Centrella:2010mx}
+J.~Centrella, J.~G. Baker, B.~J. Kelly, and J.~R. van Meter.
+\newblock {Black-hole binaries, gravitational waves, and numerical relativity}.
+\newblock {\em Rev. Mod. Phys.}, 82:3069, 2010.
+
+\bibitem{franoischollet2017learning}
+F.~Chollet.
+\newblock {\em Deep Learning with Python}.
+\newblock Manning, Nov. 2017.
+
+\bibitem{Einstein:1938yz}
+A.~Einstein, L.~Infeld, and B.~Hoffmann.
+\newblock {The Gravitational equations and the problem of motion}.
+\newblock {\em Annals Math.}, 39:65--100, 1938.
+
+\bibitem{gabbard2019bayesian}
+H.~Gabbard, C.~Messenger, I.~S. Heng, F.~Tonolini, and R.~Murray-Smith.
+\newblock Bayesian parameter estimation using conditional variational
+  autoencoders for gravitational-wave astronomy.
+\newblock {\em arXiv preprint arXiv:1909.06296}, 2019.
+
+\bibitem{GoodBengCour16}
+I.~J. Goodfellow, Y.~Bengio, and A.~Courville.
+\newblock {\em Deep Learning}.
+\newblock MIT Press, Cambridge, MA, USA, 2016.
+\newblock \url{http://www.deeplearningbook.org}.
+
+\bibitem{green2020complete}
+S.~R. Green and J.~Gair.
+\newblock Complete parameter inference for gw150914 using deep learning.
+\newblock {\em arXiv preprint arXiv:2008.03312}, 2020.
+
+\bibitem{Green:2020hst}
+S.~R. Green, C.~Simpson, and J.~Gair.
+\newblock {Gravitational-wave parameter estimation with autoregressive neural
+  network flows}.
+\newblock {\em Phys. Rev. D}, 102(10):104057, 2020.
+
+\bibitem{Hannam:2013oca}
+M.~Hannam, P.~Schmidt, A.~Boh\'e, L.~Haegel, S.~Husa, F.~Ohme, G.~Pratten, and
+  M.~P\"urrer.
+\newblock {Simple Model of Complete Precessing Black-Hole-Binary Gravitational
+  Waveforms}.
+\newblock {\em Phys. Rev. Lett.}, 113(15):151101, 2014.
+
+\bibitem{Hinder:2010vn}
+I.~Hinder.
+\newblock {The Current Status of Binary Black Hole Simulations in Numerical
+  Relativity}.
+\newblock {\em Class. Quant. Grav.}, 27:114004, 2010.
+
+\bibitem{10.5555/2987189.2987190}
+G.~E. Hinton and R.~S. Zemel.
+\newblock Autoencoders, minimum description length and helmholtz free energy.
+\newblock In {\em Proceedings of the 6th International Conference on Neural
+  Information Processing Systems}, NIPS'93, page 3–10, San Francisco, CA,
+  USA, 1993. Morgan Kaufmann Publishers Inc.
+
+\bibitem{Khan:2018fmp}
+S.~Khan, K.~Chatziioannou, M.~Hannam, and F.~Ohme.
+\newblock {Phenomenological model for the gravitational-wave signal from
+  precessing binary black holes with two-spin effects}.
+\newblock {\em Phys. Rev. D}, 100(2):024059, 2019.
+
+\bibitem{kingma2019introduction}
+D.~P. Kingma and M.~Welling.
+\newblock An introduction to variational autoencoders.
+\newblock {\em arXiv preprint arXiv:1906.02691}, 2019.
+
+\bibitem{Kokkotas_1999}
+K.~D. Kokkotas and B.~G. Schmidt.
+\newblock Quasi-normal modes of stars and black holes.
+\newblock {\em Living Reviews in Relativity}, 2(1), Sep 1999.
+
+\bibitem{Lee:2021isa}
+J.~Lee, S.~H. Oh, K.~Kim, G.~Cho, J.~J. Oh, E.~J. Son, and H.~M. Lee.
+\newblock {Deep Learning Model on Gravitational Waveforms in Merging and
+  Ringdown Phases of Binary Black Hole Coalescences}.
+\newblock 1 2021.
+
+\bibitem{Loffler:2011ay}
+F.~Loffler et~al.
+\newblock {The Einstein Toolkit: A Community Computational Infrastructure for
+  Relativistic Astrophysics}.
+\newblock {\em Class. Quant. Grav.}, 29:115001, 2012.
+
+\bibitem{nguyen2017plug}
+A.~Nguyen, J.~Clune, Y.~Bengio, A.~Dosovitskiy, and J.~Yosinski.
+\newblock Plug \& play generative networks: Conditional iterative generation of
+  images in latent space, 2017.
+
+\bibitem{Nollert:1999ji}
+H.-P. Nollert.
+\newblock {TOPICAL REVIEW: Quasinormal modes: the characteristic `sound' of
+  black holes and neutron stars}.
+\newblock {\em Class. Quant. Grav.}, 16:R159--R216, 1999.
+
+\bibitem{Owen_1996}
+B.~J. Owen.
+\newblock Search templates for gravitational waves from inspiraling binaries:
+  Choice of template spacing.
+\newblock {\em Physical Review D}, 53(12):6749–6761, Jun 1996.
+
+\bibitem{Owen_1999}
+B.~J. Owen and B.~S. Sathyaprakash.
+\newblock Matched filtering of gravitational waves from inspiraling compact
+  binaries: Computational cost and template placement.
+\newblock {\em Physical Review D}, 60(2), Jun 1999.
+
+\bibitem{Pan_2011}
+Y.~Pan, A.~Buonanno, M.~Boyle, L.~T. Buchman, L.~E. Kidder, H.~P. Pfeiffer, and
+  M.~A. Scheel.
+\newblock Inspiral-merger-ringdown multipolar waveforms of nonspinning
+  black-hole binaries using the effective-one-body formalism.
+\newblock {\em Physical Review D}, 84(12), Dec 2011.
+
+\bibitem{Pfeiffer_2012}
+H.~P. Pfeiffer.
+\newblock Numerical simulations of compact object binaries.
+\newblock {\em Classical and Quantum Gravity}, 29(12):124004, Jun 2012.
+
+\bibitem{P_rrer_2016}
+M.~Pürrer.
+\newblock Frequency domain reduced order model of aligned-spin
+  effective-one-body waveforms with generic mass ratios and spins.
+\newblock {\em Physical Review D}, 93(6), Mar 2016.
+
+\bibitem{schutz_1991}
+B.~F. Schutz.
+\newblock {\em Data processing, analysis, and storage for interferometric
+  antennas}, page 406–452.
+\newblock Cambridge University Press, 1991.
+
+\bibitem{Sohn2015LearningSO}
+K.~Sohn, H.~Lee, and X.~Yan.
+\newblock Learning structured output representation using deep conditional
+  generative models.
+\newblock In {\em NIPS}, 2015.
+
+\bibitem{tonolini2020variational}
+F.~Tonolini, J.~Radford, A.~Turpin, D.~Faccio, and R.~Murray-Smith.
+\newblock Variational inference for computational imaging inverse problems,
+  2020.
+
+\bibitem{veitch2015parameter}
+J.~Veitch, V.~Raymond, B.~Farr, W.~Farr, P.~Graff, S.~Vitale, B.~Aylott,
+  K.~Blackburn, N.~Christensen, M.~Coughlin, et~al.
+\newblock Parameter estimation for compact binaries with ground-based
+  gravitational-wave observations using the lalinference software library.
+\newblock {\em Physical Review D}, 91(4):042003, 2015.
+
+\bibitem{Williams_2020}
+D.~Williams, I.~Heng, J.~Gair, J.~Clark, and B.~Khamesra.
+\newblock Precessing numerical relativity waveform surrogate model for binary
+  black holes: A gaussian process regression approach.
+\newblock {\em Physical Review D}, 101(6), Mar 2020.
+
+\bibitem{yu2020tutorial}
+R.~Yu.
+\newblock A tutorial on vaes: From bayes' rule to lossless compression, 2020.
+
+\end{thebibliography}

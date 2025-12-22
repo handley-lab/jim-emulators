@@ -1,0 +1,351 @@
+
+\documentclass[aps,prl,twocolumn,nofootinbib,longbibliography,amsfonts,amssymb,amsmath,superscriptaddress]{revtex4-2}
+\usepackage[T1]{fontenc}
+\usepackage[dvipsnames, table]{xcolor}
+\usepackage{IEEEtrantools}
+\usepackage{mathrsfs}
+\usepackage{amsthm}
+\usepackage{enumitem}
+\usepackage{varwidth}
+\usepackage[normalem]{ulem}
+\usepackage{graphicx}
+\usepackage{stackengine}
+\usepackage{cprotect}
+\usepackage[caption=false]{subfig}
+\captionsetup[subfloat]{font={bf,small}, labelformat=empty, position=top, captionskip=0mm, farskip=0mm, topadjust=0mm, nearskip=0mm}
+\usepackage{multirow}
+\usepackage[USenglish]{babel}
+\usepackage{microtype}
+\usepackage{xspace}
+
+% Physics packages
+\usepackage{siunitx}
+\sisetup{
+  detect-all,
+  output-decimal-marker={.},
+  group-separator={\,},
+  group-minimum-digits=4,
+  table-align-text-post=false,
+  table-number-alignment=center
+}
+
+% Table packages
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{csvsimple}
+\usepackage{xstring}
+\usepackage[pdftex,colorlinks=true,allcolors=maxperc]{hyperref}
+%%%%%%%%%%%%% COLORED TABLE CODE %%%%%%%%%%%%
+% Colored table code based on a combination of https://tex.stackexchange.com/questions/236274/tabularx-or-tabulary-populated-by-csvsimple
+% and https://tex.stackexchange.com/questions/174998/are-there-an-easy-way-to-coloring-tables-depending-on-the-value-in-each-cell
+% which is in turn based partially on https://www.siavoosh.com/blog/2019/01/05/latex-table-cell-coloring-based-on-values-in-the-cell/#respond
+%======================================
+% Packages
+%\usepackage[table]{xcolor}
+\usepackage{etoolbox}
+\usepackage{pgf} % for calculating the values for gradient
+%======================================
+% Color set related
+%% Red -- Blue gradient from https://www.nceas.ucsb.edu/sites/default/files/2022-06/Colorblind%20Safe%20Color%20Schemes.pdf
+\definecolor{maxperc}{HTML}{1065AB} % blue1 % R 016 G 101 B 171
+\definecolor{blue2}{HTML}{3A93C3} % blue2 % R 058 G 147 B 195
+\definecolor{five_perc}{HTML}{8EC4DE} %blue3 % R 142 G 196 B 222
+\definecolor{blue4}{HTML}{D1E5F0} % blue4 % R 209 G 229 B 240
+\definecolor{one_perc}{HTML}{F9F9F9} % grayish1 % R 249 G 249 B 249
+\definecolor{peach1}{HTML}{FEDBC7} % peach1 % R 254 G 219 B 199
+\definecolor{towards_one_perc}{HTML}{F6A482}  % peach2 % R 246 G 164 B 130
+\definecolor{red1}{HTML}{D75F4C} % red1 % R 215 G 095 B 076
+\definecolor{zero_perc}{HTML}{B31529} % red2   % R 179 G 021 B 041
+
+\newcommand*{\opacity}{40}% change the opacity of background color
+
+%======================================
+% Data set related: Color transition values
+\newcommand*{\minval}{0.0}     % Worst value
+\newcommand*{\valA}{0.8}       % Still bad
+\newcommand*{\valB}{1.0}      % Okay value
+\newcommand*{\valC}{5.0}      % Good value
+\newcommand*{\maxval}{70.0}    % Highest value
+%======================================
+% Gradient function with intermediate colors
+\newcommand{\gradient}[1]{%
+    \pgfmathsetmacro{\value}{#1}%
+    % Clamp to range
+    \pgfmathsetmacro{\value}{min(max(\value,\minval),\maxval)}%
+
+    \ifdim\value pt<\valA pt
+        \pgfmathsetmacro{\pctraw}{100*(\value - \minval)/(\valA - \minval)}%
+        \pgfmathparse{int(round(\pctraw))}%
+        \edef\colorcmd{\noexpand\cellcolor{towards_one_perc!\pgfmathresult!zero_perc!\opacity}}%
+
+    \else\ifdim\value pt<\valB pt
+        \pgfmathsetmacro{\pctraw}{100*(\value - \valA)/(\valB - \valA)}%
+        \pgfmathparse{int(round(\pctraw))}%
+        \edef\colorcmd{\noexpand\cellcolor{one_perc!\pgfmathresult!towards_one_perc!\opacity}}%
+
+    \else\ifdim\value pt<\valC pt
+        \pgfmathsetmacro{\pctraw}{100*(\value - \valB)/(\valC - \valB)}%
+        \pgfmathparse{int(round(\pctraw))}%
+        \edef\colorcmd{\noexpand\cellcolor{five_perc!\pgfmathresult!one_perc!\opacity}}%
+
+    \else
+        \pgfmathsetmacro{\pctraw}{100*(\value - \valC)/(\maxval - \valC)}%
+        \pgfmathparse{int(round(\pctraw))}%
+        \edef\colorcmd{\noexpand\cellcolor{maxperc!\pgfmathresult!five_perc!\opacity}}%
+    \fi\fi\fi
+
+    \colorcmd\rule{0pt}{2.5ex}\hspace{4pt}#1~\%\hspace{3pt}
+}
+%%%%%%%%%%%%% END COLORED TABLE CODE %%%%%%%%%%%%
+
+\newcommand{\dingo}{\textsc{Dingo}\xspace}
+\newcommand{\dingoT}{\mbox{\textsc{Dingo-T1}}\xspace}
+\renewcommand{\sec}[1]{\emph{#1.---}}
+
+%%%% The following commands can be removed after editing:
+\newcommand{\mdax}[1]{\textcolor{red}{[Max: #1]}}
+\newcommand{\ak}[1]{\textcolor{maxperc}{[Annalena: #1]}}
+\newcommand{\todo}[1]{\textcolor{maxperc}{[TODO: #1]}}
+
+\begin{document}
+
+\title{Flexible Gravitational-Wave Parameter Estimation with Transformers}
+
+\author{Annalena Kofler}
+\email{annalena.kofler@tuebingen.mpg.de}
+\affiliation{Max Planck Institute for Intelligent Systems, Max-Planck-Ring 4, 72076 T\"ubingen, Germany}
+\affiliation{Max Planck Institute for Gravitational Physics (Albert Einstein Institute), Am M\"uhlenberg 1, 14476 Potsdam, Germany}
+
+\author{Maximilian Dax}
+\affiliation{Max Planck Institute for Intelligent Systems, Max-Planck-Ring 4, 72076 T\"ubingen, Germany}
+\affiliation{ELLIS Institute T\"ubingen, Maria-von-Linden-Straße 2, 72076 T\"ubingen, Germany}
+\affiliation{T\"ubingen AI Center, Maria-von-Linden-Straße 1, 72076 T\"ubingen, Germany}
+
+\author{Stephen R. Green}
+\affiliation{Nottingham Centre of Gravity \& School of Mathematical Sciences, University of Nottingham, University Park, Nottingham, NG7 2RD, United Kingdom}
+
+\author{Jonas Wildberger}
+\affiliation{ELLIS Institute T\"ubingen, Maria-von-Linden-Straße 2, 72076 T\"ubingen, Germany}
+
+\author{Nihar Gupte}
+\affiliation{Max Planck Institute for Gravitational Physics (Albert Einstein Institute), Am M\"uhlenberg 1, 14476 Potsdam, Germany}
+\affiliation{Department of Physics, University of Maryland, College Park, MD 20742, USA}
+
+\author{Jakob H. Macke}
+\affiliation{Max Planck Institute for Intelligent Systems, Max-Planck-Ring 4, 72076 T\"ubingen, Germany}
+\affiliation{Machine Learning in Science, University of T\"ubingen \& T\"ubingen AI Center, 72076 T\"ubingen, Germany}
+
+\author{Jonathan Gair}
+\affiliation{Max Planck Institute for Gravitational Physics (Albert Einstein Institute), Am M\"uhlenberg 1, 14476 Potsdam, Germany}
+
+\author{Alessandra Buonanno}
+\affiliation{Max Planck Institute for Gravitational Physics (Albert Einstein Institute), Am M\"uhlenberg 1, 14476 Potsdam, Germany}
+\affiliation{Department of Physics, University of Maryland, College Park, MD 20742, USA}
+
+\author{Bernhard Schölkopf}
+\affiliation{Max Planck Institute for Intelligent Systems, Max-Planck-Ring 4, 72076 T\"ubingen, Germany}
+\affiliation{ELLIS Institute T\"ubingen, Maria-von-Linden-Straße 2, 72076 T\"ubingen, Germany}
+
+\begin{abstract}
+    Gravitational-wave data analysis relies on accurate and efficient methods to extract physical information from noisy detector signals, yet the increasing rate and complexity of observations represent a growing challenge. 
+    Deep learning provides a powerful alternative to traditional inference, but existing neural models typically lack the flexibility to handle variations in data analysis settings.
+    Such variations accommodate imperfect observations or are required for specialized tests, and could include changes in detector configurations, overall frequency ranges, or localized cuts. 
+    We introduce a flexible transformer-based architecture paired with a training strategy that enables adaptation to diverse analysis settings at inference time. 
+    Applied to parameter estimation, we demonstrate that a \emph{single} flexible model---called \dingoT---can (i)~analyze 48 gravitational-wave events from the third LIGO-Virgo-KAGRA Observing Run under a wide range of analysis configurations, (ii)~enable systematic studies of how detector and frequency configurations impact inferred posteriors, and (iii)~perform inspiral-merger-ringdown consistency tests probing general relativity. 
+    \dingoT also improves median sample efficiency on real events from a baseline of 1.4\% to 4.2\%. Our approach thus demonstrates flexible and scalable inference with a principled framework for handling missing or incomplete data---key capabilities for current and next-generation observatories.
+\end{abstract}
+
+\maketitle 
+
+
+\sec{Introduction}Gravitational waves~(GWs) provide unique access to the strong-field dynamics of compact objects and have transformed our ability to probe astrophysics, cosmology, and fundamental physics~\cite{GBM:2017lvd, lvk_gw170817:2018, lvk_gwtc3_populations:2023, lvk_gwtc3_tests_gr:2025, lvk_gwtc3_expansion:2023, lvk_gwtc4_populations:2025,  lvk_spec_tests_gr_gw250114:2025, lvk_gwtc4_expansion:2025}. 
+Drawing scientific conclusions from GW~observations requires accurate and efficient data analysis, yet conventional Bayesian techniques~\cite{ashton:2018,ashton_bilby:2021} are computationally expensive and difficult to scale to the growing volume and complexity of data. 
+Machine learning offers a promising solution by leveraging neural networks to process strain data and predict physical quantities, and has seen applications to detection~\cite{gebhard:2019, Marx:2024wjt, Koloniari:2024kww}, noise classification~\cite{Razzano:2018fxb}, source localization~\cite{Chatterjee:2022ggk, Chatterjee:2022dik}, and parameter estimation~(PE)~\cite{Gabbard:2019rde, Chua:2019wwt, green_anf:2020, green_full_npe:2020, Delaunoy:2020zcu, dax_dingo:2021, dax_is:2022, Bhardwaj:2023xph, Chatterjee:2024pbj, dax_bns:2025, vanStraalen:2024xiq}. 
+For PE, neural simulation-based inference~(SBI, \cite{cranmer_sbi:2020}) has reduced analysis times to the order of a few seconds---crucial for handling increased event rates~\cite{ligo_gwtc-21:2024,ligo_gwtc-3:2023} and enabling rapid multi-messenger follow-up~\cite{GBM:2017lvd}.
+
+This speed-up arises from front-loading computational costs: once trained on millions of simulated data sets, neural networks can analyze new observations at negligible expense. 
+However, conventional neural architectures operate on a fixed input dimension, requiring the data representation to be fixed prior to training. 
+A trained model is therefore tied to specific detector combinations and data-conditioning settings---a major barrier to widespread adoption. 
+Existing models cannot readily adapt to detectors being offline, to restricted frequency bands used to mitigate noise contamination, or to data gaps expected in LISA observations~\cite{burke:2025}.
+
+In this \emph{Letter}, we propose a neural architecture and training strategy that enable flexible analysis of heterogeneous GW~data. 
+The key idea is to process strain data using a transformer encoder and exploit its ability to handle input sequences of arbitrary length~\citep{vaswani:2017}. 
+We partition data sets into sequences of short strain segments called tokens, and randomly drop tokens during training to mimic frequency cuts and missing detectors. 
+Through the self-attention mechanism, the model learns to identify correlations between strain segments, capturing global dependencies across detectors and frequencies, and to marginalize over missing data. 
+Although transformers have been used for a range of GW~tasks~\citep{jiang:2022, shi:2024, wang_waveformer:2024, chatterjee:2024, khalouei:2025, joshi:2025, papalini:2025}, previous work has not leveraged their inherent flexibility in handling variable-length or incomplete data. 
+Our approach is inspired by works on missing data in SBI~\citep{shukla:2021, wang_missing_data:2024, gloeckler:2024, verma:2025}.
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig_01.pdf}
+    \caption{Overview of \dingoT. After multibanding, data and detector PSD segments~$(d^{(k)}, S_n^{(k)})$ are mapped by a shared tokenizer into tokens that also encode the frequency range~$(f^{(k)}, f^{(k+1)})$ and detector identity~$I$. The sequence of tokens is masked, augmented with a learnable summary token, and processed by the transformer encoder. Through self-attention, the summary token aggregates information from all unmasked segments. The final summary token is projected via a linear layer to a 128-dimensional feature vector, which conditions a normalizing flow to model the posterior $p(\theta|d, S_\mathrm{n})$ over source parameters.}
+    \label{fig:architecture}
+\end{figure*}
+
+We integrate the transformer encoder into the \dingo framework for GW~PE, yielding a flexible model that we call \dingoT~(\dingo~Transformer, version~1; see Fig.~\ref{fig:architecture}). We demonstrate its versatility and performance through injection studies and analyses of real data. 
+In particular, we reanalyze 48~events from the LIGO-Virgo-KAGRA (LVK)~\cite{ligo:2014,virgo:2014,kagra:2020} third observing run~(O3)~\citep{ligo_gwtc-21:2024, ligo_gwtc-3:2023, ligo_data_release_gwtc21_zenodo:2022, ligo_data_release_gwtc3_zenodo:2021}, spanning 17~combinations of detectors and frequency ranges, with a single network. 
+Compared to baseline neural posterior estimation~(NPE) networks with residual network encoders~\citep{dax_dingo:2021}, \dingoT improves median importance sampling efficiency from 1.4\% to 4.2\%. 
+We further analyze all events using all possible LIGO-Virgo detector combinations. 
+Such studies are extremely costly for standard methods, but can be used to identify data systematics. 
+As a final demonstration, we use frequency cuts to perform inspiral-merger-ringdown consistency tests on seven events. Previously, conducting all of these experiments would have required training 94~different models to handle the disparate settings.
+% 7 (injections) + 65 (events all det configs) + 7*2 (IMRC different events) + 4*2 (IMRC different f_cuts) = 94
+
+Our study thus represents a step towards generalized inference models in GW~astronomy, enabling flexible choice of detector and frequency settings without retraining. 
+This flexibility opens new prospects for analyzing large catalogs~\cite{ligo_gwtc-21:2024,ligo_gwtc-3:2023}, facilitating rapid assessments of systematics and consistency across diverse data-analysis settings~\cite{payne:2022, udall:2025}, as well as more robust approaches to missing data.
+In addition, our transformer model \dingoT\footnote{Weights for \dingoT and \dingo baseline~\citep{kofler_dingoT_zenodo}, as well as corresponding code are publicly available: \href{https://github.com/dingo-gw/dingo-T1}{https://github.com/dingo-gw/dingo-T1}. The model was trained taking~\citep{talbot_window_fix:2025} into account.} serves as a powerful and general encoder for GW~data which could be fine-tuned on other tasks such as GW~detection, providing a foundation for efficient and scalable GW~science.
+
+\sec{Architecture}For NPE~\cite{papamakarios:2016, lueckmann:2017, greenberg_lfi:2019}, one trains a neural network $q(\theta|d)$ to estimate the Bayesian posterior~$p(\theta|d)$ over parameters~$\theta$ given data~$d$. 
+In the context of GW single-event inference, $\theta$ denotes the source parameters, e.g., of a black hole binary, and $d$ denotes the strain data measured at the detectors~\cite{LIGOScientific:2019hgc}. 
+For \dingo, we also augment the strain data with an estimate of the noise power spectral density~(PSD), which varies from event to event~\cite{dax_dingo:2021}. 
+Data are generally of high dimension \mbox{($\gg 10^4$)}, so $d$~is first mapped by an embedding network~$f_{\phi}$ to a lower-dimensional representation. This compressed summary is then passed to a density estimator~$\hat{q}_{\varphi}$ to model the posterior, $q(\theta|d)=\hat{q}_{\varphi}(\theta|f_{\phi}(d))$.
+The learnable parameters $\{\phi,\varphi\}$ are optimized jointly during training.
+
+Our core architectural change is to replace the traditional embedding network with a transformer encoder (Fig.~\ref{fig:architecture}), which naturally handles sequences of variable length. We divide the strain data sets into small segments, which a tokenizer network maps to token embeddings (Fig.~\ref{fig:architecture} left). These embeddings form a sequence that the transformer encoder processes. 
+We now describe the tokenization scheme, model architecture, and training strategy; full technical details appear in the Supplemental Material.
+
+We represent GW data $d = \{d_I\}_{I=\mathrm{H,L,V}}$ as frequency series from the Hanford~(H), Livingston~(L), and Virgo~(V) detectors. 
+We use a multi-banded (non-uniform) frequency grid, with coarser resolution at higher frequencies, designed to capture the chirping morphology of GW signals, and achieve an initial compression of the data~\citep{vinciguerra_mb:2017,morisaki:2021,dax_bns:2025}. To tokenize, we partition the grid into $K$ equal-length segments with boundary nodes $(f^{(k)})_{k=0}^{K+1}$, such that each interval $\big(f^{(k)}, f^{(k+1)}\big)$ has a uniform frequency grid (Fig.~\ref{fig:architecture}, vertical gray lines).
+The data~$d_I$ and PSD~$S_{\mathrm{n},I}$ are processed identically for each detector, yielding $3K$ segments $\big(d_I^{(k)}, S_{\mathrm{n},I}^{(k)}\big)$, each containing 16~frequency bins. % ($K=69$ segments per detector).
+
+Each data segment is converted into a token embedding $ t\big(d_I^{(k)}, S_{\mathrm{n},I}^{(k)}, f^{(k)}, f^{(k+1)}, I\big)$ by a shared tokenizer network~$t$ (see Fig.~\ref{fig:architecture}, bottom left).
+Transformer-based architectures are invariant under token permutations, so conditioning tokens on frequency range and detector identity is necessary for interpreting each segment~\citep{dauphin_glu:2017}. 
+Finally, we append one additional learnable summary token to the sequence so that the model has a dedicated place to store relevant information extracted across tokens~\citep{devlin:2019, darcet_registers:2024}.
+
+The full token sequence is passed to a transformer encoder~\citep{vaswani:2017, wang:2019, xiong:2020}, which extracts information relevant for parameter estimation. After the final transformer layer, we compress the summary token to a 128-dimensional feature vector, which conditions a normalizing flow with a rational-quadratic spline coupling transform~\citep{durkan_nsf:2019}, using the same hyperparameters as in~\citep{dax_is:2022}.
+% \looseness=-1
+
+\sec{Training}We train the \dingoT model---the tokenizer, transformer encoder, and normalizing flow---end-to-end using a negative log likelihood loss. 
+To enable inference under missing data, we mask tokens randomly during training~\citep{cheng_mask2former:2021}. 
+This has the effect of dropping segments of data, so that the network learns to interpret inputs with missing data. %marginalize over this missing data. 
+By applying a token mask~$m$ %Letting $m$ denote a token mask that we apply 
+to $(d, S_\mathrm{n})$, our loss takes the form
+\begin{equation}
+    \mathcal{L} =  \mathbb{E}_{p(\theta)p(S_n)p(d|\theta, S_\mathrm{n})p(m)}\left[ - \log q\left(\theta| m(d), m(S_n)\right)\right],
+\end{equation}
+where $p(m)$ denotes the probability of sampling mask $m$.
+
+We employ a data-based approach to masking, i.e., we choose $p(m)$ to reflect realistic variations in data analysis settings. 
+This includes dropping all tokens corresponding to certain detectors, removing tokens to update minimum and maximum frequencies, and applying random cuts within the frequency range. 
+We also compare to a masking strategy where tokens are dropped uniformly at random, but find that the data-based approach gives better performance. (See the Supplemental Material for complete details on masking.)
+
+We train on simulated data consisting of waveforms generated from the IMRPhenomXPHM model~\citep{pratten_imrphenomxphm:2021} with additive stationary Gaussian noise. 
+Our dataset includes $2.5\cdot 10^7$ intrinsic waveforms, with extrinsic parameters generated on-the-fly during training. 
+Priors are the same as \citep{dax_is:2022}, except for the luminosity distance, which we take as uniform over the range $[0.1, 6]~\mathrm{Gpc}$; we infer all parameters except for the phase, which is reconstructed in post-processing~\cite{dax_dingo:2021}. 
+We generate noise during training based on a collection of Welch PSDs estimated across O3~\citep{dax_dingo:2021}. 
+Models are trained on 8~NVIDIA-A100 GPUs using distributed data parallelization~\citep{loshchilov_adamw:2018, micikevicius_amp:2018} which takes approximately 9.5~days (183~epochs) for \dingoT.
+
+At inference time, we only include tokens corresponding to available data that we wish to analyze, omitting those associated with missing information (e.g., a non-observing detector or masked frequency ranges). 
+To validate and correct the resulting posterior, we apply importance sampling~(IS)~\citep{dax_is:2022}, reweighting samples from $q(\theta | d, S_n)$ to the exact posterior defined by the ranges of the original uniform-frequency data.
+Due to variance in the distribution of importance weights, the effective number of weighted samples is smaller than the number of unweighted samples. 
+This ratio (the sample efficiency) serves as a performance metric.
+
+\begin{figure}[t]
+    \vspace*{.1cm}
+    \subfloat{
+    \stackinset{l}{0cm}{t}{-0.1cm}{\textbf{a~~Simulated events}}{
+        \stackinset{l}{0cm}{t}{3.7cm}{\textbf{b~~Real data}}{
+        \hspace*{-0.2cm}\includegraphics[width=\columnwidth]{figures/fig_02.pdf}
+        }
+    }
+    }
+    \caption{(a)~Sample efficiency distribution of 1000 simulated events per detector configuration for the \dingoT model, shown as violin plots.
+    (b)~Sample efficiency distribution of \dingoT and the \dingo baseline across 48~real GW~events. Dots denote 3-detector events, while circles refer to 2-detector events which cannot be analyzed with the unflexible \dingo baseline. 
+    The dashed line represents the median, the dotted lines the quartiles. The efficiencies between simulated~(a) and real data~(b) are not directly comparable since the parameters are drawn from different distributions.
+    \looseness=-1
+    }
+    \label{fig:efficiency_injections_events}
+\end{figure}
+
+\sec{Results}We first evaluate \dingoT on 1000~\emph{simulated} GW~signals for each subset of the three detectors~HLV, with injections performed over the full frequency range.
+For each injection, we generate $10^5$ posterior samples and perform~IS. 
+Initial sampling takes under five seconds, with phase reconstruction and IS requiring an additional five to ten minutes on 64~CPU cores. 
+Median efficiencies are 26.9\%, 6.8\%, and 3.3\% for \mbox{one-,} two-, and three-detector configurations, respectively (Fig.~\ref{fig:efficiency_injections_events}a). 
+Efficiencies decrease as more detectors are included, consistent with expectations: posteriors constrained by more detectors are narrower and therefore more challenging to learn for normalizing flows.
+To show that \dingoT is well calibrated, we provide \mbox{P--P~plots} for each detector configuration and additional information in the Supplemental Material.
+
+\begin{figure*}[t]
+    \begin{minipage}[t]{.48\textwidth}
+    \subfloat{
+        \stackinset{l}{0cm}{t}{0cm}{\textbf{a}}{
+        \stackinset{l}{3cm}{t}{0cm}{ GW190701\_203306}{% <-- small text
+        \stackinset{l}{2.8cm}{t}{0.16cm}{%
+            \includegraphics[width=0.28\textwidth]{figures/fig_03a_label.pdf}%
+        }{% first image overlay
+        \stackinset{l}{4.8cm}{t}{0.2cm}{%
+            \includegraphics[width=0.4\textwidth]{figures/fig_03a_skymap.pdf}%
+        }{% second image overlay
+            \includegraphics[width=\textwidth]{figures/fig_03a_corner.pdf}%
+        }}}}
+        }
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{.48\textwidth}
+        \subfloat{
+            \stackinset{l}{0.0cm}{t}{-0.2cm}{\textbf{b}}{
+            \includegraphics[width=\textwidth]{figures/fig_03b.pdf}
+            }
+        }
+    \end{minipage} 
+    \caption{(a) Posterior distribution for \mbox{GW190701\_203306}, showing \dingoT analyses for three different detector configurations.
+    (b) Inspiral-merger-ringdown consistency tests for seven events where the signal was analyzed with the \dingoT model on the inspiral and postinspiral part of the signal. The main panel shows the 90\% credible regions of the 2D posteriors on $(\Delta M_f / \overline{M}_f, \Delta \chi_f / \overline{\chi}_f)$ and the side panels show the marginalized posteriors.
+    The color corresponds to the median redshifted total mass obtained from posterior samples of the full signal.
+    } 
+    \label{fig:results_flexible_model}
+\end{figure*}
+
+Second, we evaluate \dingoT on all events from~O3 that fall within our prior, employing the specific data analysis settings from the official catalogs~\citep{ligo_gwtc-21:2024, ligo_gwtc-3:2023}.
+For each event, we obtain posterior samples as above and summarize sample efficiencies in Fig.~\ref{fig:efficiency_injections_events}b.
+Across the 48~events, we find a median efficiency of 4.2\%; 2-detector events perform slightly better at 4.5\%, while 3-detector events reach 4.2\%. 
+This outperforms a baseline \dingo NPE model trained for fixed data analysis settings, which obtains a median efficiency of 1.4\% across 30~HLV events evaluated on the full frequency range. 
+In general, sample efficiencies of real data (in contrast to injections) can be negatively impacted by misspecification of the signal and noise model. 
+
+It should be noted that our results are not directly comparable to past work~\cite{dax_is:2022} by some of us, which reported $\sim\!10\%$ median efficiency on O3~events. 
+That study performed HL~analyses only; when restricting to HL~detectors we find 11\% median efficiency with \dingoT (see Supplemental Material). Ref.~\cite{dax_is:2022} also incorrectly accounted for the window factor in the likelihood, likely resulting in lower efficiencies~\cite{talbot_window_fix:2025}. 
+More importantly, Ref.~\cite{dax_is:2022} used \emph{group-equivariant} NPE (GNPE,~\cite{dax_dingo:2021,dax_gnpe:2021}), an algorithm which simplifies data representations by iteratively aligning merger times in each detector.
+GNPE improves accuracy, but results in substantially longer analysis times as it breaks access to the probability density. 
+\dingoT is based on standard NPE, making inference faster and simpler.
+\looseness=-1
+
+\sec{Applications}To explore the impact of detector configuration on the posterior, we evaluate every event on all possible combinations.
+While such studies are computationally infeasible with standard samplers, total inference times of under ten minutes per event make it a reasonable analysis with \dingoT. 
+We illustrate the effect on the posterior distribution for an example event in Fig.~\ref{fig:results_flexible_model}a.
+(See Supplemental Material for detailed discussions.)
+
+Finally, we utilize the flexibility of \dingoT to perform inspiral-merger-ringdown~(IMR) consistency tests probing general relativity~\citep{ghosh:2018, ligo_test_gr_gwtc2:2020, lvk_gwtc3_tests_gr:2025}.
+For these tests, the posterior of the final mass~$M_f$ and spin~$\chi_f$ are independently estimated for the inspiral (low) and postinspiral (high frequency) part of the signal, separated by an event-specific cut-off frequency~$f_\mathrm{cut}$.
+We perform IMR~consistency tests on seven events from~O3---with all analyses carried out using the same \dingoT model.
+We display the fractional deviations between the inspiral and postinspiral parameters in Fig.~\ref{fig:results_flexible_model}b and find that our analyses show overall consistency with general relativity. 
+
+\sec{Conclusions}We introduced \dingoT, a transformer-based model that enables fast and flexible GW~parameter inference across varying data analysis settings, including detector configurations and frequency ranges. 
+We validated \dingoT on an array of simulated and real data sets, including a realistic catalog analysis involving 17~data configurations. 
+We argued that \dingoT can be used to probe systematics, and demonstrated it can be applied for IMR~consistency tests. 
+Thanks to improved architecture and training, we obtain increased median sample efficiency on O3 HLV events of 4.2\%, compared to 1.4\% for a NPE~baseline. 
+As we do not leverage knowledge of time-translation equivariances in \dingoT, the efficiencies do not fully reach GNPE-level performance.
+However, \dingoT has greatly increased flexibility and maintains access to the density, making it significantly more useful in practice and enabling further scaling and fine-tuning studies.
+
+A natural next step would be to consider variations in signal duration by conditioning tokens on frequency resolution information. 
+Another promising direction is to explore alternative data representations such as time domain or time-frequency domain~\cite{Cornish:2020odn} (employing vision transformers~\citep{dosovitskiy:2021}), where simpler signal morphology may lead to improved training. 
+In the context of LISA, our approach offers a natural solution to the problem of expected data gaps~\citep{burke:2025}. 
+In general, the proposed transformer framework and training strategy can be readily extended and adapted to other tasks like signal detection and the \dingoT transformer encoder could serve as a general-purpose GW~compression backbone. 
+By concentrating on adaptable models that can be shared across tasks, computational effort can thereby be invested where it most benefits scaling and performance.
+
+\begin{acknowledgments}
+\sec{Acknowledgments}We thank Michael P\"urrer and Vincent Berenz for helpful discussions, and Ik Siong Heng for comments on the manuscript.
+A.K. thanks the International Max Planck Research School for Intelligent Systems~(IMPRS-IS) for support. S.R.G. is supported by a UKRI Future Leaders Fellowship (grant number MR/Y018060/1).
+A.B.'s research is supported in part by the European Research Council~(ERC) Horizon Synergy Grant “Making Sense of the Unexpected in the Gravitational-Wave Sky” grant agreement no. GWSky–101167314.
+The computational work for this Letter was performed on the Atlas cluster at the Max Planck Institute for Intelligent Systems. 
+This research has made use of data or software obtained from the Gravitational Wave Open Science Center (gwosc.org), a service of the LIGO Scientific Collaboration, the Virgo Collaboration, and KAGRA. This material is based upon work supported by NSF's LIGO Laboratory which is a major facility fully funded by the National Science Foundation, as well as the Science and Technology Facilities Council~(STFC) of the United Kingdom, the Max-Planck-Society~(MPS), and the State of Niedersachsen/Germany for support of the construction of Advanced LIGO and construction and operation of the GEO600 detector. Additional support for Advanced LIGO was provided by the Australian Research Council. Virgo is funded through the European Gravitational Observatory~(EGO), by the French Centre National de Recherche Scientifique~(CNRS), the Italian Istituto Nazionale di Fisica Nucleare~(INFN) and the Dutch Nikhef, with contributions by institutions from Belgium, Germany, Greece, Hungary, Ireland, Japan, Monaco, Poland, Portugal, Spain. KAGRA is supported by Ministry of Education, Culture, Sports, Science and Technology~(MEXT), Japan Society for the Promotion of Science~(JSPS) in Japan; National Research Foundation~(NRF) and Ministry of Science and ICT~(MSIT) in Korea; Academia Sinica (AS) and National Science and Technology Council~(NSTC) in Taiwan.
+\end{acknowledgments}
+
+\bibliography{mybib.bib}
+
+% for arxiv, uncomment below:
+\clearpage
+\begin{center}
+  \large
+  \textbf{Supplemental Material}
+\end{center}
+\input{01_supplemental-content}
+
+\end{document}

@@ -1,0 +1,37 @@
+{
+   "sources" : [
+      {
+         "usage" : "toplevel",
+         "filename" : "00_main.tex"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "00_mainNotes.bib"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "data/table_all_detector_configs_efficiencies_04_data_based_larger_fmasking.csv"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "data/table_efficiencies_1.csv"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "data/table_efficiencies_2.csv"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "data/table_event_configs.csv"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "mybib.bib"
+      }
+   ],
+   "spec_version" : 1,
+   "texlive_version" : "2025",
+   "process" : {
+      "compiler" : "pdflatex"
+   }
+}

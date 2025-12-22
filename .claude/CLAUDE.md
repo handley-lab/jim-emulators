@@ -77,3 +77,17 @@ Key design decisions (see `docs/jax-flax-best-practices.md`):
 ### Transcripts
 
 Meeting transcripts stored as `transcript-HHMM` files document discussions and decisions.
+
+## Deep Research Literature
+
+See `docs/literature/deep-research/` for survey of advanced NN architectures for GW emulation.
+
+**Key papers for our approach:**
+
+| ArXiv ID | Paper | Relevance |
+|----------|-------|-----------|
+| `2408.02470/` | **obiwann**: SVD-NN interpolant | Validates SVD+MLP approach (10⁻⁴ mismatch) |
+| `2008.12932/` | **ANN-Sur**: NN surrogate models | Similar architecture to CosmoPower |
+| `2512.02968/` | **Dingo-T1**: Transformers for GW PE | Uses IMRPhenomXPHM - validates our target model |
+
+**Training data insight**: All papers train on semi-analytical approximants (SEOBNR, IMRPhenom, EOB), not raw NR. This validates our approach of emulating IMRPhenomXPHM directly.

@@ -1,0 +1,49 @@
+Event,Detectors,HLV,HL,HV,LV,H,L,V
+\text{GW190408\_181802},HLV,\text{\gradient{8.07}},\text{\gradient{8.28}},\text{\gradient{0.64}},\text{\gradient{1.35}},\text{\gradient{2.79}},\text{\gradient{6.71}},\text{\gradient{62.23}}
+\text{GW190413\_052954},HLV,\text{\gradient{11.77}},\text{\gradient{9.52}},\text{\gradient{2.41}},\text{\gradient{0.74}},\text{\gradient{9.5}},\text{\gradient{18.61}},\text{\gradient{37.48}}
+\text{GW190413\_134308}$^{*\dagger \mathrm{L}}$,HLV,\text{\gradient{4.52}},\text{\gradient{7.84}},\text{\gradient{8.29}},\text{\gradient{1.36}},\text{\gradient{21.16}},\text{\gradient{11.78}},\text{\gradient{32.2}}
+\text{GW190426\_190642},HLV,\text{\gradient{0.79}},\text{\gradient{2.27}},\text{\gradient{7.41}},\text{\gradient{0.0}},\text{\gradient{29.53}},\text{\gradient{0.04}},\text{\gradient{49.52}}
+\text{GW190503\_185404}$^{* \mathrm{L}}$,HLV,\text{\gradient{1.57}},\text{\gradient{1.31}},\text{\gradient{1.0}},\text{\gradient{0.41}},\text{\gradient{17.09}},\text{\gradient{2.14}},\text{\gradient{60.85}}
+\text{GW190513\_205428}$^{* \mathrm{L}}$,HLV,\text{\gradient{0.16}},\text{\gradient{0.52}},\text{\gradient{4.19}},\text{\gradient{2.04}},\text{\gradient{11.74}},\text{\gradient{4.17}},\text{\gradient{22.9}}
+\text{GW190517\_055101},HLV,\text{\gradient{2.17}},\text{\gradient{4.28}},\text{\gradient{1.79}},\text{\gradient{0.27}},\text{\gradient{1.36}},\text{\gradient{0.36}},\text{\gradient{13.06}}
+\text{GW190519\_153544},HLV,\text{\gradient{4.26}},\text{\gradient{0.85}},\text{\gradient{3.71}},\text{\gradient{4.88}},\text{\gradient{3.38}},\text{\gradient{9.09}},\text{\gradient{59.66}}
+\text{GW190602\_175927},HLV,\text{\gradient{13.09}},\text{\gradient{13.18}},\text{\gradient{28.09}},\text{\gradient{5.4}},\text{\gradient{27.24}},\text{\gradient{15.95}},\text{\gradient{26.58}}
+\text{GW190701\_203306}$^{* \mathrm{L}}$,HLV,\text{\gradient{14.83}},\text{\gradient{14.05}},\text{\gradient{9.13}},\text{\gradient{5.45}},\text{\gradient{31.43}},\text{\gradient{5.93}},\text{\gradient{38.78}}
+\text{GW190706\_222641},HLV,\text{\gradient{2.49}},\text{\gradient{5.65}},\text{\gradient{13.73}},\text{\gradient{6.21}},\text{\gradient{0.1}},\text{\gradient{10.14}},\text{\gradient{27.66}}
+\text{GW190727\_060333}$^{\dagger \mathrm{L}}$,HLV,\text{\gradient{0.84}},\text{\gradient{17.6}},\text{\gradient{2.95}},\text{\gradient{3.29}},\text{\gradient{5.09}},\text{\gradient{0.45}},\text{\gradient{23.71}}
+\text{GW190803\_022701},HLV,\text{\gradient{16.39}},\text{\gradient{28.23}},\text{\gradient{19.48}},\text{\gradient{9.04}},\text{\gradient{28.74}},\text{\gradient{7.89}},\text{\gradient{42.92}}
+\text{GW190828\_063405},HLV,\text{\gradient{3.99}},\text{\gradient{17.35}},\text{\gradient{8.7}},\text{\gradient{7.11}},\text{\gradient{24.58}},\text{\gradient{9.26}},\text{\gradient{64.41}}
+\text{GW190915\_235702},HLV,\text{\gradient{8.23}},\text{\gradient{13.56}},\text{\gradient{0.89}},\text{\gradient{5.24}},\text{\gradient{1.9}},\text{\gradient{14.02}},\text{\gradient{42.52}}
+\text{GW190916\_200658},HLV,\text{\gradient{19.41}},\text{\gradient{20.19}},\text{\gradient{5.16}},\text{\gradient{18.13}},\text{\gradient{11.2}},\text{\gradient{27.25}},\text{\gradient{42.29}}
+\text{GW190926\_050336},HLV,\text{\gradient{1.63}},\text{\gradient{4.25}},\text{\gradient{11.17}},\text{\gradient{12.38}},\text{\gradient{16.39}},\text{\gradient{19.97}},\text{\gradient{53.75}}
+\text{GW190929\_012149},HLV,\text{\gradient{3.04}},\text{\gradient{4.74}},\text{\gradient{10.61}},\text{\gradient{0.0}},\text{\gradient{24.68}},\text{\gradient{0.01}},\text{\gradient{50.24}}
+\text{GW191127\_050227}$^{\diamond \mathrm{H}}$,HLV,\text{\gradient{0.28}},\text{\gradient{0.97}},\text{\gradient{8.21}},\text{\gradient{5.15}},\text{\gradient{16.13}},\text{\gradient{28.83}},\text{\gradient{6.04}}
+\text{GW191215\_223052},HLV,\text{\gradient{4.05}},\text{\gradient{5.79}},\text{\gradient{5.13}},\text{\gradient{1.25}},\text{\gradient{6.55}},\text{\gradient{2.02}},\text{\gradient{56.09}}
+\text{GW191230\_180458},HLV,\text{\gradient{14.61}},\text{\gradient{8.4}},\text{\gradient{2.68}},\text{\gradient{16.51}},\text{\gradient{7.79}},\text{\gradient{16.88}},\text{\gradient{58.75}}
+\text{GW200129\_065458}$^{\ddagger \mathrm{L}}$,HLV,\text{\gradient{0.29}},\text{\gradient{0.29}},\text{\gradient{2.16}},\text{\gradient{0.01}},\text{\gradient{14.15}},\text{\gradient{0.07}},\text{\gradient{2.66}}
+\text{GW200208\_130117},HLV,\text{\gradient{11.58}},\text{\gradient{12.15}},\text{\gradient{5.17}},\text{\gradient{5.99}},\text{\gradient{32.27}},\text{\gradient{8.9}},\text{\gradient{17.75}}
+\text{GW200208\_222617},HLV,\text{\gradient{2.86}},\text{\gradient{2.47}},\text{\gradient{4.73}},\text{\gradient{0.05}},\text{\gradient{5.55}},\text{\gradient{18.82}},\text{\gradient{18.48}}
+\text{GW200209\_085452},HLV,\text{\gradient{2.52}},\text{\gradient{11.06}},\text{\gradient{3.65}},\text{\gradient{16.62}},\text{\gradient{9.66}},\text{\gradient{34.08}},\text{\gradient{41.28}}
+\text{GW200216\_220804},HLV,\text{\gradient{2.2}},\text{\gradient{12.56}},\text{\gradient{12.41}},\text{\gradient{7.44}},\text{\gradient{21.27}},\text{\gradient{10.96}},\text{\gradient{52.1}}
+\text{GW200219\_094415},HLV,\text{\gradient{5.12}},\text{\gradient{7.36}},\text{\gradient{3.27}},\text{\gradient{2.77}},\text{\gradient{11.76}},\text{\gradient{11.09}},\text{\gradient{1.9}}
+\text{GW200220\_061928},HLV,\text{\gradient{10.17}},\text{\gradient{18.1}},\text{\gradient{6.07}},\text{\gradient{7.68}},\text{\gradient{8.67}},\text{\gradient{11.95}},\text{\gradient{61.93}}
+\text{GW200224\_222234},HLV,\text{\gradient{5.49}},\text{\gradient{7.18}},\text{\gradient{1.65}},\text{\gradient{6.85}},\text{\gradient{10.2}},\text{\gradient{20.89}},\text{\gradient{4.01}}
+\text{GW200311\_115853},HLV,\text{\gradient{9.2}},\text{\gradient{5.56}},\text{\gradient{11.57}},\text{\gradient{4.81}},\text{\gradient{7.71}},\text{\gradient{4.23}},\text{\gradient{3.64}}
+\text{GW190421\_213856},HL,-,\text{\gradient{17.8}},-,-,\text{\gradient{10.08}},\text{\gradient{17.4}},-
+\text{GW190514\_065416}$^{*\dagger \mathrm{L}}$,HL,-,\text{\gradient{15.22}},-,-,\text{\gradient{19.48}},\text{\gradient{4.83}},-
+\text{GW190521\_074359},HL,-,\text{\gradient{1.28}},-,-,\text{\gradient{7.24}},\text{\gradient{1.26}},-
+\text{GW190527\_092055},HL,-,\text{\gradient{9.04}},-,-,\text{\gradient{2.95}},\text{\gradient{5.56}},-
+\text{GW190719\_215514},HL,-,\text{\gradient{14.56}},-,-,\text{\gradient{17.56}},\text{\gradient{0.05}},-
+\text{GW190731\_140936},HL,-,\text{\gradient{18.22}},-,-,\text{\gradient{38.6}},\text{\gradient{4.69}},-
+\text{GW191109\_010717}$^{\diamond \mathrm{HL}}$,HL,-,\text{\gradient{1.52}},-,-,\text{\gradient{0.11}},\text{\gradient{5.15}},-
+\text{GW191204\_110529},HL,-,\text{\gradient{0.07}},-,-,\text{\gradient{19.49}},\text{\gradient{13.28}},-
+\text{GW191222\_033537},HL,-,\text{\gradient{15.61}},-,-,\text{\gradient{6.84}},\text{\gradient{16.18}},-
+\text{GW200128\_022011},HL,-,\text{\gradient{8.28}},-,-,\text{\gradient{38.67}},\text{\gradient{18.79}},-
+\text{GW200220\_124850},HL,-,\text{\gradient{12.94}},-,-,\text{\gradient{23.86}},\text{\gradient{15.56}},-
+\text{GW200306\_093714},HL,-,\text{\gradient{0.09}},-,-,\text{\gradient{6.0}},\text{\gradient{0.08}},-
+\text{GW190925\_232845},HV,-,-,\text{\gradient{0.86}},-,\text{\gradient{8.16}},-,\text{\gradient{16.97}}
+\text{GW200302\_015811},HV,-,-,\text{\gradient{1.4}},-,\text{\gradient{2.25}},-,\text{\gradient{31.8}}
+\text{GW190620\_030421},LV,-,-,-,\text{\gradient{0.81}},-,\text{\gradient{1.5}},\text{\gradient{55.53}}
+\text{GW190630\_185205},LV,-,-,-,\text{\gradient{1.15}},-,\text{\gradient{7.98}},\text{\gradient{16.08}}
+\text{GW190910\_112807},LV,-,-,-,\text{\gradient{3.22}},-,\text{\gradient{4.2}},\text{\gradient{19.1}}
+\text{GW200112\_155838},LV,-,-,-,\text{\gradient{5.79}},-,\text{\gradient{16.7}},\text{\gradient{20.93}}

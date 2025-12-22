@@ -1,0 +1,21 @@
+{
+   "sources" : [
+      {
+         "usage" : "toplevel",
+         "filename" : "main.tex"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "bibHNN.bib"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "plots/planar/overcritical/Hamilton_b1.91_H_histogram.pdf"
+      }
+   ],
+   "version" : 2,
+   "texlive_version" : 2023,
+   "process" : {
+      "compiler" : "pdflatex"
+   }
+}
