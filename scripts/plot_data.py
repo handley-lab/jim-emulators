@@ -234,7 +234,7 @@ def main():
     with h5py.File(args.input, "r") as f:
         print(f"  Train samples: {f['train/parameters'].shape[0]}")
         print(f"  Validation samples: {f['validation/parameters'].shape[0]}")
-        print(f"  Frequency points: {f['frequency_grid'].shape[0]}")
+        print(f"  Frequency points: {f['freqs'].shape[0]}")
 
         plot_sample_waveforms(f, n_samples=args.n_samples, output_dir=args.output_dir)
         plot_parameter_distribution(f, output_dir=args.output_dir)
