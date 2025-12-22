@@ -1,0 +1,29 @@
+# Jim Emulators - TODO
+
+## High Priority
+
+- [ ] **Investigate EMU as alternative architecture**
+  Harry Bevin's globalemu as alternative to the Speculator/CosmoPower PCA+MLP setup.
+  May provide better generalization or simpler training.
+  Reference: https://github.com/htjb/globalemu
+
+## Next Steps (from Day 1)
+
+- [ ] Extend to higher modes: (2,1), (3,3), (3,2), (4,4)
+- [ ] Implement precession via "twisting-up" procedure
+- [ ] Integration with jim/ripple interface
+- [ ] Scale training data from 10k to 100k samples
+- [ ] Benchmark inference speed against LAL
+- [ ] Address linear frequency grid requirement for jim integration
+- [ ] Consider inclination factorisation via explicit spherical harmonics
+
+## Completed (2025-12-22)
+
+- [x] Literature review and project setup
+- [x] LAL wrapper with mode selection (14 tests)
+- [x] Parameter sensitivity analysis (54 plots)
+- [x] Neural network infrastructure (Speculator activation, PCA)
+- [x] Training pipeline with dual networks
+- [x] Validation: mismatch 2.52×10⁻⁴ (exceeded 10⁻³ target)
+- [x] Time-domain IFFT fix via iterative review
+- [x] Theory documents: frequency-domain-emulation.tex, general-waveform-decomposition.tex

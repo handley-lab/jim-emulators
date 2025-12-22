@@ -24,7 +24,7 @@
 }
 
 \title{\textbf{Development of a JAX-based Gravitational Wave Emulator: \\ From Concept to Validation in a Single Day}}
-\author{Will Handley \& Collaborators}
+\author{Will Handley \& James Alvey}
 \date{December 22, 2025}
 
 \begin{document}
@@ -39,17 +39,24 @@
 
 The \texttt{jim-emulators} project aims to provide differentiable, GPU-accelerated gravitational waveforms for the \texttt{jim} ecosystem. While analytical models like IMRPhenomXHM exist, they are not natively differentiable in JAX, hindering gradient-based sampling methods such as Hamiltonian Monte Carlo (HMC).
 
-The development methodology employed a highly accelerated AI-assisted loop involving:
+The development methodology employed a highly accelerated AI-assisted loop using three frontier LLMs:
+\begin{itemize}
+    \item \textbf{Claude 4.5 Sonnet} via Claude Code for primary development and code generation
+    \item \textbf{Gemini 3} for iterative review and validation
+    \item \textbf{GPT 5.2} for external code review and theory verification
+\end{itemize}
+
+\noindent The workflow involved:
 \begin{enumerate}
-    \item \textbf{Deep Research:} Autonomous literature surveys using Large Language Models (LLMs) to identify state-of-the-art architectures (identifying the CosmoPower/Speculator lineage).
-    \item \textbf{Iterative Review:} Theoretical documents were drafted and subjected to critical review by external LLMs (GPT-5, Gemini) to identify physical inconsistencies before implementation.
-    \item \textbf{Rapid Prototyping:} Five distinct transcript sessions captured the evolution from initial planning at 09:00 to final validation at 23:00, utilizing automated code generation and immediate feedback loops for debugging.
+    \item \textbf{Deep Research:} Autonomous literature surveys using LLMs to identify state-of-the-art architectures (identifying the CosmoPower/Speculator lineage).
+    \item \textbf{Iterative Review:} Theoretical documents (\texttt{theory/*.tex}) were drafted and subjected to critical review by external LLMs to identify physical inconsistencies before implementation.
+    \item \textbf{Rapid Prototyping:} Five distinct transcript sessions (\texttt{transcripts/*.txt}) captured the evolution from initial planning at 09:00 to final validation at 19:00, utilizing automated code generation and immediate feedback loops for debugging.
 \end{enumerate}
 
 \section{Physical Foundations and Infrastructure}
 
 \subsection{LAL Infrastructure and Mode Decomposition}
-A robust wrapper around \texttt{lalsimulation} was implemented to generate reference waveforms. A crucial physical validation step verified that the IMRPhenomXPHM waveform is additive to machine precision:
+A robust wrapper around \texttt{lalsimulation} was implemented (\texttt{src/jim\_emulators/waveforms/lal\_waveforms.py}) to generate reference waveforms. A crucial physical validation step verified that the IMRPhenomXPHM waveform is additive to machine precision:
 \begin{equation}
     h(f) = \sum_{\ell, m} h_{\ell m}(f) \, {}^{-2}Y_{\ell m}(\iota, \phi).
 \end{equation}
@@ -63,7 +70,7 @@ To reduce the dimensionality of the parameter space, we adopted a geometric freq
 This renders the learned manifold mass-independent. For the initial aligned-spin prototype, the input space reduces to just three intrinsic parameters: symmetric mass ratio $\eta$ and aligned spins $\chi_{1z}, \chi_{2z}$. Extrinsic parameters (distance, inclination, time/phase shifts) are handled analytically at inference time.
 
 \subsection{Data Generation Pipeline}
-Training data was generated with the following specifications to ensure numerical stability:
+Training data was generated (\texttt{scripts/generate\_data.py}) with the following specifications to ensure numerical stability:
 \begin{itemize}
     \item \textbf{Grid:} 2000 points logarithmically spaced in $\mathcal{F} \in [0.004, 0.3]$. The lower bound was raised from $0.0005$ to avoid phase aliasing where $d\Phi/df$ is large.
     \item \textbf{Sampling:} Latin Hypercube Sampling (LHS) of 10,000 parameter sets.
@@ -73,17 +80,17 @@ Training data was generated with the following specifications to ensure numerica
 
 \section{Neural Network Implementation}
 
-The emulator architecture follows the \textit{CosmoPower} and \textit{Speculator} paradigm: Principal Component Analysis (PCA) for compression followed by a Multi-Layer Perceptron (MLP).
+The emulator architecture (\texttt{src/jim\_emulators/emulator/}) follows the \textit{CosmoPower} and \textit{Speculator} paradigm: Principal Component Analysis (PCA) for compression followed by a Multi-Layer Perceptron (MLP).
 
 \subsection{PCA Compression}
-PCA was applied separately to the log-amplitude and unwrapped phase of the waveform.
+PCA was applied separately to the log-amplitude and unwrapped phase of the waveform (\texttt{src/jim\_emulators/emulator/pca.py}).
 \begin{itemize}
     \item \textbf{Normalization:} A per-frequency standardization was derived ($\mu_f, \sigma_f$) to handle the dynamic range of the amplitude ($\sim 5$ orders of magnitude).
     \item \textbf{Compression:} PCA reduced the dimensionality from 2000 frequency bins to $\sim 30$ coefficients while retaining $99.99\%$ of the variance.
 \end{itemize}
 
 \subsection{Network Architecture}
-The regression from parameters $\vec{\lambda} = \{\eta, \chi_{1z}, \chi_{2z}\}$ to PCA coefficients was performed using \texttt{Flax}:
+The regression from parameters $\vec{\lambda} = \{\eta, \chi_{1z}, \chi_{2z}\}$ to PCA coefficients was performed using \texttt{Flax} (\texttt{src/jim\_emulators/emulator/network.py}):
 \begin{itemize}
     \item \textbf{Structure:} 4 hidden layers of 512 units each.
     \item \textbf{Activation:} The \textbf{Speculator} activation function \cite{1911.11778}:
@@ -94,11 +101,11 @@ The regression from parameters $\vec{\lambda} = \{\eta, \chi_{1z}, \chi_{2z}\}$ 
 \end{itemize}
 
 \subsection{Training Strategy and Debugging}
-Initial training attempts using a single network for both amplitude and phase failed due to loss scaling imbalances. The successful strategy employed \textbf{Dual Networks}: one dedicated MLP for amplitude coefficients and a separate MLP for phase coefficients. Training utilized the AdamW optimizer with gradient clipping and a cosine decay learning rate schedule.
+Initial training attempts using a single network for both amplitude and phase failed due to loss scaling imbalances. The successful strategy (\texttt{scripts/train.py}) employed \textbf{Dual Networks}: one dedicated MLP for amplitude coefficients and a separate MLP for phase coefficients. Training utilized the AdamW optimizer with gradient clipping and a cosine decay learning rate schedule. Best practices are documented in \texttt{docs/jax-flax-best-practices.md}.
 
 \section{Validation Results}
 
-The trained emulator for the dominant $(2,2)$ mode was validated against fresh LAL waveforms not seen during training.
+The trained emulator for the dominant $(2,2)$ mode was validated (\texttt{scripts/validate\_emulator.py}) against fresh LAL waveforms not seen during training.
 
 \subsection{Frequency Domain Accuracy}
 The emulator reproduces the frequency-domain amplitude and phase with high fidelity. The reconstruction error is negligible compared to the intrinsic modelling uncertainty of approximants.

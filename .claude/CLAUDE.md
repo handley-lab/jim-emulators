@@ -36,6 +36,12 @@ Nobody else is doing frequency-domain, aligned-spin, higher-mode emulation with 
 
 **We're filling a gap that exists because of different motivations (JAX ecosystem) rather than because the problem is unsolved.**
 
+## TODO
+
+See `TODO.txt` for current task list.
+
+**High Priority:** Investigate EMU (Harry Bevin's globalemu) as alternative architecture to Speculator/CosmoPower PCA+MLP. May provide better generalization or simpler training.
+
 ## Development Log
 
 **IMPORTANT**: Maintain `docs/development-log.md` as work progresses. This project aims to publish both the emulators and the AI-assisted workflow used to create them.
