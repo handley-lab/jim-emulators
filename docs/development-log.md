@@ -530,7 +530,21 @@ This validates our CosmoPower/Speculator approach - simple SVD+MLP achieves stat
 
 **Appraisal of Deep Research:**
 
-The survey skewed toward fancier architectures (transformers, diffusion, HNNs) rather than the straightforward approaches that actually work well for this problem. Notably, it missed `2402.06587` (mlgw_NN) - a February 2024 paper using the exact same methodology we're pursuing (amp/phase → PCA → NN), achieving 10⁻⁴ mismatch with higher modes. This should have been a top hit for any survey on "neural network gravitational wave emulation." Paper was added manually after the survey.
+The first survey skewed toward fancier architectures (transformers, diffusion, HNNs) rather than the straightforward approaches that actually work well for this problem. Notably, it missed `2402.06587` (mlgw_NN) - a February 2024 paper using the exact same methodology we're pursuing (amp/phase → PCA → NN), achieving 10⁻⁴ mismatch with higher modes.
+
+**Second Survey (seeded with 2402.06587):**
+
+A follow-up deep research seeded with the mlgw_NN paper found the actual PCA+NN lineage:
+
+| Paper | Contribution |
+|-------|-------------|
+| mlgw (Schmidt et al.) | Foundational work, first robust Python package |
+| mlgw_bns | Extension to binary neutron stars with tidal effects |
+| NRSurNN3dq4 (2412.06946) | Transfer learning: pre-train on approximants, fine-tune on NR |
+| SEOBNRE_AI (2411.14893) | Eccentric binaries via adaptive resampling |
+| Transformer HOM (2409.03833) | Sequence-to-sequence, better out-of-distribution generalization |
+
+Key insight from second survey: The PCA+NN architecture is a "stable design pattern" that has been validated across multiple groups (Utrecht, Pisa, SXS). The "manifold hypothesis" for GW - that valid waveforms lie on a low-dimensional manifold - is validated by PCA's success.
 
 ---
 
