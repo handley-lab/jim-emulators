@@ -3,8 +3,7 @@
 Generate training data for gravitational waveform emulator.
 
 This script generates waveforms using LALSimulation and stores them in HDF5 format
-for training a neural network emulator. The waveforms are parameterized in geometric
-units (Mf) for mass-independence.
+for training a neural network emulator. We use direct LAL output with no interpolation.
 
 Starter case: Aligned spins (no precession), 22 mode only.
 
@@ -30,11 +29,6 @@ from tqdm import tqdm
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from jim_emulators.waveforms import WaveformParameters, generate_fd_waveform
-from jim_emulators.waveforms.utils import (
-    get_geometric_frequency_grid,
-    physical_to_geometric_frequency,
-    geometric_to_physical_frequency,
-)
 
 
 # =============================================================================
@@ -48,13 +42,13 @@ PARAM_BOUNDS = {
     "chi2z": (-0.99, 0.99),   # Secondary aligned spin
 }
 
-# Geometric frequency grid
-MF_MIN = 0.003   # Start early enough to capture inspiral
-MF_MAX = 0.25    # Past ringdown for most systems
-N_FREQ = 1000    # Number of frequency points
+# Fixed frequency grid (physical Hz)
+# Using a reference mass of 50 Msun, these correspond roughly to Mf in [0.003, 0.25]
+F_MIN = 10.0     # Hz - start of waveform
+F_MAX = 1024.0   # Hz - past ringdown for most systems
+DELTA_F = 1.0    # Hz - frequency spacing
 
-# Reference total mass for waveform generation (cancels out in geometric units)
-# Using 50 Msun gives reasonable frequency range
+# Reference total mass for waveform generation
 M_REF = 50.0  # Solar masses
 
 # Mode selection for 22-only
@@ -111,10 +105,6 @@ def eta_to_masses(eta: float, M_total: float) -> Tuple[float, float]:
     m1, m2 : float
         Component masses with m1 >= m2.
     """
-    # From eta, compute mass ratio q = m2/m1 <= 1
-    # eta = q / (1+q)^2
-    # Solving: q = (1 - 2*eta - sqrt(1 - 4*eta)) / (2*eta)
-    # But simpler: q = (1 - sqrt(1 - 4*eta)) / (1 + sqrt(1 - 4*eta))
     sqrt_term = np.sqrt(1 - 4 * eta)
     q = (1 - sqrt_term) / (1 + sqrt_term)
 
@@ -128,16 +118,18 @@ def eta_to_masses(eta: float, M_total: float) -> Tuple[float, float]:
 # Waveform Generation
 # =============================================================================
 
-def generate_waveform_geometric(
+def generate_waveform_direct(
     eta: float,
     chi1z: float,
     chi2z: float,
-    Mf_grid: np.ndarray,
+    f_min: float = F_MIN,
+    f_max: float = F_MAX,
+    delta_f: float = DELTA_F,
     M_total: float = M_REF,
     mode_array: list = None,
-) -> Tuple[np.ndarray, np.ndarray]:
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
-    Generate a waveform on a geometric frequency grid.
+    Generate a waveform directly from LAL with no interpolation.
 
     Parameters
     ----------
@@ -145,19 +137,21 @@ def generate_waveform_geometric(
         Symmetric mass ratio.
     chi1z, chi2z : float
         Aligned spin components.
-    Mf_grid : np.ndarray
-        Geometric frequency grid.
+    f_min, f_max, delta_f : float
+        Frequency grid parameters in Hz.
     M_total : float
-        Reference total mass (for waveform generation).
+        Reference total mass in solar masses.
     mode_array : list, optional
         Modes to include. Default is 22-only.
 
     Returns
     -------
-    amplitude : np.ndarray
-        Log10 amplitude on Mf grid.
+    frequencies : np.ndarray
+        Frequency grid in Hz (from LAL).
+    log_amplitude : np.ndarray
+        Log10 of strain amplitude.
     phase : np.ndarray
-        Unwrapped, aligned phase on Mf grid.
+        Unwrapped phase, aligned at peak amplitude.
     """
     if mode_array is None:
         mode_array = MODE_22_ONLY
@@ -165,84 +159,39 @@ def generate_waveform_geometric(
     # Convert eta to component masses
     m1, m2 = eta_to_masses(eta, M_total)
 
-    # Convert geometric to physical frequencies
-    f_physical = np.array(geometric_to_physical_frequency(Mf_grid, M_total))
-    f_min = float(f_physical[0])
-    f_max = float(f_physical[-1])
-
-    # Use fine delta_f for accuracy, we'll interpolate
-    delta_f = 0.1  # Hz
-
     # Create waveform parameters
     params = WaveformParameters(
         mass_1=m1,
         mass_2=m2,
         chi1z=chi1z,
         chi2z=chi2z,
-        luminosity_distance=1.0,  # Amplitude in geometric units anyway
+        luminosity_distance=1.0,  # Normalization handled separately
         inclination=0.0,          # Face-on for simplicity (hp only)
         phase=0.0,
-        f_min=f_min * 0.9,        # Start a bit earlier for interpolation
-        f_max=f_max * 1.1,        # End a bit later
+        f_min=f_min,
+        f_max=f_max,
         delta_f=delta_f,
         approximant="IMRPhenomXPHM",
     )
 
-    # Generate waveform (disable multibanding for smooth waveforms)
+    # Generate waveform directly from LAL (disable multibanding for smooth waveforms)
     freqs, hp, hc = generate_fd_waveform(
         params, mode_array=mode_array, disable_multibanding=True
     )
 
-    # Convert generated frequencies to geometric
-    Mf_generated = np.array(physical_to_geometric_frequency(freqs, M_total))
-
-    # Interpolate to target grid
-    # We need both amplitude and phase
+    # Extract amplitude and phase directly from LAL output
     amplitude = np.abs(hp)
     phase = np.unwrap(np.angle(hp))
 
-    # Find valid range (non-zero amplitude)
-    valid_mask = amplitude > 0
-    if not np.any(valid_mask):
-        raise ValueError(f"No valid waveform data for eta={eta}, chi1z={chi1z}, chi2z={chi2z}")
+    # Handle zeros: set minimum amplitude floor for log
+    amp_floor = 1e-100
+    log_amplitude = np.log10(np.maximum(amplitude, amp_floor))
 
-    # Interpolate amplitude (in log space for stability)
-    log_amp_interp = np.interp(
-        Mf_grid,
-        Mf_generated[valid_mask],
-        np.log10(amplitude[valid_mask] + 1e-100),  # Avoid log(0)
-        left=np.nan,
-        right=np.nan,
-    )
+    # Align phase at peak amplitude
+    peak_idx = np.argmax(amplitude)
+    phase = phase - phase[peak_idx]
 
-    # Interpolate phase
-    phase_interp = np.interp(
-        Mf_grid,
-        Mf_generated[valid_mask],
-        phase[valid_mask],
-        left=np.nan,
-        right=np.nan,
-    )
-
-    # Align phase: subtract linear trend and set phase=0 at peak amplitude
-    # Find peak in the valid region
-    valid_interp = ~np.isnan(log_amp_interp)
-    if np.any(valid_interp):
-        peak_idx = np.argmax(np.where(valid_interp, log_amp_interp, -np.inf))
-        phase_interp = phase_interp - phase_interp[peak_idx]
-
-    return log_amp_interp, phase_interp
-
-
-def process_single_waveform(args):
-    """Worker function for parallel processing."""
-    idx, eta, chi1z, chi2z, Mf_grid = args
-    try:
-        log_amp, phase = generate_waveform_geometric(eta, chi1z, chi2z, Mf_grid)
-        return idx, log_amp, phase, True
-    except Exception as e:
-        print(f"Warning: Failed for idx={idx}, eta={eta:.4f}, chi1z={chi1z:.4f}, chi2z={chi2z:.4f}: {e}")
-        return idx, None, None, False
+    return freqs, log_amplitude, phase
 
 
 # =============================================================================
@@ -274,12 +223,15 @@ def generate_dataset(
     # Sample parameters
     params = sample_parameters_lhs(n_samples, seed=seed)
 
-    # Create geometric frequency grid
-    Mf_grid = np.array(get_geometric_frequency_grid(N_FREQ, MF_MIN, MF_MAX))
+    # Generate first waveform to get frequency grid size
+    eta0, chi1z0, chi2z0 = params[0]
+    freqs, _, _ = generate_waveform_direct(eta0, chi1z0, chi2z0)
+    n_freq = len(freqs)
+    print(f"Frequency grid: {n_freq} points from {freqs[0]:.1f} to {freqs[-1]:.1f} Hz")
 
     # Allocate output arrays
-    amplitudes = np.zeros((n_samples, N_FREQ), dtype=np.float64)
-    phases = np.zeros((n_samples, N_FREQ), dtype=np.float64)
+    amplitudes = np.zeros((n_samples, n_freq), dtype=np.float64)
+    phases = np.zeros((n_samples, n_freq), dtype=np.float64)
     success_mask = np.zeros(n_samples, dtype=bool)
 
     # Generate waveforms with progress bar
@@ -287,7 +239,7 @@ def generate_dataset(
     for i in tqdm(range(n_samples), desc=f"Generating {dataset_name}"):
         eta, chi1z, chi2z = params[i]
         try:
-            log_amp, phase = generate_waveform_geometric(eta, chi1z, chi2z, Mf_grid)
+            f, log_amp, phase = generate_waveform_direct(eta, chi1z, chi2z)
             amplitudes[i] = log_amp
             phases[i] = phase
             success_mask[i] = True
@@ -323,17 +275,19 @@ def generate_dataset(
 
         # Store metadata in root (only once)
         if "frequency_grid" not in f:
-            f.create_dataset("frequency_grid", data=Mf_grid)
+            f.create_dataset("frequency_grid", data=freqs)
             f.attrs["param_names"] = ["eta", "chi1z", "chi2z"]
             f.attrs["param_bounds_eta"] = PARAM_BOUNDS["eta"]
             f.attrs["param_bounds_chi1z"] = PARAM_BOUNDS["chi1z"]
             f.attrs["param_bounds_chi2z"] = PARAM_BOUNDS["chi2z"]
-            f.attrs["Mf_min"] = MF_MIN
-            f.attrs["Mf_max"] = MF_MAX
-            f.attrs["n_freq"] = N_FREQ
+            f.attrs["f_min"] = F_MIN
+            f.attrs["f_max"] = F_MAX
+            f.attrs["delta_f"] = DELTA_F
+            f.attrs["M_ref"] = M_REF
+            f.attrs["n_freq"] = n_freq
             f.attrs["approximant"] = "IMRPhenomXPHM"
             f.attrs["modes"] = "22_only"
-            f.attrs["description"] = "Aligned spin BBH waveforms, 22 mode only"
+            f.attrs["description"] = "Aligned spin BBH waveforms, 22 mode only, direct LAL output"
 
     print(f"Saved to {output_path}")
 
@@ -377,7 +331,8 @@ def main():
     with h5py.File(args.output, "r") as f:
         print("\n=== Dataset Summary ===")
         print(f"File: {args.output}")
-        print(f"Frequency grid: {f['frequency_grid'].shape[0]} points in Mf=[{MF_MIN}, {MF_MAX}]")
+        freqs = f['frequency_grid'][:]
+        print(f"Frequency grid: {len(freqs)} points from {freqs[0]:.1f} to {freqs[-1]:.1f} Hz")
         print(f"Training samples: {f['train/parameters'].shape[0]}")
         print(f"Validation samples: {f['validation/parameters'].shape[0]}")
         print(f"Parameter bounds:")

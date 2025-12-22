@@ -31,12 +31,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from jim_emulators.emulator import WaveformPCA, EmulatorMLP
 from jim_emulators.waveforms import WaveformParameters, generate_fd_waveform
-from jim_emulators.waveforms.utils import (
-    geometric_to_physical_frequency,
-    physical_to_geometric_frequency,
-    compute_match,
-    load_psd,
-)
+from jim_emulators.waveforms.utils import compute_match, load_psd
 
 
 # =============================================================================
@@ -81,8 +76,14 @@ class DualNetworkEmulator:
         self.params_mean = jnp.array(emulator_data["params_mean"])
         self.params_std = jnp.array(emulator_data["params_std"])
 
-        # Frequency grid
+        # Frequency grid (physical Hz)
         self.frequency_grid = emulator_data["frequency_grid"]
+
+        # Grid parameters for LAL generation
+        self.f_min = emulator_data.get("f_min", self.frequency_grid[0])
+        self.f_max = emulator_data.get("f_max", self.frequency_grid[-1])
+        self.delta_f = emulator_data.get("delta_f", self.frequency_grid[1] - self.frequency_grid[0])
+        self.M_ref = emulator_data.get("M_ref", 50.0)
 
         # JIT compile prediction
         self._predict_amp = jax.jit(self._predict_amp_impl)
@@ -136,16 +137,26 @@ def load_emulator(path: str) -> DualNetworkEmulator:
 # Mismatch Calculation
 # =============================================================================
 
+def eta_to_masses(eta: float, M_total: float):
+    """Convert symmetric mass ratio to component masses."""
+    sqrt_term = np.sqrt(1 - 4 * eta)
+    q = (1 - sqrt_term) / (1 + sqrt_term)
+    m1 = M_total / (1 + q)
+    m2 = M_total * q / (1 + q)
+    return m1, m2
+
+
 def compute_mismatch_lal(
     emulator: DualNetworkEmulator,
     eta: float,
     chi1z: float,
     chi2z: float,
     psd_file: str = "psds/ET-D-psd.txt",
-    M_total: float = 50.0,
 ) -> dict:
     """
     Compute mismatch between emulator and LAL waveform.
+
+    Uses the SAME frequency grid as training - no interpolation.
     """
     # Get emulator prediction
     params = np.array([[eta, chi1z, chi2z]])
@@ -157,14 +168,8 @@ def compute_mismatch_lal(
     amp_emu = 10.0 ** log_amp_emu
     h_emu = amp_emu * np.exp(-1j * phase_emu)
 
-    # Generate LAL waveform
-    sqrt_term = np.sqrt(1 - 4 * eta)
-    q = (1 - sqrt_term) / (1 + sqrt_term)
-    m1 = M_total / (1 + q)
-    m2 = M_total * q / (1 + q)
-
-    Mf_grid = emulator.frequency_grid
-    f_physical = np.array(geometric_to_physical_frequency(jnp.array(Mf_grid), M_total))
+    # Generate LAL waveform with EXACT same grid parameters
+    m1, m2 = eta_to_masses(eta, emulator.M_ref)
 
     lal_params = WaveformParameters(
         mass_1=m1,
@@ -174,49 +179,42 @@ def compute_mismatch_lal(
         luminosity_distance=1.0,
         inclination=0.0,
         phase=0.0,
-        f_min=float(f_physical[0] * 0.9),
-        f_max=float(f_physical[-1] * 1.1),
-        delta_f=0.1,
+        f_min=emulator.f_min,
+        f_max=emulator.f_max,
+        delta_f=emulator.delta_f,
         approximant="IMRPhenomXPHM",
     )
 
+    # Generate LAL waveform - same grid, no interpolation needed
     freqs_lal, hp_lal, _ = generate_fd_waveform(
         lal_params, mode_array=[(2, 2), (2, -2)], disable_multibanding=True
     )
 
-    Mf_lal = np.array(physical_to_geometric_frequency(jnp.array(freqs_lal), M_total))
+    # Extract amplitude and phase directly
+    amp_lal = np.abs(hp_lal)
+    phase_lal = np.unwrap(np.angle(hp_lal))
 
-    # Interpolate LAL to emulator grid
-    valid_mask = np.abs(hp_lal) > 0
-    h_lal_interp = np.interp(
-        Mf_grid,
-        Mf_lal[valid_mask],
-        hp_lal[valid_mask],
-        left=0.0,
-        right=0.0,
-    )
-
-    # Align phases at peak amplitude
-    peak_idx = np.argmax(np.abs(h_lal_interp))
-    phase_lal = np.unwrap(np.angle(h_lal_interp))
+    # Align phase at peak amplitude
+    peak_idx = np.argmax(amp_lal)
     phase_lal = phase_lal - phase_lal[peak_idx]
-    amp_lal = np.abs(h_lal_interp)
-    h_lal_aligned = amp_lal * np.exp(-1j * phase_lal)
 
-    # Also align emulator phase at peak
+    # Reconstruct aligned LAL strain
+    h_lal = amp_lal * np.exp(-1j * phase_lal)
+
+    # Also align emulator phase at same peak location for comparison
     phase_emu_aligned = phase_emu - phase_emu[peak_idx]
     h_emu_aligned = amp_emu * np.exp(-1j * phase_emu_aligned)
 
-    # Load PSD
+    # Load and interpolate PSD to frequency grid
     psd_freqs, psd_values = load_psd(psd_file)
-    psd_interp = np.interp(f_physical, np.array(psd_freqs), np.array(psd_values))
+    psd_interp = np.interp(emulator.frequency_grid, np.array(psd_freqs), np.array(psd_values))
 
     # Compute match
     match = float(compute_match(
         jnp.array(h_emu_aligned),
-        jnp.array(h_lal_aligned),
+        jnp.array(h_lal),
         jnp.array(psd_interp),
-        jnp.array(f_physical)
+        jnp.array(emulator.frequency_grid)
     ))
     mismatch = 1.0 - match
 
@@ -230,6 +228,8 @@ def compute_mismatch_lal(
         "amp_emu": amp_emu,
         "phase_lal": phase_lal,
         "phase_emu": phase_emu_aligned,
+        "log_amp_lal": np.log10(np.maximum(amp_lal, 1e-100)),
+        "log_amp_emu": log_amp_emu,
     }
 
 
@@ -256,6 +256,7 @@ def validate_emulator(
     print(f"\nLoading emulator from {emulator_path}...")
     emulator = load_emulator(emulator_path)
     print(f"  Frequency grid: {len(emulator.frequency_grid)} points")
+    print(f"  Frequency range: {emulator.f_min:.1f} - {emulator.f_max:.1f} Hz")
     print(f"  Amplitude PCA: {emulator.pca_amplitude.n_components} components")
     print(f"  Phase PCA: {emulator.pca_phase.n_components} components")
 
@@ -265,7 +266,7 @@ def validate_emulator(
         val_params = f["validation/parameters"][:]
         val_log_amp = f["validation/log_amplitude"][:]
         val_phase = f["validation/phase"][:]
-        Mf_grid = f["frequency_grid"][:]
+        freq_grid = f["frequency_grid"][:]
 
     print(f"  Validation samples: {len(val_params)}")
 
@@ -353,18 +354,18 @@ def validate_emulator(
     ax.set_title(f'Phase Residuals (MSE={phase_mse:.2e})')
 
     ax = axes[0, 2]
-    ax.semilogy(Mf_grid, np.mean(amp_residuals**2, axis=0), label='Amplitude')
-    ax.semilogy(Mf_grid, np.mean(phase_residuals**2, axis=0), label='Phase')
-    ax.set_xlabel('Mf')
+    ax.semilogy(freq_grid, np.mean(amp_residuals**2, axis=0), label='Amplitude')
+    ax.semilogy(freq_grid, np.mean(phase_residuals**2, axis=0), label='Phase')
+    ax.set_xlabel('Frequency (Hz)')
     ax.set_xscale('log')
     ax.set_title('Per-Frequency MSE')
     ax.legend()
 
     for i, idx in enumerate([0, len(val_params)//2, len(val_params)-1]):
         ax = axes[1, i]
-        ax.plot(Mf_grid, val_log_amp[idx], 'b-', label='True', lw=2)
-        ax.plot(Mf_grid, pred_log_amp[idx], 'r--', label='Emulator', lw=2)
-        ax.set_xlabel('Mf')
+        ax.plot(freq_grid, val_log_amp[idx], 'b-', label='True', lw=2)
+        ax.plot(freq_grid, pred_log_amp[idx], 'r--', label='Emulator', lw=2)
+        ax.set_xlabel('Frequency (Hz)')
         ax.set_xscale('log')
         eta, chi1z, chi2z = val_params[idx]
         ax.set_title(f'η={eta:.3f}, χ₁={chi1z:.2f}, χ₂={chi2z:.2f}')
@@ -435,18 +436,18 @@ def validate_emulator(
         result = compute_mismatch_lal(emulator, eta, chi1z, chi2z, psd_file=psd_file)
 
         ax = axes[row, 0]
-        ax.plot(Mf_grid, np.log10(result["amp_lal"] + 1e-100), 'b-', label='LAL', lw=2)
-        ax.plot(Mf_grid, np.log10(result["amp_emu"] + 1e-100), 'r--', label='Emulator', lw=2)
-        ax.set_xlabel('Mf')
+        ax.plot(freq_grid, result["log_amp_lal"], 'b-', label='LAL', lw=2)
+        ax.plot(freq_grid, result["log_amp_emu"], 'r--', label='Emulator', lw=2)
+        ax.set_xlabel('Frequency (Hz)')
         ax.set_ylabel('log₁₀(Amplitude)')
         ax.set_xscale('log')
         ax.set_title(f'{label}: η={eta:.3f}, χ₁={chi1z:.2f}, χ₂={chi2z:.2f}\nMismatch={mm:.2e}')
         ax.legend()
 
         ax = axes[row, 1]
-        ax.plot(Mf_grid, result["phase_lal"], 'b-', label='LAL', lw=2)
-        ax.plot(Mf_grid, result["phase_emu"], 'r--', label='Emulator', lw=2)
-        ax.set_xlabel('Mf')
+        ax.plot(freq_grid, result["phase_lal"], 'b-', label='LAL', lw=2)
+        ax.plot(freq_grid, result["phase_emu"], 'r--', label='Emulator', lw=2)
+        ax.set_xlabel('Frequency (Hz)')
         ax.set_ylabel('Phase (rad)')
         ax.set_xscale('log')
         ax.set_title('Phase Comparison')
