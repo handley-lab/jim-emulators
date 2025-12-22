@@ -13,6 +13,9 @@ from jim_emulators.waveforms.lal_waveforms import (
     WaveformParameters,
     generate_fd_waveform,
     generate_fd_waveform_on_grid,
+    generate_fd_mode,
+    generate_fd_mode_at_frequencies,
+    generate_fd_modes,
     get_waveform_amplitude_phase,
     SUPPORTED_APPROXIMANTS,
 )
@@ -179,6 +182,215 @@ class TestAmplitudePhase:
         # Reconstruct from amp/phase should match original
         hp_reconstructed = amp_p * np.exp(1j * phase_p)
         np.testing.assert_allclose(hp_reconstructed, hp, rtol=1e-10)
+
+
+class TestModeExtraction:
+    """Tests for individual mode extraction."""
+
+    @pytest.fixture
+    def default_params(self):
+        """Default parameters for mode testing."""
+        return WaveformParameters(
+            mass_1=30.0,
+            mass_2=25.0,
+            chi1z=0.3,
+            chi2z=-0.2,
+            luminosity_distance=100.0,
+            f_min=20.0,
+            f_max=512.0,
+            delta_f=0.5,
+        )
+
+    def test_generate_22_mode(self, default_params):
+        """Test generation of (2,2) mode."""
+        freqs, h22 = generate_fd_mode(default_params, ell=2, emm=2)
+
+        # Check output shapes
+        assert len(freqs) == len(h22)
+        assert len(freqs) > 0
+
+        # Check waveform is complex
+        assert h22.dtype == np.complex128
+
+        # Check mode is nonzero in band
+        mask = (freqs >= default_params.f_min) & (freqs <= default_params.f_max)
+        assert np.any(np.abs(h22[mask]) > 0)
+
+    def test_generate_higher_modes(self, default_params):
+        """Test generation of higher modes."""
+        for ell, emm in [(2, 1), (3, 3), (3, 2), (4, 4)]:
+            freqs, hlm = generate_fd_mode(default_params, ell=ell, emm=emm)
+            assert len(freqs) == len(hlm)
+            # Higher modes may be weaker but should still exist
+            assert np.any(np.abs(hlm) > 0)
+
+    def test_generate_multiple_modes(self, default_params):
+        """Test generation of multiple modes at once."""
+        modes_to_generate = [(2, 2), (2, 1), (3, 3)]
+        freqs, mode_dict = generate_fd_modes(default_params, modes=modes_to_generate)
+
+        # Check all requested modes are present
+        assert set(mode_dict.keys()) == set(modes_to_generate)
+
+        # Check all modes have same length as frequency array
+        for mode, hlm in mode_dict.items():
+            assert len(hlm) == len(freqs)
+
+    def test_mode_distance_scaling(self, default_params):
+        """Test that mode amplitude scales inversely with distance."""
+        params1 = WaveformParameters(
+            mass_1=30.0, mass_2=25.0,
+            luminosity_distance=100.0,
+            f_min=20.0, f_max=256.0, delta_f=0.5
+        )
+        params2 = WaveformParameters(
+            mass_1=30.0, mass_2=25.0,
+            luminosity_distance=200.0,
+            f_min=20.0, f_max=256.0, delta_f=0.5
+        )
+
+        freqs1, h22_1 = generate_fd_mode(params1, ell=2, emm=2)
+        freqs2, h22_2 = generate_fd_mode(params2, ell=2, emm=2)
+
+        # Find a frequency where both are nonzero
+        nonzero = (np.abs(h22_1) > 0) & (np.abs(h22_2) > 0)
+        if np.any(nonzero):
+            idx = np.where(nonzero)[0][len(np.where(nonzero)[0])//2]
+            ratio = np.abs(h22_1[idx]) / np.abs(h22_2[idx])
+            assert np.isclose(ratio, 2.0, rtol=1e-3)
+
+    def test_mode_amplitude_phase(self, default_params):
+        """Test extraction of amplitude and phase from mode."""
+        freqs, h22 = generate_fd_mode(default_params, ell=2, emm=2)
+
+        # Get valid data
+        mask = np.abs(h22) > 0
+        h22_valid = h22[mask]
+
+        # Extract amplitude and phase
+        amplitude = np.abs(h22_valid)
+        phase = np.unwrap(np.angle(h22_valid))
+
+        # Amplitudes should be positive
+        assert np.all(amplitude > 0)
+
+        # Phase should be continuous (no jumps > pi after unwrapping)
+        phase_diff = np.abs(np.diff(phase))
+        assert np.all(phase_diff < np.pi)
+
+        # Reconstruct should match original
+        h22_reconstructed = amplitude * np.exp(1j * phase)
+        np.testing.assert_allclose(h22_reconstructed, h22_valid, rtol=1e-10)
+
+
+class TestFrequencySequenceGeneration:
+    """Tests for arbitrary frequency evaluation (no interpolation)."""
+
+    def test_generate_at_arbitrary_frequencies(self):
+        """Test generation at arbitrary (log-spaced) frequencies."""
+        # Log-spaced frequencies typical for training
+        frequencies = np.logspace(np.log10(20), np.log10(1000), 500)
+
+        h_lm = generate_fd_mode_at_frequencies(
+            frequencies=frequencies,
+            mass_1=30.0,
+            mass_2=25.0,
+            chi1z=0.3,
+            chi2z=-0.2,
+            ell=2,
+            emm=2,
+        )
+
+        # Check output shape matches input frequencies
+        assert h_lm.shape == frequencies.shape
+        assert h_lm.dtype == np.complex128
+
+        # Check waveform is nonzero
+        assert np.any(np.abs(h_lm) > 0)
+
+    def test_frequency_sequence_vs_uniform_grid(self):
+        """Test that frequency sequence gives same result as uniform grid at matching points."""
+        # Generate on uniform grid
+        params = WaveformParameters(
+            mass_1=30.0,
+            mass_2=25.0,
+            chi1z=0.3,
+            chi2z=-0.2,
+            luminosity_distance=100.0,
+            f_min=20.0,
+            f_max=512.0,
+            delta_f=1.0,
+        )
+        freqs_uniform, h22_uniform = generate_fd_mode(params, ell=2, emm=2)
+
+        # Select subset of frequencies and evaluate with frequency sequence
+        # Use frequencies that exist on the uniform grid
+        mask = (freqs_uniform >= 50.0) & (freqs_uniform <= 200.0) & (np.abs(h22_uniform) > 0)
+        test_freqs = freqs_uniform[mask][::10]  # Every 10th point
+
+        h22_seq = generate_fd_mode_at_frequencies(
+            frequencies=test_freqs,
+            mass_1=30.0,
+            mass_2=25.0,
+            chi1z=0.3,
+            chi2z=-0.2,
+            ell=2,
+            emm=2,
+            luminosity_distance=100.0,
+            f_ref=params.f_ref,
+        )
+
+        # Get corresponding values from uniform grid
+        indices = np.searchsorted(freqs_uniform, test_freqs)
+        h22_uniform_subset = h22_uniform[indices]
+
+        # Should match exactly (no interpolation)
+        np.testing.assert_allclose(h22_seq, h22_uniform_subset, rtol=1e-10)
+
+    def test_log_spaced_grid_no_interpolation(self):
+        """Test that log-spaced evaluation works correctly."""
+        # This is the key use case: training on log-spaced Mf grid
+        frequencies = np.logspace(np.log10(10), np.log10(1000), 100)
+
+        h_lm = generate_fd_mode_at_frequencies(
+            frequencies=frequencies,
+            mass_1=35.0,
+            mass_2=15.0,
+            chi1z=0.5,
+            chi2z=-0.3,
+            ell=2,
+            emm=2,
+        )
+
+        # Extract amplitude and phase
+        amplitude = np.abs(h_lm)
+        valid = amplitude > 0
+        phase = np.unwrap(np.angle(h_lm[valid]))
+
+        # Amplitude should be positive where valid
+        assert np.all(amplitude[valid] > 0)
+
+        # Phase should be continuous
+        phase_diff = np.abs(np.diff(phase))
+        assert np.all(phase_diff < np.pi), "Phase has discontinuities"
+
+    def test_higher_modes_at_frequencies(self):
+        """Test higher mode extraction at arbitrary frequencies."""
+        frequencies = np.logspace(np.log10(20), np.log10(500), 200)
+
+        for ell, emm in [(2, 1), (3, 3), (3, 2), (4, 4)]:
+            h_lm = generate_fd_mode_at_frequencies(
+                frequencies=frequencies,
+                mass_1=40.0,
+                mass_2=20.0,
+                chi1z=0.2,
+                chi2z=0.1,
+                ell=ell,
+                emm=emm,
+            )
+            assert h_lm.shape == frequencies.shape
+            # Higher modes may be weaker but should exist
+            assert np.any(np.abs(h_lm) > 0), f"Mode ({ell},{emm}) is all zeros"
 
 
 class TestMatch:

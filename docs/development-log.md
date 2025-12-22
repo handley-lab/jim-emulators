@@ -1207,6 +1207,272 @@ Conducted comprehensive literature review using Gemini Deep Research to understa
 
 ---
 
+## Session: 2024-12-22 (Evening - Mode Extraction Implementation)
+
+### 16. Individual Mode Extraction
+
+Implemented individual spherical harmonic mode extraction to align with the theory document's framework. Previously, the data generation script stored combined polarizations (h_+ and h_×), but the theory specifies learning individual modes h_ℓm(Mf).
+
+**Key changes:**
+
+1. **LAL Mode Extraction Functions** (`src/jim_emulators/waveforms/lal_waveforms.py`):
+   - `generate_fd_mode(params, ell, emm)`: Extracts a single mode using `lalsim.SimIMRPhenomXHMGenerateFDOneMode`
+   - `generate_fd_modes(params, modes)`: Helper for multiple modes
+   - Returns raw complex h_ℓm(f) for amplitude/phase extraction
+
+2. **Revised Data Generation** (`scripts/generate_data.py`):
+   - Uses `generate_fd_mode()` instead of combined polarizations
+   - Stores (2,2) mode by default, generalizable via `--mode` flag
+   - Log-spaced Mf grid: [0.0005, 0.3] with 2000 points (extended from previous)
+   - Phase aligned at reference frequency Mf_ref = 0.003 (not at peak amplitude)
+   - Supports any mode: `--mode 3 3` for (3,3), etc.
+
+3. **Data Validation Script** (`scripts/validate_data.py`):
+   - Comprehensive checks: NaN analysis, amplitude/phase statistics, parameter coverage
+   - Verifies stored data matches fresh LAL generation exactly
+   - Generates validation plots
+
+**Generated Dataset:**
+```
+data/waveforms_22mode.h5
+├── frequency_grid          # 2000 log-spaced Mf points [0.0005, 0.3]
+├── train/
+│   ├── parameters          # [10000, 3] - (η, χ₁z, χ₂z)
+│   ├── log_amplitude       # [10000, 2000] - log₁₀|h₂₂|
+│   └── phase               # [10000, 2000] - unwrapped, aligned at Mf_ref
+└── validation/
+    └── ... (1000 samples)
+```
+
+**Validation Results:**
+- 10,000 training + 1,000 validation samples generated in ~10 seconds
+- Phase perfectly aligned at Mf_ref (deviation = 0)
+- Data matches LAL exactly on verification (3 samples tested)
+- All 42 tests pass (5 new tests added for mode extraction)
+
+### 17. Frequency Grid Discussion
+
+James noted that jim's likelihood inference may require linear grids in physical frequency f, while the theory recommends log-spaced grids in Mf for training. Current approach:
+
+- **Training data**: Log-spaced Mf grid (better captures inspiral dynamics)
+- **Inference**: Emulator can be evaluated at arbitrary Mf values (converted from physical f given source mass M)
+
+This design allows the PCA+MLP architecture to learn on an optimal grid while supporting evaluation on any grid required by downstream inference code.
+
+### Files Changed
+
+```
+src/jim_emulators/waveforms/lal_waveforms.py  # +128 lines (mode extraction)
+src/jim_emulators/waveforms/__init__.py       # Export new functions
+scripts/generate_data.py                       # Rewritten for mode extraction
+scripts/validate_data.py                       # New validation script
+tests/test_lal_waveforms.py                    # +5 tests for mode extraction
+```
+
+### Branch
+
+`feature/mode-extraction` - committed as `d48805c`
+
+### 18. No-Interpolation Fix
+
+**Critical improvement**: Eliminated interpolation from data generation.
+
+**Problem identified**: The initial implementation generated LAL waveforms on a uniform frequency grid, then interpolated to the target log-spaced Mf grid. This interpolation introduces errors and defeats the purpose of direct evaluation.
+
+**Solution**: Found LAL's `SimIMRPhenomXHMFrequencySequenceOneMode` function which evaluates the waveform model at arbitrary frequency points without requiring a uniform grid.
+
+**New function added** (`src/jim_emulators/waveforms/lal_waveforms.py`):
+```python
+def generate_fd_mode_at_frequencies(
+    frequencies: np.ndarray,
+    mass_1: float, mass_2: float,
+    chi1z: float, chi2z: float,
+    ell: int, emm: int,
+    luminosity_distance: float = 1.0,
+    phase: float = 0.0,
+    f_ref: Optional[float] = None,
+) -> np.ndarray:
+    """
+    Generate a single mode h_lm evaluated at specified frequencies.
+    Uses LAL's frequency sequence function for exact evaluation
+    at arbitrary frequency points (no interpolation).
+    """
+```
+
+**Validation results** (after fix):
+```
+Sample 0: eta=0.1465, chi1z=0.6249, chi2z=0.1810
+  Amplitude: max diff=0.00e+00, mean=0.00e+00
+  Phase: max diff=0.00e+00 rad, mean=0.00e+00
+  ✓ Perfect match (machine precision)!
+```
+
+Stored data now matches fresh LAL generation to machine precision (zero difference), confirming the data generation pipeline is exact.
+
+**Tests added**: 4 new tests in `TestFrequencySequenceGeneration` class:
+- `test_generate_at_arbitrary_frequencies`
+- `test_frequency_sequence_vs_uniform_grid`
+- `test_log_spaced_grid_no_interpolation`
+- `test_higher_modes_at_frequencies`
+
+All 23 tests pass.
+
+### 19. Phase Aliasing Fix
+
+**Problem identified**: The unwrapped phase plot showed spurious oscillations at low frequencies. Investigation revealed phase aliasing - at very low Mf, the phase evolves so rapidly that it changes by more than 2π between adjacent log-spaced grid points, causing `np.unwrap` to fail.
+
+**Diagnosis**:
+- At Mf = 0.0005 (our original MF_MIN), phase derivative is extremely large
+- With 2000 log-spaced points, adjacent frequencies differ by ~0.3%
+- Phase was changing by >π between adjacent points for Mf < 0.003
+- This created 270+ unwrapping failures in the problematic region
+
+**Solution**: Increased `MF_MIN` from 0.0005 to 0.004 and `MF_REF` from 0.003 to 0.006.
+
+Physical frequency coverage:
+| Total Mass | f_min (MF_MIN=0.004) | f_ref (MF_REF=0.006) |
+|------------|---------------------|---------------------|
+| 50 M☉ | 16 Hz | 24 Hz |
+| 20 M☉ | 40 Hz | 61 Hz |
+| 10 M☉ | 81 Hz | 122 Hz |
+
+This still covers the LIGO/Virgo sensitive band (>10-20 Hz) for typical BBH sources.
+
+**Validation after fix**:
+- Max phase jump between adjacent bins: 2.47 rad (< π)
+- Phase correctly aligned at reference (deviation = 0)
+- All samples pass verification at machine precision
+
+### 20. External Review (OpenAI GPT-5.2)
+
+Consulted OpenAI to validate the phase aliasing fix. Key feedback:
+
+**Confirmation**: The fix is correct. Raising `MF_MIN` until the maximum adjacent phase jump is safely below π is a valid and commonly-used approach, provided the emulator doesn't need to represent that region.
+
+**Mass range implications**:
+| Total Mass | MF_MIN=0.004 corresponds to | Verdict |
+|------------|----------------------------|---------|
+| 50 M☉ | ~16 Hz | Fine (analyses often start at 15-20 Hz) |
+| 20 M☉ | ~40 Hz | Lose 20-40 Hz band |
+| 10 M☉ | ~81 Hz | Lose most of inspiral below 80 Hz |
+
+For BBH with M ≳ 30-40 M☉ and typical f_min ~ 15-20 Hz: **our fix is appropriate**.
+For lower-mass BBH (10-20 M☉) with f_min ~ 20 Hz: would need a different approach.
+
+**Better approaches for future** (if we need low-Mf coverage):
+1. **Grid in PN variable**: Sample uniformly in v = (πMf)^(1/3) instead of log(Mf) - phase is more polynomial in v
+2. **Piecewise grid**: Dense at low Mf, log-spaced at higher Mf
+3. **Residual phase**: Subtract a PN baseline phase, train on slowly-varying residual, add back at inference
+4. **Train complex directly**: Use (Re(h), Im(h)) to bypass unwrapping entirely
+
+**Recommendation for NN training**: Training on **residual phase** (subtract PN baseline) is usually the best balance for waveform emulators - reduces sampling density requirements and improves learning.
+
+**Current status**: Our MF_MIN=0.004 fix is appropriate for the initial (2,2) mode emulator targeting typical BBH sources. For future extension to lower masses, consider residual phase or grid redesign.
+
+### 21. Grid Comparison Study
+
+Investigated whether using the PN variable v = (πMf)^(1/3) instead of log(Mf) for the frequency grid would help with phase aliasing.
+
+**Finding 1: v-uniform grid doesn't help**
+
+At Mf_min=0.004, comparing grids:
+- Log(Mf) grid: max phase jump = 0.88 rad
+- v-uniform grid: max phase jump = 1.95 rad
+
+The log(Mf) grid is actually *better* because it concentrates points at low Mf where phase evolves fastest. The v-uniform grid spreads points too evenly.
+
+**Finding 2: More points can extend to lower Mf_min**
+
+Testing log(Mf) grid with varying N_FREQ and Mf_min:
+
+| Mf_min | 1000 pts | 2000 pts | 4000 pts | 8000 pts | 16000 pts |
+|--------|----------|----------|----------|----------|-----------|
+| 0.0005 | 3.1 | 3.1 | 3.1 | 3.1 | 3.1 |
+| 0.0010 | 3.1 | 3.1 | 3.1 | 2.9 | 1.5 |
+| 0.0020 | 3.1 | 3.1 | 1.6 | 0.8 | 0.4 |
+| 0.0030 | 3.0 | 1.5 | 0.8 | 0.4 | 0.2 |
+| 0.0040 | 1.8 | 0.9 | 0.4 | 0.2 | 0.1 |
+
+(Values are max phase jump in radians; need < π ≈ 3.14 for safe unwrapping)
+
+**Practical recommendations:**
+
+| Use Case | Mf_min | N_FREQ | f_min @ 50 M☉ | f_min @ 20 M☉ |
+|----------|--------|--------|---------------|---------------|
+| Current (M ≳ 40 M☉) | 0.004 | 2000 | 16 Hz | 41 Hz |
+| Extended (M ≳ 20 M☉) | 0.002 | 4000 | 8 Hz | 20 Hz |
+| Low-mass (M ≳ 10 M☉) | 0.001 | 8000 | 4 Hz | 10 Hz |
+
+**Conclusion**: The log(Mf) grid is optimal. To support lower masses, increase N_FREQ rather than changing grid type. Our current setup (Mf_min=0.004, N_FREQ=2000) is appropriate for M ≳ 30-40 M☉ with f_min ~ 15-20 Hz.
+
+### Files Changed
+
+```
+src/jim_emulators/waveforms/lal_waveforms.py  # +generate_fd_mode_at_frequencies()
+src/jim_emulators/waveforms/__init__.py       # Export new function
+scripts/generate_data.py                       # Use direct evaluation, fix MF_MIN/MF_REF
+scripts/validate_data.py                       # Use direct evaluation for verification
+tests/test_lal_waveforms.py                    # +4 tests for frequency sequence
+```
+
+---
+
+### 22. Training Pipeline Documentation
+
+Created comprehensive LaTeX documentation for the neural network training pipeline in `implementation/`.
+
+**Document:** `implementation/training-pipeline.tex` (12 pages)
+
+**Contents:**
+
+1. **Data Characteristics** (§1) - Analysis of validation plots showing:
+   - Log amplitude range: [-26, -20] (span of ~6)
+   - Phase range: [-200, 0] radians (span of ~200)
+   - Bimodal amplitude distribution (inspiral vs merger/ringdown)
+   - Phase correctly aligned at Mf_ref = 0.006
+
+2. **Normalization Strategy** (§2):
+   - **Per-frequency standardization** for outputs: compute mean/std at each of the 2000 frequency bins, normalize independently
+   - **Input normalization**: η → [-1,1] via linear map, χ → [-1,1] by dividing by 0.99
+   - **Differentiability**: Normalization constants are precomputed and fixed, so gradients flow through trivially (just linear transformations)
+
+3. **PCA Compression** (§3):
+   - Separate PCA for amplitude and phase (different characteristics)
+   - Target: 99.99% variance retention
+   - Expected: 30-80 components per quantity
+
+4. **Network Architecture** (§4):
+   - 4×512 MLP with Speculator activation
+   - Input: 3 normalized parameters (η̂, χ̂₁z, χ̂₂z)
+   - Output: K_A + K_Φ PCA coefficients (~128 total)
+   - ~850,000 parameters
+
+5. **Training Configuration** (§5):
+   - Loss: MSE on PCA coefficients
+   - Optimizer: Adam with gradient clipping (global norm ≤ 1.0)
+   - Learning rate: 10⁻³ with cosine decay to 10⁻⁵
+   - Batch size: 256, epochs: 1000 with early stopping
+
+6. **Inference Pipeline** (§6):
+   - Full algorithm: params → normalize → MLP → PCA reconstruct → denormalize
+   - Computational cost: ~1.1M FLOPs/waveform
+   - Expected speedup: ~1000× over LALSimulation
+
+7. **Validation Metrics** (§7):
+   - Target mismatch: < 10⁻³
+   - Amplitude error: < 1% relative
+   - Phase error: < 0.1 radians
+
+**Files created:**
+```
+implementation/
+├── training-pipeline.tex         # Source (25 KB)
+├── training-pipeline.pdf         # Compiled (12 pages)
+└── waveforms_22mode_validation.png  # Reference plot
+```
+
+---
+
 ## Session: 2024-12-22 (Parallel Branch: ja-session-1452 - Training Pipeline)
 
 ### 41. First End-to-End Training Pipeline
@@ -1417,3 +1683,4 @@ tests/
 3. ☐ Scale up training data (10k → 100k)
 4. ☐ Add higher modes
 5. ☐ Benchmark inference speed
+6. ☐ Address linear frequency grid for jim integration if needed
