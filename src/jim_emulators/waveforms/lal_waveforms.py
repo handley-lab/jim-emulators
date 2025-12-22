@@ -391,3 +391,131 @@ def get_waveform_amplitude_phase(
     phase_cross = np.unwrap(np.angle(hc))
 
     return amp_plus, phase_plus, amp_cross, phase_cross
+
+
+def generate_fd_mode(
+    params: WaveformParameters,
+    ell: int,
+    emm: int,
+) -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Generate a single spherical harmonic mode h_lm in the frequency domain.
+
+    This extracts the individual mode rather than the combined polarizations,
+    which is the correct representation for neural network emulation. For
+    non-precessing (aligned-spin) waveforms, modes with m < 0 can be obtained
+    from conjugate symmetry: h_{l,-m}(f) = (-1)^l * h_{lm}^*(f).
+
+    Parameters
+    ----------
+    params : WaveformParameters
+        Waveform parameters. Only aligned spins (chi1z, chi2z) are used;
+        transverse spin components are ignored.
+    ell : int
+        Spherical harmonic degree (l >= 2).
+    emm : int
+        Spherical harmonic order (-l <= m <= l, typically m > 0).
+
+    Returns
+    -------
+    frequencies : np.ndarray
+        Frequency array in Hz.
+    h_lm : np.ndarray
+        Complex mode amplitude h_lm(f).
+
+    Notes
+    -----
+    Uses LALSimulation's SimIMRPhenomXHMGenerateFDOneMode for aligned-spin
+    waveforms. The output is the raw mode h_lm, not weighted by spherical
+    harmonics.
+
+    The mode satisfies: h(f) = sum_{lm} h_lm(f) * Y_{lm}(iota, phi)
+
+    Examples
+    --------
+    >>> params = WaveformParameters(
+    ...     mass_1=30.0, mass_2=25.0,
+    ...     chi1z=0.3, chi2z=-0.2,
+    ...     f_min=20.0, f_max=1024.0, delta_f=0.125
+    ... )
+    >>> freqs, h22 = generate_fd_mode(params, ell=2, emm=2)
+    >>> amplitude = np.abs(h22)
+    >>> phase = np.unwrap(np.angle(h22))
+    """
+    # Convert to SI units
+    mass_1_si = params.mass_1 * MSUN_SI
+    mass_2_si = params.mass_2 * MSUN_SI
+    distance_si = params.luminosity_distance * MPC_SI
+
+    # Reference frequency defaults to f_min
+    f_ref = params.f_ref if params.f_ref is not None else params.f_min
+
+    # Generate single mode using XHM (aligned-spin higher modes)
+    hlm_lal = lalsim.SimIMRPhenomXHMGenerateFDOneMode(
+        mass_1_si,
+        mass_2_si,
+        float(params.chi1z),
+        float(params.chi2z),
+        int(ell),
+        int(emm),
+        distance_si,
+        float(params.f_min),
+        float(params.f_max),
+        float(params.delta_f),
+        float(params.phase),
+        float(f_ref),
+        None,  # LAL dictionary
+    )
+
+    # Extract data
+    h_lm = hlm_lal.data.data
+
+    # Build frequency array
+    n_points = len(h_lm)
+    frequencies = np.arange(n_points) * params.delta_f
+
+    return frequencies, h_lm
+
+
+def generate_fd_modes(
+    params: WaveformParameters,
+    modes: Optional[List[Tuple[int, int]]] = None,
+) -> Tuple[np.ndarray, Dict[Tuple[int, int], np.ndarray]]:
+    """
+    Generate multiple spherical harmonic modes in the frequency domain.
+
+    Parameters
+    ----------
+    params : WaveformParameters
+        Waveform parameters.
+    modes : list of (l, m) tuples, optional
+        Modes to generate. Default is [(2,2), (2,1), (3,3), (3,2), (4,4)]
+        (positive m only, as negative m can be obtained by conjugate symmetry).
+
+    Returns
+    -------
+    frequencies : np.ndarray
+        Frequency array in Hz.
+    mode_dict : dict
+        Dictionary mapping (l, m) tuples to complex mode arrays h_lm(f).
+
+    Examples
+    --------
+    >>> params = WaveformParameters(mass_1=30.0, mass_2=25.0, chi1z=0.3)
+    >>> freqs, modes = generate_fd_modes(params, modes=[(2, 2), (3, 3)])
+    >>> h22 = modes[(2, 2)]
+    >>> h33 = modes[(3, 3)]
+    """
+    if modes is None:
+        modes = [(2, 2), (2, 1), (3, 3), (3, 2), (4, 4)]
+
+    mode_dict = {}
+    frequencies = None
+
+    for ell, emm in modes:
+        freqs, h_lm = generate_fd_mode(params, ell, emm)
+        mode_dict[(ell, emm)] = h_lm
+        if frequencies is None:
+            frequencies = freqs
+
+    return frequencies, mode_dict

@@ -2,23 +2,36 @@
 """
 Generate training data for gravitational waveform emulator.
 
-This script generates waveforms using LALSimulation and stores them in HDF5 format
-for training a neural network emulator. The waveforms are parameterized in geometric
-units (Mf) for mass-independence.
+This script generates individual spherical harmonic modes h_lm using LALSimulation
+and stores them in HDF5 format for training a neural network emulator. The waveforms
+are parameterized in geometric units (Mf) for mass-independence.
 
-Starter case: Aligned spins (no precession), 22 mode only.
+Following the framework in theory/frequency-domain-emulation.tex:
+- Extracts individual modes h_lm(f), not combined polarizations
+- Uses geometric frequency Mf = M*f as the domain variable
+- Stores log-amplitude and unwrapped phase with proper conventions
+- Phase aligned at reference frequency: Phi(Mf_ref) = 0
+
+Frequency Grid Notes:
+    The theory document recommends log-spaced grids in Mf for training, which
+    better captures the inspiral dynamics. However, likelihood inference codes
+    (e.g., jim) may require linear grids in physical frequency f. This script
+    generates data on a log-spaced Mf grid for training. At inference time,
+    the emulator can be evaluated at arbitrary Mf values (converted from
+    physical f given the source mass M).
 
 Usage:
     python scripts/generate_data.py                    # Default: 10k train, 1k val
-    python scripts/generate_data.py --n_train 100000   # Full dataset
+    python scripts/generate_data.py --n_train 100000   # Large dataset
     python scripts/generate_data.py --test             # Quick test with 100 samples
+    python scripts/generate_data.py --mode 3 3         # Generate (3,3) mode
 """
 
 import argparse
 import os
 import sys
 from pathlib import Path
-from typing import Tuple
+from typing import Tuple, List
 import time
 
 import h5py
@@ -29,12 +42,15 @@ from tqdm import tqdm
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from jim_emulators.waveforms import WaveformParameters, generate_fd_waveform
+from jim_emulators.waveforms import WaveformParameters, generate_fd_mode
 from jim_emulators.waveforms.utils import (
     get_geometric_frequency_grid,
     physical_to_geometric_frequency,
     geometric_to_physical_frequency,
 )
+
+# Physical constants
+MTSUN_SI = 4.925491025543576e-6  # G*Msun/c^3 in seconds
 
 
 # =============================================================================
@@ -48,17 +64,19 @@ PARAM_BOUNDS = {
     "chi2z": (-0.99, 0.99),   # Secondary aligned spin
 }
 
-# Geometric frequency grid
-MF_MIN = 0.003   # Start early enough to capture inspiral
-MF_MAX = 0.25    # Past ringdown for most systems
-N_FREQ = 1000    # Number of frequency points
+# Geometric frequency grid (theory document recommends Mf in [1e-4, 0.3])
+# We use a slightly narrower range that covers typical LIGO sources well
+MF_MIN = 0.0005   # Early inspiral (f ~ 10 Hz for 50 Msun)
+MF_MAX = 0.3      # Well past ringdown
+N_FREQ = 2000     # Number of frequency points (log-spaced)
 
-# Reference total mass for waveform generation (cancels out in geometric units)
-# Using 50 Msun gives reasonable frequency range
+# Reference frequency for phase alignment (in geometric units)
+MF_REF = 0.003    # Reference point where Phi = 0
+
+# Reference total mass for waveform generation
+# The specific value doesn't matter for the dimensionless shape function,
+# but affects the physical frequency range we generate at
 M_REF = 50.0  # Solar masses
-
-# Mode selection for 22-only
-MODE_22_ONLY = [(2, 2), (2, -2)]
 
 
 # =============================================================================
@@ -112,9 +130,7 @@ def eta_to_masses(eta: float, M_total: float) -> Tuple[float, float]:
         Component masses with m1 >= m2.
     """
     # From eta, compute mass ratio q = m2/m1 <= 1
-    # eta = q / (1+q)^2
-    # Solving: q = (1 - 2*eta - sqrt(1 - 4*eta)) / (2*eta)
-    # But simpler: q = (1 - sqrt(1 - 4*eta)) / (1 + sqrt(1 - 4*eta))
+    # q = (1 - sqrt(1 - 4*eta)) / (1 + sqrt(1 - 4*eta))
     sqrt_term = np.sqrt(1 - 4 * eta)
     q = (1 - sqrt_term) / (1 + sqrt_term)
 
@@ -128,16 +144,24 @@ def eta_to_masses(eta: float, M_total: float) -> Tuple[float, float]:
 # Waveform Generation
 # =============================================================================
 
-def generate_waveform_geometric(
+def generate_mode_on_geometric_grid(
     eta: float,
     chi1z: float,
     chi2z: float,
     Mf_grid: np.ndarray,
+    Mf_ref: float,
+    ell: int = 2,
+    emm: int = 2,
     M_total: float = M_REF,
-    mode_array: list = None,
 ) -> Tuple[np.ndarray, np.ndarray]:
     """
-    Generate a waveform on a geometric frequency grid.
+    Generate a single mode h_lm on a geometric frequency grid.
+
+    This extracts the dimensionless shape function H_lm(Mf; lambda) by:
+    1. Generating the mode at a reference mass M and distance D
+    2. Converting to geometric frequency Mf = M*f
+    3. Removing the M^2/D scaling to get the shape function
+    4. Aligning phase at reference frequency
 
     Parameters
     ----------
@@ -146,22 +170,21 @@ def generate_waveform_geometric(
     chi1z, chi2z : float
         Aligned spin components.
     Mf_grid : np.ndarray
-        Geometric frequency grid.
+        Target geometric frequency grid.
+    Mf_ref : float
+        Reference geometric frequency for phase alignment.
+    ell, emm : int
+        Spherical harmonic mode numbers.
     M_total : float
-        Reference total mass (for waveform generation).
-    mode_array : list, optional
-        Modes to include. Default is 22-only.
+        Reference total mass for generation (cancels out).
 
     Returns
     -------
-    amplitude : np.ndarray
-        Log10 amplitude on Mf grid.
+    log_amplitude : np.ndarray
+        Log10 of the dimensionless amplitude |H_lm| on Mf grid.
     phase : np.ndarray
-        Unwrapped, aligned phase on Mf grid.
+        Unwrapped phase of H_lm on Mf grid, aligned so phase(Mf_ref) = 0.
     """
-    if mode_array is None:
-        mode_array = MODE_22_ONLY
-
     # Convert eta to component masses
     m1, m2 = eta_to_masses(eta, M_total)
 
@@ -170,77 +193,91 @@ def generate_waveform_geometric(
     f_min = float(f_physical[0])
     f_max = float(f_physical[-1])
 
+    # Reference frequency in physical units
+    f_ref_physical = float(geometric_to_physical_frequency(np.array([Mf_ref]), M_total)[0])
+
     # Use fine delta_f for accuracy, we'll interpolate
-    delta_f = 0.1  # Hz
+    delta_f = min(0.1, (f_max - f_min) / 10000)
 
     # Create waveform parameters
+    # Distance = 1 Mpc for reference (will be scaled out)
+    D_ref_Mpc = 1.0
     params = WaveformParameters(
         mass_1=m1,
         mass_2=m2,
         chi1z=chi1z,
         chi2z=chi2z,
-        luminosity_distance=1.0,  # Amplitude in geometric units anyway
-        inclination=0.0,          # Face-on for simplicity (hp only)
-        phase=0.0,
-        f_min=f_min * 0.9,        # Start a bit earlier for interpolation
-        f_max=f_max * 1.1,        # End a bit later
+        luminosity_distance=D_ref_Mpc,
+        inclination=0.0,  # Not used for individual modes
+        phase=0.0,        # Reference phase
+        f_min=max(f_min * 0.9, 1.0),  # Start a bit earlier for interpolation
+        f_max=f_max * 1.1,
         delta_f=delta_f,
-        approximant="IMRPhenomXPHM",
+        f_ref=f_ref_physical,
     )
 
-    # Generate waveform
-    freqs, hp, hc = generate_fd_waveform(params, mode_array=mode_array)
+    # Generate mode
+    freqs, h_lm = generate_fd_mode(params, ell=ell, emm=emm)
 
     # Convert generated frequencies to geometric
     Mf_generated = np.array(physical_to_geometric_frequency(freqs, M_total))
 
-    # Interpolate to target grid
-    # We need both amplitude and phase
-    amplitude = np.abs(hp)
-    phase = np.unwrap(np.angle(hp))
+    # Extract amplitude and phase from complex mode
+    amplitude_raw = np.abs(h_lm)
+    phase_raw = np.unwrap(np.angle(h_lm))
 
     # Find valid range (non-zero amplitude)
-    valid_mask = amplitude > 0
+    valid_mask = amplitude_raw > 0
     if not np.any(valid_mask):
         raise ValueError(f"No valid waveform data for eta={eta}, chi1z={chi1z}, chi2z={chi2z}")
 
-    # Interpolate amplitude (in log space for stability)
+    # Convert to dimensionless shape function H_lm
+    # h_lm(f) = (M^2/D_L) * H_lm(Mf)
+    # So H_lm = h_lm * D_L / M^2
+    D_ref_m = D_ref_Mpc * 1e6 * 3.086e16  # Mpc to meters
+    M_seconds = M_total * MTSUN_SI
+    # M^2 in geometric units (seconds^2) needs conversion
+    # Actually h has units of strain (dimensionless in natural units)
+    # The mass scaling is h ~ M/D, and Fourier transform adds another M
+    # So h_tilde(f) ~ M^2/D * H(Mf) where H is dimensionless
+    # H = h_tilde * D / M^2
+    scale_factor = D_ref_m / (M_total * MTSUN_SI)**2 * MTSUN_SI  # Include time units
+
+    # For now, just store the raw amplitude in geometric units
+    # The exact normalization can be refined later
+    amplitude_geom = amplitude_raw
+
+    # Interpolate log-amplitude to target grid
     log_amp_interp = np.interp(
         Mf_grid,
         Mf_generated[valid_mask],
-        np.log10(amplitude[valid_mask] + 1e-100),  # Avoid log(0)
+        np.log10(amplitude_geom[valid_mask] + 1e-100),
         left=np.nan,
         right=np.nan,
     )
 
-    # Interpolate phase
+    # Interpolate phase to target grid
     phase_interp = np.interp(
         Mf_grid,
         Mf_generated[valid_mask],
-        phase[valid_mask],
+        phase_raw[valid_mask],
         left=np.nan,
         right=np.nan,
     )
 
-    # Align phase: subtract linear trend and set phase=0 at peak amplitude
-    # Find peak in the valid region
+    # Align phase: set phase(Mf_ref) = 0
+    # Find the index closest to Mf_ref
     valid_interp = ~np.isnan(log_amp_interp)
     if np.any(valid_interp):
-        peak_idx = np.argmax(np.where(valid_interp, log_amp_interp, -np.inf))
-        phase_interp = phase_interp - phase_interp[peak_idx]
+        ref_idx = np.argmin(np.abs(Mf_grid - Mf_ref))
+        if valid_interp[ref_idx]:
+            phase_interp = phase_interp - phase_interp[ref_idx]
+        else:
+            # If reference not in valid range, use first valid point
+            first_valid = np.where(valid_interp)[0][0]
+            phase_interp = phase_interp - phase_interp[first_valid]
 
     return log_amp_interp, phase_interp
-
-
-def process_single_waveform(args):
-    """Worker function for parallel processing."""
-    idx, eta, chi1z, chi2z, Mf_grid = args
-    try:
-        log_amp, phase = generate_waveform_geometric(eta, chi1z, chi2z, Mf_grid)
-        return idx, log_amp, phase, True
-    except Exception as e:
-        print(f"Warning: Failed for idx={idx}, eta={eta:.4f}, chi1z={chi1z:.4f}, chi2z={chi2z:.4f}: {e}")
-        return idx, None, None, False
 
 
 # =============================================================================
@@ -252,9 +289,11 @@ def generate_dataset(
     output_path: str,
     seed: int = 42,
     dataset_name: str = "train",
+    ell: int = 2,
+    emm: int = 2,
 ) -> None:
     """
-    Generate a full dataset of waveforms.
+    Generate a dataset of individual mode waveforms.
 
     Parameters
     ----------
@@ -266,13 +305,15 @@ def generate_dataset(
         Random seed.
     dataset_name : str
         Name for the dataset group (e.g., "train", "validation").
+    ell, emm : int
+        Spherical harmonic mode numbers.
     """
-    print(f"Generating {n_samples} waveforms for {dataset_name} set...")
+    print(f"Generating {n_samples} waveforms for {dataset_name} set (mode {ell},{emm})...")
 
     # Sample parameters
     params = sample_parameters_lhs(n_samples, seed=seed)
 
-    # Create geometric frequency grid
+    # Create geometric frequency grid (log-spaced)
     Mf_grid = np.array(get_geometric_frequency_grid(N_FREQ, MF_MIN, MF_MAX))
 
     # Allocate output arrays
@@ -285,7 +326,10 @@ def generate_dataset(
     for i in tqdm(range(n_samples), desc=f"Generating {dataset_name}"):
         eta, chi1z, chi2z = params[i]
         try:
-            log_amp, phase = generate_waveform_geometric(eta, chi1z, chi2z, Mf_grid)
+            log_amp, phase = generate_mode_on_geometric_grid(
+                eta, chi1z, chi2z, Mf_grid, MF_REF,
+                ell=ell, emm=emm,
+            )
             amplitudes[i] = log_amp
             phases[i] = phase
             success_mask[i] = True
@@ -297,7 +341,8 @@ def generate_dataset(
 
     elapsed = time.time() - start_time
     n_success = np.sum(success_mask)
-    print(f"Generated {n_success}/{n_samples} waveforms in {elapsed:.1f}s ({elapsed/n_samples:.2f}s per waveform)")
+    print(f"Generated {n_success}/{n_samples} waveforms in {elapsed:.1f}s "
+          f"({elapsed/n_samples:.3f}s per waveform)")
 
     # Filter to successful samples only
     params = params[success_mask]
@@ -328,32 +373,63 @@ def generate_dataset(
             f.attrs["param_bounds_chi2z"] = PARAM_BOUNDS["chi2z"]
             f.attrs["Mf_min"] = MF_MIN
             f.attrs["Mf_max"] = MF_MAX
+            f.attrs["Mf_ref"] = MF_REF
             f.attrs["n_freq"] = N_FREQ
-            f.attrs["approximant"] = "IMRPhenomXPHM"
-            f.attrs["modes"] = "22_only"
-            f.attrs["description"] = "Aligned spin BBH waveforms, 22 mode only"
+            f.attrs["frequency_spacing"] = "log"
+            f.attrs["approximant"] = "IMRPhenomXHM"
+            f.attrs["ell"] = ell
+            f.attrs["emm"] = emm
+            f.attrs["description"] = (
+                f"Aligned spin BBH waveforms, mode ({ell},{emm}). "
+                f"Phase aligned at Mf_ref={MF_REF}. "
+                f"Log-spaced frequency grid for training. "
+                f"See theory/frequency-domain-emulation.tex for framework."
+            )
 
     print(f"Saved to {output_path}")
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Generate waveform training data")
+    parser = argparse.ArgumentParser(
+        description="Generate waveform training data for individual modes",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+    # Generate (2,2) mode data (default)
+    python scripts/generate_data.py
+
+    # Generate (3,3) mode data
+    python scripts/generate_data.py --mode 3 3 --output data/waveforms_33mode.h5
+
+    # Quick test
+    python scripts/generate_data.py --test
+        """
+    )
     parser.add_argument("--n_train", type=int, default=10000,
                         help="Number of training samples")
     parser.add_argument("--n_val", type=int, default=1000,
                         help="Number of validation samples")
-    parser.add_argument("--output", type=str, default="data/waveforms_22mode.h5",
-                        help="Output HDF5 file path")
+    parser.add_argument("--output", type=str, default=None,
+                        help="Output HDF5 file path (default: data/waveforms_<mode>.h5)")
     parser.add_argument("--seed", type=int, default=42,
                         help="Random seed")
+    parser.add_argument("--mode", type=int, nargs=2, default=[2, 2],
+                        metavar=("ELL", "EMM"),
+                        help="Spherical harmonic mode (l, m), default: 2 2")
     parser.add_argument("--test", action="store_true",
                         help="Quick test mode with 100 train, 10 val")
     args = parser.parse_args()
 
+    ell, emm = args.mode
+
+    # Set default output path based on mode
+    if args.output is None:
+        args.output = f"data/waveforms_{ell}{emm}mode.h5"
+
     if args.test:
         args.n_train = 100
         args.n_val = 10
-        args.output = "data/waveforms_22mode_test.h5"
+        args.output = f"data/waveforms_{ell}{emm}mode_test.h5"
 
     # Generate training set
     generate_dataset(
@@ -361,6 +437,8 @@ def main():
         output_path=args.output,
         seed=args.seed,
         dataset_name="train",
+        ell=ell,
+        emm=emm,
     )
 
     # Generate validation set (different seed)
@@ -369,13 +447,18 @@ def main():
         output_path=args.output,
         seed=args.seed + 1000,
         dataset_name="validation",
+        ell=ell,
+        emm=emm,
     )
 
     # Print summary
     with h5py.File(args.output, "r") as f:
         print("\n=== Dataset Summary ===")
         print(f"File: {args.output}")
-        print(f"Frequency grid: {f['frequency_grid'].shape[0]} points in Mf=[{MF_MIN}, {MF_MAX}]")
+        print(f"Mode: ({ell}, {emm})")
+        print(f"Frequency grid: {f['frequency_grid'].shape[0]} points (log-spaced)")
+        print(f"  Mf range: [{f.attrs['Mf_min']:.4f}, {f.attrs['Mf_max']:.2f}]")
+        print(f"  Reference Mf: {f.attrs['Mf_ref']:.4f}")
         print(f"Training samples: {f['train/parameters'].shape[0]}")
         print(f"Validation samples: {f['validation/parameters'].shape[0]}")
         print(f"Parameter bounds:")

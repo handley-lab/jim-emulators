@@ -13,6 +13,8 @@ from jim_emulators.waveforms.lal_waveforms import (
     WaveformParameters,
     generate_fd_waveform,
     generate_fd_waveform_on_grid,
+    generate_fd_mode,
+    generate_fd_modes,
     get_waveform_amplitude_phase,
     SUPPORTED_APPROXIMANTS,
 )
@@ -179,6 +181,105 @@ class TestAmplitudePhase:
         # Reconstruct from amp/phase should match original
         hp_reconstructed = amp_p * np.exp(1j * phase_p)
         np.testing.assert_allclose(hp_reconstructed, hp, rtol=1e-10)
+
+
+class TestModeExtraction:
+    """Tests for individual mode extraction."""
+
+    @pytest.fixture
+    def default_params(self):
+        """Default parameters for mode testing."""
+        return WaveformParameters(
+            mass_1=30.0,
+            mass_2=25.0,
+            chi1z=0.3,
+            chi2z=-0.2,
+            luminosity_distance=100.0,
+            f_min=20.0,
+            f_max=512.0,
+            delta_f=0.5,
+        )
+
+    def test_generate_22_mode(self, default_params):
+        """Test generation of (2,2) mode."""
+        freqs, h22 = generate_fd_mode(default_params, ell=2, emm=2)
+
+        # Check output shapes
+        assert len(freqs) == len(h22)
+        assert len(freqs) > 0
+
+        # Check waveform is complex
+        assert h22.dtype == np.complex128
+
+        # Check mode is nonzero in band
+        mask = (freqs >= default_params.f_min) & (freqs <= default_params.f_max)
+        assert np.any(np.abs(h22[mask]) > 0)
+
+    def test_generate_higher_modes(self, default_params):
+        """Test generation of higher modes."""
+        for ell, emm in [(2, 1), (3, 3), (3, 2), (4, 4)]:
+            freqs, hlm = generate_fd_mode(default_params, ell=ell, emm=emm)
+            assert len(freqs) == len(hlm)
+            # Higher modes may be weaker but should still exist
+            assert np.any(np.abs(hlm) > 0)
+
+    def test_generate_multiple_modes(self, default_params):
+        """Test generation of multiple modes at once."""
+        modes_to_generate = [(2, 2), (2, 1), (3, 3)]
+        freqs, mode_dict = generate_fd_modes(default_params, modes=modes_to_generate)
+
+        # Check all requested modes are present
+        assert set(mode_dict.keys()) == set(modes_to_generate)
+
+        # Check all modes have same length as frequency array
+        for mode, hlm in mode_dict.items():
+            assert len(hlm) == len(freqs)
+
+    def test_mode_distance_scaling(self, default_params):
+        """Test that mode amplitude scales inversely with distance."""
+        params1 = WaveformParameters(
+            mass_1=30.0, mass_2=25.0,
+            luminosity_distance=100.0,
+            f_min=20.0, f_max=256.0, delta_f=0.5
+        )
+        params2 = WaveformParameters(
+            mass_1=30.0, mass_2=25.0,
+            luminosity_distance=200.0,
+            f_min=20.0, f_max=256.0, delta_f=0.5
+        )
+
+        freqs1, h22_1 = generate_fd_mode(params1, ell=2, emm=2)
+        freqs2, h22_2 = generate_fd_mode(params2, ell=2, emm=2)
+
+        # Find a frequency where both are nonzero
+        nonzero = (np.abs(h22_1) > 0) & (np.abs(h22_2) > 0)
+        if np.any(nonzero):
+            idx = np.where(nonzero)[0][len(np.where(nonzero)[0])//2]
+            ratio = np.abs(h22_1[idx]) / np.abs(h22_2[idx])
+            assert np.isclose(ratio, 2.0, rtol=1e-3)
+
+    def test_mode_amplitude_phase(self, default_params):
+        """Test extraction of amplitude and phase from mode."""
+        freqs, h22 = generate_fd_mode(default_params, ell=2, emm=2)
+
+        # Get valid data
+        mask = np.abs(h22) > 0
+        h22_valid = h22[mask]
+
+        # Extract amplitude and phase
+        amplitude = np.abs(h22_valid)
+        phase = np.unwrap(np.angle(h22_valid))
+
+        # Amplitudes should be positive
+        assert np.all(amplitude > 0)
+
+        # Phase should be continuous (no jumps > pi after unwrapping)
+        phase_diff = np.abs(np.diff(phase))
+        assert np.all(phase_diff < np.pi)
+
+        # Reconstruct should match original
+        h22_reconstructed = amplitude * np.exp(1j * phase)
+        np.testing.assert_allclose(h22_reconstructed, h22_valid, rtol=1e-10)
 
 
 class TestMatch:
