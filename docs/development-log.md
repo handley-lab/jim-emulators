@@ -176,11 +176,31 @@ jim-emulators/
 - **mcp__llm-chat__ask**: Gemini consultation for planning
 - **gh CLI**: GitHub repository management
 
+### 10. Strategy Refinement
+
+A third transcript (`transcript-0944`) captured further strategic decisions:
+
+**Waveform Model Decision:**
+- Use **IMRPhenomXPHM directly**, not XAS or simpler waveforms
+- XPHM with aligned spins reduces to XHM automatically
+- This builds the full infrastructure once; simplify by restricting parameter space, not changing model
+- Higher modes produce high-frequency "wiggles" - important for fidelity even if below noise floor
+
+**Grid Strategy Confirmed:**
+- Log-spaced grid in Mf (geometric frequency)
+- Parameter space: (η, χ₁ᵤ, χ₂ᵤ) for aligned-spin case
+
+**Publication Notes:**
+- Save Claude Code conversation exports for workflow documentation
+- Development log should be narrative, capturing the story of the build
+
+---
+
 ### Next Steps
 
-Per `gemini-plan.md`:
+Per `gemini-plan.md` (updated with XPHM decision):
 1. Repository structure setup (src/jim_emulators/)
-2. Data generation script (LAL → HDF5)
+2. Data generation script (LAL XPHM → HDF5)
 3. PCA and network components (Flax/JAX)
 4. Training pipeline
 5. Validation against LAL

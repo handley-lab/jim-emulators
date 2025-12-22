@@ -18,7 +18,13 @@ The key insight is to emulate only the **intrinsic** waveform parameters and han
 **Aligned-spin simplification (3D):**
 - `eta, chi_1z, chi_2z`
 
-This is the IMRPhenomXAS case - a good starting point.
+### Waveform Model Choice
+
+**Use IMRPhenomXPHM directly** - not XAS or simpler models. Rationale:
+- Calling XPHM with aligned spins automatically reduces to XHM behavior
+- Build the full infrastructure once, then restrict parameter space for simpler cases
+- Higher modes produce "wiggles at high frequency" - important for waveform fidelity
+- Simplify **dimensionality** (3D aligned spins), not the waveform model itself
 
 **Handled analytically outside the emulator:**
 - Distance: scales as `1/D_L`
