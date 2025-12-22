@@ -236,8 +236,10 @@ def train_emulator(
     # ==========================================================================
     print("\n[2/5] PCA compression on normalized data...")
 
-    pca_amplitude = WaveformPCA(explained_variance_target=0.9999)
-    pca_phase = WaveformPCA(explained_variance_target=0.9999)
+    # Use 99.9999% variance for target mismatch < 10^-4
+    # This requires ~20 amp + ~8 phase components for our data
+    pca_amplitude = WaveformPCA(explained_variance_target=0.999999)
+    pca_phase = WaveformPCA(explained_variance_target=0.999999)
 
     # Fit PCA on normalized data
     train_amp_coeffs = pca_amplitude.fit_transform(train_amp_norm)
@@ -441,7 +443,7 @@ def train_emulator(
     phase_cumvar = np.cumsum(pca_phase.explained_variance_ratio_)
     ax.plot(range(1, len(amp_cumvar) + 1), amp_cumvar, 'o-', label='Amplitude', markersize=4)
     ax.plot(range(1, len(phase_cumvar) + 1), phase_cumvar, 's-', label='Phase', markersize=4)
-    ax.axhline(0.9999, color='r', linestyle='--', alpha=0.5, label='99.99% target')
+    ax.axhline(0.999999, color='r', linestyle='--', alpha=0.5, label='99.9999% target')
     ax.set_xlabel('Number of Components')
     ax.set_ylabel('Cumulative Explained Variance')
     ax.set_title('PCA Component Importance')

@@ -90,10 +90,34 @@ def generate_lal_h(Mf_grid, eta, chi1z, chi2z, M_total=50.0):
     )
 
 
-def compute_mismatch(h1, h2):
-    inner = np.abs(np.sum(np.conj(h1) * h2))
-    norm1 = np.sqrt(np.sum(np.abs(h1)**2))
-    norm2 = np.sqrt(np.sum(np.abs(h2)**2))
+def compute_df_weights(f):
+    """Compute integration weights for non-uniform frequency grid."""
+    df = np.empty_like(f)
+    df[1:-1] = 0.5 * (f[2:] - f[:-2])  # Central difference
+    df[0] = f[1] - f[0]
+    df[-1] = f[-1] - f[-2]
+    return df
+
+
+def inner_product(h1, h2, df):
+    """Compute inner product with frequency weights."""
+    return np.sum(np.conj(h1) * h2 * df)
+
+
+def compute_mismatch(h1, h2, df=None):
+    """Compute mismatch with optional frequency weights.
+
+    If df is None, uses unweighted (uniform spacing assumed).
+    If df is provided, weights by df for non-uniform grids.
+    """
+    if df is None:
+        inner = np.abs(np.sum(np.conj(h1) * h2))
+        norm1 = np.sqrt(np.sum(np.abs(h1)**2))
+        norm2 = np.sqrt(np.sum(np.abs(h2)**2))
+    else:
+        inner = np.abs(inner_product(h1, h2, df))
+        norm1 = np.sqrt(np.real(inner_product(h1, h1, df)))
+        norm2 = np.sqrt(np.real(inner_product(h2, h2, df)))
     overlap = inner / (norm1 * norm2)
     return 1 - overlap
 
@@ -103,6 +127,9 @@ print("Loading emulator...")
 components = load_emulator('outputs/emulator_22mode.pkl')
 Mf_grid = components['Mf_grid']
 
+# Compute df weights for Mf grid (log-spaced grid needs proper weights)
+df_Mf = compute_df_weights(Mf_grid)
+
 # Load validation data
 print("Loading validation data...")
 with h5py.File('data/waveforms_22mode.h5', 'r') as f:
@@ -110,13 +137,84 @@ with h5py.File('data/waveforms_22mode.h5', 'r') as f:
 
 print(f"\nValidation set: {len(val_params)} samples")
 
+# First: empirically verify phase convention with one sample
+print("\n" + "="*70)
+print("Phase convention check (first sample):")
+print("="*70)
+test_eta, test_chi1z, test_chi2z = val_params[0]
+h_true_test = generate_lal_h(Mf_grid, test_eta, test_chi1z, test_chi2z)
+
+# Get emulator prediction components
+params = np.array([[test_eta, test_chi1z, test_chi2z]])
+params_norm = components['input_normalizer'].transform(params)
+params_jax = jnp.array(params_norm)
+
+amp_coeffs_std = components['amp_model'].apply(components['amp_params'], params_jax)
+phase_coeffs_std = components['phase_model'].apply(components['phase_params'], params_jax)
+
+amp_coeffs = components['amp_coeff_std'].inverse_transform(np.array(amp_coeffs_std))
+phase_coeffs = components['phase_coeff_std'].inverse_transform(np.array(phase_coeffs_std))
+
+amp_norm = components['pca_amplitude'].inverse_transform(amp_coeffs)
+phase_norm = components['pca_phase'].inverse_transform(phase_coeffs)
+
+log_amp = components['amp_normalizer'].inverse_transform(amp_norm)[0]
+phase_pred = components['phase_normalizer'].inverse_transform(phase_norm)[0]
+
+amp = 10.0 ** log_amp
+
+# Test both conventions
+h_plus = amp * np.exp(1j * phase_pred)
+h_minus = amp * np.exp(-1j * phase_pred)
+
+mm_plus = compute_mismatch(h_true_test, h_plus, df_Mf)
+mm_minus = compute_mismatch(h_true_test, h_minus, df_Mf)
+
+print(f"  h = A * exp(+i*phase): mismatch = {mm_plus:.2e}")
+print(f"  h = A * exp(-i*phase): mismatch = {mm_minus:.2e}")
+
+if mm_minus < mm_plus:
+    print("  => Using exp(-i*phase) convention")
+    use_minus = True
+else:
+    print("  => Using exp(+i*phase) convention")
+    use_minus = False
+
+
+def predict_h_with_convention(components, eta, chi1z, chi2z, use_minus=False):
+    """Predict waveform with specified phase convention."""
+    params = np.array([[eta, chi1z, chi2z]])
+    params_norm = components['input_normalizer'].transform(params)
+    params_jax = jnp.array(params_norm)
+
+    amp_coeffs_std = components['amp_model'].apply(components['amp_params'], params_jax)
+    phase_coeffs_std = components['phase_model'].apply(components['phase_params'], params_jax)
+
+    amp_coeffs = components['amp_coeff_std'].inverse_transform(np.array(amp_coeffs_std))
+    phase_coeffs = components['phase_coeff_std'].inverse_transform(np.array(phase_coeffs_std))
+
+    amp_norm = components['pca_amplitude'].inverse_transform(amp_coeffs)
+    phase_norm = components['pca_phase'].inverse_transform(phase_coeffs)
+
+    log_amp = components['amp_normalizer'].inverse_transform(amp_norm)[0]
+    phase = components['phase_normalizer'].inverse_transform(phase_norm)[0]
+
+    amp = 10.0 ** log_amp
+    if use_minus:
+        h = amp * np.exp(-1j * phase)
+    else:
+        h = amp * np.exp(1j * phase)
+    return h
+
+
 # Test on random validation samples
 np.random.seed(42)
 n_test = 20
 test_indices = np.random.choice(len(val_params), n_test, replace=False)
 
-print(f"\nTesting on {n_test} validation samples:")
-print("-" * 70)
+print(f"\n" + "="*70)
+print(f"Testing on {n_test} validation samples (with Δf weights):")
+print("="*70)
 print(f"{'idx':>4}  {'eta':>6}  {'chi1z':>6}  {'chi2z':>6}  {'mismatch':>12}  {'log10(mm)':>10}")
 print("-" * 70)
 
@@ -124,10 +222,10 @@ mismatches = []
 for idx in test_indices:
     eta, chi1z, chi2z = val_params[idx]
 
-    h_pred = predict_h(components, eta, chi1z, chi2z)
+    h_pred = predict_h_with_convention(components, eta, chi1z, chi2z, use_minus)
     h_true = generate_lal_h(Mf_grid, eta, chi1z, chi2z)
 
-    mm = compute_mismatch(h_true, h_pred)
+    mm = compute_mismatch(h_true, h_pred, df_Mf)
     mismatches.append(mm)
 
     print(f"{idx:4d}  {eta:6.3f}  {chi1z:6.2f}  {chi2z:6.2f}  {mm:12.2e}  {np.log10(mm):10.2f}")
