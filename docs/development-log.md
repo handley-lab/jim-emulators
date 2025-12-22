@@ -525,6 +525,32 @@ These plots demonstrate the network learns smooth interpolation across the param
 
 **Implementation Note:** The Flax/JAX implementation was done from existing knowledge of the framework (no external lookup needed). The Speculator activation formula was extracted from CosmoPower's TensorFlow code and translated to Flax Linen API.
 
+### 26. External Code Review (GPT-5 + Gemini)
+
+Submitted the Flax code to GPT-5 and Gemini (with grounding) for critical review. Key findings synthesized in `docs/jax-flax-best-practices.md`:
+
+**High Priority Issues:**
+1. **Unconstrained γ parameter**: Should use sigmoid on logits to enforce γ ∈ (0,1) per the Speculator paper
+2. **Normalization not checkpointed**: Store as Flax variables, not Python attributes
+
+**Medium Priority:**
+3. **Python batch loop inefficient**: Replace with `lax.scan` for jitted epoch
+4. **No gradient clipping**: Add `optax.clip_by_global_norm(1.0)` for stability
+5. **No checkpointing**: Add Orbax for model saving
+
+**Architecture Suggestions:**
+- Use shape inference instead of explicit `features` argument
+- Consider LayerNorm between layers
+- Separate heads for amplitude/phase (different scales)
+- Use sklearn for PCA fitting, JAX only for transform (numerical stability)
+- Inject PCA basis as constant for end-to-end differentiability (needed for HMC)
+
+**Performance:**
+- Training in float32, inference in float64 for speed/accuracy tradeoff
+- Buffer donation with `donate_argnums=(0,)`
+
+These improvements will be incorporated when we move to real waveform training.
+
 ---
 
 ### Next Steps
