@@ -6,6 +6,19 @@
 
 **Documentation**: See `docs/project-overview.md` for full project details.
 
+## Development Log
+
+**IMPORTANT**: Maintain `docs/development-log.md` as work progresses. This project aims to publish both the emulators and the AI-assisted workflow used to create them.
+
+When making significant progress:
+1. Update the development log with narrative descriptions of work done
+2. Include specific commands, file paths, and tool usage
+3. Document decisions made and rationale
+4. Record any insights or lessons learned
+5. Keep the "Current State" and "Next Steps" sections up to date
+
+The log should be more narrative than git commits - it tells the story of how the project was built.
+
 ## Reference Papers
 
 All paper sources downloaded to project root.
