@@ -620,6 +620,15 @@ The noise-weighted overlap (see theory document \S6.1):
 
 \textbf{Target}: $\mathcal{M} < 10^{-3}$ for parameter estimation quality.
 
+Figure~\ref{fig:validation_td} shows a representative comparison between the trained emulator and LAL ground truth, demonstrating excellent agreement in both frequency and time domains with mismatch $\mathcal{M} \approx 2.5 \times 10^{-4}$.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{time_domain_comparison.png}
+    \caption{Emulator validation against LAL for a representative test case ($\eta = 0.2$, $\chi_{1z} = 0.3$, $\chi_{2z} = -0.2$, $M = 50\,M_\odot$). \textbf{Top row}: Frequency domain amplitude and phase showing excellent agreement between LAL (blue) and emulator (red). \textbf{Bottom left}: Time domain waveform showing the inspiral chirp approaching merger at $t=0$, with frequency increasing as expected for a gravitational wave. \textbf{Bottom right}: Time domain residual. The weighted mismatch is $2.52 \times 10^{-4}$, well below our target of $10^{-3}$.}
+    \label{fig:validation_td}
+\end{figure}
+
 \paragraph{Relative amplitude error.}
 \begin{equation}
     \epsilon_A = \max_k \left| \frac{A_k^{\rm pred} - A_k^{\rm true}}{A_k^{\rm true}} \right|

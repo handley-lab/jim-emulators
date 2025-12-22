@@ -1436,12 +1436,97 @@ Before implementing the training script, submitted the LaTeX documentation to Op
 
 ---
 
+---
+
+## Session: 2024-12-22 (Late Evening - Time Domain Validation)
+
+### 24. Time-Domain IFFT Transformation Fix
+
+The emulator achieved excellent frequency-domain mismatch (~2.5×10⁻⁴), but the time-domain visualization was producing incorrect plots. Used iterative review with Gemini to diagnose and fix the transformation.
+
+**Initial Problem:** Time-domain plots showed "junk" - not proper gravitational wave chirps.
+
+**Iterative Review Process (5 iterations with Gemini):**
+
+**Iteration 1 - Core Bug Identified:**
+Gemini identified that interpolating Real/Imaginary parts of complex h(f) destroys the signal because these are highly oscillatory (vary as cos/sin of phase). The smooth quantities to interpolate are:
+- Log-amplitude: varies slowly with frequency
+- Unwrapped phase: monotonic, smooth function of frequency
+
+**Iteration 2 - Phase Discontinuity:**
+Setting `fill_value=0.0` for phase extrapolation created massive discontinuity where interpolated phase jumped from 0 to the actual GW phase (hundreds of radians). Fix: use `fill_value="extrapolate"`.
+
+Taper must be strictly zero below f_min (where we have no data), not extend before it.
+
+**Iteration 3 - Buffer Too Short:**
+For a 50 M☉ binary starting at ~12 Hz, the inspiral takes 5-6 seconds. Using `T_obs=4.0s` caused time-domain aliasing - the inspiral wrapped around due to FFT circular boundary conditions. Fix: increase to `T_obs=16.0s`.
+
+**Iteration 4 - Sign Convention:**
+Inspiral appeared to chirp backwards in time. This was due to Fourier convention mismatch:
+- LAL uses h = A × exp(+i×phase)
+- NumPy irfft expects exp(-i×2πft) convention
+
+Fix: conjugate h(f) before irfft: `np.fft.irfft(np.conj(h_fft))`
+
+**Iteration 5 - APPROVED:**
+Final time-domain plot shows proper gravitational wave inspiral-merger-ringdown:
+- Inspiral visible for ~500ms before merger
+- Frequency chirps UP approaching t=0 (correct direction)
+- LAL and emulator waveforms overlay well
+- Mismatch confirmed at 2.52×10⁻⁴
+
+**Scientific Anti-Pattern Documented:**
+Added to CLAUDE.md: **Never interpolate data when converting between grid representations.** Interpolation is a major source of errors. If unavoidable, interpolate smooth quantities only.
+
+**Files Changed:**
+- `scripts/validate_emulator.py`: Complete rewrite of IFFT section (lines 186-270)
+- `.claude/CLAUDE.md`: Added interpolation anti-pattern documentation
+- `implementation/training-pipeline.tex`: Added Figure 3 showing time-domain validation
+- `implementation/time_domain_comparison.png`: Validation plot
+
+**Key Code Changes in validate_emulator.py:**
+```python
+# 1. Interpolate smooth quantities (log-amp, phase) not oscillatory (real, imag)
+interp_log_amp = interp1d(f_physical, np.log(np.abs(h)), ...)
+interp_phase = interp1d(f_physical, np.unwrap(np.angle(h)), fill_value="extrapolate")
+
+# 2. Use proper FFT frequency grid
+f_uniform = np.fft.rfftfreq(N, d=dt)
+
+# 3. Taper strictly within valid frequency range (sin² window)
+taper[f_uniform < f_min_phys] = 0.0
+
+# 4. Conjugate to fix sign convention
+h_td = np.fft.irfft(np.conj(h_fft)) * Fs
+
+# 5. Buffer long enough for full inspiral
+T_obs = 16.0  # seconds (inspiral ~6s for 50 Msun)
+```
+
+**Commits:**
+- `9bb618a`: Fix time-domain IFFT transformation for waveform visualization
+- `6324c95`: Fix time-domain IFFT: buffer size and sign convention
+
+---
+
+### Current State
+
+**Emulator Performance:**
+- Mismatch: 2.52×10⁻⁴ (target was 10⁻³)
+- Frequency domain: excellent amplitude and phase agreement
+- Time domain: proper inspiral-merger-ringdown visualization
+
+**Documentation Complete:**
+- `theory/frequency-domain-emulation.tex`: Theory framework
+- `implementation/training-pipeline.tex`: Training details + validation figure
+
 ### Next Steps
 
 1. ☑ Generate full 10,000 sample training dataset
-2. ☐ Implement per-frequency normalization with σ floor
-3. ☐ Implement PCA compression (without double standardization)
-4. ☐ Add PCA coefficient standardization
-5. ☐ Train emulator on (2,2) mode data
-6. ☐ Validate mismatch < 10⁻³
+2. ☑ Implement per-frequency normalization with σ floor
+3. ☑ Implement PCA compression (without double standardization)
+4. ☑ Add PCA coefficient standardization
+5. ☑ Train emulator on (2,2) mode data
+6. ☑ Validate mismatch < 10⁻³ (achieved 2.5×10⁻⁴!)
 7. ☐ Extend to higher modes (2,1), (3,3), etc.
+8. ☐ Integration with jim/ripple interface
