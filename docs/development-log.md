@@ -1133,3 +1133,78 @@ theory/
 11. ☒ Frequency-domain emulation theory document
 
 **Theory:** Complete. Two complementary documents cover frequency-domain (immediate target) and time-domain (future precessing/eccentric extension).
+
+---
+
+## Session: 2024-12-22 (Evening - Mode Extraction Implementation)
+
+### 16. Individual Mode Extraction
+
+Implemented individual spherical harmonic mode extraction to align with the theory document's framework. Previously, the data generation script stored combined polarizations (h_+ and h_×), but the theory specifies learning individual modes h_ℓm(Mf).
+
+**Key changes:**
+
+1. **LAL Mode Extraction Functions** (`src/jim_emulators/waveforms/lal_waveforms.py`):
+   - `generate_fd_mode(params, ell, emm)`: Extracts a single mode using `lalsim.SimIMRPhenomXHMGenerateFDOneMode`
+   - `generate_fd_modes(params, modes)`: Helper for multiple modes
+   - Returns raw complex h_ℓm(f) for amplitude/phase extraction
+
+2. **Revised Data Generation** (`scripts/generate_data.py`):
+   - Uses `generate_fd_mode()` instead of combined polarizations
+   - Stores (2,2) mode by default, generalizable via `--mode` flag
+   - Log-spaced Mf grid: [0.0005, 0.3] with 2000 points (extended from previous)
+   - Phase aligned at reference frequency Mf_ref = 0.003 (not at peak amplitude)
+   - Supports any mode: `--mode 3 3` for (3,3), etc.
+
+3. **Data Validation Script** (`scripts/validate_data.py`):
+   - Comprehensive checks: NaN analysis, amplitude/phase statistics, parameter coverage
+   - Verifies stored data matches fresh LAL generation exactly
+   - Generates validation plots
+
+**Generated Dataset:**
+```
+data/waveforms_22mode.h5
+├── frequency_grid          # 2000 log-spaced Mf points [0.0005, 0.3]
+├── train/
+│   ├── parameters          # [10000, 3] - (η, χ₁z, χ₂z)
+│   ├── log_amplitude       # [10000, 2000] - log₁₀|h₂₂|
+│   └── phase               # [10000, 2000] - unwrapped, aligned at Mf_ref
+└── validation/
+    └── ... (1000 samples)
+```
+
+**Validation Results:**
+- 10,000 training + 1,000 validation samples generated in ~10 seconds
+- Phase perfectly aligned at Mf_ref (deviation = 0)
+- Data matches LAL exactly on verification (3 samples tested)
+- All 42 tests pass (5 new tests added for mode extraction)
+
+### 17. Frequency Grid Discussion
+
+James noted that jim's likelihood inference may require linear grids in physical frequency f, while the theory recommends log-spaced grids in Mf for training. Current approach:
+
+- **Training data**: Log-spaced Mf grid (better captures inspiral dynamics)
+- **Inference**: Emulator can be evaluated at arbitrary Mf values (converted from physical f given source mass M)
+
+This design allows the PCA+MLP architecture to learn on an optimal grid while supporting evaluation on any grid required by downstream inference code.
+
+### Files Changed
+
+```
+src/jim_emulators/waveforms/lal_waveforms.py  # +128 lines (mode extraction)
+src/jim_emulators/waveforms/__init__.py       # Export new functions
+scripts/generate_data.py                       # Rewritten for mode extraction
+scripts/validate_data.py                       # New validation script
+tests/test_lal_waveforms.py                    # +5 tests for mode extraction
+```
+
+### Branch
+
+`feature/mode-extraction` - committed as `d48805c`
+
+### Next Steps
+
+1. ☐ Train emulator on (2,2) mode data
+2. ☐ Validate mismatch < 10⁻³
+3. ☐ Extend to higher modes (2,1), (3,3), etc.
+4. ☐ Address linear frequency grid for jim integration if needed
