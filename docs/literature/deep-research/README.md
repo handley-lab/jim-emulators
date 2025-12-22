@@ -5,7 +5,8 @@ Literature survey on neural network approaches beyond standard SVD+MLP.
 ## Survey Documents
 
 - `advanced-nn-architectures-survey.md` - Initial survey (skewed toward fancy architectures)
-- `pca-nn-survey.md` - **Better survey** seeded with 2402.06587, found the actual PCA+NN lineage
+- `pca-nn-survey.md` - Better survey seeded with 2402.06587, found the PCA+NN lineage
+- `seobnn-deep-dive.md` - **Best survey** - deep dive on SEOBNN (2205.14066), coprecessing frame technique
 
 ## Appraisal
 
