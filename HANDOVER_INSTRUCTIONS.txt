@@ -78,7 +78,7 @@ From transcripts and analysis:
 | `docs/jax-flax-best-practices.md` | NN implementation guidelines |
 | `docs/literature/deep-research/pca-nn-survey.md` | Literature survey results |
 | `src/jim_emulators/waveforms/lal_waveforms.py` | LAL wrapper |
-| `snippets/flax_nn.py` | Reference Flax implementation |
+| `src/jim_emulators/emulator/` | Emulator module (network, PCA, training) |
 | `scripts/train_toy_example.py` | Verified training pipeline |
 | `transcripts/` | Meeting recordings with key decisions |
 
@@ -87,17 +87,19 @@ From transcripts and analysis:
 ```
 jim-emulators/
 ├── src/jim_emulators/
-│   └── waveforms/
-│       ├── lal_waveforms.py    # WaveformParameters, generate_fd_waveform()
-│       └── utils.py            # compute_match(), fd_to_td(), PSD loading
-├── snippets/
-│   └── flax_nn.py              # SpeculatorActivation, EmulatorMLP, WaveformPCA
+│   ├── waveforms/
+│   │   ├── lal_waveforms.py    # WaveformParameters, generate_fd_waveform()
+│   │   └── utils.py            # compute_mismatch(), PSD loading
+│   └── emulator/
+│       ├── network.py          # SpeculatorActivation, EmulatorMLP
+│       ├── pca.py              # WaveformPCA
+│       └── emulator.py         # GWEmulator, training utilities
 ├── scripts/
-│   ├── train_toy_example.py    # Verified training pipeline
-│   ├── parameter_sensitivity.py
-│   ├── parameter_sensitivity_by_mode.py
-│   ├── test_mode_additivity.py
-│   └── test_multibanding.py
+│   ├── generate_data.py        # Generate training data from LAL
+│   ├── train.py                # Train emulator networks
+│   ├── validate.py             # Compute mismatch against LAL
+│   ├── plot_data.py            # Visualize training data
+│   └── train_toy_example.py    # Verify pipeline with synthetic data
 ├── figures/
 │   ├── sensitivity/            # Full waveform plots
 │   ├── sensitivity_modes_*/    # Per-mode plots (multibanding on/off)
@@ -124,9 +126,16 @@ jim-emulators/
 - **Compression**: PCA on amplitude and phase separately
 - **Validation target**: Mismatch < 10⁻³
 
+## Theory Documents
+
+| Document | Pages | Domain | Target |
+|----------|-------|--------|--------|
+| `theory/frequency-domain-emulation.tex` | 15 | Frequency | IMRPhenomXHM (aligned-spin, HOMs) |
+| `theory/general-waveform-decomposition.tex` | 12 | Time | Precessing/eccentric (future) |
+
 ## Neural Network Details
 
-From `snippets/flax_nn.py`:
+From `src/jim_emulators/emulator/network.py`:
 
 - **SpeculatorActivation**: σ(x) = [γ + sigmoid(αx)·(1-γ)]·x
   - γ constrained to (0,1) via sigmoid on learnable logits
@@ -226,6 +235,44 @@ pytest tests/ -v  # 14 tests, ~7 seconds
 ## Development Log
 
 Keep updating `docs/development-log.md` - we're publishing the AI-assisted workflow alongside the emulators.
+
+## Useful Commands
+
+```bash
+# Generate code2prompt for LLM context
+code2prompt cosmopower --include "*.py" --output-file /tmp/cosmopower.md
+code2prompt ripple --include "*.py" --output-file /tmp/ripple.md
+
+# Download arxiv paper
+python ~/.claude/skills/arxiv/scripts/arxiv.py <arxiv_id> --save
+
+# Build theory PDFs
+cd theory && latexmk -pdf *.tex
+```
+
+## LAL Calling Convention
+
+From ripple tests:
+```python
+import lalsimulation as lalsim
+
+hp, hc = lalsim.SimInspiralChooseFDWaveform(
+    m1, m2,           # masses in kg
+    s1x, s1y, s1z,    # spin 1 components
+    s2x, s2y, s2z,    # spin 2 components
+    distance,         # luminosity distance
+    inclination,      # inclination angle
+    phiRef,           # reference phase
+    longAscNodes,     # longitude of ascending nodes
+    eccentricity,     # eccentricity
+    meanPerAno,       # mean anomaly
+    deltaF,           # frequency step
+    f_min, f_max,     # frequency range
+    f_ref,            # reference frequency
+    params,           # extra params (None usually)
+    approximant       # e.g., lalsim.IMRPhenomXHM
+)
+```
 
 ## Questions?
 
