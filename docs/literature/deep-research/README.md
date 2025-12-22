@@ -13,6 +13,8 @@ The first deep research survey skewed toward fancier architectures (transformers
 
 A second survey seeded with 2402.06587 found the actual lineage: mlgw → mlgw_bns → NRSurNN → SEOBNRE_AI. This is the "design pattern" we should follow.
 
+**Still missing from both surveys:** `2205.14066` (SEOBNN) - a May 2022 paper on neural network surrogates for **precessing** waveforms with higher modes (SEOBNRv4PHM). This is directly relevant to our IMRPhenomXPHM target and should have been a top result. Added manually.
+
 ## Papers by Category
 
 ### SVD-NN / PCA-NN Interpolants (Most Relevant)
@@ -20,6 +22,7 @@ A second survey seeded with 2402.06587 found the actual lineage: mlgw → mlgw_b
 | ArXiv ID | Title | Notes |
 |----------|-------|-------|
 | `2402.06587/` | **mlgw_NN**: ML model for time-domain GW with HM | Amp/phase → PCA → NN, SEOBNRv4HM, 10⁻⁴ mismatch |
+| `2205.14066/` | **SEOBNN**: NN surrogate for SEOBNRv4PHM | **Precessing + HM**, 100× speedup, 18ms/waveform |
 | `2412.06946/` | **NRSurNN3dq4**: Deep learning NR surrogate | Transfer learning on NR data, 10⁻³ mismatch |
 | `2411.14893/` | **SEOBNRE_AI**: Eccentric BBH waveforms | Adaptive resampling for variable-length signals |
 | `2409.03833/` | Transformer for HOM modeling | Sequence-to-sequence, better generalization |
@@ -68,6 +71,7 @@ A second survey seeded with 2402.06587 found the actual lineage: mlgw → mlgw_b
 | Paper | Training Data |
 |-------|---------------|
 | `2402.06587` (mlgw_NN) | SEOBNRv4HM (time domain, higher modes) |
+| `2205.14066` (SEOBNN) | **SEOBNRv4PHM** (precessing + HM) |
 | `2412.06946` (NRSurNN3dq4) | **NR (SXS)** via transfer learning |
 | `2411.14893` (SEOBNRE_AI) | SEOBNRE (eccentric) |
 | `2408.02470` (obiwann) | SEOBNRv4_ROM (BBH), TaylorF2 (BNS) |
