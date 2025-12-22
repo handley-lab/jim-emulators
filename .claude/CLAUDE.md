@@ -74,9 +74,20 @@ Key design decisions (see `docs/jax-flax-best-practices.md`):
 
 - `train_toy_example.py`: Verifies training pipeline with synthetic data (1330x loss improvement)
 
-### Transcripts
+### Transcripts (`transcripts/`)
 
-Meeting transcripts stored as `transcript-HHMM` files document discussions and decisions.
+Meeting transcripts documenting planning discussions and decisions:
+
+| File | Content |
+|------|---------|
+| `2025-12-22-09-07-00.txt` | Initial planning: project goals, parameterization (Mf, η, χ), domain choices, CosmoPower/Speculator approach |
+| `2025-12-22-12-10-00.txt` | Progress review: LAL wrapper, sensitivity plots, mode additivity discovery, per-mode emulation strategy |
+
+**Key insights from transcripts:**
+- Waveforms depend on Mf (mass × frequency), enabling mass-independent training
+- 7D maximum parameter space: η + 6 spin components; aligned-spin reduces to 3D
+- Modes are additive to machine precision - emulate per-mode then sum
+- Individual modes are much smoother than full waveform (removes interference wiggles)
 
 ## Deep Research Literature
 

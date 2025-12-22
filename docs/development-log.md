@@ -65,9 +65,9 @@ These repositories are gitignored (not committed) as they are large external dep
 
 ### 4. Meeting Transcript Processing
 
-Two planning meeting transcripts were processed:
-- `transcript-0921`: Initial planning discussion
-- `transcript-0930`: Extended discussion with problem specification
+Two planning meeting transcripts were processed (now in `transcripts/`):
+- `2025-12-22-09-07-00.txt`: Initial planning discussion
+- `2025-12-22-12-10-00.txt`: Extended discussion with problem specification
 
 Key insights extracted from transcripts:
 
@@ -151,8 +151,9 @@ jim-emulators/
 │   ├── project-overview.md    # Synthesized requirements
 │   ├── gemini-plan.md         # Detailed implementation plan
 │   └── development-log.md     # This file
-├── transcript-0921            # Planning meeting 1
-├── transcript-0930            # Planning meeting 2
+├── transcripts/
+│   ├── 2025-12-22-09-07-00.txt  # Initial planning meeting
+│   └── 2025-12-22-12-10-00.txt  # Progress review meeting
 ├── 1911.11778/                # Speculator paper
 ├── 2001.10914/                # IMRPhenomXHM paper
 ├── 2004.06503/                # IMRPhenomXPHM paper
@@ -178,7 +179,7 @@ jim-emulators/
 
 ### 10. Strategy Refinement
 
-A third transcript (`transcript-0944`) captured further strategic decisions:
+The initial planning transcript (`transcripts/2025-12-22-09-07-00.txt`) captured strategic decisions:
 
 **Waveform Model Decision:**
 - Use **IMRPhenomXPHM directly**, not XAS or simpler waveforms

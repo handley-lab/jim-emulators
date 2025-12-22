@@ -1,0 +1,790 @@
+Will Handley  0:04  
+Testing, testing, 123, so I
+
+Will Handley  0:12  
+think this will all be recorded as will Handley, unfortunately, is that coming across here? If I speak correctly.
+
+Unknown Speaker  0:24  
+Yes, it's fine. Yeah, right.
+
+Will Handley  0:30  
+What if anything did you get done whilst I was away? So I
+
+Speaker 1  0:35  
+have now got a nice simulation package written up. So that is in the ability to call out, I'll share My screen. Yeah, right, so let me share screen. I
+
+Speaker 2  1:07  
+Good. So let's take a look.
+
+Speaker 1  1:20  
+So there's now a little common package being built effectively, take me through what you did explicitly, yeah. I handed over, yeah, you handed over. And then I provided so I opened it, I said, Hey, you know, just picked up over the top. Have a read of handover docs. And I also went and I found just a couple of snippets that I had from ripple. I mean, some of them were in ripple, but you would have had to change for answers like, Screw it. I'll just, I'll just whack this in. I mean, it's pretty rough snippet, but it just shows you how to call a loud waveform with like, a particular approximant and certain durations. And it also has the the match calculations as well. So how do you actually get a frequency array compute, you know, the inner products and computer match between two waveforms with a given PSD, which is the kind of core thing we just need to be able to do. And then I said, Okay, take this and then I also pointed it to some build the documentation as well. But just told you, I mean, I also gave some indication here, but just the documentation to tell you all the parameters are, I said, Write this up into a better wrapper you know, that we can use to generate simulations with confidence and write some tests for it as well. So that is for example here. So that makes it a little bit as well. Okay, so this is here, for example. It does all go the unit conversions. It's got some supportive approximants in the XPHM. But also it is simple to implement. You just call at the bottom with female D, or it wrote a nice dataclass for the parameters, which is quite useful because Lal does not always use kind of the units you would expect. So there's a bit of unit conversion. For example, in the mass it's it's given in kilograms the sun. Did they get that right first time? Yeah, yeah. This was just bang on straight away, like red, I guess, yeah. So it had lalsuite, it had ripple. It read through a couple of the other examples of ripple.
+
+Will Handley  3:28  
+It was impressive that it could do units. Now I remember versions of Claud code really struck me with units.
+
+Speaker 1  3:35  
+Yeah, and this is something that hope you know some of this was covered in here. So you see here that it kind of has to figure out that this is the right wrapper to put around it. So that was good. And then I mean, this is just quite a useful wrapper to have in general. So now we have quite a clear picture of how to call all the waveforms and typical ranges as well of the parameters. And there's also now just generate the waveform. So again, it does, does conversions, chooses the approximant from the list and makes the loud call, basically following the thing that I suggested. And it's got what each of the parameters are. Get the data, which, again, this is not like trivial it comes in some product, like some wrapper, and returns frequencies, HP data, HC data, you can generate on a grid if you want. That's basically a wrap around this, like do this and then interpolate it if you wanted to, and then gets the amplitude and phase as well. Again, this is pretty trivial, but there are certain kind of slightly non trivial calls of like unwrapping the phase and stuff like that. Then it wrote bunch of tests. And actually these tests are really quite sensible, like some of them, like I looked at this one, yeah, this one, for example. Like it generates some HP, HC. It then uses its function to get the amplitude in the phase, and then it checks if it reconstructs it with the amplitude and phase by doing, you know, a times e to the minus i phi, that it gets the same thing, which is just
+
+Will Handley  5:15  
+quite useful. The relative tolerance there is fine, even though across zero, it depends
+
+Speaker 1  5:20  
+where it puts it. Yeah, I think it should be fine. I mean, we can check these tests a little bit more, but I'm just saying I like the test. Then I said, Okay, use your, you know, use your package to generate a bunch of these sensitivity plots. So let me actually, okay, I just it needs. That's where I kind of got to. I mean, I did a bunch of testing. The last thing I wanted to do just now was implement a time domain like Fourier transform. So go to the time domain. Just have a look there. And I realized, actually, if you work in geometric frequency, m times F, you can take a Fourier transform of that, but you end up with t over m, yes, which actually is fine, yeah, you know. So you can rescale that you can, you know, and everything just gets scaled in time, effectively. So those are the kind of natural units of the problem, which is why they end up measuring mass in seconds, quite a lot. I don't know why you haven't picked C and G Suite shot. Okay, great. So that's now, let me just open the folder for this,
+
+Unknown Speaker  6:29  
+just so I can open all the
+
+Unknown Speaker  6:33  
+plots nicely, density.
+
+Speaker 1  6:36  
+Now we should have, yeah, about bunch of plots that tell us something about what's
+
+Unknown Speaker  6:45  
+your explaining. Can you ask you to commit? Yeah,
+
+Speaker 1  6:49  
+this is on a new branch, by the way, count plots and check size. Yeah, skip this commit.
+
+Unknown Speaker  6:57  
+Wish to also update
+
+Speaker 3  7:09  
+the handover Yeah, or add to
+
+Speaker 1  7:15  
+it Yeah narrative, the process, plus update
+
+Speaker 3  7:21  
+so someone else. So
+
+Unknown Speaker  7:35  
+that's gonna have a thing.
+
+Unknown Speaker  7:36  
+So you got it to make plots of
+
+Speaker 1  7:39  
+the different versions of the waveform, it should have one extra axis, but fine, we'll deal with that in a second. What sense it should have the time domain as well. Some of the plots probably well, but maybe not. One of them will deal with that bit later. So I got it to plot different versions of the same waveform as we vary one parameter compared to some Fiducial setup, right? So this is if you vary the inclination, and this does basically what you'd expect, which is the fact that something like this is h plus. All that happens is that, you know, H plus CC, a bit of H plus or a bit of h cross. So it really should just be kind of amplitude scaling. And you see that, you know, the phase doesn't change, for example, right? That doesn't depend on the amplitude. That's another one that's also inclination, but with a different Fiducial parameter setup, this now sensitive. Is primary mass, totally different. Yeah, exactly. And yeah. I mean, you see actually, but still, the amplitude and phase vary quite smoothly.
+
+Speaker 4  8:43  
+Primary spin again, so I guess so. And this and we, we
+
+Will Handley  8:50  
+haven't yet told it, I want you to emulate amplitude and phase yet. No, this is us, sort of Now, looking at this, going, it's quite clear which one of these we should be right.
+
+Speaker 1  8:59  
+Like, this is a bad idea, yeah, this is much better idea. Yeah, now don't it's not, it's not quite as simple yet. But as you'll see, there are some slightly crazy cases. But my primary spin again second I did love, yeah, yeah. I mean, I knew what I was doing with it, but, yeah. So symmetric mass ratio. See, I mean, you can see, like, some of the XPHM, like non trivial bits which are coming in here, some of this, I don't quite understand yet. We have to think about that. So the
+
+Will Handley  9:38  
+question is whether that's a that bit of the top. Is a numerical
+
+Speaker 1  9:42  
+after that, well, exactly, but I would be surprised, like, it's a bit weird. Yeah. So we have to think about, you know, we have to think about some of this. But this is why I wanted to. So here you start to see some slightly more. This is high mass, high spin. This is where you really start to see, like, XPHM effects, rather than So, one of the next things I wanted to do was it to make the same plots with XAS like a simpler waveform
+
+Will Handley  10:06  
+without as a novice, what does XPHM effects mean?
+
+Speaker 1  10:10  
+So x is the waveform model, the base waveform model about, how do you construct the Inspire merger in the ring down? That's the x part. You have the P part, which is, how do you deal with the fact that the spins might not be aligned, and they might actually be processing as the orbits kind of carry out. And then you have hm part, which is, what happens in the ring down phase in particular, what because you have high motor excited. And my understanding, I think this is correct, is that that is just in the ring down, okay?
+
+Will Handley  10:39  
+And so these very clear, sort of dramatic reductions in amplitude come from the higher order modes, or
+
+Speaker 1  10:48  
+the higher order modes, because this is now in the kind of higher frequency. This is the N part thing. So these Wiggles, I believe here, those are Due to precession, and they give you some like characteristic, like beating patterns, for example, in the in the under mainstream. That's why I'd like to see their time domain. So the real
+
+Will Handley  11:11  
+question, yeah, the real question here would be, is that kind of thing going to be irreducible, or is that still a geometric effect that we could do better if we just, for example, included eccentricity or something within this?
+
+Speaker 1  11:26  
+I think this is a bit irreducible. Yeah, I think this is, like, actually core physics. That's kind of telling you something about the system, you know, the fact that it's a processing system, for example. But yeah, so this is kind of where I got to. I wouldn't say I've got, like, a fully developed picture of all of these plots. I wanted to see if they had some of the time. So here's some examples of the time domain, and maybe it just did them separately. Fine.
+
+Unknown Speaker  11:57  
+That looks like a GW signal.
+
+Speaker 1  11:58  
+It does does, which is a good thing. Cool. You see some of them do some crazy stuff like this. That sort of plot to me, says the time domain is not an obvious choice here at all, but
+
+Will Handley  12:18  
+this is still
+
+Speaker 1  12:23  
+H, yeah, this is now H and T, and that's real. It is real, yeah, and
+
+Speaker 1  12:35  
+it's not. I mean, yeah, they all end up in a sort of amplitude as well, right? So the dynamic range in H is much lower than the dynamic range in frequency domain.
+
+Will Handley  12:48  
+I mean, just kind of on your point of as a further idea, yeah, you've got, HTTP, yeah, which, as we know, looks like,
+
+Unknown Speaker  13:05  
+yeah, that right, yeah.
+
+Will Handley  13:08  
+And as a real part, that will be an absolute nightmare to emulate. But you know, if you're doing this analytically, you've right, you know, this is something as complex amplitude e to the i, 5t,
+
+Unknown Speaker  13:20  
+yeah. And you say it's the real part, yeah?
+
+Will Handley  13:25  
+And then you scar the magical part, because, and then here, mathematically defining these is super difficult, because the phase here, once you let amplitude change, is quite degenerate with everything else, yeah, but I'm sure if you tried to neural net Learn A, F, T and V, T, you would learn something much smoother.
+
+Unknown Speaker  13:48  
+That's an interesting idea.
+
+Will Handley  13:52  
+You'd have to put in some kind of regularization that encouraged it. Because, you know, if you got it wrong, it would aim to one. Solution would be just to set phi to zero try and get a to do the full thing.
+
+Speaker 4  14:09  
+But that is a solution to regularize it so it didn't do that.
+
+Unknown Speaker  14:13  
+Yeah for
+
+Will Handley  14:17  
+five monotonic,
+
+Unknown Speaker  14:19  
+yeah and
+
+Will Handley  14:21  
+phi dot does not equal zero, but, yeah,
+
+Unknown Speaker  14:28  
+but it's
+
+Speaker 1  14:31  
+no, no, I see your point. Yeah, presently. I mean, what does that look like? It looks like an envelope, yeah, times, some kind of varying phase, right? Like the A F T envelope. I mean, it is like, so, yeah, my point is a f t, it should learn something like this.
+
+Will Handley  14:50  
+And the kind of the W, K, B approximation is one way to capture that. In practice, we're going to be if you're sticking in your network in here, you would you probably look for, so I imagine you'd be inspired when you're looking for these things here, if you stop sharing the screen, You get the picture. So you're
+
+Unknown Speaker  15:20  
+kidding, I don't know. Thank
+
+Unknown Speaker  15:25  
+Yeah, I see me.
+
+Unknown Speaker  15:38  
+Okay, cool.
+
+Will Handley  15:49  
+So, so, yeah, if the So, I don't think we do this this time, but this is just something that occurred to me that we probably ought to capture for for future iterations. That's a good idea. This is a way that I'm not answer. There will be some literature on this. But I, from my experience of doing this, where I tried to do this, you know, with ODE solvers or things like that, I'm remarkably, it's remarkably surprising how little this is this has been developed. So there might be something interesting and non triple here, particularly when you look at something when the frequency domain is also looking a bit Ratty. Those ratty ones look better in here, and if they look better in here, if you could come up with a hybrid approach, where I swopped between the two other things. To bear in mind that I'm not sure we currently have errors. So does CosmoPoweR give you any estimate on how accurate it is? I don't think it does. Does it? There are techniques that do that? Yeah, in a relatively crude way, but still not that hard. So we should as points to think about later thinking about error, error estimation,
+
+Unknown Speaker  17:03  
+yeah, probably neural net, yeah.
+
+Speaker 1  17:07  
+I mean, this is one of those things where also the mismatch is like a pretty good independent error estimate, yes, yeah. And you know, you can definitely make some good quality arguments. If my mismatch below this amount, then my P, E error is below an equivalent
+
+Speaker 1  17:30  
+amount. There's also another kind of benchmark number for that, which is, when you compare these models to numerical relativity themselves, they end up typically with mismatching at the order 10 to the minus five. Now, if you're re implementing a waveform from scratch, you really want machine precision, which is equivalent to mismatch is about 10 to the minus 16. Like, I can show you some plots in a minute that show you that what you end up with is basically this, like random histogram, where you've just seen floating point errors in the fact that you're running in C versus Python, right? We don't need to be that good. No, we're not trying to be that good, right?
+
+Speaker 1  18:12  
+Just, I need permission. Bush, really? Yeah, I've access to the
+
+Will Handley  18:20  
+retails. James Harvey, your
+
+Unknown Speaker  18:23  
+James? Hyphen, Alvi. Hyphen, 42 i
+
+Speaker 1  18:51  
+i think this is quite a poor choice understanding where the natural kind of domain to emulate is that doesn't mean we can't try a bunch, yeah, but I think this is, this will affect the performance.
+
+Will Handley  19:09  
+Oh, you've got your invitation, I think so. Yeah.
+
+Will Handley  19:27  
+Office going, yeah. So, yes, I agree. So what other options are there? There's time domains for this domain. Are there any other tricks people fill in this field?
+
+Speaker 1  19:38  
+Not let's see, I think something we should do again. There's like a little parallel process. Is bit of a bit of a deep research on, maybe we can start this up, to be honest, but yeah, a bit of a deep research on what work has been done in emulation for the gravitational waves. Let's do that now. Yeah, and I think that's
+
+Unknown Speaker  20:00  
+work has been,
+
+Unknown Speaker  20:07  
+yeah, exactly.
+
+Unknown Speaker  20:14  
+I mean, there are a couple of papers it should find now I have access. Yeah,
+
+Unknown Speaker  20:32  
+that's fine. I think we don't need four. Yeah, yeah.
+
+Speaker 1  20:37  
+I think mainly just looking for like neural network. I mean, it isn't in particular. Also, I just labeled the Git branches as ja session. Should be easy to merge things. Okay, fine. Join me to donated PR or maybe, maybe what you can do, we just get a bit check out that branch and branch from there, and we can say not with a bunch of branches, which is great,
+
+Will Handley  21:21  
+the very much doing these tags. But I mean,
+
+Unknown Speaker  21:30  
+I wanted to do a couple other
+
+Unknown Speaker  21:32  
+bits, which was
+
+Speaker 2  21:51  
+okay, not interested In physical analog rarity, this should be be focused on NN emulation or acceleration.
+
+Unknown Speaker  22:05  
+Yeah, yeah. So I was looking at the ano. I was a bit weird. But
+
+Speaker 1  22:44  
+okay, cool. Um, yeah. So, I mean, that's definitely something we need to do. Just have a decent idea of what the current state is, but that's what this can this can do. Um, so hopefully got a decent simulator now, things like,
+
+Will Handley  23:04  
+what the best domain
+
+Unknown Speaker  23:07  
+to emulate? So things that are foundational, existing states of the literature. I
+
+Speaker 1  23:44  
+I just put you on fast mode so incubating to make a plot script.
+
+Will Handley  23:51  
+So I want to put this into pro.
+
+Unknown Speaker  23:54  
+I'll start you. Okay. Else. I
+
+Unknown Speaker  24:22  
+wonder if something that might be worth doing is,
+
+Speaker 1  24:31  
+yeah. Might be worth doing is downloading, like, what is it like? Jacks? Is it flax? Yeah, flax and linen, which are the jacks neural network ones, and just separately, just get it to write, like, an LLM, like docs for it, so it can, like, easily make the model. And we can be pretty confident there's doing sensible stuff. Sure, I don't know if that exists already, but, like, kind of similar to the snippets thing that I had just I mean, it has CosmoPoweR, so that will help. But I
+
+Unknown Speaker  25:28  
+it. So that's the job that
+
+Will Handley  25:30  
+I could do, where I flaps, right? Yeah, and generally, get it ready so that any future instance
+
+Speaker 1  25:38  
+is ready to start. That's what I'm thinking. Like that. It's just like, hey, right? I want this sort of model in Jackson, it and it, you know, here's some proper documentation. That's not then, I guess you can just get clearly what
+
+Unknown Speaker  25:49  
+you checked out, Broch, the username, so, right?
+
+Speaker 1  25:51  
+The ja, hyphen. Session, 1059,
+
+Speaker 1  26:10  
+okay, this is better Nice. So now, now we have some nice plots manual. Otherwise that's, well, yeah, and all of these things back on that. Yeah,
+
+Speaker 1  26:30  
+no, just like a proper set of plots. And I ran it on a slightly finer grid, and I wanted to have the actual Fiducial values on the plot. Cool.
+
+Speaker 1  26:51  
+Yeah. Honestly, like, it's so hard not to look at this and think amplitude and phase.
+
+Speaker 1  27:10  
+One thing I might get it to do is, in the background, make similar plots, but for XAS, because that doesn't have the higher mode, so we can see that, yeah,
+
+Will Handley  27:58  
+guess we're not interested, not interested in the practical integration of emulators, no to Beijing,
+
+Unknown Speaker  28:10  
+exactly inference
+
+Will Handley  28:14  
+and scalability was interesting,
+
+Unknown Speaker  28:16  
+yeah, or at whilst interesting beyond the scope exactly
+
+Unknown Speaker  28:35  
+those look like impacts to me. How would you find out? Not sure it looks like it's
+
+Will Handley  28:42  
+crossing zeros thing, that kind of thing where it dives down to zero.
+
+Speaker 1  28:45  
+Yeah, but this should be the amplitude so and like you see, you're in that. I mean, you're in this regime here. This is way below the noise floor, like way, way, way below. You know, if you if you want, we can add on this plot the ASD as well. You know, something like PT. Just to get a decent idea, I
+
+Unknown Speaker  29:31  
+and these plots quite useful where You
+
+Unknown Speaker  29:58  
+James made significant progress,
+
+Speaker 3  29:59  
+apparently, Oh, that's great. You're absolutely right.
+
+Speaker 1  30:08  
+It's crazy, the progress you can make, though. I mean, this is the whole point today, right? It's just showing, like,
+
+Unknown Speaker  30:16  
+Cool. I'll tell
+
+Speaker 1  30:19  
+you one case study for just forcing students in particular, just to run their code through this though, I have fought with Andrew Nikki for like a month, yeah, but she's SBIR. Is not working. I don't think it's SBI. I think it's next generation, but I've trained like 100 networks, and it's just not giving me the right answer. Maybe blackjack is wrong. Then back of two in the data generation is very
+
+Will Handley  30:53  
+useful in that context. Okay, so I
+
+Unknown Speaker  31:09  
+that I'll read its interpretation In a second.
+
+Speaker 1  31:39  
+These are all mega smoothies. Smooth, right? AXS and look at those
+
+Will Handley  31:47  
+reminding Jim as and
+
+Speaker 1  31:49  
+phenom so as means align spins.
+
+Will Handley  31:53  
+And is this align spins and just align the spins within XPHM.
+
+Speaker 1  32:00  
+Well, this is actually calling XAS. Do you want to check that, allowing the spoons in? Then we have to turn off time loads as well. Yeah, so, but
+
+Will Handley  32:07  
+just that's also a good sandwich, yeah. Okay. Start over interpreting. Oh.
+
+Speaker 1  32:47  
+Yeah, if you run XPHM with only the two two mode, you should get XAS online spin setups. They should reduce you
+
+Unknown Speaker  33:12  
+was again on the plan,
+
+Unknown Speaker  33:22  
+kick it out later. I, yeah,
+
+Speaker 1  33:33  
+yeah, they're figured out. That's good. These are the you have to Yeah. Basically create a loud Dict that tells it how to which modes to use. So you can turn on and off modes in XPHM,
+
+Unknown Speaker  33:45  
+which is useful,
+
+Speaker 1  33:48  
+because another thing, like, there is another way as well, which you might look at, is you and we can make these plots, which is emulating XPHM, mode by mode, because they think they're additive. If
+
+Unknown Speaker  34:08  
+that's true, yeah,
+
+Will Handley  34:09  
+then that's a huge physics.
+
+Speaker 1  34:14  
+It's like we can put into this. Yeah, indeed. And it's one of those ones where I think that's true, but I would need to, we need to check
+
+Unknown Speaker  34:21  
+Yeah. So
+
+Unknown Speaker  34:25  
+always just Arr,
+
+Will Handley  34:28  
+insights there then the Check, yes.
+
+Unknown Speaker  34:45  
+It does match. That's the point. I
+
+Unknown Speaker  35:10  
+need to chipped by and said she doing this. I
+
+Speaker 1  37:19  
+I'm getting to check whether so XAS versus x, hm, so x with any higher modes, no precession versus next, phn with precession and just seeing what are the relative differences between those? Do you see? I mean, there is quite a big difference between I it good idea.
+
+Speaker 1  37:52  
+Yeah, so there's quite a big difference between XPHM With all the modes and XPHM with that the two, two mode only. And you see that there's, I mean, it made a crappy part color choice, but that's XPHM versus XAS only two, two mode you see in the ring down the match like, basically exactly. I'm wondering if there, there are a few differences here. You can see it's pretty close. I wonder if some of these are because of precession. So that's why I'm just checking. But you know, this is also a log plot, so we have to bet, and we also have to bear in mind that at that high frequency, it goes with PSD. So you know, all of these things we have to, I think we have to be practical about what we're trying to achieve and we're trying to achieve.
+
+Will Handley  38:38  
+But still, it's good trying some of the physics, no, crucially, so
+
+Unknown Speaker  38:41  
+the other test, I mean, I'm able to just get this too quickly, is implement this mode choice
+
+Speaker 1  38:50  
+in the waveform generator that is in the already, so have A better control over the modes that we include. And
+
+Unknown Speaker  39:11  
+want to build from once a day. You
+
+Speaker 1  39:29  
+I think I might have this test done. It had a better starting point. I think I
+
+Speaker 1  40:00  
+man, here you go. It's the full waveform. Oh, wow. And the sum of the modes
+
+Will Handley  40:09  
+means it's additive. Okay, so that's a key physical insight, yeah. Focus on this
+
+Speaker 5  40:16  
+important, important For the AI, the motor,
+
+Will Handley  40:28  
+arrl,
+
+Will Handley  40:39  
+separately is going to be key here. So we have to have multiple Emulators that emulate modes separately. I mean, in practice, we may it may be more efficient to have an architecture where it has components, where it learns combined bits and then learns and then, sort of fine tunes modes on top of that. But this fundamental idea that the end result should be an addition of separate modes that you've learned is is probably going to
+
+Unknown Speaker  41:05  
+be very useful. Yeah.
+
+Speaker 1  41:08  
+So one plot that might follow up, plot that might be interesting to make is look at make the similar thing of the various parameters, but make it mode by mode, exactly
+
+Will Handley  41:17  
+right mobile mode, because then if you find that, for example, that removes that weird Wiggles, chattiness or things like that, then that's that's very, very useful. Yeah, I
+
+Unknown Speaker  41:59  
+is updating the development log With those findings, which is useful? Okay?
+
+Unknown Speaker  43:27  
+It needs to think
+
+Unknown Speaker  43:32  
+it should it should be fun. I
+
+Unknown Speaker  44:59  
+the motorist. This would be great. Let's see.
+
+Speaker 1  45:09  
+I wonder flower has like class, whether it has computational settings, you know, you run class and like fast mode and stuff like this. I'm just wondering, you know, you'd see similar things if you ran class with the default settings down At like low values, right?
+
+Unknown Speaker  45:36  
+Looks like a training curve.
+
+Speaker 1  46:39  
+Don't know about you, but that looks like numerics to me at the bottom.
+
+Speaker 3  46:50  
+Yeah, as in, you kind of come down from here, right? Maybe, no, I'm
+
+Will Handley  46:59  
+looking at this thing Here, but be changing smoothly with it's
+
+Speaker 1  48:10  
+a input analysis as well. So let me show you first the full waveform or modes. Let's have a look so unequal mass the line spins fine, so, you know, wobbles around a bit, right? Okay, then it seems like now that two two mode only, that is
+
+Will Handley  48:31  
+definitely smoother, but two, two is also simple. One, yeah,
+
+Speaker 1  48:37  
+three, three mode contributes to higher frequencies, also a lot smoother.
+
+Will Handley  48:44  
+Yeah, and how many modes are there in the full thing?
+
+Unknown Speaker  48:49  
+There's like four or five, all right,
+
+Unknown Speaker  48:51  
+so there's three, right?
+
+Unknown Speaker  48:53  
+Yeah, let me I want to check that this
+
+Unknown Speaker  48:58  
+is looking a hell of a lot smoother. Now. I mean,
+
+Will Handley  49:00  
+if it's actually true that that's what those things look like, yeah? This is env, yeah. We want to think about the loss function to emulate here, because skip this is in log space. There's things where we should make decisions,
+
+Speaker 1  49:14  
+but you compared to that, yeah? I mean, this is way,
+
+Will Handley  49:18  
+this would be the the insight I was looking forward to some some decomposition that says I use the word electricity.
+
+Unknown Speaker  49:26  
+Can you write police findings?
+
+Unknown Speaker  49:34  
+Also around my question, can
+
+Speaker 2  49:38  
+you find out on the defaults? Or number of notes, please
+
+Unknown Speaker  49:44  
+don't allow or description also.
+
+Will Handley  50:41  
+So here it decided to write something when showing an emulator that has sinusoidals and things you've got sort of ground, solid truth and dust emulation. So it's emulating something here. There's none of these tricks. It's just, you know, getting to that stage. So we have a flax trainer. Yeah, good. Don't think that's what we even wanted, right? We wanted right? We wanted
+
+Speaker 1  51:04  
+documentation, that instruction, yeah, but that's the problem, right? Like, still, okay, yeah. I mean, I'm not surprised. It knows how to write facts, updates,
+
+Speaker 2  51:15  
+the documentation, Docs, log. I wanted you know to do this. Did me look up black best practice? Or is just
+
+Unknown Speaker  51:44  
+you look how much smoother. But this is the four four mode.
+
+Unknown Speaker  51:48  
+Look how much me.
+
+Will Handley  51:49  
+It's amazing. I mean, again, it's like, kind of amazing. How not? But if it's actually true, they're just adding these together, and then go back to Apple to face space. Then this is the key, this way side, right? Yeah.
+
+Speaker 1  51:59  
+Definitely. These are easy, yeah, right. And also these are genuine. I've seen these before, like,
+
+Will Handley  52:11  
+this is so much easier, but is that phase going to be easy? I agree. How much is easy, the phase gets easier.
+
+Speaker 1  52:16  
+I think it's easy enough. It's easier. I mean, compared to Western to ask your
+
+Will Handley  52:34  
+question, more fully. Jack spilmer research community around 2021 23 so substantial coverage of my training data, patterns are feeling consistent. Okay, get open AI and grounded Gemini separate names to review your flax and tell me
+
+Speaker 2  52:59  
+check if this is the best way to do things. Use this to update a new Docs file, Jack slash, flags, best practice, cool.
+
+Speaker 1  53:18  
+I'm asking it at the moment just to check what the default mode content of XPHM is. I
+
+Speaker 1  53:28  
+mean, look at like that. That's what the phase looks like when you have all the modes. And that's what the amplitude looks like like.
+
+Speaker 1  53:49  
+You guess the final time just decomposed. If you have H, let's think just about the plus mode h, tilde of F. What we're looking at here that's with the full mode content. So that's a of f,
+
+Unknown Speaker  54:12  
+x, I, phi of F.
+
+Speaker 1  54:17  
+But the claim, and we just check this, which is true, is that this is really the sum
+
+Unknown Speaker  54:23  
+l m a, l m of f, x, I, I, L M of F, yeah.
+
+Speaker 1  54:34  
+And so, you know, imagine you take the amplitude of this, like, okay, that that is a of f, but what that really is, right, is the amplitude of this thing, which you get bunch of cross terms, right? So it makes us up all the phase contributions, yeah. I mean, of course, this is not equal to sum. LL, so cool. Makes it, you know, it's just the key thing we have to check is this, right, that that really is just the sum. Yeah, exactly. We could do a couple more checks on that, but, like, no sure, I agree. I mean, I'm like, 99.999% confident on that. It's just making sure. But the insight that, yeah, yeah, a 1e to the i phi one plus a 2e, to the i phi two for the AI. But
+
+Speaker 3  55:46  
+was really that, right? You pick up these extra cross terms.
+
+Unknown Speaker  55:55  
+So the deep research,
+
+Will Handley  56:38  
+I'm increasingly finding there. It's like the addresses block blocking me
+
+Speaker 1  56:49  
+from archive. It's hard to argue that I'm not. This is when you ask me, just general,
+
+Will Handley  57:02  
+just going to archive on this web address?
+
+Unknown Speaker  57:07  
+No, it's me, right?
+
+Speaker 1  57:12  
+Yeah, I guess I have, like, Mac IP, right? Should write to them and so can you unban it? I promise I'm not. I'm not just like, this is why. This is how people end up with VPNs.
+
+Unknown Speaker  57:30  
+That's kind of crazy.
+
+Will Handley  57:32  
+Yesterday, while I joined student meetings.
+
+Unknown Speaker  57:35  
+Why is that happening? I
+
+Speaker 1  57:46  
+apparently loud as multi banding, so it actually does run on a course frequency grid which may affect the precision. Does this internally, so I'm doing a test now where I just disable that and Seeing if it makes any difference to the revision and
+
+Unknown Speaker  58:36  
+it's about a whole lot of stuff, but it's
+
+Will Handley  58:38  
+completely different to What we're doing. Yeah, you get the feeling this is, like a lot of the literature here, where people kind of do AI for science, and what they do is they do what they want to do, which is completely unrelated to what we need, like this stuff here. So the time brings away spectrograms and image based architectures. Yeah, you know, architecture, segmentation, emulation, using CNN to kind of learn the spectrogram and then, which
+
+Speaker 6  59:05  
+is fun and useless, non linear manifold related spec representations. I mean, effectively, Imag on the front line is this, yeah,
+
+Unknown Speaker  59:12  
+although I guess so we're, we're specifically trying to
+
+Unknown Speaker  59:15  
+emulate waveforms, aren't we?
+
+Will Handley  59:19  
+Yeah, as in these specific things, where they're parameters in terms of modes, so
+
+Unknown Speaker  1:00:04  
+in the meantime, I'll do my own research. Yeah, I mean,
+
+Speaker 1  1:00:30  
+sure EOP, my phenom Family is fine. Yeah, people change surrogates, that's definitely true, but they always train this on the NR data rather than on the waveforms themselves,
+
+Unknown Speaker  1:00:44  
+which is A different thing.
+
+Unknown Speaker  1:00:50  
+Geometric revolution, yeah, see,
+
+Unknown Speaker  1:00:55  
+yeah. It's interesting.
+
+Speaker 1  1:01:03  
+It's interesting that we're probably trying to do the thing that everyone started with it, but it's better. You have to remember the GW community is super weird, like, really odd, and there are a bunch of astronomers who don't actually know how to do like, basically, like, look at Lal. It's in principle such as in like, it's not that complicated,
+
+Will Handley  1:01:24  
+I mean. But here, this doesn't look like the GW per se, like these things that's it's now highlighting, yeah, using auto env code to discover intrinsic, low dimensional geometric structures such as spirals within the waveformparamers space, okay. I mean, there's a part of me that feels like, isn't that what we're doing here? I guess so we I mean, we may find that as we proceed, we run into something where we go, Oh, I see this is what these people doing, yeah. So it's entirely possible that our car today is finding that we can do okay, but it's not really good enough in practice, because of all the things that these things are trying to solve. So that's that's possible, but,
+
+Speaker 1  1:02:15  
+yeah, although, I mean, I spoke, I have asked a lot of people about Emulators now, and no one knows of any good ones.
+
+Will Handley  1:02:25  
+But again, in the world of science, because no one publishes things that don't work, yeah, that could be this lots we've got
+
+Speaker 1  1:02:30  
+Sure, but weirdly, I wonder if it's actually more to do with the fact that the waveform community is just the most toxic place in the world, that no one in the GW community really wants to touch waveforms because they're genuinely worried again. Shout to that. Yeah. I'm kind of only half joking. That's Not Yeah. So there
+
+Unknown Speaker  1:03:01  
+was a little difference.
+
+Unknown Speaker  1:04:22  
+Something's definitely changed after I put the precision setting on
+
+Will Handley  1:04:27  
+comparing position. Do you have plots that show the change, or you still try memory?
+
+Unknown Speaker  1:04:32  
+I bought it through memory, but I can obviously get that.
+
+Unknown Speaker  1:04:41  
+Memories can't have of
+
+Unknown Speaker  1:05:32  
+also Pro or Max was so worth it is So much better. It's actually not close. Unfortunately. I you
+
+Speaker 1  1:06:53  
+I mean, there is this is documented. That's great, right? I've said the fresn said one thing, wow, I don't know. And it found the only one in XPHM. I chef, just multi banding. I
+
+Unknown Speaker  1:07:25  
+and now I have a
+
+Unknown Speaker  1:08:38  
+that our essence, it's just like Christ, What does it say? Some
+
+Will Handley  1:09:23  
+to get on right now. So, I mean, it's improving the flax a bit. Yeah, they got confused, because when I made those improvements, it made a make it slightly worse myself. That's, yes, it's common expense. You can cheat.
+
+Unknown Speaker  1:09:45  
+Okay, multi, venv doesn't do anything which is good.
+
+Will Handley  1:10:02  
+So Paul goes as relevant to our project, mostly tangentially, the survey folks and architectures, we're explicitly not pursuing units on spectrograms, water code, as far as manifolds, content, you know, X, Fourier operators, graph networks, dictation models, yeah, what is relevant? It's actually three by three, SVD, neural network interfaces, essentially our approach key numbers And
+
+Speaker 1  1:11:56  
+did you? Mode is very simple, hmm. And I think this is, like, actually quite an important point, right, which is the fact that the two two mode is the it gives you the dominant match to your waveform, right? If you get the two two mode right, then you're going to be definitely in the right ballpark. And it's easy to get that right first, then move to the other ones, right. And all of those like they have different kind of dynamical scales. They have different characteristics to them, the different modes, okay?
+
+Unknown Speaker  1:12:43  
+So go to next,
+
+Will Handley  1:12:45  
+one, archive, 24, or 8o
+
+Unknown Speaker  1:12:52  
+247, or 8o 247,
+
+Unknown Speaker  1:13:00  
+recognize at least,
+
+Unknown Speaker  1:13:04  
+did I recognize that name?
+
+Will Handley  1:13:20  
+The key things is SBD decomposition and how that relates to
+
+Unknown Speaker  1:13:23  
+what we're doing. Okay.
+
+Unknown Speaker  1:13:32  
+Okay, so this is that kind of this
+
+Will Handley  1:13:41  
+isn't what we're doing. This is most similar in spirit. They take the waveforms as is, form an SBD decomposition, and then try to learn that. So it's a very much a data driven thing, but it's very different from our physics driven thing, which we the waveform? I mean, so is this still in the regime of them trying to emulate gr waveforms,
+
+Unknown Speaker  1:14:09  
+I guess is
+
+Will Handley  1:14:12  
+the key issues that everybody Okay.
+
+Unknown Speaker  1:14:18  
+Could you please get why is this? Models stopped, relizing them to directories.
+
+Unknown Speaker  1:14:32  
+Sounds good. Whack, right.
+
+Unknown Speaker  1:14:38  
+This is the only plot they have. But then what waveform is that?
+
+Will Handley  1:15:00  
+What's amplitude? Phase
+
+Unknown Speaker  1:15:02  
+like? Yeah, even then
+
+Will Handley  1:15:06  
+that's amplitude, and you can stick a phase on it that looks like
+
+Speaker 2  1:15:09  
+a waveform, yeah, I guess. Yeah, right. Okay, so is the y axis that looks wrong? Yeah.
+
+Speaker 3  1:15:16  
+No point taking it right. Okay. Do attempted
+
+Speaker 1  1:15:26  
+to kind of wrap this up. Okay, you know, push.
+
+Unknown Speaker  1:16:03  
+Yeah. I mean they're only doing phenom D.
+
+Speaker 1  1:16:12  
+Yeah. They want low latency so they have the Dict. They want to put this in search pipelines. That's the motivation, which is also why they only use phenom D. I um, but
+
+Unknown Speaker  1:16:33  
+maybe there's some interesting ideas in here.
+
+Speaker 3  1:17:13  
+Up. You want to have a bit of a kind of pause and think, I think that mode thing was quite key. Yeah,
+
+Speaker 1  1:18:48  
+what I might do once I've done this is I'll export this to save it, and then we can start a bit fresh. It's compact about four times already.
+
+Speaker 1  1:19:20  
+Yeah, this so that was the difference between taking the modes and adding them versus, like taking the full waveform separately at 10 to the minus 38 in 10. That's an absolute difference making 10 to the minus 22
+
+Will Handley  1:19:36  
+sorry. X, phenom H,
+
+Unknown Speaker  1:19:40  
+M, X, phenom D hm, phenom X, phm, XPHM, yeah, such stupid names. This
+
+Speaker 1  1:19:53  
+is the, this is actually an interesting plot where you see the fact that, like, actually, even though you see the like, three, two mode, right, massively subdominant in the Inspire regime. But by the end, it's not like it can dominate over some of the modes. I mean, these ones are better examples. They're still subdominant here, but now they're the dominant mode contribution in the ring down so, and that, that's where you see that little so XAS would just drop off. But this has like this peak here, which comes from the higher one most.
+
+Will Handley  1:20:27  
+So will these use semilogic APPROXIMANTS? Seob and r imponction? Yeah.
+
+Unknown Speaker  1:20:37  
+I should always start right, summary, editor, selection, new scripts, generous is updated, okay.
+
+Unknown Speaker  1:21:18  
+Where do you think? Do you think West Park will be open,
+
+Unknown Speaker  1:21:26  
+I guess, today temporarily closed.
+
+Will Handley  1:21:37  
+Douglas Adams, one volume
+
+Unknown Speaker  1:21:53  
+is Eddington near his lunch might well be, yeah, that's in just laptops to
+
+Speaker 2  1:22:01  
+do that? Yeah, certainly. I'm sure there's something in there. Stop this. I.
+
+Transcribed by https://otter.ai
