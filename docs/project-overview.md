@@ -51,7 +51,36 @@ The optimal choice should be determined empirically by examining smoothness.
 
 May be worth exploring (Alessio Spurio Mancini reportedly tried this), but complicates the mass scaling.
 
-## Initial Tasks
+## Problem Specification
+
+Understanding the numerical challenge:
+
+- **Amplitude**: varies over ~5 orders of magnitude
+- **Phase**: varies by ~100-200 radians
+- **Frequency range**: ~0.001 to ~0.1-0.2 (dynamic range ~10^3)
+- **Target accuracy**: mismatches at level ~10^-3
+
+This specification is useful for consulting ML literature outside astronomy.
+
+## Development Approach
+
+### Phase 1: Training Data Generation
+
+1. Install LALSuite: `pip install lalsuite`
+2. Generate waveforms using LAL (see ripple examples for calling conventions)
+3. Store as **complex strain** - this allows flexibility to later work with:
+   - Amplitude and phase
+   - Real and imaginary parts
+   - Time domain (via FFT)
+
+### Phase 2: Basic Emulator Validation
+
+Before jumping into GW waveforms, validate the approach:
+- The CosmoPower/Speculator framework involves non-trivial PCA
+- Consider testing on a simpler problem first
+- Or attempt to reproduce existing results
+
+### Phase 3: Parameter Sensitivity Analysis
 
 1. **Parameter sensitivity plots**: Run IMRPhenomXPHM on a grid, varying one parameter at a time. Examine:
    - Smoothness of amplitude/phase variations
@@ -61,6 +90,10 @@ May be worth exploring (Alessio Spurio Mancini reportedly tried this), but compl
 2. **Reference plots**: Create baseline visualizations for the project
 
 3. **Benchmarking**: Use mismatch calculations (see ripple paper 2306.17245) to validate emulator accuracy
+
+### Future: External Review
+
+Once benchmarks are established, consider canvassing ML literature outside astronomy for alternative approaches. Having a well-specified problem makes it easier to get external input.
 
 ## Key Resources
 
