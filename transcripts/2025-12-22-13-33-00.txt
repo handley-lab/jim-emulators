@@ -1,0 +1,400 @@
+Speaker 1  0:00  
+All right, good progress. I think so hang on. I want to grab that otter whilst it's here. I
+
+Speaker 2  0:20  
+I have some thoughts on what we could try next, but I think I will obviously wait until I'm
+
+Speaker 2  0:36  
+wondering whether we should just give it a go now. But I mean, we, let's, review what we've you know what we've done, but if we think we've got, like, a relatively clear strategy, we can just give it a Go, even just on the like two two mode,
+
+Speaker 3  1:02  
+right? Right,
+
+Speaker 1  1:16  
+so I think the next step whilst we're at lunch will be to sort of synchronize with Master, yeah, exactly. And then,
+
+Speaker 2  1:25  
+and and kind of have our own little, like, just consolidation phase, right where you say, Okay, here's what we actually you know? What we really learn? You it
+
+Speaker 2  1:49  
+must be like A cafe or
+
+Unknown Speaker  2:02  
+something i
+
+Speaker 2  2:41  
+You. Of, okay, cool. Let's say, let's, let's consolidate a bit. And all of those things are pushed so they should all be on the gear.
+
+Unknown Speaker  3:01  
+You seem to merge the logs basically.
+
+Speaker 2  3:11  
+I think the core findings there right are the fact that modes decompose, which you would guess, but still, it's useful. If we do X phm with the modes, we also get XP for free, because you can just only use the two two mode, which is nice,
+
+Speaker 2  3:38  
+amplitude and phase of the modes are way smoother than the amplitude and phase of the full waveform. You managed to get some Jax implementations working on data that looks very similar, and we know how to once we have an amplitude and a phase reconstructed to the relevant degree is trivial to combine them. I mean, it basically already tested that, yep. You really just need to do, you know, a e to the i phi, yeah. So I think there's quite a direct next step, which could just be, let's try and merge those two for a particular mode. Two, two is the easiest, for sure, and see if we can get good precision, yeah, and build that up mode by mode.
+
+Unknown Speaker  4:38  
+And how expensive is generating this data?
+
+Unknown Speaker  4:40  
+It's pretty cheap, yeah, like that won't take long to generate hours, minutes or seconds.
+
+Speaker 2  4:47  
+I mean, probably, like 10s, 10s of minutes, I would guess, to generate a reasonably large sample. But if we you know now we've done that work, we know that we kind of only need to do that once, mode by mode. So also do it for the two two mode and separate that data generation, because then you can get training on it.
+
+Speaker 1  5:06  
+How? From your experience of looking at scanning your parameters, yeah, how ambitious do we want to start?
+
+Speaker 2  5:14  
+So why don't we just start with the aligned spins that would be able to generate really fast, and then we can always scale up that test. Yeah,
+
+Unknown Speaker  5:42  
+yeah. That we need to maintain all that have the local effect and
+
+Unknown Speaker  5:58  
+power. Yeah, I it.
+
+Speaker 2  6:03  
+But, you know, once we go back, we should be able to benchmark very quickly the the generation time. I mean, it's, you know, to generate all of those plots. It's running like hundreds of simulations. So it's not like crazy expensive,
+
+Unknown Speaker  6:19  
+for sure. And how many practices you think we want to be working
+
+Speaker 2  6:30  
+for did sink so we have eater which goes like, not well, like one to 1000 or something like that. Maybe you don't want to go that high. You can. You can cut it off a little bit before that mass ratio. So, you know, 1000 is very large mass ratio. You know, you're starting to get close like Emery is a 10 to the
+
+Speaker 1  6:49  
+same way that you said, FM makes sense. Does eta make sense?
+
+Speaker 2  6:53  
+Or does m1 and two make sense? Presumably, you're using eater. Eater makes sense. Yeah. So, well, actually, what? Yes, you're using chef mass there. But what you're really doing is scaling by the total mass of the system, right? That's what M, F really is. So like capital M and eta are kind of the natural parameterization. If you want to reduce the dimensionality by one, are you not having to Train over m, then? Then eta is your choice. The
+
+Unknown Speaker  7:49  
+Yeah, so I think Eater is, is The choice i
+
+Speaker 1  8:16  
+up. Okay, that's fine, right? Are there any roadblocks there? I don't think so. The thing that's bothering me is what we've done here. Obviously, we've used AI to speed things up, but we haven't done anything particularly radical, no, right? And the fact that, when I did deep research, even the closest thing to ours
+
+Unknown Speaker  8:44  
+just looks weird. Yeah, right. Go back to the deep research, if you
+
+Unknown Speaker  8:52  
+like, yeah. I was just trying to find the only paper that I know that is a guy in Utrecht, this guy, you You talk
+
+Speaker 3  9:42  
+about bring so
+
+Unknown Speaker  10:07  
+this is a lot closer, right? This?
+
+Speaker 2  10:30  
+That's how it's broken down. Also tells you how to include the spherical harmonics, which we might be able to write ourselves. Then you
+
+Unknown Speaker  10:52  
+Okay, so, this is what we do.
+
+Unknown Speaker  10:57  
+Okay, so, Turkey shirt. Thank you.
+
+Unknown Speaker  11:07  
+Thank you. Nice. So I think this is quite an important paper. This. This is a machine learning paper. It says we do this regression. You
+
+Speaker 1  11:22  
+Yeah, okay, do they do it amped in phase they do this is exactly what, yeah.
+
+Unknown Speaker  11:36  
+What was that paper? Number 2402, 065872, 6587,
+
+Unknown Speaker  12:01  
+so they don't manage to do very well. Mismatches of 10 to the minus one are very bad. But that can be because people are like
+
+Unknown Speaker  12:12  
+bad at the same time.
+
+Speaker 2  12:17  
+No wonder how spicy their chilies Are. Let's find out.
+
+Unknown Speaker  12:38  
+French, crispy, you that's
+
+Unknown Speaker  12:45  
+decent, but
+
+Speaker 2  12:56  
+I've already got one idea from this paper, which is the inclination we should be able to do ourselves. So how
+
+Speaker 1  13:06  
+does that work? Different from what we're trying to do at all? I'm also annoyed that deep research didn't find
+
+Unknown Speaker  13:12  
+that one. Yeah, it's kind of ridiculous.
+
+Unknown Speaker  13:22  
+Man. So
+
+Speaker 2  13:26  
+it's not that different, and it just factors out the inclination and the reference phase by basically writing out the spherical harmonics explicitly. But fine, so it factors out the inclination here by just modeling the spherical harmonics directly. I mean, it reduces the parameterized parameters. So, yeah, why not for the AI, right?
+
+Unknown Speaker  14:01  
+So that that's a good idea. But these mismatches are quite bad, to be honest,
+
+Unknown Speaker  14:18  
+we're taking
+
+Unknown Speaker  14:34  
+they're only doing a Line spins, it seems.
+
+Unknown Speaker  14:42  
+Let's try a new deep research. One,
+
+Unknown Speaker  14:46  
+yeah, yeah, aligns in circular binaries. You
+
+Speaker 2  15:11  
+but that's the kind of I mean, one benefit of that there's a nice independent confirmation of I
+
+Speaker 2  15:42  
+safe so say, yeah, it only has any has one citation, which is that Ryan McGee paper that was found. So I think the reality here might just be that this implementation is not very good.
+
+Unknown Speaker  16:21  
+Impressed with the deep research. They are not
+
+Unknown Speaker  16:26  
+pretty unimpressed, yeah, I mean,
+
+Unknown Speaker  16:29  
+you should do better than that, right? This
+
+Unknown Speaker  16:40  
+is a bloody good brunch, actually.
+
+Speaker 2  17:02  
+I I think again, the reality is that enough more important people that I've asked. There is no good Jax emulator, whether it's jacks or not for xphm, that's the that's, I'm pretty confident that is the current status, which
+
+Speaker 1  17:25  
+is why, unfortunately, but we may find the answer date. This just doesn't work because there's Yeah, tried this and failed. No, sure, sure, sure.
+
+Speaker 2  18:00  
+It. But again, people do funny things with machine learning. So you Know, I Again, I
+
+Speaker 3  19:22  
+I was asking Myself,
+
+Unknown Speaker  19:49  
+cosmological, how's
+
+Unknown Speaker  20:12  
+it Getting on?
+
+Unknown Speaker  20:22  
+Where are you?
+
+Unknown Speaker  20:40  
+Hell, yeah, I can do
+
+Speaker 2  20:51  
+money. I it's kind of true, though, yeah, yeah,
+
+Unknown Speaker  21:13  
+please add this exact to the documentation.
+
+Speaker 2  21:21  
+Yeah, that's funny. So, so I know, I know the people on that paper. That's why I knew the paper, because he gave her. My point is, so he gave it all. He was, firstly, a PhD student who gave a tour book, this thing I'll organize in Amsterdam. That's guy, don't get me wrong. But my point is that also, I know the supervisor size of mega hands on, and I can totally believe, I mean, it looked like he honestly did a pretty decent job, but I can believe that it might not be that far off working, and those are different things, right? Already, we've learned one thing from that paper, which is inclination we can do by ourselves. Yeah,
+
+Speaker 2  22:30  
+what do you use fraud code for fix its own git problems or that's why lady,
+
+Speaker 2  23:22  
+yeah, keep doing A little bit More hand research. You
+
+Speaker 2  24:00  
+okay, gravitational waves from inflation. Delete, Selection function. Delete, you all the
+
+Unknown Speaker  24:42  
+time. He's surprising how bad it is. It's actually a hard thing to do. Yeah, you
+
+Speaker 2  25:35  
+Oh, yeah, this is this side. I hadn't looked at this code for ages. This is ml for GW, but they spent a lot of time writing piping code and like they re implemented all the loud stuff, and forgot to do it in Jax, so it's just really slow.
+
+Speaker 1  25:53  
+Okay, so I fed in That paper into deep research. Yeah.
+
+Unknown Speaker  26:52  
+It Teachers, I,
+
+Speaker 2  27:47  
+so I think we should maybe think, you know, keep thinking about this generation side of things and make sure so this, this is still slightly, this is For, like, non processing systems. So we should just check that this you know that we can write down an equivalent one and take the LAO output, put it into that function.
+
+Speaker 1  28:12  
+Sorry, that deep research happened into here. It's now getting all these papers, including MLGW, BNS,
+
+Unknown Speaker  28:21  
+SEO, bnre, Ai, these letters here.
+
+Speaker 4  28:24  
+So, 2411, dot, 14, 8934,
+
+Speaker 1  28:40  
+it, one thing that, in terms of as we reflect during this we could have started doing this research, doing kind of checking what's in the literature already, but equally, we wouldn't necessarily know what to search for until we sort of actually had a go and do it ourselves, telling that the deep research did it initially, was dreadful at it,
+
+Speaker 2  29:12  
+yes, but now can be better, because we can steer it a little bit. This is why I really think the like, most interesting research that you can do with this stuff is the one that's like right On the edge of your knowledge, right? Rather than to
+
+Speaker 2  29:48  
+yeah, this paper is whack. This one here, yeah, this is 2411 I mean mismatches, a point, point 01,
+
+Unknown Speaker  29:57  
+total whack. And what does, what does mismatch mean here?
+
+Speaker 2  30:00  
+This is the integral h1, star, h2, over, PS. And why do you know that that one goes wrong? Because when you actually match, if you match away from against itself, you should get that 10 to the minus 16, as in close and numerical position. And like, there are we, you know, we've done tests on
+
+Unknown Speaker  30:18  
+ripple noise with no one else at all. Yeah.
+
+Speaker 2  30:24  
+I mean, obviously it does scale a little bit, but that's why you put the PSD in. So that's telling you for kind of a reference. PSD, are you sensitive to errors in the waveform modeling? And you can you know that the larger, the more sensitive the detector, the more sensitive you are to the mismatches. So the one I've put in the repo at the moment is a reference like ET PSD. So I mean, here,
+
+Speaker 1  30:49  
+these guys keep playing, claiming to like 10 to the minus four precision and things like that, but that mismatch doesn't match onto that or as in this paper. So all of these seem to claim that, you know this is accurate enough, but your instinct is that it's not,
+
+Speaker 2  31:02  
+I think my instinct is that we, you know, if you were implementing the waveform from scratch, and you were trying, as in, you were looking to, like, like they do with ripple at the moment, they would say that those are to shy. That's, you know, I mean, the bug that I fixed was they had mismatches at 10 to the minus 11, and they were like, something's wrong. Just to give you reference,
+
+Speaker 2  31:30  
+here's a different line of thought. So let's assume that we end up doing something that looks roughly like this.
+
+Unknown Speaker  31:38  
+You know, follow this type of a strategy. Are there classical ways to learn functions like this that might give you, for example, better precision and have like, actual guarantees I'm like,
+
+Unknown Speaker  31:59  
+so what kind of possible ways
+
+Unknown Speaker  32:00  
+you think, like WKB or even just like,
+
+Speaker 2  32:04  
+you know, I have a smooth function of F or MF, and I'm thinking of that it's a smooth imagine you had it at each grid point, and I have so along every single grid point there is a smooth function as as as as you vary the other parameters is, like, other classical methods that have, like, actual error control about how well you can interpolate that with, like, I don't know, some sort of basis polynomials or, like, it's not something I'm a mega expert in, right? But like, you know, Chevy chef polynomials, or something like this, where it tells you, I mean, the reason why that can be good is, if you know it's smooth, if you keep adding points, it should get better. And there's, like, some that are, like, exponentially better, right? The more points you add. Now, I don't know how that works With the dimensionality, but check them off.
+
+Speaker 5  33:41  
+You Okay, I'm Pretty sure, merged.
+
+Unknown Speaker  34:20  
+Everything.
+
+Unknown Speaker  34:42  
+Just like it's another interesting idea. See, I found another paper, by the way, 2205, 14066,
+
+Speaker 2  35:00  
+yeah. Now this does like a very restricted case, but it is also an emulation paper with processing modes. Again, they still end up in this 10 to the minus three minutes from that regime. This is what made me think about classical methods. Is like, is there something better, but interesting? Like, it's interesting that they emulate? Well, me, I don't know. I need to check what they do, but look at the evolution of the amplitude of the modes in the time domain and the phases,
+
+Unknown Speaker  35:32  
+then emulation those things,
+
+Unknown Speaker  35:36  
+even with the time Once they've learned. I don't Know. Let's have a look.
+
+Speaker 2  36:27  
+Regardless, this is a very useful paper, because it writes out all of the details of what the waveforms look like in the processing and the Co processing frames. And this is twitch 20514066, background, See Chicken Tree.
+
+Speaker 2  38:44  
+Yeah, so they stopped short of the 7d setup as well. Let me see who started this. I've already stopped that to deep research.
+
+Unknown Speaker  39:02  
+It's nice to know we can still do some stuff, right? Yeah, I prefer building things recreation. I
+
+Unknown Speaker  39:40  
+can I move it?
+
+Speaker 2  40:20  
+Not much more. There you on,
+
+Unknown Speaker  40:52  
+yeah, that looks like it's a cool plot, a bit extra,
+
+Speaker 2  41:00  
+I don't really know. I think that's AI showing the duration of a waveform.
+
+Unknown Speaker  41:07  
+Yeah, so could well be,
+
+Unknown Speaker  41:09  
+yeah, right. There's hella AI. Do
+
+Unknown Speaker  41:16  
+you start to fear the death of papers?
+
+Unknown Speaker  41:19  
+Oh, yeah. Oh, 100%
+
+Unknown Speaker  41:23  
+mind you. We said that about the pre 22 incident, right? It's just
+
+Speaker 2  41:29  
+it is a bit worse, though it's definitely not good.
+
+Speaker 2  41:42  
+I So do you know what my takeaway from this search so far is, is the fact that I think people have tried, and people have got some good ideas, but they might just suck a machine, though. Yeah, I guess now we've got aI too, yeah, and, like, really, just do that development process fast.
+
+Speaker 1  42:04  
+And I think that observation out of a previous student where it really just was a factor of two that they weren't finding manually, and it was, yeah, because that factor of two is indistinguishable from, oh, I didn't use the right learning rate or things like that.
+
+Speaker 2  42:16  
+It never actually, literally fought for like, hours and days just to find that when it was like a factor two, which I had nudged at before, but fine, you know.
+
+Speaker 2  42:33  
+Yeah, so there was at least two papers there that were really useful, and I think gives us some extra ideas. You
+
+Speaker 2  43:00  
+I just think they must have, if you have a frequency domain waveform, can you look at the modes? Do
+
+Speaker 2  43:23  
+I think they must emulate in the frequency domain. Because, like, how do you, I mean, you could do the WKB sort of thing, right? We can't, like, like, how do You get a of t
+
+Unknown Speaker  43:37  
+from the
+
+Speaker 1  44:14  
+would you reckon we'll do next or, Yeah, should we head back? Yeah, let's do that, finish
+
+Unknown Speaker  44:31  
+the handover instructions, yeah,
+
+Unknown Speaker  44:35  
+and then I reckon we just have a go.
+
+Unknown Speaker  44:37  
+Yeah, you know,
+
+Speaker 1  44:40  
+I think the voice we've now got lots of scattered material that includes, here's the rough state of literature, yeah,
+
+Speaker 2  44:51  
+yeah. I think this might be one of those points to be like a bit of sometimes you need more confidence in research, right? Where you'd be like, maybe we're just better,
+
+Speaker 1  45:01  
+maybe not better. So I think maybe we are just better. I guess ML is always a bit different from my. A lot of my instinct is trained on the rest prediction, which is, as a rule, people are generally quite smart and generally diligent. Oh yeah, totally my my knee jet reaction is to say, Oh, I'm obviously better this where this is often past me.
+
+Speaker 2  45:27  
+Yeah, I feel like I've seen a lot of ml and a lot of this bullshit that doesn't really work, but isn't far off working, like the core idea is not the problem. And again, it's not like actually. It's not criticizing the hard work. There's some good work that goes in you.
+
+Speaker 2  46:16  
+Sugar is worth doing some searches like, give the current state maybe, maybe I spend a bit of time getting it to write out that, like, type of equation for how you want to decompose the signal, and then just saying, like, where else do people do this? Yes, yes.
+
+Unknown Speaker  46:30  
+So whilst you're working on
+
+Unknown Speaker  46:35  
+kind of GW implementation,
+
+Speaker 1  46:38  
+yeah, I can get to, I'm happy to work on trying to simplify
+
+Unknown Speaker  46:45  
+the document so far. Let's do that
+
+Speaker 1  46:47  
+now, relatively skilled in that, I'll stop this transcript. Yeah.
+
+Transcribed by https://otter.ai

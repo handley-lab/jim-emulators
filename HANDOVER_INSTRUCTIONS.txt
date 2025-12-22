@@ -110,7 +110,8 @@ jim-emulators/
 │   └── literature/deep-research/
 ├── transcripts/
 │   ├── 2025-12-22-09-07-00.txt # Initial planning
-│   └── 2025-12-22-12-10-00.txt # Progress review, mode discovery
+│   ├── 2025-12-22-12-10-00.txt # Progress review, mode discovery
+│   └── 2025-12-22-13-33-00.txt # Strategy consolidation, literature review
 └── (papers in numbered directories)
 ```
 
@@ -232,3 +233,6 @@ Check the transcripts in `transcripts/` for context on decisions. Key insights:
 - Mode additivity discovery (12-10 transcript, ~40:00)
 - Per-mode smoothness observation (12-10 transcript, ~48:00)
 - Strategy refinement for XPHM (09-07 transcript, ~35:00)
+- Literature gap analysis, mlgw_NN discovery (13-33 transcript, ~10:00)
+- Start with (2,2) mode, aligned spins (13-33 transcript, ~4:00)
+- Inclination can be factored out via spherical harmonics (13-33 transcript, ~13:00)

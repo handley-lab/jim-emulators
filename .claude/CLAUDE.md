@@ -82,12 +82,15 @@ Meeting transcripts documenting planning discussions and decisions:
 |------|---------|
 | `2025-12-22-09-07-00.txt` | Initial planning: project goals, parameterization (Mf, η, χ), domain choices, CosmoPower/Speculator approach |
 | `2025-12-22-12-10-00.txt` | Progress review: LAL wrapper, sensitivity plots, mode additivity discovery, per-mode emulation strategy |
+| `2025-12-22-13-33-00.txt` | Strategy consolidation: start with (2,2) mode, aligned spins; literature gap analysis; mlgw_NN paper discovery |
 
 **Key insights from transcripts:**
 - Waveforms depend on Mf (mass × frequency), enabling mass-independent training
 - 7D maximum parameter space: η + 6 spin components; aligned-spin reduces to 3D
 - Modes are additive to machine precision - emulate per-mode then sum
 - Individual modes are much smoother than full waveform (removes interference wiggles)
+- Inclination can be factored out via explicit spherical harmonics (from mlgw_NN)
+- Start with (2,2) mode aligned-spin case, build up mode by mode
 
 ## Deep Research Literature
 
