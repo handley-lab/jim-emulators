@@ -1402,11 +1402,46 @@ implementation/
 
 ---
 
+### 23. External Review of Training Pipeline (OpenAI)
+
+Before implementing the training script, submitted the LaTeX documentation to OpenAI for critical review. The goal was to catch potential issues before coding.
+
+**Method:** Generated code2prompt summary of the implementation plan + data generation code, sent to OpenAI GPT-4o via MCP tools.
+
+**Key Findings:**
+
+1. **Double Standardization Bug (Critical)**: The `WaveformPCA` class in `snippets/flax_nn.py` re-standardizes data internally, which would conflict with our per-frequency normalization. Since the data is already normalized to zero mean at each frequency, PCA should NOT re-standardize.
+   - **Fix:** Updated LaTeX with explicit "No double standardization" warning in §3
+
+2. **Missing σ Floor (Important)**: Per-frequency standard deviation can be tiny at frequencies where waveforms vary little across parameter space, causing division by near-zero.
+   - **Fix:** Added σ_floor = 10⁻⁶ to normalization equations
+
+3. **PCA Coefficient Weighting**: OpenAI asked whether to weight by eigenvalues. Checked CosmoPower paper source (`2106.03846/CosmoPower.tex` line 127): uses simple standardization ("the PCA components are also standardised").
+   - **Resolution:** Use simple z-score standardization on PCA coefficients (following CosmoPower)
+
+4. **Network Architecture Size**: OpenAI questioned whether 4×512 is too large for the simple 3D→~100D mapping. Verified CosmoPower uses same architecture (line 572: "4 hidden layers of 512 neurons each").
+   - **Resolution:** Keep 4×512 as default; hyperparameter optimization with Optuna planned for later
+
+5. **Phase Aliasing at Low Frequency**: Noted rapid phase evolution could cause aliasing.
+   - **Resolution:** Already addressed by per-frequency zero-meaning (phase variations at each frequency are standardized)
+
+**LaTeX Updates Made:**
+- Added σ_floor to equations (8-9)
+- Added "No double standardization" paragraph before PCA section
+- Added new §3.4 "PCA Coefficient Standardization"
+- Updated inference algorithm with coefficient denormalization step
+- Updated pipeline TikZ diagram with additional box
+
+**Process Insight:** Getting external review BEFORE implementation caught the double-standardization bug that would have been painful to debug. The code2prompt → MCP → LLM workflow is effective for rapid design review.
+
+---
+
 ### Next Steps
 
 1. ☑ Generate full 10,000 sample training dataset
-2. ☐ Implement PCA compression (sklearn fit, JAX transform)
-3. ☐ Train emulator on (2,2) mode data
-4. ☐ Validate mismatch < 10⁻³
-5. ☐ Extend to higher modes (2,1), (3,3), etc.
-6. ☐ Address linear frequency grid for jim integration if needed
+2. ☐ Implement per-frequency normalization with σ floor
+3. ☐ Implement PCA compression (without double standardization)
+4. ☐ Add PCA coefficient standardization
+5. ☐ Train emulator on (2,2) mode data
+6. ☐ Validate mismatch < 10⁻³
+7. ☐ Extend to higher modes (2,1), (3,3), etc.
