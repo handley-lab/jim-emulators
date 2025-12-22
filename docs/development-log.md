@@ -1792,6 +1792,124 @@ T_obs = 16.0  # seconds (inspiral ~6s for 50 Msun)
 
 ---
 
+## Session: 2024-12-22 (Deep Dive: Phase Reference Conventions)
+
+### 46. Phase Reference Frequency Deep Dive
+
+Conducted comprehensive analysis of how phase reference frequencies work in LALSimulation, specifically for IMRPhenomX waveforms. This understanding is critical for ensuring trained emulators can be correctly applied at inference time.
+
+**Key files analyzed:**
+- `LALSimIMRPhenomX_internals.c` - Core phase calculations
+- `LALSimIMRPhenomXHM.c` - Higher mode phase handling
+- `LALSimIMRPhenomXHM_internals.c` - Mode alignment
+- `ripple/src/ripplegw/waveforms/IMRPhenomXAS.py` - JAX reference implementation
+
+**Core Discovery: Phase Decomposition**
+
+The LAL phase for the (2,2) mode is:
+```
+Φ(f) = (1/η) × Φ_raw(Mf) + linb×Mf + lina + phifRef
+```
+
+Where:
+- `Φ_raw(Mf)` is the raw phase model (PN + intermediate + ringdown)
+- `linb` is the **time shift** that aligns the waveform peak to t≈0
+- `phifRef` is the **reference phase correction**
+
+**Time Shift (linb) - f_ref INDEPENDENT:**
+```c
+// From IMRPhenomX_TimeShift_22()
+linb = XLALSimIMRPhenomXLinb(eta, STotR, dchi, delta);
+dphi22Ref = (1/eta) * dPhase_22(f_ring - f_damp);
+tshift = linb - dphi22Ref - 2π × (500 + psi4tostrain);
+```
+
+The time shift depends only on intrinsic parameters, NOT on f_ref. This shifts the waveform so the strain peak occurs at t≈0 (calibrated to NR hybrids with ψ₄ peaking 500M before the end).
+
+**Reference Phase (phifRef) - f_ref DEPENDENT:**
+```c
+phifRef = -[Φ_intrinsic(Mf_ref)] + 2×phi0 + π/4
+```
+
+This ensures Φ(f_ref) = 2×phi0 + π/4. The factor of 2 is the orbital→GW phase relationship; π/4 is the stationary phase convention.
+
+**Higher Modes:**
+- Related to (2,2) by: `Φ_lm(f) ≈ (m/2) × Φ_22((2/m) × f) + δΦ_lm`
+- Positive m modes have sign flip: `phase = addpi - phase` (implements conjugate symmetry)
+
+### 47. Implications for Emulator
+
+**Current Training (Correct):**
+1. Call LAL with `phase=0` (phi0=0) and fixed `f_ref = Mf_ref_train`
+2. LAL returns phase ≈ π/4 at f_ref
+3. Subtract phase at f_ref → learn `Φ_intrinsic(Mf) - Φ_intrinsic(Mf_ref_train)`
+
+**Inference Procedure:**
+```python
+# Evaluate emulator at target and inference f_ref
+phase_emu_at_f = emulator.predict_phase(Mf)
+phase_emu_at_ref = emulator.predict_phase(Mf_ref_inference)
+
+# Reconstruct with LAL conventions
+phase = phase_emu_at_f - phase_emu_at_ref + 2*phi_c + π/4 + 2π*f*tc
+```
+
+**Key Insight:** The phase *difference* between frequencies is f_ref-independent. Only the absolute offset changes. This means the emulator can be used with any f_ref at inference, as long as we properly apply the offset correction.
+
+### Documentation Created
+
+- `docs/phase-reference-conventions.md` - Comprehensive reference document (200+ lines)
+  - Detailed phase decomposition formulas
+  - Time shift and reference phase calculations
+  - Higher mode conventions
+  - Inference procedure with code examples
+  - Verification tests
+  - Key code references with line numbers
+
+### Key Equations Summary
+
+| Component | Formula | f_ref dependent? |
+|-----------|---------|------------------|
+| Φ_raw(Mf) | PN + IM + RD | No |
+| linb (time shift) | Fit at f_ring - f_damp | No |
+| phifRef | -Φ_intrinsic(Mf_ref) + 2φ₀ + π/4 | Yes |
+| 2πf×tc | Time of coalescence | No |
+
+### Validation Strategy
+
+To verify phase conventions are handled correctly:
+1. Generate LAL waveform with phi0=0, f_ref=f1 → phase at f1 should be π/4
+2. Check phase differences are f_ref-independent
+3. Verify: `emulator_phase(Mf) - emulator_phase(Mf_ref) + π/4 ≈ LAL_phase(Mf)`
+
+### 48. Critical Discovery: Two Different LAL Phase Conventions
+
+Through experimental verification (see `scripts/investigate_mode_convention.py`), discovered that LAL uses **different phase conventions** for individual modes vs full waveforms:
+
+| LAL Function | Phase at f_ref (phi_c=0) | phi_c effect |
+|--------------|--------------------------|--------------|
+| `SimIMRPhenomXHM` (full h+,h×) | -3π/4 | +m×phi_c |
+| `FrequencySequenceOneMode` (h_lm) | **-π/4** | **-m×phi_c** |
+
+**Key insight from Gemini review:**
+- Individual modes: `phase` argument is the **physical coalescence phase**, contributing `-m×phi_c`
+- Full waveform: `phase` argument is the **observer azimuthal angle φ**, and spherical harmonics Y_lm contain `e^{imφ}`, so it contributes `+m×phi_c`
+
+**Corrected inference formula for individual modes:**
+```python
+phase = phase_stored(f) - phase_stored(f_ref_inf) - m * phi_c - π/4 - 2π*f*tc
+#                                                   ^^^           ^^^
+#                                                 MINUS!        MINUS (Fourier theorem)!
+```
+
+**Verification scripts created:**
+- `scripts/learn_phase_conventions.py` - Full waveform tests
+- `scripts/learn_phase_conventions_v2.py` - Corrected full waveform (all pass)
+- `scripts/investigate_mode_convention.py` - Individual mode tests (all pass)
+- `scripts/verify_tc_sign.py` - Time shift sign verification
+
+---
+
 ### Current State
 
 **Emulator Performance:**
@@ -1799,9 +1917,18 @@ T_obs = 16.0  # seconds (inspiral ~6s for 50 Msun)
 - Frequency domain: excellent amplitude and phase agreement
 - Time domain: proper inspiral-merger-ringdown visualization
 
+**Phase Reference Understanding:** Complete. Documented in `docs/phase-reference-conventions.md`.
+
+**Key Takeaways:**
+1. Training approach (subtracting phase at reference) is correct
+2. Individual modes use `-m×phi_c` convention (not `+2×phi_c`)
+3. Time-of-coalescence: `-2πf×tc` (minus sign from Fourier theorem)
+4. For negative m modes, phi_c effect has opposite sign
+
 **Documentation Complete:**
 - `theory/frequency-domain-emulation.tex`: Theory framework
 - `implementation/training-pipeline.tex`: Training details + validation figure
+- `docs/phase-reference-conventions.md`: Phase convention reference
 
 ### Next Steps
 
@@ -1811,5 +1938,7 @@ T_obs = 16.0  # seconds (inspiral ~6s for 50 Msun)
 4. ☑ Add PCA coefficient standardization
 5. ☑ Train emulator on (2,2) mode data
 6. ☑ Validate mismatch < 10⁻³ (achieved 2.5×10⁻⁴!)
-7. ☐ Extend to higher modes (2,1), (3,3), etc.
-8. ☐ Integration with jim/ripple interface
+7. ☑ Document phase conventions with verification tests
+8. ☐ Implement inference helper with corrected phase conventions
+9. ☐ Extend to higher modes (2,1), (3,3), etc.
+10. ☐ Integration with jim/ripple interface
