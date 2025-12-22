@@ -43,6 +43,7 @@ from jim_emulators.emulator.emulator import create_train_state, train_step, eval
 def load_training_data(path: str):
     """Load training data from HDF5 file."""
     with h5py.File(path, "r") as f:
+        freqs = f["freqs"][:]
         data = {
             "train_params": f["train/parameters"][:],
             "train_log_amp": f["train/log_amplitude"][:],
@@ -50,11 +51,10 @@ def load_training_data(path: str):
             "val_params": f["validation/parameters"][:],
             "val_log_amp": f["validation/log_amplitude"][:],
             "val_phase": f["validation/phase"][:],
-            "frequency_grid": f["frequency_grid"][:],
-            # Frequency grid metadata for validation
-            "f_min": float(f.attrs.get("f_min", f["frequency_grid"][0])),
-            "f_max": float(f.attrs.get("f_max", f["frequency_grid"][-1])),
-            "delta_f": float(f.attrs.get("delta_f", f["frequency_grid"][1] - f["frequency_grid"][0])),
+            "freqs": freqs,
+            "f_min": float(f.attrs.get("f_min", freqs[0])),
+            "f_max": float(f.attrs.get("f_max", freqs[-1])),
+            "delta_f": float(f.attrs.get("delta_f", freqs[1] - freqs[0])),
             "M_ref": float(f.attrs.get("M_ref", 50.0)),
         }
     return data
@@ -329,7 +329,7 @@ def train_emulator(
         "params_mean": params_mean,
         "params_std": params_std,
         # Frequency grid and metadata for validation
-        "frequency_grid": data["frequency_grid"],
+        "freqs": data["freqs"],
         "f_min": data["f_min"],
         "f_max": data["f_max"],
         "delta_f": data["delta_f"],

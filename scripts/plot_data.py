@@ -20,7 +20,7 @@ def plot_sample_waveforms(f, n_samples=10, output_dir="figures/data_check"):
     """Plot a selection of waveforms showing amplitude and phase."""
     Path(output_dir).mkdir(parents=True, exist_ok=True)
 
-    freqs = f["frequency_grid"][:]
+    freqs = f["freqs"][:]
     params = f["train/parameters"][:]
     log_amp = f["train/log_amplitude"][:]
     phase = f["train/phase"][:]
@@ -113,7 +113,7 @@ def plot_amplitude_phase_stats(f, output_dir="figures/data_check"):
     """Plot statistics of amplitude and phase across the dataset."""
     Path(output_dir).mkdir(parents=True, exist_ok=True)
 
-    freqs = f["frequency_grid"][:]
+    freqs = f["freqs"][:]
     log_amp = f["train/log_amplitude"][:]
     phase = f["train/phase"][:]
 
@@ -180,7 +180,7 @@ def plot_extreme_cases(f, output_dir="figures/data_check"):
     """Plot waveforms at extreme parameter values."""
     Path(output_dir).mkdir(parents=True, exist_ok=True)
 
-    freqs = f["frequency_grid"][:]
+    freqs = f["freqs"][:]
     params = f["train/parameters"][:]
     log_amp = f["train/log_amplitude"][:]
     phase = f["train/phase"][:]

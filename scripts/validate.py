@@ -77,12 +77,12 @@ class DualNetworkEmulator:
         self.params_std = jnp.array(emulator_data["params_std"])
 
         # Frequency grid (physical Hz)
-        self.frequency_grid = emulator_data["frequency_grid"]
+        self.freqs = emulator_data["freqs"]
 
         # Grid parameters for LAL generation
-        self.f_min = emulator_data.get("f_min", self.frequency_grid[0])
-        self.f_max = emulator_data.get("f_max", self.frequency_grid[-1])
-        self.delta_f = emulator_data.get("delta_f", self.frequency_grid[1] - self.frequency_grid[0])
+        self.f_min = emulator_data.get("f_min", self.freqs[0])
+        self.f_max = emulator_data.get("f_max", self.freqs[-1])
+        self.delta_f = emulator_data.get("delta_f", self.freqs[1] - self.freqs[0])
         self.M_ref = emulator_data.get("M_ref", 50.0)
 
         # JIT compile prediction
@@ -207,14 +207,14 @@ def compute_mismatch_lal(
 
     # Load and interpolate PSD to frequency grid
     psd_freqs, psd_values = load_psd(psd_file)
-    psd_interp = np.interp(emulator.frequency_grid, np.array(psd_freqs), np.array(psd_values))
+    psd_interp = np.interp(emulator.freqs, np.array(psd_freqs), np.array(psd_values))
 
     # Compute match
     match = float(compute_match(
         jnp.array(h_emu_aligned),
         jnp.array(h_lal),
         jnp.array(psd_interp),
-        jnp.array(emulator.frequency_grid)
+        jnp.array(emulator.freqs)
     ))
     mismatch = 1.0 - match
 
@@ -255,7 +255,7 @@ def validate_emulator(
     # Load emulator
     print(f"\nLoading emulator from {emulator_path}...")
     emulator = load_emulator(emulator_path)
-    print(f"  Frequency grid: {len(emulator.frequency_grid)} points")
+    print(f"  Frequency grid: {len(emulator.freqs)} points")
     print(f"  Frequency range: {emulator.f_min:.1f} - {emulator.f_max:.1f} Hz")
     print(f"  Amplitude PCA: {emulator.pca_amplitude.n_components} components")
     print(f"  Phase PCA: {emulator.pca_phase.n_components} components")
@@ -266,7 +266,7 @@ def validate_emulator(
         val_params = f["validation/parameters"][:]
         val_log_amp = f["validation/log_amplitude"][:]
         val_phase = f["validation/phase"][:]
-        freq_grid = f["frequency_grid"][:]
+        freq_grid = f["freqs"][:]
 
     print(f"  Validation samples: {len(val_params)}")
 
