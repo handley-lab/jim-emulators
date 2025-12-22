@@ -1,0 +1,243 @@
+\begin{thebibliography}{}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+\providecommand{\url}[1]{\href{#1}{#1}}
+\providecommand{\dodoi}[1]{doi:~\href{http://doi.org/#1}{\nolinkurl{#1}}}
+\providecommand{\doeprint}[1]{\href{http://ascl.net/#1}{\nolinkurl{http://ascl.net/#1}}}
+\providecommand{\doarXiv}[1]{\href{https://arxiv.org/abs/#1}{\nolinkurl{https://arxiv.org/abs/#1}}}
+
+\bibitem[{Aasi {et~al.}(2015{\natexlab{a}})}]{LIGOScientific:2014pky}
+Aasi, J., {et~al.} 2015{\natexlab{a}}, Class. Quant. Grav., 32, 074001,
+  \dodoi{10.1088/0264-9381/32/7/074001}
+
+\bibitem[{Aasi {et~al.}(2015{\natexlab{b}})Aasi, Abbott, Abbott, Abbott,
+  Abernathy, Ackley, Adams, Adams, Addesso, Adhikari,
+  {et~al.}}]{aasi2015advanced}
+Aasi, J., Abbott, B., Abbott, R., {et~al.} 2015{\natexlab{b}}, Classical and
+  quantum gravity, 32, 074001
+
+\bibitem[{Abadi {et~al.}(2015)Abadi, Agarwal, Barham, Brevdo, Chen, Citro,
+  Corrado, Davis, Dean, Devin, Ghemawat, Goodfellow, Harp, Irving, Isard, Jia,
+  Jozefowicz, Kaiser, Kudlur, Levenberg, Man\'{e}, Monga, Moore, Murray, Olah,
+  Schuster, Shlens, Steiner, Sutskever, Talwar, Tucker, Vanhoucke, Vasudevan,
+  Vi\'{e}gas, Vinyals, Warden, Wattenberg, Wicke, Yu, \&
+  Zheng}]{tensorflow2015}
+Abadi, M., Agarwal, A., Barham, P., {et~al.} 2015, {TensorFlow}: Large-Scale
+  Machine Learning on Heterogeneous Systems.
+\newblock \url{https://www.tensorflow.org/}
+
+\bibitem[{Abbott {et~al.}(2019)Abbott, Abbott, Abbott, Abraham, Acernese,
+  Ackley, Adams, Adhikari, Adya, Affeldt, {et~al.}}]{gwtc1}
+Abbott, B., Abbott, R., Abbott, T., {et~al.} 2019, Physical Review X, 9, 031040
+
+\bibitem[{Abbott {et~al.}(2020)Abbott, Abbott, Abbott, Abraham, Acernese,
+  Ackley, Adams, Adya, Affeldt, Agathos, {et~al.}}]{abbott2020prospects}
+Abbott, B.~P., Abbott, R., Abbott, T., {et~al.} 2020, Living reviews in
+  relativity, 23, 1
+
+\bibitem[{Abbott {et~al.}(2021{\natexlab{a}})}]{LIGOScientific:2021usb}
+Abbott, R., {et~al.} 2021{\natexlab{a}}.
+\newblock \doarXiv{2108.01045}
+
+\bibitem[{Abbott {et~al.}(2021{\natexlab{b}})}]{LIGOScientific:2021djp}
+---. 2021{\natexlab{b}}.
+\newblock \doarXiv{2111.03606}
+
+\bibitem[{Abbott {et~al.}(2021{\natexlab{c}})Abbott, Abbott, Abraham, Acernese,
+  Ackley, Adams, Adams, Adhikari, Adya, Affeldt, {et~al.}}]{gwtc2}
+Abbott, R., Abbott, T., Abraham, S., {et~al.} 2021{\natexlab{c}}, Physical
+  Review X, 11, 021053
+
+\bibitem[{Abbott {et~al.}(2021{\natexlab{d}})Abbott, Abbott, Acernese, Ackley,
+  Adams, Adhikari, Adhikari, Adya, Affeldt, Agarwal, {et~al.}}]{gwtc21}
+Abbott, R., Abbott, T., Acernese, F., {et~al.} 2021{\natexlab{d}}, arXiv
+  preprint arXiv:2108.01045
+
+\bibitem[{Abbott {et~al.}(2021{\natexlab{e}})Abbott, Abbott, Acernese, Ackley,
+  Adams, Adhikari, Adhikari, Adya, Affeldt, Agarwal, {et~al.}}]{gwtc3}
+---. 2021{\natexlab{e}}, arXiv preprint arXiv:2111.03606
+
+\bibitem[{Acernese {et~al.}(2015)}]{VIRGO:2014yos}
+Acernese, F., {et~al.} 2015, Class. Quant. Grav., 32, 024001,
+  \dodoi{10.1088/0264-9381/32/2/024001}
+
+\bibitem[{Akutsu {et~al.}(2021)}]{KAGRA:2020tym}
+Akutsu, T., {et~al.} 2021, PTEP, 2021, 05A101, \dodoi{10.1093/ptep/ptaa125}
+
+\bibitem[{Arun {et~al.}(2005)Arun, Iyer, Sathyaprakash, \&
+  Sundararajan}]{Arun:2004hn}
+Arun, K.~G., Iyer, B.~R., Sathyaprakash, B.~S., \& Sundararajan, P.~A. 2005,
+  Phys. Rev. D, 71, 084008, \dodoi{10.1103/PhysRevD.71.084008}
+
+\bibitem[{Ashton {et~al.}(2019)}]{Ashton:2018jfp}
+Ashton, G., {et~al.} 2019, Astrophys. J. Suppl., 241, 27,
+  \dodoi{10.3847/1538-4365/ab06fc}
+
+\bibitem[{Boyle {et~al.}(2019)Boyle, Hemberger, Iozzo, Lovelace, Ossokine,
+  Pfeiffer, Scheel, Stein, Woodford, Zimmerman, {et~al.}}]{boyle2019sxs}
+Boyle, M., Hemberger, D., Iozzo, D.~A., {et~al.} 2019, Classical and Quantum
+  Gravity, 36, 195006
+
+\bibitem[{Bradbury {et~al.}(2018)Bradbury, Frostig, Hawkins, Johnson, Leary,
+  Maclaurin, Necula, Paszke, Vander{P}las, Wanderman-{M}ilne, \&
+  Zhang}]{jax2018github}
+Bradbury, J., Frostig, R., Hawkins, P., {et~al.} 2018, {JAX}: composable
+  transformations of {P}ython+{N}um{P}y programs, 0.2.5.
+\newblock \url{http://github.com/google/jax}
+
+\bibitem[{Buonanno {et~al.}(2009)Buonanno, Iyer, Ochsner, Pan, \&
+  Sathyaprakash}]{Buonanno:2009zt}
+Buonanno, A., Iyer, B., Ochsner, E., Pan, Y., \& Sathyaprakash, B.~S. 2009,
+  Phys. Rev. D, 80, 084043, \dodoi{10.1103/PhysRevD.80.084043}
+
+\bibitem[{Christensen \& Meyer(2022)}]{Christensen:2022bxb}
+Christensen, N., \& Meyer, R. 2022, Rev. Mod. Phys., 94, 025001,
+  \dodoi{10.1103/RevModPhys.94.025001}
+
+\bibitem[{Coogan {et~al.}(2022)Coogan, Edwards, Chia, George, Freese, Messick,
+  Setzer, Weniger, \& Zimmerman}]{Coogan:2022qxs}
+Coogan, A., Edwards, T. D.~P., Chia, H.~S., {et~al.} 2022, Phys. Rev. D, 106,
+  122001, \dodoi{10.1103/PhysRevD.106.122001}
+
+\bibitem[{Cotesta {et~al.}(2020)Cotesta, Marsat, \&
+  P{\"u}rrer}]{cotesta2020frequency}
+Cotesta, R., Marsat, S., \& P{\"u}rrer, M. 2020, Physical Review D, 101, 124040
+
+\bibitem[{Dax {et~al.}(2021)Dax, Green, Gair, Macke, Buonanno, \&
+  Sch\"olkopf}]{Dax:2021tsq}
+Dax, M., Green, S.~R., Gair, J., {et~al.} 2021, Phys. Rev. Lett., 127, 241103,
+  \dodoi{10.1103/PhysRevLett.127.241103}
+
+\bibitem[{Edwards {et~al.}(2023)Edwards, Wong, Lam, Coogan, Foreman-Mackey,
+  Isi, \& Zimmerman}]{ripple}
+Edwards, T. D.~P., Wong, K. W.~K., Lam, K. K.~H., {et~al.} 2023,
+  {\textsc{ripple}: Differentiable and Hardware-Accelerated Waveforms for
+  Gravitational Wave Data Analysis}.
+\newblock \url{https://github.com/tedwards2412/ripple}
+
+\bibitem[{Garc\'{\i}a-Quir\'os {et~al.}(2020)Garc\'{\i}a-Quir\'os, Colleoni,
+  Husa, Estell\'es, Pratten, Ramos-Buades, Mateu-Lucena, \&
+  Jaume}]{garcia2020multimode}
+Garc\'{\i}a-Quir\'os, C., Colleoni, M., Husa, S., {et~al.} 2020, Phys. Rev. D,
+  102, 064002, \dodoi{10.1103/PhysRevD.102.064002}
+
+\bibitem[{Hannam {et~al.}(2014)Hannam, Schmidt, Boh{\'e}, Haegel, Husa, Ohme,
+  Pratten, \& P{\"u}rrer}]{hannam2014simple}
+Hannam, M., Schmidt, P., Boh{\'e}, A., {et~al.} 2014, Physical review letters,
+  113, 151101
+
+\bibitem[{Hu \& Veitch(2022)}]{hu2022assessing}
+Hu, Q., \& Veitch, J. 2022, Physical Review D, 106, 044042
+
+\bibitem[{Husa {et~al.}(2016)Husa, Khan, Hannam, P{\"u}rrer, Ohme, Forteza, \&
+  Boh{\'e}}]{husa2016frequency}
+Husa, S., Khan, S., Hannam, M., {et~al.} 2016, Physical Review D, 93, 044006
+
+\bibitem[{Iacovelli {et~al.}(2022{\natexlab{a}})Iacovelli, Mancarella, Foffa,
+  \& Maggiore}]{Iacovelli:2022bbs}
+Iacovelli, F., Mancarella, M., Foffa, S., \& Maggiore, M. 2022{\natexlab{a}},
+  Astrophys. J., 941, 208, \dodoi{10.3847/1538-4357/ac9cd4}
+
+\bibitem[{Iacovelli {et~al.}(2022{\natexlab{b}})Iacovelli, Mancarella, Foffa,
+  \& Maggiore}]{Iacovelli:2022mbg}
+---. 2022{\natexlab{b}}, Astrophys. J. Supp., 263, 2,
+  \dodoi{10.3847/1538-4365/ac9129}
+
+\bibitem[{Islam {et~al.}(2022{\natexlab{a}})Islam, Roulet, \&
+  Venumadhav}]{Islam:2022afg}
+Islam, T., Roulet, J., \& Venumadhav, T. 2022{\natexlab{a}}.
+\newblock \doarXiv{2210.16278}
+
+\bibitem[{Islam {et~al.}(2022{\natexlab{b}})Islam, Field, Hughes, Khanna,
+  Varma, Giesler, Scheel, Kidder, \& Pfeiffer}]{islam2022surrogate}
+Islam, T., Field, S.~E., Hughes, S.~A., {et~al.} 2022{\natexlab{b}}, Physical
+  Review D, 106, 104025
+
+\bibitem[{Khan {et~al.}(2019)Khan, Chatziioannou, Hannam, \&
+  Ohme}]{khan2019phenomenological}
+Khan, S., Chatziioannou, K., Hannam, M., \& Ohme, F. 2019, Physical Review D,
+  100, 024059
+
+\bibitem[{Khan {et~al.}(2016)Khan, Husa, Hannam, Ohme, P{\"u}rrer, Forteza, \&
+  Boh{\'e}}]{khan2016frequency}
+Khan, S., Husa, S., Hannam, M., {et~al.} 2016, Physical Review D, 93, 044007
+
+\bibitem[{Koposov {et~al.}(2022)Koposov, Speagle, Barbary, Ashton, Bennett,
+  Buchner, Scheffler, Cook, Talbot, Guillochon, Cubillos, Ramos, Johnson, Lang,
+  Ilya, Dartiailh, Nitz, McCluskey, Archibald, Deil, Foreman-Mackey, Goldstein,
+  Tollerud, Leja, Kirk, Pitkin, Sheehan, Cargile, ruskin23, \& Angus}]{dynesty}
+Koposov, S., Speagle, J., Barbary, K., {et~al.} 2022, joshspeagle/dynesty:
+  v2.0.3, v2.0.3,  Zenodo, \dodoi{10.5281/zenodo.7388523}
+
+\bibitem[{Ossokine {et~al.}(2020)Ossokine, Buonanno, Marsat, Cotesta, Babak,
+  Dietrich, Haas, Hinder, Pfeiffer, P{\"u}rrer,
+  {et~al.}}]{ossokine2020multipolar}
+Ossokine, S., Buonanno, A., Marsat, S., {et~al.} 2020, Physical Review D, 102,
+  044055
+
+\bibitem[{Owen(1996)}]{owen1996search}
+Owen, B.~J. 1996, Physical Review D, 53, 6749
+
+\bibitem[{Owen \& Sathyaprakash(1999)}]{owen1999matched}
+Owen, B.~J., \& Sathyaprakash, B.~S. 1999, Physical Review D, 60, 022002
+
+\bibitem[{Paszke {et~al.}(2019)Paszke, Gross, Massa, Lerer, Bradbury, Chanan,
+  Killeen, Lin, Gimelshein, Antiga, Desmaison, Kopf, Yang, DeVito, Raison,
+  Tejani, Chilamkurthy, Steiner, Fang, Bai, \& Chintala}]{pytorch}
+Paszke, A., Gross, S., Massa, F., {et~al.} 2019, in Advances in Neural
+  Information Processing Systems 32, ed. H.~Wallach, H.~Larochelle,
+  A.~Beygelzimer, F.~d\textquotesingle Alch\'{e}-Buc, E.~Fox, \& R.~Garnett
+  (Curran Associates, Inc.), 8024--8035.
+\newblock \url{http://arxiv.org/abs/1912.01703}
+
+\bibitem[{Pratten {et~al.}(2020)Pratten, Husa, Garcia-Quiros, Colleoni,
+  Ramos-Buades, Estelles, \& Jaume}]{pratten2020setting}
+Pratten, G., Husa, S., Garcia-Quiros, C., {et~al.} 2020, Physical Review D,
+  102, 064001
+
+\bibitem[{Pratten {et~al.}(2021)Pratten, Garc{\'\i}a-Quir{\'o}s, Colleoni,
+  Ramos-Buades, Estell{\'e}s, Mateu-Lucena, Jaume, Haney, Keitel, Thompson,
+  {et~al.}}]{pratten2021computationally}
+Pratten, G., Garc{\'\i}a-Quir{\'o}s, C., Colleoni, M., {et~al.} 2021, Physical
+  Review D, 103, 104056
+
+\bibitem[{P{\"u}rrer \& Haster(2020)}]{purrer2020gravitational}
+P{\"u}rrer, M., \& Haster, C.-J. 2020, Physical Review Research, 2, 023151
+
+\bibitem[{Romero-Shaw {et~al.}(2020)}]{Romero-Shaw:2020owr}
+Romero-Shaw, I.~M., {et~al.} 2020, Mon. Not. Roy. Astron. Soc., 499, 3295,
+  \dodoi{10.1093/mnras/staa2850}
+
+\bibitem[{Santamaria {et~al.}(2010)Santamaria, Ohme, Ajith, Br{\"u}gmann,
+  Dorband, Hannam, Husa, M{\"o}sta, Pollney, Reisswig,
+  {et~al.}}]{santamaria2010matching}
+Santamaria, L., Ohme, F., Ajith, P., {et~al.} 2010, Physical Review D, 82,
+  064016
+
+\bibitem[{Taracchini {et~al.}(2014)Taracchini, Buonanno, Pan, Hinderer, Boyle,
+  Hemberger, Kidder, Lovelace, Mrou{\'e}, Pfeiffer,
+  {et~al.}}]{taracchini2014effective}
+Taracchini, A., Buonanno, A., Pan, Y., {et~al.} 2014, Physical Review D, 89,
+  061502
+
+\bibitem[{Usman {et~al.}(2016)Usman, Nitz, Harry, Biwer, Brown, Cabero, Capano,
+  Dal~Canton, Dent, Fairhurst, {et~al.}}]{usman2016pycbc}
+Usman, S.~A., Nitz, A.~H., Harry, I.~W., {et~al.} 2016, Classical and Quantum
+  Gravity, 33, 215004
+
+\bibitem[{Varma {et~al.}(2019{\natexlab{a}})Varma, Field, Scheel, Blackman,
+  Gerosa, Stein, Kidder, \& Pfeiffer}]{varma2019surrogate2}
+Varma, V., Field, S.~E., Scheel, M.~A., {et~al.} 2019{\natexlab{a}}, Physical
+  Review Research, 1, 033015
+
+\bibitem[{Varma {et~al.}(2019{\natexlab{b}})Varma, Field, Scheel, Blackman,
+  Kidder, \& Pfeiffer}]{varma2019surrogate}
+---. 2019{\natexlab{b}}, Physical Review D, 99, 064045
+
+\bibitem[{Wong {et~al.}(2023)Wong, Gabri\'e, \& Foreman-Mackey}]{Wong:2022xvh}
+Wong, K. W.~k., Gabri\'e, M., \& Foreman-Mackey, D. 2023, J. Open Source
+  Softw., 8, 5021, \dodoi{10.21105/joss.05021}
+
+\bibitem[{Zackay {et~al.}(2018)Zackay, Dai, \& Venumadhav}]{zackay2018relative}
+Zackay, B., Dai, L., \& Venumadhav, T. 2018, arXiv preprint arXiv:1806.08792
+
+\end{thebibliography}

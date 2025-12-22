@@ -1,0 +1,47 @@
+- introduction, when discussing the dominant effect of precession: the time-dependent rotation includes a phase (alpha, gamma) that is important along with the amplitude modulation (beta)
+	- Clarified in the text.
+
+- II p2, when introducing the J-frame: mention that the direction of J is fixed here, but it is actually a limitation of the precession model (no transitional precession, it's mentioned later on)
+	- Explicitly stated that we assume fixed-J and caveated that this excludes special cases such as transitional precession.
+
+- II p2 second/first BH: primary/secondary ?
+	- Amended.
+	
+- II (2.2): I second L. London's remark: Slm is typically used for spheroidal harmonics
+	- Amended.
+	
+- IV A p5: track the position of the binary -> track L ?
+	- Yes, updated! 
+	
+- IV A p5: limit of simple precession -> regime ? Simple precession is quite generic (luckily)
+	- Sounds good.
+	
+- IV B: references for the PN MSA treatment: one could add a reference to Racine [doi:10.1103/PhysRevD.78.044021], first to point out the conserved quantity central to the solution
+	- Racine was already cited for MSA, [44]. Absolutely agree that this paper was central to the success of subsequent MSA work. 
+	
+- IV B: make clear the 'SPA' treatment used here (local in frequency) is actually the 0-th order of the SUA -- see also [31] (disclaimer: my paper!) discussing this and the errors associated to this approximation
+	- Thanks, this is a neat clarification to highlight and your paper certainly has many nice discussions and explanations on this topic. 
+
+- IV D: when discussing not using the surrogate for the final spin: the computational cost of this surrogate is presumably low ? I think 'For simplicity' is sufficient
+	- Sounds good, changed to 'compromise the simplicity and domain of validity of our'
+
+- IV D: I was a bit confused by this section. Can the authors clarify what is the difference with [61] ? Using the spins at merger ? What is f_merger then ?
+	- Unlike Ref. [61], we use the spins defined at a given reference frequency and assume that the spin components at merger are ~ equal to the average quantities during the inspiral. We include a brief discussion on the advantages of this unambiguous prescription but note that accurately modelling the spins at merger, and the implications for the final state, is left to future work. 
+
+- V C 1: when discussing inclination, clarify whether it is theta_JN or the angle L-N (at initial time ?)
+	- Clarified
+
+- V C 2: when describing waveform models, terminology between interpolate/calibrated ? E.g. SEOB is calibrated against NR, SEOB_ROM interpolates SEOB (just like NR_sur interpolates NR)
+	-  Clarified that v4HM_ROM is a reduced order model of v4HM which is calibrated against NR (not EOB-NR hybrids). Added citation for v4HM (Cotesta:2018fcv). 
+
+- Fig 7, lower panel: maybe showing	NRHybSur3dq8/IMRPhenomXHM here is more relevant than NRHybSur3dq8/SEOBNRv4HM_ROM ?
+	- The comparison is chosen as it is on purpose. NRHybSur3dq8/IMRPhenomXHM is already shown in the upper panel, which shows that IMRPhenomXHM  is more accurate than SEOBNRv4HM_ROM. The lower panel, as mentioned in the main text. shows that the tail for best matches is similar for NRsur/XPHM and HybSur/SEOBNRv4HM_ROM, i.e. even for the best cases, SEOB is not doing better for non-precessing cases than we do for precessing cases.
+
+- Fig 9 left/right panels, not bottom/up panels
+	- Thanks, fixed!
+
+- V E, benchmarking: I don't think SEOBNRv4P/HM is introduced/referenced ? Maybe a sentence could explain why it is so slow (integrating costly ODEs)
+	- Added reference to Ossokine et al in preparation, and the suggested brief mention of ODEs. Also caveated this with the ongoing work on reduced order models and the post-adiabatic approximation to speed up waveform generation costs.
+
+- V E, benchmarking discussion: I think one needs to mention and reference ROQs. One can mention both the speed of ROQs and the extra burden of development needed (presumably this model should be amenable to this approach in the future). ROQs for IMRPhenomPv2 have been used extensively.
+	- Added brief discussion on ROQs. 

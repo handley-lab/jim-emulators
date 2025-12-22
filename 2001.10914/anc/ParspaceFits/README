@@ -1,0 +1,10 @@
+The notebook IMRPhenomXHM_AmplitudeFits.nb contains all the parameter space fits for the amplitude collocation points and coefficients.
+
+It reads the data stored in the folder AmpFits which contains all the relevant info about the coefficients of the fits. To visualize this data, it produces latex files for each fit that present the value, absolute and relative error of each parameter in a table form. These files are stored in the folder LatexFiles.
+
+It also produces the functional form of each fit, and there are some explicit examples of how to get this in the notebook.
+
+Finally, it also generates the C-code that is use in the LAL implementation for each fit.
+
+
+The notebook IMRPhenomXHM_PhaseFits.nb is the equivalent one for the fits involved in the phase, altought it does not generate the latex file with the statistics of the fits.

@@ -1,0 +1,531 @@
+\begin{thebibliography}{}
+\makeatletter
+\relax
+\def\mn@urlcharsother{\let\do\@makeother \do\$\do\&\do\#\do\^\do\_\do\%\do\~}
+\def\mn@doi{\begingroup\mn@urlcharsother \@ifnextchar [ {\mn@doi@}
+  {\mn@doi@[]}}
+\def\mn@doi@[#1]#2{\def\@tempa{#1}\ifx\@tempa\@empty \href
+  {http://dx.doi.org/#2} {doi:#2}\else \href {http://dx.doi.org/#2} {#1}\fi
+  \endgroup}
+\def\mn@eprint#1#2{\mn@eprint@#1:#2::\@nil}
+\def\mn@eprint@arXiv#1{\href {http://arxiv.org/abs/#1} {{\tt arXiv:#1}}}
+\def\mn@eprint@dblp#1{\href {http://dblp.uni-trier.de/rec/bibtex/#1.xml}
+  {dblp:#1}}
+\def\mn@eprint@#1:#2:#3:#4\@nil{\def\@tempa {#1}\def\@tempb {#2}\def\@tempc
+  {#3}\ifx \@tempc \@empty \let \@tempc \@tempb \let \@tempb \@tempa \fi \ifx
+  \@tempb \@empty \def\@tempb {arXiv}\fi \@ifundefined
+  {mn@eprint@\@tempb}{\@tempb:\@tempc}{\expandafter \expandafter \csname
+  mn@eprint@\@tempb\endcsname \expandafter{\@tempc}}}
+
+\bibitem[\protect\citeauthoryear{Abadi et~al.,}{Abadi et~al.}{2015}]{Abadi15}
+Abadi M.,  et~al., 2015, {TensorFlow}: Large-Scale Machine Learning on
+  Heterogeneous Systems, \url {https://www.tensorflow.org/}
+
+\bibitem[\protect\citeauthoryear{Ade et~al.,}{Ade et~al.}{2019}]{Ade19}
+Ade P.,  et~al., 2019, \mn@doi [Journal of Cosmology and Astroparticle Physics]
+  {10.1088/1475-7516/2019/02/056}, 2019, 056–056
+
+\bibitem[\protect\citeauthoryear{Agarap}{Agarap}{2018}]{Agarap18}
+Agarap A.~F.,  2018, CoRR, abs/1803.08375
+
+\bibitem[\protect\citeauthoryear{Agarwal, Abdalla, Feldman, Lahav  \&
+  Thomas}{Agarwal et~al.}{2012}]{Agarwal12}
+Agarwal S.,  Abdalla F.~B.,  Feldman H.~A.,  Lahav O.,   Thomas S.~A.,  2012,
+  \mn@doi [Monthly Notices of the Royal Astronomical Society]
+  {10.1111/j.1365-2966.2012.21326.x}, 424, 1409–1418
+
+\bibitem[\protect\citeauthoryear{Agarwal, Abdalla, Feldman, Lahav  \&
+  Thomas}{Agarwal et~al.}{2014}]{Agarwal14}
+Agarwal S.,  Abdalla F.~B.,  Feldman H.~A.,  Lahav O.,   Thomas S.~A.,  2014,
+  \mn@doi [Monthly Notices of the Royal Astronomical Society]
+  {10.1093/mnras/stu090}, 439, 2102–2121
+
+\bibitem[\protect\citeauthoryear{Aghanim et~al.,}{Aghanim
+  et~al.}{2020}]{Planck18}
+Aghanim N.,  et~al., 2020, \mn@doi [Astronomy & Astrophysics]
+  {10.1051/0004-6361/201833910}, 641, A6
+
+\bibitem[\protect\citeauthoryear{Albers, Fidler, Lesgourgues, Schöneberg  \&
+  Torrado}{Albers et~al.}{2019}]{Albers19}
+Albers J.,  Fidler C.,  Lesgourgues J.,  Schöneberg N.,   Torrado J.,  2019,
+  \mn@doi [Journal of Cosmology and Astroparticle Physics]
+  {10.1088/1475-7516/2019/09/028}, 2019, 028–028
+
+\bibitem[\protect\citeauthoryear{Alsing et~al.,}{Alsing
+  et~al.}{2020}]{Alsing20}
+Alsing J.,  et~al., 2020, \mn@doi [The Astrophysical Journal Supplement Series]
+  {10.3847/1538-4365/ab917f}, 249, 5
+
+\bibitem[\protect\citeauthoryear{{Angulo}, {Zennaro}, {Contreras}, {Aric{\`o}},
+  {Pellejero-Iba{\~n}ez}  \& {St{\"u}cker}}{{Angulo} et~al.}{2021}]{Angulo20}
+{Angulo} R.~E.,  {Zennaro} M.,  {Contreras} S.,  {Aric{\`o}} G.,
+  {Pellejero-Iba{\~n}ez} M.,   {St{\"u}cker} J.,  2021, \mn@doi [\mnras]
+  {10.1093/mnras/stab2018}, \href
+  {https://ui.adsabs.harvard.edu/abs/2021MNRAS.507.5869A} {507, 5869}
+
+\bibitem[\protect\citeauthoryear{{Aric{\`o}}, {Angulo}  \&
+  {Zennaro}}{{Aric{\`o}} et~al.}{2021}]{Arico21}
+{Aric{\`o}} G.,  {Angulo} R.~E.,   {Zennaro} M.,  2021, arXiv e-prints, \href
+  {https://ui.adsabs.harvard.edu/abs/2021arXiv210414568A} {p. arXiv:2104.14568}
+
+\bibitem[\protect\citeauthoryear{Asgari et~al.,}{Asgari
+  et~al.}{2021}]{Asgari20}
+Asgari M.,  et~al., 2021, \mn@doi [Astronomy & Astrophysics]
+  {10.1051/0004-6361/202039070}, 645, A104
+
+\bibitem[\protect\citeauthoryear{{Auld}, {Bridges}, {Hobson}  \& {Gull}}{{Auld}
+  et~al.}{2007}]{Auld07}
+{Auld} T.,  {Bridges} M.,  {Hobson} M.~P.,   {Gull} S.~F.,  2007, \mn@doi
+  [\mnras] {10.1111/j.1745-3933.2006.00276.x}, \href
+  {https://ui.adsabs.harvard.edu/abs/2007MNRAS.376L..11A} {376, L11}
+
+\bibitem[\protect\citeauthoryear{Auld, Bridges  \& Hobson}{Auld
+  et~al.}{2008}]{Auld08}
+Auld T.,  Bridges M.,   Hobson M.~P.,  2008, \mn@doi [Monthly Notices of the
+  Royal Astronomical Society] {10.1111/j.1365-2966.2008.13279.x}, 387, 1575
+
+\bibitem[\protect\citeauthoryear{{Bevins}, {Handley}, {Fialkov}, {de Lera
+  Acedo}  \& {Javid}}{{Bevins} et~al.}{2021}]{Bevins21}
+{Bevins} H.~T.~J.,  {Handley} W.~J.,  {Fialkov} A.,  {de Lera Acedo} E.,
+  {Javid} K.,  2021, \mn@doi [\mnras] {10.1093/mnras/stab2737}, \href
+  {https://ui.adsabs.harvard.edu/abs/2021MNRAS.508.2923B} {508, 2923}
+
+\bibitem[\protect\citeauthoryear{Bird, Viel  \& Haehnelt}{Bird
+  et~al.}{2012}]{Bird12}
+Bird S.,  Viel M.,   Haehnelt M.~G.,  2012, \mn@doi [Monthly Notices of the
+  Royal Astronomical Society] {10.1111/j.1365-2966.2011.20222.x}, 420,
+  2551–2561
+
+\bibitem[\protect\citeauthoryear{Bird, Rogers, Peiris, Verde, Font-Ribera  \&
+  Pontzen}{Bird et~al.}{2019}]{Bird19}
+Bird S.,  Rogers K.~K.,  Peiris H.~V.,  Verde L.,  Font-Ribera A.,   Pontzen
+  A.,  2019, \mn@doi [Journal of Cosmology and Astroparticle Physics]
+  {10.1088/1475-7516/2019/02/050}, 2019, 050
+
+\bibitem[\protect\citeauthoryear{Bishop}{Bishop}{2006}]{Bishop06}
+Bishop C.~M.,  2006, Pattern Recognition and Machine Learning.
+Springer
+
+\bibitem[\protect\citeauthoryear{{Blas}, {Lesgourgues}  \& {Tram}}{{Blas}
+  et~al.}{2011}]{Blas11}
+{Blas} D.,  {Lesgourgues} J.,   {Tram} T.,  2011, \mn@doi [\jcap]
+  {10.1088/1475-7516/2011/07/034}, \href
+  {https://ui.adsabs.harvard.edu/abs/2011JCAP...07..034B} {2011, 034}
+
+\bibitem[\protect\citeauthoryear{{Brinckmann} \& {Lesgourgues}}{{Brinckmann} \&
+  {Lesgourgues}}{2019}]{Brinckmann18}
+{Brinckmann} T.,  {Lesgourgues} J.,  2019, \mn@doi [Physics of the Dark
+  Universe] {10.1016/j.dark.2018.100260}, \href
+  {https://ui.adsabs.harvard.edu/abs/2019PDU....24..260B} {24, 100260}
+
+\bibitem[\protect\citeauthoryear{{Buchner} et~al.,}{{Buchner}
+  et~al.}{2014}]{Buchner14}
+{Buchner} J.,  et~al., 2014, \mn@doi [\aap] {10.1051/0004-6361/201322971},
+  \href {https://ui.adsabs.harvard.edu/abs/2014A&A...564A.125B} {564, A125}
+
+\bibitem[\protect\citeauthoryear{Buffington, Cabrera, Kurzawski  \&
+  Ezekoye}{Buffington et~al.}{2020}]{Buffington20}
+Buffington T.,  Cabrera J.-M.,  Kurzawski A.,   Ezekoye O.,  2020, Fire
+  Technology, pp 1--27
+
+\bibitem[\protect\citeauthoryear{Chisari et~al.,}{Chisari
+  et~al.}{2019}]{Chisari19}
+Chisari N.~E.,  et~al., 2019, \mn@doi [The Open Journal of Astrophysics]
+  {10.21105/astro.1905.06082}, 2
+
+\bibitem[\protect\citeauthoryear{{Czekala}, {Andrews}, {Mandel}, {Hogg}  \&
+  {Green}}{{Czekala} et~al.}{2015}]{Czekala15}
+{Czekala} I.,  {Andrews} S.~M.,  {Mandel} K.~S.,  {Hogg} D.~W.,   {Green}
+  G.~M.,  2015, \mn@doi [\apj] {10.1088/0004-637X/812/2/128}, \href
+  {https://ui.adsabs.harvard.edu/abs/2015ApJ...812..128C} {812, 128}
+
+\bibitem[\protect\citeauthoryear{Das, Chen, Hobson, Phadke, van Beest,
+  Goudswaard  \& Hohl}{Das et~al.}{2018}]{Das18}
+Das S.,  Chen X.,  Hobson M.~P.,  Phadke S.,  van Beest B.,  Goudswaard J.,
+  Hohl D.,  2018, \mn@doi [Geophysical Journal International]
+  {10.1093/gji/ggy283}, 215, 1257
+
+\bibitem[\protect\citeauthoryear{Deshpande et~al.,}{Deshpande
+  et~al.}{2020}]{Deshpande20}
+Deshpande A.~C.,  et~al., 2020, \mn@doi [Astronomy & Astrophysics]
+  {10.1051/0004-6361/201937323}, 636, A95
+
+\bibitem[\protect\citeauthoryear{Driver et~al.,}{Driver
+  et~al.}{2009}]{Driver09}
+Driver S.~P.,  et~al., 2009, \mn@doi [Astronomy & Geophysics]
+  {10.1111/j.1468-4004.2009.50512.x}, 50, 5.12
+
+\bibitem[\protect\citeauthoryear{Driver et~al.,}{Driver
+  et~al.}{2011}]{Driver11}
+Driver S.~P.,  et~al., 2011, \mn@doi [Monthly Notices of the Royal Astronomical
+  Society] {10.1111/j.1365-2966.2010.18188.x}, 413, 971
+
+\bibitem[\protect\citeauthoryear{Duncan, Joachimi, Heavens, Heymans  \&
+  Hildebrandt}{Duncan et~al.}{2013}]{Duncan13}
+Duncan C. A.~J.,  Joachimi B.,  Heavens A.~F.,  Heymans C.,   Hildebrandt H.,
+  2013, \mn@doi [Monthly Notices of the Royal Astronomical Society]
+  {10.1093/mnras/stt2060}, 437, 2471–2487
+
+\bibitem[\protect\citeauthoryear{{Euclid Collaboration} et~al.,}{{Euclid
+  Collaboration} et~al.}{2020}]{Paykari20}
+{Euclid Collaboration} et~al., 2020, \mn@doi [A\&A]
+  {10.1051/0004-6361/201936980}, 635, A139
+
+\bibitem[\protect\citeauthoryear{{Euclid Collaboration} et~al.,}{{Euclid
+  Collaboration} et~al.}{2021}]{euclidcollaboration20}
+{Euclid Collaboration} et~al., 2021, \mn@doi [\mnras] {10.1093/mnras/stab1366},
+  \href {https://ui.adsabs.harvard.edu/abs/2021MNRAS.505.2840E} {505, 2840}
+
+\bibitem[\protect\citeauthoryear{Fendt \& Wandelt}{Fendt \&
+  Wandelt}{2007}]{Fendt07}
+Fendt W.~A.,  Wandelt B.~D.,  2007, \mn@doi [The Astrophysical Journal]
+  {10.1086/508342}, 654, 2–11
+
+\bibitem[\protect\citeauthoryear{Feroz, Hobson  \& Bridges}{Feroz
+  et~al.}{2009}]{Feroz09}
+Feroz F.,  Hobson M.~P.,   Bridges M.,  2009, \mn@doi [Monthly Notices of the
+  Royal Astronomical Society] {10.1111/j.1365-2966.2009.14548.x}, 398,
+  1601–1614
+
+\bibitem[\protect\citeauthoryear{Foreman-Mackey, Hogg, Lang  \&
+  Goodman}{Foreman-Mackey et~al.}{2013}]{ForemanMackey13}
+Foreman-Mackey D.,  Hogg D.~W.,  Lang D.,   Goodman J.,  2013, \mn@doi
+  [Publications of the Astronomical Society of the Pacific] {10.1086/670067},
+  125, 306–312
+
+\bibitem[\protect\citeauthoryear{Frostig, Johnson  \& Leary}{Frostig
+  et~al.}{2018}]{Jax18}
+Frostig R.,  Johnson M.,   Leary C.,  2018, in SysML. \url
+  {https://mlsys.org/Conferences/doc/2018/146.pdf}
+
+\bibitem[\protect\citeauthoryear{{Goodman} \& {Weare}}{{Goodman} \&
+  {Weare}}{2010}]{Goodman10}
+{Goodman} J.,  {Weare} J.,  2010, \mn@doi [Communications in Applied
+  Mathematics and Computational Science] {10.2140/camcos.2010.5.65}, \href
+  {https://ui.adsabs.harvard.edu/abs/2010CAMCS...5...65G} {5, 65}
+
+\bibitem[\protect\citeauthoryear{Hajian}{Hajian}{2007}]{Hajian07}
+Hajian A.,  2007, \mn@doi [Physical Review D] {10.1103/physrevd.75.083525}, 75
+
+\bibitem[\protect\citeauthoryear{Handley}{Handley}{2021}]{Handley21}
+Handley W.,  2021, \mn@doi [Physical Review D] {10.1103/physrevd.103.l041301},
+  103
+
+\bibitem[\protect\citeauthoryear{Handley, Hobson  \& Lasenby}{Handley
+  et~al.}{2015a}]{Handley15a}
+Handley W.~J.,  Hobson M.~P.,   Lasenby A.~N.,  2015a, \mn@doi [Monthly Notices
+  of the Royal Astronomical Society: Letters] {10.1093/mnrasl/slv047}, 450,
+  L61–L65
+
+\bibitem[\protect\citeauthoryear{Handley, Hobson  \& Lasenby}{Handley
+  et~al.}{2015b}]{Handley15b}
+Handley W.~J.,  Hobson M.~P.,   Lasenby A.~N.,  2015b, \mn@doi [Monthly Notices
+  of the Royal Astronomical Society] {10.1093/mnras/stv1911}, 453, 4385–4399
+
+\bibitem[\protect\citeauthoryear{{Hasan}, {Schmidt}, {Schneider}  \&
+  {Tyson}}{{Hasan} et~al.}{2021}]{Hasan21}
+{Hasan} I.,  {Schmidt} S.~J.,  {Schneider} M.~D.,   {Tyson} J.~A.,  2021, arXiv
+  e-prints, \href {https://ui.adsabs.harvard.edu/abs/2021arXiv210403407H} {p.
+  arXiv:2104.03407}
+
+\bibitem[\protect\citeauthoryear{{Heavens}, {Jimenez}  \& {Lahav}}{{Heavens}
+  et~al.}{2000}]{Heavens00}
+{Heavens} A.~F.,  {Jimenez} R.,   {Lahav} O.,  2000, \mn@doi [\mnras]
+  {10.1046/j.1365-8711.2000.03692.x}, \href
+  {https://ui.adsabs.harvard.edu/abs/2000MNRAS.317..965H} {317, 965}
+
+\bibitem[\protect\citeauthoryear{Heitmann, Higdon, White, Habib, Williams,
+  Lawrence  \& Wagner}{Heitmann et~al.}{2009}]{Heitmann09}
+Heitmann K.,  Higdon D.,  White M.,  Habib S.,  Williams B.~J.,  Lawrence E.,
+  Wagner C.,  2009, \mn@doi [The Astrophysical Journal]
+  {10.1088/0004-637x/705/1/156}, 705, 156–174
+
+\bibitem[\protect\citeauthoryear{Heitmann, White, Wagner, Habib  \&
+  Higdon}{Heitmann et~al.}{2010}]{Heitmann10}
+Heitmann K.,  White M.,  Wagner C.,  Habib S.,   Higdon D.,  2010, \mn@doi [The
+  Astrophysical Journal] {10.1088/0004-637x/715/1/104}, 715, 104–121
+
+\bibitem[\protect\citeauthoryear{Heitmann, Lawrence, Kwan, Habib  \&
+  Higdon}{Heitmann et~al.}{2013}]{Heitmann13}
+Heitmann K.,  Lawrence E.,  Kwan J.,  Habib S.,   Higdon D.,  2013, \mn@doi
+  [The Astrophysical Journal] {10.1088/0004-637x/780/1/111}, 780, 111
+
+\bibitem[\protect\citeauthoryear{Heymans et~al.,}{Heymans
+  et~al.}{2021}]{Heymans20}
+Heymans C.,  et~al., 2021, \mn@doi [Astronomy & Astrophysics]
+  {10.1051/0004-6361/202039063}, 646, A140
+
+\bibitem[\protect\citeauthoryear{Hildebrandt et~al.,}{Hildebrandt
+  et~al.}{2016}]{Hildebrandt16}
+Hildebrandt H.,  et~al., 2016, \mn@doi [Monthly Notices of the Royal
+  Astronomical Society] {10.1093/mnras/stw2805}, 465, 1454–1498
+
+\bibitem[\protect\citeauthoryear{Hildebrandt et~al.,}{Hildebrandt
+  et~al.}{2020}]{Hildebrandt20}
+Hildebrandt H.,  et~al., 2020, \mn@doi [Astronomy & Astrophysics]
+  {10.1051/0004-6361/201834878}, 633, A69
+
+\bibitem[\protect\citeauthoryear{{Ho}, {Bird}  \& {Shelton}}{{Ho}
+  et~al.}{2021}]{Ho21}
+{Ho} M.-F.,  {Bird} S.,   {Shelton} C.~R.,  2021, \mn@doi [\mnras]
+  {10.1093/mnras/stab3114}, \href
+  {https://ui.adsabs.harvard.edu/abs/2021MNRAS.tmp.2836H} {}
+
+\bibitem[\protect\citeauthoryear{{Ivezi{\'c}} et~al.,}{{Ivezi{\'c}}
+  et~al.}{2019}]{Ivezic19}
+{Ivezi{\'c}} {\v{Z}}.,  et~al., 2019, \mn@doi [\apj]
+  {10.3847/1538-4357/ab042c}, \href
+  {https://ui.adsabs.harvard.edu/abs/2019ApJ...873..111I} {873, 111}
+
+\bibitem[\protect\citeauthoryear{Jimenez, Verde, Peiris  \& Kosowsky}{Jimenez
+  et~al.}{2004}]{Jimenez04}
+Jimenez R.,  Verde L.,  Peiris H.,   Kosowsky A.,  2004, \mn@doi [Phys. Rev. D]
+  {10.1103/PhysRevD.70.023005}, 70, 023005
+
+\bibitem[\protect\citeauthoryear{Joachimi \& Bridle}{Joachimi \&
+  Bridle}{2010}]{Joachimi10}
+Joachimi B.,  Bridle S.~L.,  2010, \mn@doi [Astronomy & Astrophysics]
+  {10.1051/0004-6361/200913657}, 523, A1
+
+\bibitem[\protect\citeauthoryear{Joachimi et~al.,}{Joachimi
+  et~al.}{2021}]{Joachimi20}
+Joachimi B.,  et~al., 2021, \mn@doi [Astronomy & Astrophysics]
+  {10.1051/0004-6361/202038831}, 646, A129
+
+\bibitem[\protect\citeauthoryear{{Kaiser}}{{Kaiser}}{1992}]{Kaiser92}
+{Kaiser} N.,  1992, \mn@doi [\apj] {10.1086/171151}, \href
+  {https://ui.adsabs.harvard.edu/abs/1992ApJ...388..272K} {388, 272}
+
+\bibitem[\protect\citeauthoryear{Kasim et~al.,}{Kasim et~al.}{2021}]{Kasim20}
+Kasim M.~F.,  et~al., 2021, \mn@doi [Machine Learning: Science and Technology]
+  {10.1088/2632-2153/ac3ffa}, 3, 015013
+
+\bibitem[\protect\citeauthoryear{Kern, Liu, Parsons, Mesinger  \& Greig}{Kern
+  et~al.}{2017}]{Kern17}
+Kern N.~S.,  Liu A.,  Parsons A.~R.,  Mesinger A.,   Greig B.,  2017, \mn@doi
+  [The Astrophysical Journal] {10.3847/1538-4357/aa8bb4}, 848, 23
+
+\bibitem[\protect\citeauthoryear{{Kingma} \& {Ba}}{{Kingma} \&
+  {Ba}}{2014}]{Kingma14}
+{Kingma} D.~P.,  {Ba} J.,  2014, arXiv e-prints, \href
+  {https://ui.adsabs.harvard.edu/abs/2014arXiv1412.6980K} {p. arXiv:1412.6980}
+
+\bibitem[\protect\citeauthoryear{Knabenhans et~al.,}{Knabenhans
+  et~al.}{2019}]{Knabenhans19}
+Knabenhans M.,  et~al., 2019, \mn@doi [Monthly Notices of the Royal
+  Astronomical Society] {10.1093/mnras/stz197}, 484, 5509–5529
+
+\bibitem[\protect\citeauthoryear{Köhlinger et~al.,}{Köhlinger
+  et~al.}{2017}]{Kohlinger17}
+Köhlinger F.,  et~al., 2017, \mn@doi [Monthly Notices of the Royal
+  Astronomical Society] {10.1093/mnras/stx1820}, 471, 4412–4435
+
+\bibitem[\protect\citeauthoryear{{Laureijs} et~al.,}{{Laureijs}
+  et~al.}{2011}]{Laureijs11}
+{Laureijs} R.,  et~al., 2011, arXiv e-prints, \href
+  {https://ui.adsabs.harvard.edu/abs/2011arXiv1110.3193L} {p. arXiv:1110.3193}
+
+\bibitem[\protect\citeauthoryear{Lawrence, Heitmann, White, Higdon, Wagner,
+  Habib  \& Williams}{Lawrence et~al.}{2010}]{Lawrence10b}
+Lawrence E.,  Heitmann K.,  White M.,  Higdon D.,  Wagner C.,  Habib S.,
+  Williams B.,  2010, \mn@doi [The Astrophysical Journal]
+  {10.1088/0004-637x/713/2/1322}, 713, 1322–1331
+
+\bibitem[\protect\citeauthoryear{Lawrence et~al.,}{Lawrence
+  et~al.}{2017}]{Lawrence17}
+Lawrence E.,  et~al., 2017, \mn@doi [The Astrophysical Journal]
+  {10.3847/1538-4357/aa86a9}, 847, 50
+
+\bibitem[\protect\citeauthoryear{{Lesgourgues}}{{Lesgourgues}}{2011}]{Lesgourgues11}
+{Lesgourgues} J.,  2011, arXiv e-prints, \href
+  {https://ui.adsabs.harvard.edu/abs/2011arXiv1104.2932L} {p. arXiv:1104.2932}
+
+\bibitem[\protect\citeauthoryear{{Lewis}}{{Lewis}}{2019}]{Lewis19}
+{Lewis} A.,  2019, arXiv e-prints, \href
+  {https://ui.adsabs.harvard.edu/abs/2019arXiv191013970L} {p. arXiv:1910.13970}
+
+\bibitem[\protect\citeauthoryear{Lewis, Challinor  \& Lasenby}{Lewis
+  et~al.}{2000}]{Lewis99}
+Lewis A.,  Challinor A.,   Lasenby A.,  2000, \mn@doi [\apj] {10.1086/309179},
+  538, 473
+
+\bibitem[\protect\citeauthoryear{Liske et~al.,}{Liske et~al.}{2015}]{Liske15}
+Liske J.,  et~al., 2015, \mn@doi [Monthly Notices of the Royal Astronomical
+  Society] {10.1093/mnras/stv1436}, 452, 2087
+
+\bibitem[\protect\citeauthoryear{LoVerde \& Afshordi}{LoVerde \&
+  Afshordi}{2008}]{LoVerde08}
+LoVerde M.,  Afshordi N.,  2008, \mn@doi [Physical Review D]
+  {10.1103/physrevd.78.123506}, 78
+
+\bibitem[\protect\citeauthoryear{Manrique-Yus \& Sellentin}{Manrique-Yus \&
+  Sellentin}{2019}]{ManriqueYus19}
+Manrique-Yus A.,  Sellentin E.,  2019, \mn@doi [Monthly Notices of the Royal
+  Astronomical Society] {10.1093/mnras/stz3059}
+
+\bibitem[\protect\citeauthoryear{Mead, Peacock, Heymans, Joudaki  \&
+  Heavens}{Mead et~al.}{2015}]{Mead15}
+Mead A.~J.,  Peacock J.~A.,  Heymans C.,  Joudaki S.,   Heavens A.~F.,  2015,
+  \mn@doi [Monthly Notices of the Royal Astronomical Society]
+  {10.1093/mnras/stv2036}, 454, 1958
+
+\bibitem[\protect\citeauthoryear{Mead, Heymans, Lombriser, Peacock, Steele  \&
+  Winther}{Mead et~al.}{2016}]{Mead16}
+Mead A.~J.,  Heymans C.,  Lombriser L.,  Peacock J.~A.,  Steele O.~I.,
+  Winther H.~A.,  2016, \mn@doi [Monthly Notices of the Royal Astronomical
+  Society] {10.1093/mnras/stw681}, 459, 1468
+
+\bibitem[\protect\citeauthoryear{Mead, Brieden, Tröster  \& Heymans}{Mead
+  et~al.}{2021}]{Mead21}
+Mead A.~J.,  Brieden S.,  Tröster T.,   Heymans C.,  2021, \mn@doi [Monthly
+  Notices of the Royal Astronomical Society] {10.1093/mnras/stab082}, 502, 1401
+
+\bibitem[\protect\citeauthoryear{Mootoovaloo, Heavens, Jaffe  \&
+  Leclercq}{Mootoovaloo et~al.}{2020}]{Mootoovaloo20}
+Mootoovaloo A.,  Heavens A.~F.,  Jaffe A.~H.,   Leclercq F.,  2020, \mn@doi
+  [Monthly Notices of the Royal Astronomical Society] {10.1093/mnras/staa2102},
+  497, 2213
+
+\bibitem[\protect\citeauthoryear{Mootoovaloo, Jaffe, Heavens  \&
+  Leclercq}{Mootoovaloo et~al.}{2022}]{Mootoovaloo21}
+Mootoovaloo A.,  Jaffe A.,  Heavens A.,   Leclercq F.,  2022, \mn@doi
+  [Astronomy and Computing] {https://doi.org/10.1016/j.ascom.2021.100508}, 38,
+  100508
+
+\bibitem[\protect\citeauthoryear{Neal}{Neal}{1996}]{Neal96}
+Neal R.~M.,  1996, Bayesian Learning for Neural Networks.
+Springer-Verlag, Berlin, Heidelberg
+
+\bibitem[\protect\citeauthoryear{Owen}{Owen}{1992}]{Owen92}
+Owen A.~B.,  1992, Statistica Sinica, 2, 439
+
+\bibitem[\protect\citeauthoryear{{Piras}, {Spurio Mancini}, {Joachimi}  \&
+  {Hobson}}{{Piras} et~al.}{2021}]{Piras21}
+{Piras} D.,  {Spurio Mancini} A.,  {Joachimi} B.,   {Hobson} M.~P.,  2021,
+  arXiv e-prints, \href {https://ui.adsabs.harvard.edu/abs/2021arXiv210104724P}
+  {p. arXiv:2101.04724}
+
+\bibitem[\protect\citeauthoryear{Prince \& Dunkley}{Prince \&
+  Dunkley}{2019}]{Prince19}
+Prince H.,  Dunkley J.,  2019, \mn@doi [Physical Review D]
+  {10.1103/physrevd.100.083502}, 100
+
+\bibitem[\protect\citeauthoryear{Pyne \& Joachimi}{Pyne \&
+  Joachimi}{2021}]{Pyne21}
+Pyne S.,  Joachimi B.,  2021, \mn@doi [Monthly Notices of the Royal
+  Astronomical Society] {10.1093/mnras/stab413}, 503, 2300–2317
+
+\bibitem[\protect\citeauthoryear{{Ramachandra}, {Valogiannis}, {Ishak},
+  {Heitmann}  \& {LSST Dark Energy Science Collaboration}}{{Ramachandra}
+  et~al.}{2021}]{Ramachandra20}
+{Ramachandra} N.,  {Valogiannis} G.,  {Ishak} M.,  {Heitmann} K.,   {LSST Dark
+  Energy Science Collaboration} 2021, \mn@doi [\prd]
+  {10.1103/PhysRevD.103.123525}, \href
+  {https://ui.adsabs.harvard.edu/abs/2021PhRvD.103l3525R} {103, 123525}
+
+\bibitem[\protect\citeauthoryear{Rasmussen \& Williams}{Rasmussen \&
+  Williams}{2005}]{Rasmussen05}
+Rasmussen C.~E.,  Williams C. K.~I.,  2005, Gaussian Processes for Machine
+  Learning (Adaptive Computation and Machine Learning).
+The MIT Press
+
+\bibitem[\protect\citeauthoryear{Rogers, Peiris, Pontzen, Bird, Verde  \&
+  Font-Ribera}{Rogers et~al.}{2019}]{Rogers19}
+Rogers K.~K.,  Peiris H.~V.,  Pontzen A.,  Bird S.,  Verde L.,   Font-Ribera
+  A.,  2019, \mn@doi [Journal of Cosmology and Astroparticle Physics]
+  {10.1088/1475-7516/2019/02/031}, 2019, 031
+
+\bibitem[\protect\citeauthoryear{Schmit \& Pritchard}{Schmit \&
+  Pritchard}{2017}]{Schmit17}
+Schmit C.~J.,  Pritchard J.~R.,  2017, \mn@doi [Monthly Notices of the Royal
+  Astronomical Society] {10.1093/mnras/stx3292}, 475, 1213–1223
+
+\bibitem[\protect\citeauthoryear{Schneider, van Waerbeke  \& Mellier}{Schneider
+  et~al.}{2002}]{Schneider02}
+Schneider P.,  van Waerbeke L.,   Mellier Y.,  2002, \mn@doi [Astronomy &
+  Astrophysics] {10.1051/0004-6361:20020626}, 389, 729–741
+
+\bibitem[\protect\citeauthoryear{Smail, Ellis, Fitchett  \& Edge}{Smail
+  et~al.}{1995}]{Smail95}
+Smail I.,  Ellis R.~S.,  Fitchett M.~J.,   Edge A.~C.,  1995, \mn@doi [Monthly
+  Notices of the Royal Astronomical Society] {10.1093/mnras/273.2.277}, 273,
+  277–294
+
+\bibitem[\protect\citeauthoryear{Smith et~al.,}{Smith et~al.}{2003}]{Smith03}
+Smith R.~E.,  et~al., 2003, \mn@doi [Monthly Notices of the Royal Astronomical
+  Society] {10.1046/j.1365-8711.2003.06503.x}, 341, 1311–1332
+
+\bibitem[\protect\citeauthoryear{{Spergel} et~al.,}{{Spergel}
+  et~al.}{2015}]{Spergel15}
+{Spergel} D.,  et~al., 2015, arXiv e-prints, \href
+  {https://ui.adsabs.harvard.edu/abs/2015arXiv150303757S} {p. arXiv:1503.03757}
+
+\bibitem[\protect\citeauthoryear{Spurio~Mancini et~al.,}{Spurio~Mancini
+  et~al.}{2019}]{SpurioMancini19}
+Spurio~Mancini A.,  et~al., 2019, \mn@doi [Monthly Notices of the Royal
+  Astronomical Society] {10.1093/mnras/stz2581}, 490, 2155
+
+\bibitem[\protect\citeauthoryear{Spurio~Mancini, Piras, Ferreira, Hobson  \&
+  Joachimi}{Spurio~Mancini et~al.}{2021}]{SpurioMancini20}
+Spurio~Mancini A.,  Piras D.,  Ferreira A. M.~G.,  Hobson M.~P.,   Joachimi B.,
+   2021, \mn@doi [Solid Earth] {10.5194/se-12-1683-2021}, 12, 1683–1705
+
+\bibitem[\protect\citeauthoryear{Takahashi, Sato, Nishimichi, Taruya  \&
+  Oguri}{Takahashi et~al.}{2012}]{Takahashi12}
+Takahashi R.,  Sato M.,  Nishimichi T.,  Taruya A.,   Oguri M.,  2012, \mn@doi
+  [The Astrophysical Journal] {10.1088/0004-637x/761/2/152}, 761, 152
+
+\bibitem[\protect\citeauthoryear{Thiagarajan, Venkatesh, Anirudh, Bremer,
+  Gaffney, Anderson  \& Spears}{Thiagarajan et~al.}{2020}]{Thiagarajan20}
+Thiagarajan J.~J.,  Venkatesh B.,  Anirudh R.,  Bremer P.-T.,  Gaffney J.,
+  Anderson G.,   Spears B.,  2020, \mn@doi [Nature Communications]
+  {10.1038/s41467-020-19448-8}, 11
+
+\bibitem[\protect\citeauthoryear{{Torrado} \& {Lewis}}{{Torrado} \&
+  {Lewis}}{2019}]{Torrado19}
+{Torrado} J.,  {Lewis} A.,  2019, {Cobaya: Bayesian analysis in cosmology}
+  (\mn@eprint {ascl} {1910.019})
+
+\bibitem[\protect\citeauthoryear{Torrado \& Lewis}{Torrado \&
+  Lewis}{2021}]{Torrado21}
+Torrado J.,  Lewis A.,  2021, \mn@doi [Journal of Cosmology and Astroparticle
+  Physics] {10.1088/1475-7516/2021/05/057}, 2021, 057
+
+\bibitem[\protect\citeauthoryear{Tutusaus et~al.,}{Tutusaus
+  et~al.}{2020}]{Tutusaus20}
+Tutusaus I.,  et~al., 2020, \mn@doi [Astronomy & Astrophysics]
+  {10.1051/0004-6361/202038313}, 643, A70
+
+\bibitem[\protect\citeauthoryear{{Udrescu}, {Tan}, {Feng}, {Neto}, {Wu}  \&
+  {Tegmark}}{{Udrescu} et~al.}{2020}]{Udrescu20}
+{Udrescu} S.-M.,  {Tan} A.,  {Feng} J.,  {Neto} O.,  {Wu} T.,   {Tegmark} M.,
+  2020, arXiv e-prints, \href
+  {https://ui.adsabs.harvard.edu/abs/2020arXiv200610782U} {p. arXiv:2006.10782}
+
+\bibitem[\protect\citeauthoryear{Wan}{Wan}{2019}]{Wan19}
+Wan X.,  2019, \mn@doi [Journal of Physics: Conference Series]
+  {10.1088/1742-6596/1213/3/032021}, 1213, 032021
+
+\bibitem[\protect\citeauthoryear{Zumalacárregui, Bellini, Sawicki, Lesgourgues
+   \& Ferreira}{Zumalacárregui et~al.}{2017}]{Zumalacarregui17}
+Zumalacárregui M.,  Bellini E.,  Sawicki I.,  Lesgourgues J.,   Ferreira
+  P.~G.,  2017, \mn@doi [Journal of Cosmology and Astroparticle Physics]
+  {10.1088/1475-7516/2017/08/019}, 2017, 019–019
+
+\bibitem[\protect\citeauthoryear{de Mijolla, Viti, Holdship, Manolopoulou  \&
+  Yates}{de~Mijolla et~al.}{2019}]{deMijolla19}
+de Mijolla D.,  Viti S.,  Holdship J.,  Manolopoulou I.,   Yates J.,  2019,
+  \mn@doi [Astronomy & Astrophysics] {10.1051/0004-6361/201935973}, 630, A117
+
+\bibitem[\protect\citeauthoryear{van Uitert et~al.,}{van Uitert
+  et~al.}{2018}]{vanUitert18}
+van Uitert E.,  et~al., 2018, \mn@doi [Monthly Notices of the Royal
+  Astronomical Society] {10.1093/mnras/sty551}, 476, 4662–4689
+
+\bibitem[\protect\citeauthoryear{von Wietersheim-Kramsta et~al.,}{von
+  Wietersheim-Kramsta et~al.}{2021}]{von_Wietersheim_Kramsta21}
+von Wietersheim-Kramsta M.,  et~al., 2021, \mn@doi [Monthly Notices of the
+  Royal Astronomical Society] {10.1093/mnras/stab1000}, 504, 1452–1465
+
+\makeatother
+\end{thebibliography}

@@ -1,0 +1,819 @@
+\providecommand{\noopsort}[1]{}\providecommand{\singleletter}[1]{#1}%\providecommand{\noopsort}[1]{}\providecommand{\singleletter}[1]{#1}%\providecommand{\noopsort}[1]{}\providecommand{\singleletter}[1]{#1}%\providecommand{\noopsort}[1]{}\providecommand{\singleletter}[1]{#1}%
+\begin{thebibliography}{92}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+\expandafter\ifx\csname bibnamefont\endcsname\relax
+  \def\bibnamefont#1{#1}\fi
+\expandafter\ifx\csname bibfnamefont\endcsname\relax
+  \def\bibfnamefont#1{#1}\fi
+\expandafter\ifx\csname citenamefont\endcsname\relax
+  \def\citenamefont#1{#1}\fi
+\expandafter\ifx\csname url\endcsname\relax
+  \def\url#1{\texttt{#1}}\fi
+\expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
+\providecommand{\bibinfo}[2]{#2}
+\providecommand{\eprint}[2][]{\url{#2}}
+
+\bibitem[{\citenamefont{Pratten et~al.}(2020)\citenamefont{Pratten, Husa,
+  Garc{\'i}a-Quir{\'o}s, Colleoni, Ramos-Buades, Estell{\'e}s, and
+  Jaume}}]{phenX}
+\bibinfo{author}{\bibfnamefont{G.}~\bibnamefont{Pratten}},
+  \bibinfo{author}{\bibfnamefont{S.}~\bibnamefont{Husa}},
+  \bibinfo{author}{\bibfnamefont{C.}~\bibnamefont{Garc{\'i}a-Quir{\'o}s}},
+  \bibinfo{author}{\bibfnamefont{M.}~\bibnamefont{Colleoni}},
+  \bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Ramos-Buades}},
+  \bibinfo{author}{\bibfnamefont{H.}~\bibnamefont{Estell{\'e}s}},
+  \bibnamefont{and} \bibinfo{author}{\bibfnamefont{R.}~\bibnamefont{Jaume}}
+  (\bibinfo{year}{2020}), \eprint{arXiv:2001.11412}.
+
+\bibitem[{\citenamefont{{The LIGO Scientific Collaboration}}(2015)}]{lalsuite}
+\bibinfo{author}{\bibnamefont{{The LIGO Scientific Collaboration}}},
+  \emph{\bibinfo{title}{{LALSuite}: {LSC} {Algorithm} {Library} {Suite}}},
+  \bibinfo{howpublished}{\url{https://www.lsc-group.phys.uwm.edu/daswg/projects/lalsuite.html}}
+  (\bibinfo{year}{2015}).
+
+\bibitem[{\citenamefont{Khan et~al.}(2016)\citenamefont{Khan, Husa, Hannam,
+  Ohme, Pürrer, Jiménez~Forteza, and Bohé}}]{Khan:2015jqa}
+\bibinfo{author}{\bibfnamefont{S.}~\bibnamefont{Khan}},
+  \bibinfo{author}{\bibfnamefont{S.}~\bibnamefont{Husa}},
+  \bibinfo{author}{\bibfnamefont{M.}~\bibnamefont{Hannam}},
+  \bibinfo{author}{\bibfnamefont{F.}~\bibnamefont{Ohme}},
+  \bibinfo{author}{\bibfnamefont{M.}~\bibnamefont{Pürrer}},
+  \bibinfo{author}{\bibfnamefont{X.}~\bibnamefont{Jiménez~Forteza}},
+  \bibnamefont{and} \bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Bohé}},
+  \bibinfo{journal}{Phys. Rev.} \textbf{\bibinfo{volume}{D93}},
+  \bibinfo{pages}{044007} (\bibinfo{year}{2016}), \eprint{1508.07253}.
+
+\bibitem[{\citenamefont{Hannam et~al.}(2014)\citenamefont{Hannam, Schmidt,
+  Boh{\'e}, Haegel, Husa et~al.}}]{Hannam:2013oca}
+\bibinfo{author}{\bibfnamefont{M.}~\bibnamefont{Hannam}},
+  \bibinfo{author}{\bibfnamefont{P.}~\bibnamefont{Schmidt}},
+  \bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Boh{\'e}}},
+  \bibinfo{author}{\bibfnamefont{L.}~\bibnamefont{Haegel}},
+  \bibinfo{author}{\bibfnamefont{S.}~\bibnamefont{Husa}}, \bibnamefont{et~al.},
+  \bibinfo{journal}{Phys.Rev.Lett.} \textbf{\bibinfo{volume}{113}},
+  \bibinfo{pages}{151101} (\bibinfo{year}{2014}), \eprint{1308.3271}.
+
+\bibitem[{\citenamefont{Boh{\'e} et~al.}(2016)\citenamefont{Boh{\'e}, Hannam,
+  Husa, Ohme, Puerrer, and Schmidt}}]{Bohe:PPv2}
+\bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Boh{\'e}}},
+  \bibinfo{author}{\bibfnamefont{M.}~\bibnamefont{Hannam}},
+  \bibinfo{author}{\bibfnamefont{S.}~\bibnamefont{Husa}},
+  \bibinfo{author}{\bibfnamefont{F.}~\bibnamefont{Ohme}},
+  \bibinfo{author}{\bibfnamefont{M.}~\bibnamefont{Puerrer}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{P.}~\bibnamefont{Schmidt}},
+  \bibinfo{type}{Tech. Rep.} \bibinfo{number}{{LIGO}-T1500602},
+  \bibinfo{institution}{{LIGO} Project} (\bibinfo{year}{2016}),
+  \urlprefix\url{https://dcc.ligo.org/LIGO-T1500602}.
+
+\bibitem[{\citenamefont{London et~al.}(2018)\citenamefont{London, Khan,
+  Fauchon-Jones, García, Hannam, Husa, Jiménez-Forteza, Kalaghatgi, Ohme, and
+  Pannarale}}]{London:2017bcn}
+\bibinfo{author}{\bibfnamefont{L.}~\bibnamefont{London}},
+  \bibinfo{author}{\bibfnamefont{S.}~\bibnamefont{Khan}},
+  \bibinfo{author}{\bibfnamefont{E.}~\bibnamefont{Fauchon-Jones}},
+  \bibinfo{author}{\bibfnamefont{C.}~\bibnamefont{García}},
+  \bibinfo{author}{\bibfnamefont{M.}~\bibnamefont{Hannam}},
+  \bibinfo{author}{\bibfnamefont{S.}~\bibnamefont{Husa}},
+  \bibinfo{author}{\bibfnamefont{X.}~\bibnamefont{Jiménez-Forteza}},
+  \bibinfo{author}{\bibfnamefont{C.}~\bibnamefont{Kalaghatgi}},
+  \bibinfo{author}{\bibfnamefont{F.}~\bibnamefont{Ohme}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{F.}~\bibnamefont{Pannarale}},
+  \bibinfo{journal}{Phys. Rev. Lett.} \textbf{\bibinfo{volume}{120}},
+  \bibinfo{pages}{161102} (\bibinfo{year}{2018}), \eprint{1708.00404}.
+
+\bibitem[{\citenamefont{Abbott et~al.}(2016)}]{TheLIGOScientific:2016wfe}
+\bibinfo{author}{\bibfnamefont{B.~P.} \bibnamefont{Abbott}}
+  \bibnamefont{et~al.} (\bibinfo{collaboration}{Virgo, LIGO Scientific}),
+  \bibinfo{journal}{Phys. Rev. Lett.} \textbf{\bibinfo{volume}{116}},
+  \bibinfo{pages}{241102} (\bibinfo{year}{2016}), \eprint{1602.03840}.
+
+\bibitem[{\citenamefont{{Abbott, B. P. and
+  others}}(2019)}]{LIGOScientific:2018mvr}
+\bibinfo{author}{\bibnamefont{{Abbott, B. P. and others}}}
+  (\bibinfo{collaboration}{LIGO Scientific Collaboration and Virgo
+  Collaboration}), \bibinfo{journal}{Phys. Rev. X}
+  \textbf{\bibinfo{volume}{9}}, \bibinfo{pages}{031040} (\bibinfo{year}{2019}),
+  \urlprefix\url{https://link.aps.org/doi/10.1103/PhysRevX.9.031040}.
+
+\bibitem[{\citenamefont{Veitch et~al.}(2015{\natexlab{a}})}]{Veitch:2014wba}
+\bibinfo{author}{\bibfnamefont{J.}~\bibnamefont{Veitch}} \bibnamefont{et~al.},
+  \bibinfo{journal}{Phys. Rev.} \textbf{\bibinfo{volume}{D91}},
+  \bibinfo{pages}{042003} (\bibinfo{year}{2015}{\natexlab{a}}),
+  \eprint{1409.7215}.
+
+\bibitem[{\citenamefont{Ashton et~al.}(2019)}]{Ashton:2018jfp}
+\bibinfo{author}{\bibfnamefont{G.}~\bibnamefont{Ashton}} \bibnamefont{et~al.},
+  \bibinfo{journal}{Astrophys. J. Suppl.} \textbf{\bibinfo{volume}{241}},
+  \bibinfo{pages}{27} (\bibinfo{year}{2019}), \eprint{1811.02042}.
+
+\bibitem[{\citenamefont{Varma et~al.}(2014)\citenamefont{Varma, Ajith, Husa,
+  Bustillo, Hannam, and P\"urrer}}]{Varma:2014hm}
+\bibinfo{author}{\bibfnamefont{V.}~\bibnamefont{Varma}},
+  \bibinfo{author}{\bibfnamefont{P.}~\bibnamefont{Ajith}},
+  \bibinfo{author}{\bibfnamefont{S.}~\bibnamefont{Husa}},
+  \bibinfo{author}{\bibfnamefont{J.~C.} \bibnamefont{Bustillo}},
+  \bibinfo{author}{\bibfnamefont{M.}~\bibnamefont{Hannam}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{M.}~\bibnamefont{P\"urrer}},
+  \bibinfo{journal}{Phys. Rev. D} \textbf{\bibinfo{volume}{90}},
+  \bibinfo{pages}{124004} (\bibinfo{year}{2014}),
+  \urlprefix\url{https://link.aps.org/doi/10.1103/PhysRevD.90.124004}.
+
+\bibitem[{\citenamefont{Varma and Ajith}(2017)}]{Varma:2017hm}
+\bibinfo{author}{\bibfnamefont{V.}~\bibnamefont{Varma}} \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{P.}~\bibnamefont{Ajith}},
+  \bibinfo{journal}{Phys. Rev. D} \textbf{\bibinfo{volume}{96}},
+  \bibinfo{pages}{124024} (\bibinfo{year}{2017}),
+  \urlprefix\url{https://link.aps.org/doi/10.1103/PhysRevD.96.124024}.
+
+\bibitem[{\citenamefont{Calder\'on~Bustillo
+  et~al.}(2016)\citenamefont{Calder\'on~Bustillo, Husa, Sintes, and
+  P\"urrer}}]{BustilloHusa:2016}
+\bibinfo{author}{\bibfnamefont{J.}~\bibnamefont{Calder\'on~Bustillo}},
+  \bibinfo{author}{\bibfnamefont{S.}~\bibnamefont{Husa}},
+  \bibinfo{author}{\bibfnamefont{A.~M.} \bibnamefont{Sintes}},
+  \bibnamefont{and} \bibinfo{author}{\bibfnamefont{M.}~\bibnamefont{P\"urrer}},
+  \bibinfo{journal}{Phys. Rev. D} \textbf{\bibinfo{volume}{93}},
+  \bibinfo{pages}{084019} (\bibinfo{year}{2016}),
+  \urlprefix\url{https://link.aps.org/doi/10.1103/PhysRevD.93.084019}.
+
+\bibitem[{\citenamefont{Littenberg et~al.}(2013)\citenamefont{Littenberg,
+  Baker, Buonanno, and Kelly}}]{Littenberg:2012uj}
+\bibinfo{author}{\bibfnamefont{T.~B.} \bibnamefont{Littenberg}},
+  \bibinfo{author}{\bibfnamefont{J.~G.} \bibnamefont{Baker}},
+  \bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Buonanno}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{B.~J.} \bibnamefont{Kelly}},
+  \bibinfo{journal}{Phys. Rev.} \textbf{\bibinfo{volume}{D87}},
+  \bibinfo{pages}{104003} (\bibinfo{year}{2013}), \eprint{1210.0893}.
+
+\bibitem[{\citenamefont{Calderón~Bustillo
+  et~al.}(2016)\citenamefont{Calderón~Bustillo, Husa, Sintes, and
+  Pürrer}}]{Bustillo:2015qty}
+\bibinfo{author}{\bibfnamefont{J.}~\bibnamefont{Calderón~Bustillo}},
+  \bibinfo{author}{\bibfnamefont{S.}~\bibnamefont{Husa}},
+  \bibinfo{author}{\bibfnamefont{A.~M.} \bibnamefont{Sintes}},
+  \bibnamefont{and} \bibinfo{author}{\bibfnamefont{M.}~\bibnamefont{Pürrer}},
+  \bibinfo{journal}{Phys. Rev.} \textbf{\bibinfo{volume}{D93}},
+  \bibinfo{pages}{084019} (\bibinfo{year}{2016}), \eprint{1511.02060}.
+
+\bibitem[{\citenamefont{Chatziioannou et~al.}(2019)}]{Chatziioannou:2019dsz}
+\bibinfo{author}{\bibfnamefont{K.}~\bibnamefont{Chatziioannou}}
+  \bibnamefont{et~al.}, \bibinfo{journal}{Phys. Rev.}
+  \textbf{\bibinfo{volume}{D100}}, \bibinfo{pages}{104015}
+  (\bibinfo{year}{2019}), \eprint{1903.06742}.
+
+\bibitem[{\citenamefont{Kalaghatgi et~al.}(2019)\citenamefont{Kalaghatgi,
+  Hannam, and Raymond}}]{Kalaghatgi:2019log}
+\bibinfo{author}{\bibfnamefont{C.}~\bibnamefont{Kalaghatgi}},
+  \bibinfo{author}{\bibfnamefont{M.}~\bibnamefont{Hannam}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{V.}~\bibnamefont{Raymond}}
+  (\bibinfo{year}{2019}), \eprint{1909.10010}.
+
+\bibitem[{\citenamefont{Shaik et~al.}(2019)\citenamefont{Shaik, Lange, Field,
+  O'Shaughnessy, Varma, Kidder, Pfeiffer, and Wysocki}}]{Shaik:2019dym}
+\bibinfo{author}{\bibfnamefont{F.~H.} \bibnamefont{Shaik}},
+  \bibinfo{author}{\bibfnamefont{J.}~\bibnamefont{Lange}},
+  \bibinfo{author}{\bibfnamefont{S.~E.} \bibnamefont{Field}},
+  \bibinfo{author}{\bibfnamefont{R.}~\bibnamefont{O'Shaughnessy}},
+  \bibinfo{author}{\bibfnamefont{V.}~\bibnamefont{Varma}},
+  \bibinfo{author}{\bibfnamefont{L.~E.} \bibnamefont{Kidder}},
+  \bibinfo{author}{\bibfnamefont{H.~P.} \bibnamefont{Pfeiffer}},
+  \bibnamefont{and} \bibinfo{author}{\bibfnamefont{D.}~\bibnamefont{Wysocki}}
+  (\bibinfo{year}{2019}), \eprint{1911.02693}.
+
+\bibitem[{\citenamefont{Cotesta
+  et~al.}(2018{\natexlab{a}})\citenamefont{Cotesta, Buonanno, Bohé,
+  Taracchini, Hinder, and Ossokine}}]{Cotesta:2018fcv}
+\bibinfo{author}{\bibfnamefont{R.}~\bibnamefont{Cotesta}},
+  \bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Buonanno}},
+  \bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Bohé}},
+  \bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Taracchini}},
+  \bibinfo{author}{\bibfnamefont{I.}~\bibnamefont{Hinder}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{S.}~\bibnamefont{Ossokine}},
+  \bibinfo{journal}{Phys. Rev.} \textbf{\bibinfo{volume}{D98}},
+  \bibinfo{pages}{084028} (\bibinfo{year}{2018}{\natexlab{a}}),
+  \eprint{1803.10701}.
+
+\bibitem[{\citenamefont{P\"{u}rrer}(2014)}]{Puerrer2014}
+\bibinfo{author}{\bibfnamefont{M.}~\bibnamefont{P\"{u}rrer}},
+  \bibinfo{journal}{Class. Quantum Grav.} \textbf{\bibinfo{volume}{31}},
+  \bibinfo{pages}{195010} (\bibinfo{year}{2014}), ISSN
+  \bibinfo{issn}{1361-6382},
+  \urlprefix\url{http://dx.doi.org/10.1088/0264-9381/31/19/195010}.
+
+\bibitem[{\citenamefont{Pürrer}(2016)}]{Purrer:2015tud}
+\bibinfo{author}{\bibfnamefont{M.}~\bibnamefont{Pürrer}},
+  \bibinfo{journal}{Phys. Rev.} \textbf{\bibinfo{volume}{D93}},
+  \bibinfo{pages}{064041} (\bibinfo{year}{2016}), \eprint{1512.02248}.
+
+\bibitem[{\citenamefont{Nagar and Rettegno}(2019)}]{Nagar:2018gnk}
+\bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Nagar}} \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{P.}~\bibnamefont{Rettegno}},
+  \bibinfo{journal}{Phys. Rev.} \textbf{\bibinfo{volume}{D99}},
+  \bibinfo{pages}{021501} (\bibinfo{year}{2019}), \eprint{1805.03891}.
+
+\bibitem[{\citenamefont{Varma et~al.}(2019{\natexlab{a}})\citenamefont{Varma,
+  Field, Scheel, Blackman, Kidder, and Pfeiffer}}]{Varma:2018mmi}
+\bibinfo{author}{\bibfnamefont{V.}~\bibnamefont{Varma}},
+  \bibinfo{author}{\bibfnamefont{S.~E.} \bibnamefont{Field}},
+  \bibinfo{author}{\bibfnamefont{M.~A.} \bibnamefont{Scheel}},
+  \bibinfo{author}{\bibfnamefont{J.}~\bibnamefont{Blackman}},
+  \bibinfo{author}{\bibfnamefont{L.~E.} \bibnamefont{Kidder}},
+  \bibnamefont{and} \bibinfo{author}{\bibfnamefont{H.~P.}
+  \bibnamefont{Pfeiffer}}, \bibinfo{journal}{Phys. Rev.}
+  \textbf{\bibinfo{volume}{D99}}, \bibinfo{pages}{064045}
+  (\bibinfo{year}{2019}{\natexlab{a}}), \eprint{1812.07865}.
+
+\bibitem[{\citenamefont{Varma et~al.}(2019{\natexlab{b}})\citenamefont{Varma,
+  Field, Scheel, Blackman, Gerosa, Stein, Kidder, and
+  Pfeiffer}}]{Varma:2019csw}
+\bibinfo{author}{\bibfnamefont{V.}~\bibnamefont{Varma}},
+  \bibinfo{author}{\bibfnamefont{S.~E.} \bibnamefont{Field}},
+  \bibinfo{author}{\bibfnamefont{M.~A.} \bibnamefont{Scheel}},
+  \bibinfo{author}{\bibfnamefont{J.}~\bibnamefont{Blackman}},
+  \bibinfo{author}{\bibfnamefont{D.}~\bibnamefont{Gerosa}},
+  \bibinfo{author}{\bibfnamefont{L.~C.} \bibnamefont{Stein}},
+  \bibinfo{author}{\bibfnamefont{L.~E.} \bibnamefont{Kidder}},
+  \bibnamefont{and} \bibinfo{author}{\bibfnamefont{H.~P.}
+  \bibnamefont{Pfeiffer}}, \bibinfo{journal}{Phys. Rev. Research.}
+  \textbf{\bibinfo{volume}{1}}, \bibinfo{pages}{033015}
+  (\bibinfo{year}{2019}{\natexlab{b}}), \eprint{1905.09300}.
+
+\bibitem[{\citenamefont{Mehta et~al.}(2017)\citenamefont{Mehta, Mishra, Varma,
+  and Ajith}}]{Mehta:2017jpq}
+\bibinfo{author}{\bibfnamefont{A.~K.} \bibnamefont{Mehta}},
+  \bibinfo{author}{\bibfnamefont{C.~K.} \bibnamefont{Mishra}},
+  \bibinfo{author}{\bibfnamefont{V.}~\bibnamefont{Varma}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{P.}~\bibnamefont{Ajith}},
+  \bibinfo{journal}{Phys. Rev.} \textbf{\bibinfo{volume}{D96}},
+  \bibinfo{pages}{124010} (\bibinfo{year}{2017}), \eprint{1708.03501}.
+
+\bibitem[{\citenamefont{Kumar~Mehta et~al.}(2019)\citenamefont{Kumar~Mehta,
+  Tiwari, Johnson-McDaniel, Mishra, Varma, and Ajith}}]{Mehta:2019wxm}
+\bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Kumar~Mehta}},
+  \bibinfo{author}{\bibfnamefont{P.}~\bibnamefont{Tiwari}},
+  \bibinfo{author}{\bibfnamefont{N.~K.} \bibnamefont{Johnson-McDaniel}},
+  \bibinfo{author}{\bibfnamefont{C.~K.} \bibnamefont{Mishra}},
+  \bibinfo{author}{\bibfnamefont{V.}~\bibnamefont{Varma}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{P.}~\bibnamefont{Ajith}},
+  \bibinfo{journal}{Phys. Rev.} \textbf{\bibinfo{volume}{D100}},
+  \bibinfo{pages}{024032} (\bibinfo{year}{2019}), \eprint{1902.02731}.
+
+\bibitem[{\citenamefont{Jiménez-Forteza
+  et~al.}(2017)\citenamefont{Jiménez-Forteza, Keitel, Husa, Hannam, Khan, and
+  Pürrer}}]{Jimenez-Forteza:2016oae}
+\bibinfo{author}{\bibfnamefont{X.}~\bibnamefont{Jiménez-Forteza}},
+  \bibinfo{author}{\bibfnamefont{D.}~\bibnamefont{Keitel}},
+  \bibinfo{author}{\bibfnamefont{S.}~\bibnamefont{Husa}},
+  \bibinfo{author}{\bibfnamefont{M.}~\bibnamefont{Hannam}},
+  \bibinfo{author}{\bibfnamefont{S.}~\bibnamefont{Khan}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{M.}~\bibnamefont{Pürrer}},
+  \bibinfo{journal}{Phys. Rev.} \textbf{\bibinfo{volume}{D95}},
+  \bibinfo{pages}{064024} (\bibinfo{year}{2017}), \eprint{1611.00332}.
+
+\bibitem[{\citenamefont{Blanchet}(2014)}]{Blanchet2014}
+\bibinfo{author}{\bibfnamefont{L.}~\bibnamefont{Blanchet}},
+  \bibinfo{journal}{Living Reviews in Relativity} \textbf{\bibinfo{volume}{17}}
+  (\bibinfo{year}{2014}), ISSN \bibinfo{issn}{1433-8351},
+  \urlprefix\url{http://dx.doi.org/10.12942/lrr-2014-2}.
+
+\bibitem[{\citenamefont{Kokkotas and Schmidt}(1999)}]{Kokkotas1999}
+\bibinfo{author}{\bibfnamefont{K.}~\bibnamefont{Kokkotas}} \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{B.}~\bibnamefont{Schmidt}},
+  \bibinfo{journal}{Living Reviews in Relativity} \textbf{\bibinfo{volume}{2}}
+  (\bibinfo{year}{1999}), ISSN \bibinfo{issn}{1433-8351},
+  \urlprefix\url{https://doi.org/10.12942/lrr-1999-2}.
+
+\bibitem[{\citenamefont{Garc{\'i}a-Quir{\'o}s
+  et~al.}(2020)\citenamefont{Garc{\'i}a-Quir{\'o}s, Husa, Mateu-Lucena, and
+  Borchers}}]{our_mb}
+\bibinfo{author}{\bibfnamefont{C.}~\bibnamefont{Garc{\'i}a-Quir{\'o}s}},
+  \bibinfo{author}{\bibfnamefont{S.}~\bibnamefont{Husa}},
+  \bibinfo{author}{\bibfnamefont{M.}~\bibnamefont{Mateu-Lucena}},
+  \bibnamefont{and} \bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Borchers}}
+  (\bibinfo{year}{2020}), \eprint{arXiv:2001.10897}.
+
+\bibitem[{\citenamefont{Vinciguerra et~al.}(2017)\citenamefont{Vinciguerra,
+  Veitch, and Mandel}}]{Vinciguerra:2017ngf}
+\bibinfo{author}{\bibfnamefont{S.}~\bibnamefont{Vinciguerra}},
+  \bibinfo{author}{\bibfnamefont{J.}~\bibnamefont{Veitch}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{I.}~\bibnamefont{Mandel}},
+  \bibinfo{journal}{Class. Quant. Grav.} \textbf{\bibinfo{volume}{34}},
+  \bibinfo{pages}{115006} (\bibinfo{year}{2017}), \eprint{1703.02062}.
+
+\bibitem[{\citenamefont{Schmidt et~al.}(2012)\citenamefont{Schmidt, Hannam, and
+  Husa}}]{Schmidt:2012rh}
+\bibinfo{author}{\bibfnamefont{P.}~\bibnamefont{Schmidt}},
+  \bibinfo{author}{\bibfnamefont{M.}~\bibnamefont{Hannam}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{S.}~\bibnamefont{Husa}},
+  \bibinfo{journal}{Phys. Rev.} \textbf{\bibinfo{volume}{D86}},
+  \bibinfo{pages}{104063} (\bibinfo{year}{2012}), \eprint{1207.3088}.
+
+\bibitem[{\citenamefont{Khan et~al.}(2019)\citenamefont{Khan, Chatziioannou,
+  Hannam, and Ohme}}]{Khan:2018fmp}
+\bibinfo{author}{\bibfnamefont{S.}~\bibnamefont{Khan}},
+  \bibinfo{author}{\bibfnamefont{K.}~\bibnamefont{Chatziioannou}},
+  \bibinfo{author}{\bibfnamefont{M.}~\bibnamefont{Hannam}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{F.}~\bibnamefont{Ohme}},
+  \bibinfo{journal}{Phys. Rev. D} \textbf{\bibinfo{volume}{100}},
+  \bibinfo{pages}{024059} (\bibinfo{year}{2019}),
+  \urlprefix\url{https://link.aps.org/doi/10.1103/PhysRevD.100.024059}.
+
+\bibitem[{\citenamefont{Husa et~al.}(2020)\citenamefont{Husa, Colleoni,
+  Estell{\'e}s, Cecilio, Ramos-Buades, Pratten, Jaume, Jimenez-Forteza, and
+  Keitel}}]{hybrids}
+\bibinfo{author}{\bibfnamefont{S.}~\bibnamefont{Husa}},
+  \bibinfo{author}{\bibfnamefont{M.}~\bibnamefont{Colleoni}},
+  \bibinfo{author}{\bibfnamefont{H.}~\bibnamefont{Estell{\'e}s}},
+  \bibinfo{author}{\bibfnamefont{G.~Q.} \bibnamefont{Cecilio}},
+  \bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Ramos-Buades}},
+  \bibinfo{author}{\bibfnamefont{G.}~\bibnamefont{Pratten}},
+  \bibinfo{author}{\bibfnamefont{R.}~\bibnamefont{Jaume}},
+  \bibinfo{author}{\bibfnamefont{X.}~\bibnamefont{Jimenez-Forteza}},
+  \bibnamefont{and} \bibinfo{author}{\bibfnamefont{D.}~\bibnamefont{Keitel}}
+  (\bibinfo{year}{2020}), \bibinfo{note}{{in preparation}}.
+
+\bibitem[{\citenamefont{Wiaux et~al.}(2007)\citenamefont{Wiaux, Jacques, and
+  Vandergheynst}}]{Wiaux:2005fm}
+\bibinfo{author}{\bibfnamefont{Y.}~\bibnamefont{Wiaux}},
+  \bibinfo{author}{\bibfnamefont{L.}~\bibnamefont{Jacques}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{P.}~\bibnamefont{Vandergheynst}},
+  \bibinfo{journal}{J. Comput. Phys.} \textbf{\bibinfo{volume}{226}},
+  \bibinfo{pages}{2359} (\bibinfo{year}{2007}), \eprint{astro-ph/0508514}.
+
+\bibitem[{\citenamefont{Calderón~Bustillo
+  et~al.}(2015)\citenamefont{Calderón~Bustillo, Bohé, Husa, Sintes, Hannam,
+  and Pürrer}}]{Bustillo:2015ova}
+\bibinfo{author}{\bibfnamefont{J.}~\bibnamefont{Calderón~Bustillo}},
+  \bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Bohé}},
+  \bibinfo{author}{\bibfnamefont{S.}~\bibnamefont{Husa}},
+  \bibinfo{author}{\bibfnamefont{A.~M.} \bibnamefont{Sintes}},
+  \bibinfo{author}{\bibfnamefont{M.}~\bibnamefont{Hannam}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{M.}~\bibnamefont{Pürrer}}
+  (\bibinfo{year}{2015}), \eprint{arXiv:1501.00918}.
+
+\bibitem[{\citenamefont{Blanchet et~al.}(2008)\citenamefont{Blanchet, Faye,
+  Iyer, and Sinha}}]{Blanchet:2008je}
+\bibinfo{author}{\bibfnamefont{L.}~\bibnamefont{Blanchet}},
+  \bibinfo{author}{\bibfnamefont{G.}~\bibnamefont{Faye}},
+  \bibinfo{author}{\bibfnamefont{B.~R.} \bibnamefont{Iyer}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{S.}~\bibnamefont{Sinha}},
+  \bibinfo{journal}{Class. Quant. Grav.} \textbf{\bibinfo{volume}{25}},
+  \bibinfo{pages}{165003} (\bibinfo{year}{2008}), \bibinfo{note}{[Erratum:
+  Class. Quant. Grav.29,239501(2012)]}, \eprint{0802.1249}.
+
+\bibitem[{\citenamefont{Damour et~al.}(2000)\citenamefont{Damour, Iyer, and
+  Sathyaprakash}}]{Damour:2000gg}
+\bibinfo{author}{\bibfnamefont{T.}~\bibnamefont{Damour}},
+  \bibinfo{author}{\bibfnamefont{B.~R.} \bibnamefont{Iyer}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{B.~S.} \bibnamefont{Sathyaprakash}},
+  \bibinfo{journal}{Phys. Rev.} \textbf{\bibinfo{volume}{D62}},
+  \bibinfo{pages}{084036} (\bibinfo{year}{2000}), \eprint{gr-qc/0001023}.
+
+\bibitem[{\citenamefont{Husa et~al.}(2016)\citenamefont{Husa, Khan, Hannam,
+  Pürrer, Ohme, Jiménez~Forteza, and Bohé}}]{Husa:2015iqa}
+\bibinfo{author}{\bibfnamefont{S.}~\bibnamefont{Husa}},
+  \bibinfo{author}{\bibfnamefont{S.}~\bibnamefont{Khan}},
+  \bibinfo{author}{\bibfnamefont{M.}~\bibnamefont{Hannam}},
+  \bibinfo{author}{\bibfnamefont{M.}~\bibnamefont{Pürrer}},
+  \bibinfo{author}{\bibfnamefont{F.}~\bibnamefont{Ohme}},
+  \bibinfo{author}{\bibfnamefont{X.}~\bibnamefont{Jiménez~Forteza}},
+  \bibnamefont{and} \bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Bohé}},
+  \bibinfo{journal}{Phys. Rev.} \textbf{\bibinfo{volume}{D93}},
+  \bibinfo{pages}{044006} (\bibinfo{year}{2016}), \eprint{1508.07250}.
+
+\bibitem[{\citenamefont{Cabero et~al.}(2017)\citenamefont{Cabero, Nielsen,
+  Lundgren, and Capano}}]{Cabero:2016ayq}
+\bibinfo{author}{\bibfnamefont{M.}~\bibnamefont{Cabero}},
+  \bibinfo{author}{\bibfnamefont{A.~B.} \bibnamefont{Nielsen}},
+  \bibinfo{author}{\bibfnamefont{A.~P.} \bibnamefont{Lundgren}},
+  \bibnamefont{and} \bibinfo{author}{\bibfnamefont{C.~D.}
+  \bibnamefont{Capano}}, \bibinfo{journal}{Phys. Rev.}
+  \textbf{\bibinfo{volume}{D95}}, \bibinfo{pages}{064016}
+  (\bibinfo{year}{2017}), \eprint{1602.03134}.
+
+\bibitem[{\citenamefont{Schnittman et~al.}(2008)\citenamefont{Schnittman,
+  Buonanno, van Meter, Baker, Boggs, Centrella, Kelly, and
+  McWilliams}}]{Schnittman:2007ij}
+\bibinfo{author}{\bibfnamefont{J.~D.} \bibnamefont{Schnittman}},
+  \bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Buonanno}},
+  \bibinfo{author}{\bibfnamefont{J.~R.} \bibnamefont{van Meter}},
+  \bibinfo{author}{\bibfnamefont{J.~G.} \bibnamefont{Baker}},
+  \bibinfo{author}{\bibfnamefont{W.~D.} \bibnamefont{Boggs}},
+  \bibinfo{author}{\bibfnamefont{J.}~\bibnamefont{Centrella}},
+  \bibinfo{author}{\bibfnamefont{B.~J.} \bibnamefont{Kelly}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{S.~T.} \bibnamefont{McWilliams}},
+  \bibinfo{journal}{Phys. Rev.} \textbf{\bibinfo{volume}{D77}},
+  \bibinfo{pages}{044031} (\bibinfo{year}{2008}), \eprint{0707.0301}.
+
+\bibitem[{\citenamefont{Baker et~al.}(2008)\citenamefont{Baker, Boggs,
+  Centrella, Kelly, McWilliams, and van Meter}}]{Baker:2008mj}
+\bibinfo{author}{\bibfnamefont{J.~G.} \bibnamefont{Baker}},
+  \bibinfo{author}{\bibfnamefont{W.~D.} \bibnamefont{Boggs}},
+  \bibinfo{author}{\bibfnamefont{J.}~\bibnamefont{Centrella}},
+  \bibinfo{author}{\bibfnamefont{B.~J.} \bibnamefont{Kelly}},
+  \bibinfo{author}{\bibfnamefont{S.~T.} \bibnamefont{McWilliams}},
+  \bibnamefont{and} \bibinfo{author}{\bibfnamefont{J.~R.} \bibnamefont{van
+  Meter}}, \bibinfo{journal}{Phys. Rev.} \textbf{\bibinfo{volume}{D78}},
+  \bibinfo{pages}{044046} (\bibinfo{year}{2008}), \eprint{0805.1428}.
+
+\bibitem[{\citenamefont{Andersson}(1997)}]{Andersson:1996cm}
+\bibinfo{author}{\bibfnamefont{N.}~\bibnamefont{Andersson}},
+  \bibinfo{journal}{Phys. Rev.} \textbf{\bibinfo{volume}{D55}},
+  \bibinfo{pages}{468} (\bibinfo{year}{1997}), \eprint{gr-qc/9607064}.
+
+\bibitem[{\citenamefont{Teukolsky}(1972{\natexlab{a}})}]{Teukolsky1972}
+\bibinfo{author}{\bibfnamefont{S.~A.} \bibnamefont{Teukolsky}},
+  \bibinfo{journal}{Phys. Rev. Lett.} \textbf{\bibinfo{volume}{29}},
+  \bibinfo{pages}{1114} (\bibinfo{year}{1972}{\natexlab{a}}).
+
+\bibitem[{\citenamefont{Teukolsky}(1973)}]{Teukolsky1973}
+\bibinfo{author}{\bibfnamefont{S.~A.} \bibnamefont{Teukolsky}},
+  \bibinfo{journal}{Astrophys. J.} \textbf{\bibinfo{volume}{185}},
+  \bibinfo{pages}{635} (\bibinfo{year}{1973}).
+
+\bibitem[{\citenamefont{Berti and Klein}(2014)}]{BertiMixingCoeffs}
+\bibinfo{author}{\bibfnamefont{E.}~\bibnamefont{Berti}} \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Klein}},
+  \bibinfo{journal}{Phys. Rev. D} \textbf{\bibinfo{volume}{90}},
+  \bibinfo{pages}{064012} (\bibinfo{year}{2014}),
+  \urlprefix\url{https://link.aps.org/doi/10.1103/PhysRevD.90.064012}.
+
+\bibitem[{\citenamefont{Kelly and Baker}(2013)}]{KB2012}
+\bibinfo{author}{\bibfnamefont{B.~J.} \bibnamefont{Kelly}} \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{J.~G.} \bibnamefont{Baker}},
+  \bibinfo{journal}{Phys. Rev. D} \textbf{\bibinfo{volume}{87}},
+  \bibinfo{pages}{084004} (\bibinfo{year}{2013}),
+  \urlprefix\url{https://link.aps.org/doi/10.1103/PhysRevD.87.084004}.
+
+\bibitem[{\citenamefont{London}(2020)}]{London:2020uva}
+\bibinfo{author}{\bibfnamefont{L.}~\bibnamefont{London}}
+  (\bibinfo{year}{2020}), \eprint{2006.11449}.
+
+\bibitem[{\citenamefont{Ajith et~al.}(2011)}]{Ajith:2009bn}
+\bibinfo{author}{\bibfnamefont{P.}~\bibnamefont{Ajith}} \bibnamefont{et~al.},
+  \bibinfo{journal}{Phys. Rev. Lett.} \textbf{\bibinfo{volume}{106}},
+  \bibinfo{pages}{241101} (\bibinfo{year}{2011}), \eprint{0909.2867}.
+
+\bibitem[{\citenamefont{Santamaria et~al.}(2010)}]{Santamaria:2010yb}
+\bibinfo{author}{\bibfnamefont{L.}~\bibnamefont{Santamaria}}
+  \bibnamefont{et~al.}, \bibinfo{journal}{Phys. Rev.}
+  \textbf{\bibinfo{volume}{D82}}, \bibinfo{pages}{064016}
+  (\bibinfo{year}{2010}), \eprint{1005.3306}.
+
+\bibitem[{\citenamefont{Ajith}(2011)}]{Ajith:2011ec}
+\bibinfo{author}{\bibfnamefont{P.}~\bibnamefont{Ajith}},
+  \bibinfo{journal}{Phys. Rev.} \textbf{\bibinfo{volume}{D84}},
+  \bibinfo{pages}{084037} (\bibinfo{year}{2011}), \eprint{1107.1267}.
+
+\bibitem[{\citenamefont{Mishra et~al.}(2016)\citenamefont{Mishra, Kela, Arun,
+  and Faye}}]{PNamps}
+\bibinfo{author}{\bibfnamefont{C.~K.} \bibnamefont{Mishra}},
+  \bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Kela}},
+  \bibinfo{author}{\bibfnamefont{K.~G.} \bibnamefont{Arun}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{G.}~\bibnamefont{Faye}},
+  \bibinfo{journal}{Phys. Rev. D} \textbf{\bibinfo{volume}{93}},
+  \bibinfo{pages}{084054} (\bibinfo{year}{2016}),
+  \urlprefix\url{https://link.aps.org/doi/10.1103/PhysRevD.93.084054}.
+
+\bibitem[{\citenamefont{Taracchini et~al.}(2014)\citenamefont{Taracchini,
+  Buonanno, Khanna, and Hughes}}]{Taracchini:2014zpa}
+\bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Taracchini}},
+  \bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Buonanno}},
+  \bibinfo{author}{\bibfnamefont{G.}~\bibnamefont{Khanna}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{S.~A.} \bibnamefont{Hughes}},
+  \bibinfo{journal}{Phys. Rev.} \textbf{\bibinfo{volume}{D90}},
+  \bibinfo{pages}{084025} (\bibinfo{year}{2014}), \eprint{1404.1819}.
+
+\bibitem[{SXS({\natexlab{a}})}]{SXS:catalog}
+\bibinfo{howpublished}{\url{http://www.black-holes.org/waveforms}}.
+
+\bibitem[{SXS({\natexlab{b}})}]{SXS:code}
+\bibinfo{howpublished}{\url{https://www.black-holes.org/code/SpEC.html}}.
+
+\bibitem[{\citenamefont{Pfeiffer et~al.}(2003)\citenamefont{Pfeiffer, Kidder,
+  Scheel, and Teukolsky}}]{PFEIFFER2003253}
+\bibinfo{author}{\bibfnamefont{H.~P.} \bibnamefont{Pfeiffer}},
+  \bibinfo{author}{\bibfnamefont{L.~E.} \bibnamefont{Kidder}},
+  \bibinfo{author}{\bibfnamefont{M.~A.} \bibnamefont{Scheel}},
+  \bibnamefont{and} \bibinfo{author}{\bibfnamefont{S.~A.}
+  \bibnamefont{Teukolsky}}, \bibinfo{journal}{Computer Physics Communications}
+  \textbf{\bibinfo{volume}{152}}, \bibinfo{pages}{253 } (\bibinfo{year}{2003}),
+  ISSN \bibinfo{issn}{0010-4655},
+  \urlprefix\url{http://www.sciencedirect.com/science/article/pii/S0010465502008470}.
+
+\bibitem[{\citenamefont{Br\"{u}gmann et~al.}(2008)\citenamefont{Br\"{u}gmann,
+  Gonz\'{a}lez, Hannam, Husa, Sperhake, and Tichy}}]{Bruegmann2008}
+\bibinfo{author}{\bibfnamefont{B.}~\bibnamefont{Br\"{u}gmann}},
+  \bibinfo{author}{\bibfnamefont{J.~A.} \bibnamefont{Gonz\'{a}lez}},
+  \bibinfo{author}{\bibfnamefont{M.}~\bibnamefont{Hannam}},
+  \bibinfo{author}{\bibfnamefont{S.}~\bibnamefont{Husa}},
+  \bibinfo{author}{\bibfnamefont{U.}~\bibnamefont{Sperhake}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{W.}~\bibnamefont{Tichy}},
+  \bibinfo{journal}{Phys. Rev. D} \textbf{\bibinfo{volume}{77}}
+  (\bibinfo{year}{2008}), ISSN \bibinfo{issn}{1550-2368},
+  \urlprefix\url{http://dx.doi.org/10.1103/PhysRevD.77.024027}.
+
+\bibitem[{\citenamefont{Husa et~al.}(2008)\citenamefont{Husa, Hannam, Gonzalez,
+  Sperhake, and Bruegmann}}]{Husa:2007rh}
+\bibinfo{author}{\bibfnamefont{S.}~\bibnamefont{Husa}},
+  \bibinfo{author}{\bibfnamefont{M.}~\bibnamefont{Hannam}},
+  \bibinfo{author}{\bibfnamefont{J.~A.} \bibnamefont{Gonzalez}},
+  \bibinfo{author}{\bibfnamefont{U.}~\bibnamefont{Sperhake}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{B.}~\bibnamefont{Bruegmann}},
+  \bibinfo{journal}{Phys. Rev.} \textbf{\bibinfo{volume}{D77}},
+  \bibinfo{pages}{044037} (\bibinfo{year}{2008}), \eprint{0706.0904}.
+
+\bibitem[{\citenamefont{Löffler et~al.}(2012)\citenamefont{Löffler, Faber,
+  Bentivegna, Bode, Diener, Haas, Hinder, Mundim, Ott, Schnetter
+  et~al.}}]{L_ffler_2012}
+\bibinfo{author}{\bibfnamefont{F.}~\bibnamefont{Löffler}},
+  \bibinfo{author}{\bibfnamefont{J.}~\bibnamefont{Faber}},
+  \bibinfo{author}{\bibfnamefont{E.}~\bibnamefont{Bentivegna}},
+  \bibinfo{author}{\bibfnamefont{T.}~\bibnamefont{Bode}},
+  \bibinfo{author}{\bibfnamefont{P.}~\bibnamefont{Diener}},
+  \bibinfo{author}{\bibfnamefont{R.}~\bibnamefont{Haas}},
+  \bibinfo{author}{\bibfnamefont{I.}~\bibnamefont{Hinder}},
+  \bibinfo{author}{\bibfnamefont{B.~C.} \bibnamefont{Mundim}},
+  \bibinfo{author}{\bibfnamefont{C.~D.} \bibnamefont{Ott}},
+  \bibinfo{author}{\bibfnamefont{E.}~\bibnamefont{Schnetter}},
+  \bibnamefont{et~al.}, \bibinfo{journal}{Classical and Quantum Gravity}
+  \textbf{\bibinfo{volume}{29}}, \bibinfo{pages}{115001}
+  (\bibinfo{year}{2012}),
+  \urlprefix\url{https://doi.org/10.1088%2F0264-9381%2F29%2F11%2F115001}.
+
+\bibitem[{\citenamefont{Boyle et~al.}(2019)}]{Boyle:2019kee}
+\bibinfo{author}{\bibfnamefont{M.}~\bibnamefont{Boyle}} \bibnamefont{et~al.},
+  \bibinfo{journal}{Class. Quant. Grav.} \textbf{\bibinfo{volume}{36}},
+  \bibinfo{pages}{195006} (\bibinfo{year}{2019}), \eprint{1904.04831}.
+
+\bibitem[{\citenamefont{Keitel et~al.}(2017)}]{Keitel:2016krm}
+\bibinfo{author}{\bibfnamefont{D.}~\bibnamefont{Keitel}} \bibnamefont{et~al.},
+  \bibinfo{journal}{Phys. Rev.} \textbf{\bibinfo{volume}{D96}},
+  \bibinfo{pages}{024006} (\bibinfo{year}{2017}), \eprint{1612.09566}.
+
+\bibitem[{\citenamefont{Harms et~al.}(2014)\citenamefont{Harms, Bernuzzi,
+  Nagar, and Zengino{\u{g}}lu}}]{Harms_2014}
+\bibinfo{author}{\bibfnamefont{E.}~\bibnamefont{Harms}},
+  \bibinfo{author}{\bibfnamefont{S.}~\bibnamefont{Bernuzzi}},
+  \bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Nagar}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Zengino{\u{g}}lu}},
+  \bibinfo{journal}{Classical and Quantum Gravity}
+  \textbf{\bibinfo{volume}{31}}, \bibinfo{pages}{245004}
+  (\bibinfo{year}{2014}),
+  \urlprefix\url{https://doi.org/10.1088%2F0264-9381%2F31%2F24%2F245004}.
+
+\bibitem[{\citenamefont{Messina et~al.}(2018)\citenamefont{Messina, Maldarella,
+  and Nagar}}]{EOB_RadiationReaction}
+\bibinfo{author}{\bibfnamefont{F.}~\bibnamefont{Messina}},
+  \bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Maldarella}},
+  \bibnamefont{and} \bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Nagar}},
+  \bibinfo{journal}{Phys. Rev. D} \textbf{\bibinfo{volume}{97}},
+  \bibinfo{pages}{084016} (\bibinfo{year}{2018}),
+  \urlprefix\url{https://link.aps.org/doi/10.1103/PhysRevD.97.084016}.
+
+\bibitem[{\citenamefont{Berti}()}]{bertiQNMs}
+\bibinfo{author}{\bibfnamefont{E.}~\bibnamefont{Berti}},
+  \urlprefix\url{https://pages.jh.edu/~eberti2/ringdown/}.
+
+\bibitem[{\citenamefont{Berti et~al.}(2009)\citenamefont{Berti, Cardoso, and
+  Starinets}}]{Berti:2009kk}
+\bibinfo{author}{\bibfnamefont{E.}~\bibnamefont{Berti}},
+  \bibinfo{author}{\bibfnamefont{V.}~\bibnamefont{Cardoso}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{A.~O.} \bibnamefont{Starinets}},
+  \bibinfo{journal}{Class. Quant. Grav.} \textbf{\bibinfo{volume}{26}},
+  \bibinfo{pages}{163001} (\bibinfo{year}{2009}), \eprint{0905.2975}.
+
+\bibitem[{\citenamefont{Teukolsky}(1972{\natexlab{b}})}]{1972:Teukolsky}
+\bibinfo{author}{\bibfnamefont{S.~A.} \bibnamefont{Teukolsky}},
+  \bibinfo{journal}{Phys. Rev. Lett.} \textbf{\bibinfo{volume}{29}},
+  \bibinfo{pages}{1114} (\bibinfo{year}{1972}{\natexlab{b}}),
+  \urlprefix\url{https://link.aps.org/doi/10.1103/PhysRevLett.29.1114}.
+
+\bibitem[{\citenamefont{Cutler and Flanagan}(1994)}]{Cutler:1994ys}
+\bibinfo{author}{\bibfnamefont{C.}~\bibnamefont{Cutler}} \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{E.~E.} \bibnamefont{Flanagan}},
+  \bibinfo{journal}{Phys. Rev.} \textbf{\bibinfo{volume}{D49}},
+  \bibinfo{pages}{2658} (\bibinfo{year}{1994}), \eprint{gr-qc/9402014}.
+
+\bibitem[{\citenamefont{Aasi et~al.}(2015)}]{TheLIGOScientific:2014jea}
+\bibinfo{author}{\bibfnamefont{J.}~\bibnamefont{Aasi}} \bibnamefont{et~al.}
+  (\bibinfo{collaboration}{LIGO Scientific}), \bibinfo{journal}{Class. Quant.
+  Grav.} \textbf{\bibinfo{volume}{32}}, \bibinfo{pages}{074001}
+  (\bibinfo{year}{2015}), \eprint{1411.4547}.
+
+\bibitem[{LIG()}]{LIGOPSD}
+\emph{\bibinfo{title}{{https://dcc.ligo.org/LIGO-T0900288/public.}}},
+  \urlprefix\url{https://dcc.ligo.org/LIGO-T0900288/public.}
+
+\bibitem[{\citenamefont{Cotesta
+  et~al.}(2018{\natexlab{b}})\citenamefont{Cotesta, Buonanno, Boh\'e,
+  Taracchini, Hinder, and Ossokine}}]{seobnrv4hm}
+\bibinfo{author}{\bibfnamefont{R.}~\bibnamefont{Cotesta}},
+  \bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Buonanno}},
+  \bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Boh\'e}},
+  \bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Taracchini}},
+  \bibinfo{author}{\bibfnamefont{I.}~\bibnamefont{Hinder}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{S.}~\bibnamefont{Ossokine}},
+  \bibinfo{journal}{Phys. Rev. D} \textbf{\bibinfo{volume}{98}},
+  \bibinfo{pages}{084028} (\bibinfo{year}{2018}{\natexlab{b}}),
+  \urlprefix\url{https://link.aps.org/doi/10.1103/PhysRevD.98.084028}.
+
+\bibitem[{\citenamefont{Blackman et~al.}(2017)\citenamefont{Blackman, Field,
+  Scheel, Galley, Hemberger, Schmidt, and Smith}}]{blackman2017}
+\bibinfo{author}{\bibfnamefont{J.}~\bibnamefont{Blackman}},
+  \bibinfo{author}{\bibfnamefont{S.~E.} \bibnamefont{Field}},
+  \bibinfo{author}{\bibfnamefont{M.~A.} \bibnamefont{Scheel}},
+  \bibinfo{author}{\bibfnamefont{C.~R.} \bibnamefont{Galley}},
+  \bibinfo{author}{\bibfnamefont{D.~A.} \bibnamefont{Hemberger}},
+  \bibinfo{author}{\bibfnamefont{P.}~\bibnamefont{Schmidt}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{R.}~\bibnamefont{Smith}},
+  \bibinfo{journal}{Phys. Rev. D} \textbf{\bibinfo{volume}{95}},
+  \bibinfo{pages}{104023} (\bibinfo{year}{2017}),
+  \urlprefix\url{https://link.aps.org/doi/10.1103/PhysRevD.95.104023}.
+
+\bibitem[{\citenamefont{Healy et~al.}(2014)\citenamefont{Healy, Lousto, and
+  Zlochower}}]{HLZpaper}
+\bibinfo{author}{\bibfnamefont{J.}~\bibnamefont{Healy}},
+  \bibinfo{author}{\bibfnamefont{C.~O.} \bibnamefont{Lousto}},
+  \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{Y.}~\bibnamefont{Zlochower}},
+  \bibinfo{journal}{Phys. Rev. D} \textbf{\bibinfo{volume}{90}},
+  \bibinfo{pages}{104004} (\bibinfo{year}{2014}),
+  \urlprefix\url{https://link.aps.org/doi/10.1103/PhysRevD.90.104004}.
+
+\bibitem[{\citenamefont{Healy and Lousto}(2017)}]{HL2017}
+\bibinfo{author}{\bibfnamefont{J.}~\bibnamefont{Healy}} \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{C.~O.} \bibnamefont{Lousto}},
+  \bibinfo{journal}{Phys. Rev. D} \textbf{\bibinfo{volume}{95}},
+  \bibinfo{pages}{024037} (\bibinfo{year}{2017}),
+  \urlprefix\url{https://link.aps.org/doi/10.1103/PhysRevD.95.024037}.
+
+\bibitem[{\citenamefont{Healy and Lousto}(2018)}]{HealyLousto2018}
+\bibinfo{author}{\bibfnamefont{J.}~\bibnamefont{Healy}} \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{C.~O.} \bibnamefont{Lousto}},
+  \bibinfo{journal}{Phys. Rev. D} \textbf{\bibinfo{volume}{97}},
+  \bibinfo{pages}{084002} (\bibinfo{year}{2018}),
+  \urlprefix\url{https://link.aps.org/doi/10.1103/PhysRevD.97.084002}.
+
+\bibitem[{\citenamefont{Varma et~al.}(2019{\natexlab{c}})\citenamefont{Varma,
+  Gerosa, Stein, Hébert, and Zhang}}]{Varma:2018aht}
+\bibinfo{author}{\bibfnamefont{V.}~\bibnamefont{Varma}},
+  \bibinfo{author}{\bibfnamefont{D.}~\bibnamefont{Gerosa}},
+  \bibinfo{author}{\bibfnamefont{L.~C.} \bibnamefont{Stein}},
+  \bibinfo{author}{\bibfnamefont{F.}~\bibnamefont{Hébert}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{H.}~\bibnamefont{Zhang}},
+  \bibinfo{journal}{Phys. Rev. Lett.} \textbf{\bibinfo{volume}{122}},
+  \bibinfo{pages}{011101} (\bibinfo{year}{2019}{\natexlab{c}}),
+  \eprint{1809.09125}.
+
+\bibitem[{\citenamefont{Vallisneri et~al.}(2015)\citenamefont{Vallisneri,
+  Kanner, Williams, Weinstein, and Stephens}}]{Vallisneri:2014vxa}
+\bibinfo{author}{\bibfnamefont{M.}~\bibnamefont{Vallisneri}},
+  \bibinfo{author}{\bibfnamefont{J.}~\bibnamefont{Kanner}},
+  \bibinfo{author}{\bibfnamefont{R.}~\bibnamefont{Williams}},
+  \bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Weinstein}},
+  \bibnamefont{and} \bibinfo{author}{\bibfnamefont{B.}~\bibnamefont{Stephens}},
+  \bibinfo{journal}{J. Phys. Conf. Ser.} \textbf{\bibinfo{volume}{610}},
+  \bibinfo{pages}{012021} (\bibinfo{year}{2015}), \eprint{1410.4839}.
+
+\bibitem[{GWO()}]{GWOSC}
+\emph{\bibinfo{title}{{Gravitational Wave Open Science Center}}},
+  \urlprefix\url{https://www.gw-openscience.org}.
+
+\bibitem[{o2d()}]{o2data}
+\emph{\bibinfo{title}{{The GWOSC O2 Data Release}}},
+  \urlprefix\url{https://doi.org/10.7935/CA75-FM95}.
+
+\bibitem[{\citenamefont{Smith et~al.}(2019)\citenamefont{Smith, Ashton,
+  Vajpeyi, and Talbot}}]{smith2019massively}
+\bibinfo{author}{\bibfnamefont{R.}~\bibnamefont{Smith}},
+  \bibinfo{author}{\bibfnamefont{G.}~\bibnamefont{Ashton}},
+  \bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Vajpeyi}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{C.}~\bibnamefont{Talbot}},
+  \bibinfo{journal}{ArXiv:1909.11873}  (\bibinfo{year}{2019}),
+  \eprint{1909.11873}.
+
+\bibitem[{\citenamefont{Speagle}(2020)}]{10.1093/mnras/staa278}
+\bibinfo{author}{\bibfnamefont{J.~S.} \bibnamefont{Speagle}},
+  \bibinfo{journal}{Monthly Notices of the Royal Astronomical Society}
+  \textbf{\bibinfo{volume}{493}}, \bibinfo{pages}{3132} (\bibinfo{year}{2020}),
+  ISSN \bibinfo{issn}{0035-8711},
+  \eprint{https://academic.oup.com/mnras/article-pdf/493/3/3132/32890730/staa278.pdf},
+  \urlprefix\url{https://doi.org/10.1093/mnras/staa278}.
+
+\bibitem[{\citenamefont{Kumar et~al.}(2016)\citenamefont{Kumar, Chu, Fong,
+  Pfeiffer, Boyle, Hemberger, Kidder, Scheel, and Szilagyi}}]{Kumar:2016dhh}
+\bibinfo{author}{\bibfnamefont{P.}~\bibnamefont{Kumar}},
+  \bibinfo{author}{\bibfnamefont{T.}~\bibnamefont{Chu}},
+  \bibinfo{author}{\bibfnamefont{H.}~\bibnamefont{Fong}},
+  \bibinfo{author}{\bibfnamefont{H.~P.} \bibnamefont{Pfeiffer}},
+  \bibinfo{author}{\bibfnamefont{M.}~\bibnamefont{Boyle}},
+  \bibinfo{author}{\bibfnamefont{D.~A.} \bibnamefont{Hemberger}},
+  \bibinfo{author}{\bibfnamefont{L.~E.} \bibnamefont{Kidder}},
+  \bibinfo{author}{\bibfnamefont{M.~A.} \bibnamefont{Scheel}},
+  \bibnamefont{and} \bibinfo{author}{\bibfnamefont{B.}~\bibnamefont{Szilagyi}},
+  \bibinfo{journal}{Phys. Rev.} \textbf{\bibinfo{volume}{D93}},
+  \bibinfo{pages}{104050} (\bibinfo{year}{2016}), \eprint{1601.05396}.
+
+\bibitem[{\citenamefont{Bohe et~al.}(2016)\citenamefont{Bohe, Hannam, Husa,
+  Ohme, Michael, and Schmidt}}]{PhenomPv2}
+\bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Bohe}},
+  \bibinfo{author}{\bibfnamefont{M.}~\bibnamefont{Hannam}},
+  \bibinfo{author}{\bibfnamefont{S.}~\bibnamefont{Husa}},
+  \bibinfo{author}{\bibfnamefont{F.}~\bibnamefont{Ohme}},
+  \bibinfo{author}{\bibfnamefont{P.}~\bibnamefont{Michael}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{P.}~\bibnamefont{Schmidt}}
+  (\bibinfo{year}{2016}), \urlprefix\url{https://dcc.ligo.org/LIGO-T1500602}.
+
+\bibitem[{\citenamefont{Dietrich
+  et~al.}(2019{\natexlab{a}})}]{Dietrich:2018uni}
+\bibinfo{author}{\bibfnamefont{T.}~\bibnamefont{Dietrich}}
+  \bibnamefont{et~al.}, \bibinfo{journal}{Phys. Rev.}
+  \textbf{\bibinfo{volume}{D99}}, \bibinfo{pages}{024029}
+  (\bibinfo{year}{2019}{\natexlab{a}}), \eprint{1804.02235}.
+
+\bibitem[{\citenamefont{Dietrich
+  et~al.}(2019{\natexlab{b}})\citenamefont{Dietrich, Samajdar, Khan,
+  Johnson-McDaniel, Dudi, and Tichy}}]{Dietrich:2019kaq}
+\bibinfo{author}{\bibfnamefont{T.}~\bibnamefont{Dietrich}},
+  \bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Samajdar}},
+  \bibinfo{author}{\bibfnamefont{S.}~\bibnamefont{Khan}},
+  \bibinfo{author}{\bibfnamefont{N.~K.} \bibnamefont{Johnson-McDaniel}},
+  \bibinfo{author}{\bibfnamefont{R.}~\bibnamefont{Dudi}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{W.}~\bibnamefont{Tichy}},
+  \bibinfo{journal}{Phys. Rev.} \textbf{\bibinfo{volume}{D100}},
+  \bibinfo{pages}{044003} (\bibinfo{year}{2019}{\natexlab{b}}),
+  \eprint{1905.06011}.
+
+\bibitem[{\citenamefont{Ramos-Buades et~al.}(2020)\citenamefont{Ramos-Buades,
+  Schmidt, Pratten, and Husa}}]{ToniPrecession}
+\bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Ramos-Buades}},
+  \bibinfo{author}{\bibfnamefont{P.}~\bibnamefont{Schmidt}},
+  \bibinfo{author}{\bibfnamefont{G.}~\bibnamefont{Pratten}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{S.}~\bibnamefont{Husa}}
+  (\bibinfo{year}{2020}), \bibinfo{note}{submitted}, \eprint{arXiv:2001.10936}.
+
+\bibitem[{\citenamefont{Schmidt et~al.}(2017)\citenamefont{Schmidt, Harry, and
+  Pfeiffer}}]{Schmidt:2017btt}
+\bibinfo{author}{\bibfnamefont{P.}~\bibnamefont{Schmidt}},
+  \bibinfo{author}{\bibfnamefont{I.~W.} \bibnamefont{Harry}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{H.~P.} \bibnamefont{Pfeiffer}}
+  (\bibinfo{year}{2017}), \eprint{arXiv:1703.01076}.
+
+\bibitem[{SWI()}]{SWIG:code}
+\bibinfo{howpublished}{\url{https://www.swig.org}}.
+
+\bibitem[{\citenamefont{Veitch et~al.}(2015{\natexlab{b}})\citenamefont{Veitch,
+  Raymond, Farr, Farr, Graff, Vitale, Aylott, Blackburn, Christensen, Coughlin
+  et~al.}}]{LALInference}
+\bibinfo{author}{\bibfnamefont{J.}~\bibnamefont{Veitch}},
+  \bibinfo{author}{\bibfnamefont{V.}~\bibnamefont{Raymond}},
+  \bibinfo{author}{\bibfnamefont{B.}~\bibnamefont{Farr}},
+  \bibinfo{author}{\bibfnamefont{W.}~\bibnamefont{Farr}},
+  \bibinfo{author}{\bibfnamefont{P.}~\bibnamefont{Graff}},
+  \bibinfo{author}{\bibfnamefont{S.}~\bibnamefont{Vitale}},
+  \bibinfo{author}{\bibfnamefont{B.}~\bibnamefont{Aylott}},
+  \bibinfo{author}{\bibfnamefont{K.}~\bibnamefont{Blackburn}},
+  \bibinfo{author}{\bibfnamefont{N.}~\bibnamefont{Christensen}},
+  \bibinfo{author}{\bibfnamefont{M.}~\bibnamefont{Coughlin}},
+  \bibnamefont{et~al.}, \bibinfo{journal}{Phys. Rev. D}
+  \textbf{\bibinfo{volume}{91}}, \bibinfo{pages}{042003}
+  (\bibinfo{year}{2015}{\natexlab{b}}),
+  \urlprefix\url{https://link.aps.org/doi/10.1103/PhysRevD.91.042003}.
+
+\bibitem[{\citenamefont{Nitz et~al.}()}]{pycbc}
+\bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Nitz}} \bibnamefont{et~al.},
+  \emph{\bibinfo{title}{gwastro/pycbc v1.15.3}},
+  \urlprefix\url{https://zenodo.org/badge/31596861.svg}.
+
+\bibitem[{\citenamefont{Arun et~al.}(2009)\citenamefont{Arun, Buonanno, Faye,
+  and Ochsner}}]{Arun:2008kb}
+\bibinfo{author}{\bibfnamefont{K.~G.} \bibnamefont{Arun}},
+  \bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Buonanno}},
+  \bibinfo{author}{\bibfnamefont{G.}~\bibnamefont{Faye}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{E.}~\bibnamefont{Ochsner}},
+  \bibinfo{journal}{Phys. Rev.} \textbf{\bibinfo{volume}{D79}},
+  \bibinfo{pages}{104023} (\bibinfo{year}{2009}), \bibinfo{note}{[Erratum:
+  Phys. Rev.D84,049901(2011)]}, \eprint{0810.5336}.
+
+\bibitem[{\citenamefont{Buonanno et~al.}(2013)\citenamefont{Buonanno, Faye, and
+  Hinderer}}]{Buonanno}
+\bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Buonanno}},
+  \bibinfo{author}{\bibfnamefont{G.}~\bibnamefont{Faye}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{T.}~\bibnamefont{Hinderer}},
+  \bibinfo{journal}{Phys. Rev. D} \textbf{\bibinfo{volume}{87}},
+  \bibinfo{pages}{044009} (\bibinfo{year}{2013}),
+  \urlprefix\url{https://link.aps.org/doi/10.1103/PhysRevD.87.044009}.
+
+\bibitem[{\citenamefont{Buonanno et~al.}(2009)\citenamefont{Buonanno, Iyer,
+  Ochsner, Pan, and Sathyaprakash}}]{Taylors}
+\bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Buonanno}},
+  \bibinfo{author}{\bibfnamefont{B.~R.} \bibnamefont{Iyer}},
+  \bibinfo{author}{\bibfnamefont{E.}~\bibnamefont{Ochsner}},
+  \bibinfo{author}{\bibfnamefont{Y.}~\bibnamefont{Pan}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{B.~S.} \bibnamefont{Sathyaprakash}},
+  \bibinfo{journal}{Phys. Rev. D} \textbf{\bibinfo{volume}{80}},
+  \bibinfo{pages}{084043} (\bibinfo{year}{2009}),
+  \urlprefix\url{https://link.aps.org/doi/10.1103/PhysRevD.80.084043}.
+
+\end{thebibliography}

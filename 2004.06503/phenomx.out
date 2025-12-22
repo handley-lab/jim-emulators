@@ -1,0 +1,41 @@
+\BOOKMARK [0][-]{section*.2}{Computationally efficient models for the dominant and sub-dominant harmonic modes of precessing binary black holes}{}% 2
+\BOOKMARK [1][-]{section*.1}{Abstract}{section*.2}% 1
+\BOOKMARK [1][-]{section*.3}{Introduction}{section*.2}% 3
+\BOOKMARK [1][-]{section*.4}{Notation and Conventions}{section*.2}% 4
+\BOOKMARK [1][-]{section*.5}{Modelling Precessing Binaries}{section*.2}% 5
+\BOOKMARK [2][-]{section*.6}{The twisting construction in terms of Euler angles}{section*.5}% 6
+\BOOKMARK [2][-]{section*.7}{Gravitational-Wave Polarizations in the Frequency Domain}{section*.5}% 7
+\BOOKMARK [1][-]{section*.8}{Constructing the Model}{section*.2}% 8
+\BOOKMARK [2][-]{section*.9}{Post-Newtonian NNLO Euler Angles}{section*.8}% 9
+\BOOKMARK [2][-]{section*.10}{MSA Euler Angles}{section*.8}% 10
+\BOOKMARK [2][-]{section*.11}{Post-Newtonian Orbital Angular Momentum}{section*.8}% 11
+\BOOKMARK [2][-]{section*.12}{Modelling the Final State}{section*.8}% 12
+\BOOKMARK [1][-]{section*.13}{Model Performance and Validation}{section*.2}% 13
+\BOOKMARK [2][-]{section*.14}{Comparison of Euler angles with Numerical Relativity}{section*.13}% 14
+\BOOKMARK [2][-]{section*.15}{Time Domain Waveforms}{section*.13}% 15
+\BOOKMARK [2][-]{section*.16}{Match Calculations for Precessing Waveforms}{section*.13}% 16
+\BOOKMARK [3][-]{section*.17}{Matches Against SXS Numerical Relativity Simulations}{section*.16}% 17
+\BOOKMARK [3][-]{section*.18}{Matches Against other Models}{section*.16}% 18
+\BOOKMARK [2][-]{section*.19}{Multibanding and Euler Angles}{section*.13}% 19
+\BOOKMARK [2][-]{section*.20}{Benchmarking}{section*.13}% 20
+\BOOKMARK [2][-]{section*.21}{Parameter estimation}{section*.13}% 21
+\BOOKMARK [3][-]{section*.22}{GW150914}{section*.21}% 22
+\BOOKMARK [3][-]{section*.23}{GW170729}{section*.21}% 23
+\BOOKMARK [3][-]{section*.24}{Numerical relativity injections}{section*.21}% 24
+\BOOKMARK [1][-]{section*.25}{Conclusions}{section*.2}% 25
+\BOOKMARK [1][-]{section*.26}{Acknowledgements}{section*.2}% 26
+\BOOKMARK [1][-]{section*.27}{Wigner-d Matrices}{section*.2}% 27
+\BOOKMARK [2][-]{section*.28}{l=2,m'=2}{section*.27}% 28
+\BOOKMARK [2][-]{section*.29}{l=2,m'=1}{section*.27}% 29
+\BOOKMARK [2][-]{section*.30}{l=3,m'=3}{section*.27}% 30
+\BOOKMARK [2][-]{section*.31}{l=3,m'=2}{section*.27}% 31
+\BOOKMARK [2][-]{section*.32}{l=4,m'=4}{section*.27}% 32
+\BOOKMARK [2][-]{section*.33}{l=4,m'=3}{section*.27}% 33
+\BOOKMARK [1][-]{section*.34}{Conventions for non-Precessing Modes}{section*.2}% 34
+\BOOKMARK [1][-]{section*.35}{Frames Transformations and Polarization Basis}{section*.2}% 35
+\BOOKMARK [1][-]{section*.36}{Choices of polarization vectors P and Q}{section*.2}% 36
+\BOOKMARK [1][-]{section*.37}{Derivation of the frequency domain waveform}{section*.2}% 37
+\BOOKMARK [1][-]{section*.38}{LALSuite Implementation}{section*.2}% 38
+\BOOKMARK [1][-]{section*.39}{Post-Newtonian Results}{section*.2}% 39
+\BOOKMARK [2][-]{section*.40}{NNLO post-Newtonian Euler Angles}{section*.39}% 40
+\BOOKMARK [2][-]{section*.41}{Orbital Angular Momentum}{section*.39}% 41
