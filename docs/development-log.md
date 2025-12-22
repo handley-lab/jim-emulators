@@ -1108,13 +1108,43 @@ The time-domain framework (§12-14) addresses fully general waveforms with prece
 theory/
 ├── general-waveform-decomposition.tex  # Time-domain (approved)
 ├── general-waveform-decomposition.pdf  # 12 pages
-├── frequency-domain-emulation.tex      # Frequency-domain
-├── frequency-domain-emulation.pdf      # 14 pages
+├── frequency-domain-emulation.tex      # Frequency-domain (approved)
+├── frequency-domain-emulation.pdf      # 15 pages
 ├── .gitignore                          # LaTeX ephemera
 └── reviews/
     ├── openai-review.md                # GPT-5.2 review
     └── gemini-review.md                # Gemini review
 ```
+
+### 16. Frequency-Domain Document Review
+
+The frequency-domain document underwent iterative review using the same OpenAI (GPT-5.2) and Gemini reviewers.
+
+**Iteration 1 → 2 (addressing initial reviews):**
+- Fixed geometric units section with proper τ_☉ = GM_☉/c³ definition
+- Reframed mass scaling as explicit *definition* of H_ℓm with PN consistency check
+- Fixed reality condition (h₊, h× are real, not h = h₊ - ih×)
+- Rewrote conjugate symmetry with proper frequency-domain relation
+- Added critical time alignment requirement for training data
+- Fixed phase derivative "bounded" claim (actually unbounded at low f)
+- Added IFFT note for mismatch t_c maximization
+- Clarified twisting-up t(f) mapping from (2,2) mode
+
+**Iteration 2 → 3 (OpenAI feedback):**
+- Added explicit strain reconstruction formula (m>0 sum only)
+- Removed confusing equation involving h̃_ℓm(-f)
+- Fixed spin notation consistency (χ₁,χ₂ → χ₁z,χ₂z)
+
+**Iteration 3 → 4 (final fixes):**
+- Simplified strain reconstruction to one-sided convention
+- Softened "m>0 carry power" to "m>0 and m<0 not independent"
+- Fixed grid indexing (k=0,...,N-1 for N points)
+
+**Final Review Status:**
+| Reviewer | Approved at |
+|----------|-------------|
+| Gemini-3-pro | Iteration 2 |
+| GPT-5.2 | Iteration 4 |
 
 ---
 
@@ -1133,3 +1163,216 @@ theory/
 11. ☒ Frequency-domain emulation theory document
 
 **Theory:** Complete. Two complementary documents cover frequency-domain (immediate target) and time-domain (future precessing/eccentric extension).
+
+---
+
+## Session: 2024-12-22 (Parallel Branch: ja-session-1452 - Training Pipeline)
+
+### 41. First End-to-End Training Pipeline
+
+Created complete training pipeline for aligned-spin, 22-mode-only emulator as a "starter case" to close the generate → train → validate loop.
+
+#### Data Generation (`scripts/generate_data.py`)
+
+**Design:**
+- Sample (η, χ₁z, χ₂z) using Latin Hypercube Sampling
+- Generate waveforms on geometric frequency grid Mf ∈ [0.003, 0.25]
+- Store log₁₀(amplitude) and unwrapped phase in HDF5
+- 22-mode only: `mode_array=[(2, 2), (2, -2)]`
+
+**Parameters:**
+```python
+PARAM_BOUNDS = {
+    "eta": (0.05, 0.25),      # Symmetric mass ratio
+    "chi1z": (-0.99, 0.99),   # Primary aligned spin
+    "chi2z": (-0.99, 0.99),   # Secondary aligned spin
+}
+MF_MIN, MF_MAX = 0.003, 0.25
+N_FREQ = 1000
+```
+
+**Output format:**
+```
+data/waveforms_22mode.h5
+├── train/
+│   ├── parameters     (10000, 3)
+│   ├── log_amplitude  (10000, 1000)
+│   └── phase          (10000, 1000)
+├── validation/
+│   ├── parameters     (1000, 3)
+│   ├── log_amplitude  (1000, 1000)
+│   └── phase          (1000, 1000)
+└── frequency_grid     (1000,)
+```
+
+**Performance:** ~700 waveforms/second on GPU cluster.
+
+#### Emulator Package (`src/jim_emulators/emulator/`)
+
+Created proper package structure:
+
+```
+src/jim_emulators/emulator/
+├── __init__.py
+├── pca.py       # WaveformPCA class
+├── network.py   # SpeculatorActivation, EmulatorMLP
+└── emulator.py  # GWEmulator, training utilities
+```
+
+**Key components:**
+
+1. **WaveformPCA** (`pca.py`):
+   - Fits PCA on amplitude/phase separately
+   - Auto-selects components for 99.99% explained variance
+   - JAX-compatible transform/inverse_transform for JIT compilation
+   - Serialization support (to_dict/from_dict)
+
+2. **SpeculatorActivation** (`network.py`):
+   - σ(x) = [γ + sigmoid(α·x)·(1-γ)]·x
+   - Learnable α (steepness) and γ (linear mixing) per neuron
+   - γ constrained to (0,1) via sigmoid on logits
+   - Smooth gradients for HMC compatibility
+
+3. **EmulatorMLP** (`network.py`):
+   - 4 hidden layers × 512 units (configurable)
+   - Speculator activation between layers
+   - Linear output layer (no activation)
+
+4. **Training utilities** (`emulator.py`):
+   - `create_train_state()`: Initialize with AdamW + gradient clipping
+   - `train_step()` / `eval_loss()`: JIT-compiled training functions
+
+#### Test Suite (`tests/test_emulator.py`)
+
+Comprehensive tests: **23 tests passing**
+
+| Category | Tests |
+|----------|-------|
+| WaveformPCA | fit, transform, inverse_transform, auto_components, JAX compat, serialization |
+| SpeculatorActivation | output shape, smooth gradients, learnable parameters |
+| EmulatorMLP | output shape, parameter count, differentiability, JIT |
+| Training | train_state creation, train_step, loss decrease |
+| GWEmulator | predict, batch, strain, save/load, JIT compilation |
+| Gradients | Full pipeline gradient computation (critical for HMC) |
+
+### 42. First Training Attempt - Single Network Failure
+
+**Initial approach:** Single network predicting concatenated [amp_coeffs, phase_coeffs].
+
+**Results (FAILED):**
+```
+Amplitude MSE: 7.98e-05  ✓ Good
+Phase MSE: 7.02e+00      ✗ Terrible (~100,000x worse)
+Median mismatch: 0.755   ✗ Essentially uncorrelated
+Fraction < 10⁻³: 0.0%    ✗ Complete failure
+```
+
+**Diagnosis from validation plots:**
+- Amplitude matched nearly perfectly
+- Phase had correct *shape* but large constant offsets (~70 rad)
+- The single network couldn't balance learning both amplitude and phase
+
+**Root cause:** Amplitude and phase PCA coefficients have very different scales and characteristics. Concatenating them forces a single network to trade off between the two.
+
+### 43. Fix: Dual Network Architecture
+
+**Solution:** Train TWO separate networks - one for amplitude, one for phase.
+
+**Changes to `scripts/train.py`:**
+```python
+# Before: Single network
+model = EmulatorMLP(n_outputs=n_amp + n_phase)
+train_targets = concat([amp_coeffs, phase_coeffs])
+
+# After: Separate networks
+amp_model = EmulatorMLP(n_outputs=n_amp)
+phase_model = EmulatorMLP(n_outputs=n_phase)
+# Train independently with separate target normalization
+```
+
+**Key insight:** Each network's targets are normalized independently (mean=0, std=1), ensuring each can focus on its own signal without scale competition.
+
+### 44. Second Issue - LAL Multibanding Artifacts
+
+**Observation:** "Wiggles" at low frequencies in validation LAL waveforms.
+
+**Cause:** LAL's multibanding optimization interpolates between frequency points for speed. This creates oscillatory artifacts, especially at low amplitudes.
+
+**Manifestation:**
+- Training data had multibanding artifacts (from generate_data.py)
+- Validation LAL also had multibanding artifacts
+- BUT they weren't consistent (different delta_f settings)
+
+**Fix:** Add `disable_multibanding=True` to both:
+1. `scripts/generate_data.py` - training data generation
+2. `scripts/validate.py` - validation comparison
+
+This ensures smooth, consistent waveforms throughout the pipeline.
+
+### 45. Third Issue - Phase Alignment Conventions
+
+**Observation:** Even with dual networks and no multibanding, phase still showed offsets.
+
+**Analysis:** Looking at waveform comparison plots:
+- Amplitude: near-perfect agreement ✓
+- Phase: correct *shape* but constant offset at high frequencies
+
+**Diagnosis:** The phase alignment in training (at peak amplitude) differs from the alignment in validation. The emulator learns the training convention, but we compare against a differently-aligned LAL waveform.
+
+**Current state:** Investigating whether:
+1. The validation alignment needs to match training exactly
+2. There's a systematic difference in how we're computing phase
+
+**Key learning:** Phase alignment is critical and must be consistent across:
+- Data generation (training)
+- Data generation (validation in HDF5)
+- Fresh LAL generation (mismatch calculation)
+
+### Files Created This Session
+
+```
+scripts/
+├── generate_data.py   # Training data generation
+├── plot_data.py       # Data visualization
+├── train.py           # Dual-network training
+└── validate.py        # Mismatch validation
+
+src/jim_emulators/emulator/
+├── __init__.py
+├── pca.py
+├── network.py
+└── emulator.py
+
+tests/
+└── test_emulator.py   # 23 tests
+```
+
+### Current Pipeline Status
+
+| Component | Status | Notes |
+|-----------|--------|-------|
+| Data generation | ✓ Working | ~700 waveforms/sec, multibanding disabled |
+| PCA compression | ✓ Working | Auto 99.99% variance, ~10 amp + ~22 phase components |
+| Amplitude network | ✓ Working | Reconstruction MSE ~10⁻⁵ |
+| Phase network | ⚠ Partially | Learning shape but has offset issue |
+| Mismatch validation | ⚠ In progress | Need consistent phase alignment |
+
+### Lessons Learned
+
+1. **Separate networks for amplitude and phase** - Don't try to learn both with one network. The scales and characteristics are too different.
+
+2. **Normalize targets per-network** - Each output should be zero-mean, unit-variance for stable training.
+
+3. **Multibanding must be disabled** - LAL's optimization creates artifacts that confuse both training and validation.
+
+4. **Phase alignment is subtle** - Must be consistent across ALL stages: training data, validation data, and fresh LAL generation.
+
+5. **Close the loop early** - Starting with a simple case (aligned spin, 22 mode) to debug the full pipeline was the right approach. Issues are easier to diagnose.
+
+### Next Steps
+
+1. ☐ Fix phase alignment consistency
+2. ☐ Achieve mismatch < 10⁻³ target
+3. ☐ Scale up training data (10k → 100k)
+4. ☐ Add higher modes
+5. ☐ Benchmark inference speed

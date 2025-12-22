@@ -51,6 +51,11 @@ def load_training_data(path: str):
             "val_log_amp": f["validation/log_amplitude"][:],
             "val_phase": f["validation/phase"][:],
             "frequency_grid": f["frequency_grid"][:],
+            # Frequency grid metadata for validation
+            "f_min": float(f.attrs.get("f_min", f["frequency_grid"][0])),
+            "f_max": float(f.attrs.get("f_max", f["frequency_grid"][-1])),
+            "delta_f": float(f.attrs.get("delta_f", f["frequency_grid"][1] - f["frequency_grid"][0])),
+            "M_ref": float(f.attrs.get("M_ref", 50.0)),
         }
     return data
 
@@ -323,8 +328,12 @@ def train_emulator(
         # Normalization
         "params_mean": params_mean,
         "params_std": params_std,
-        # Grid
+        # Frequency grid and metadata for validation
         "frequency_grid": data["frequency_grid"],
+        "f_min": data["f_min"],
+        "f_max": data["f_max"],
+        "delta_f": data["delta_f"],
+        "M_ref": data["M_ref"],
     }
 
     model_path = output_dir / "emulator_22mode.pkl"

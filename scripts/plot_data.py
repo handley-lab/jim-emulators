@@ -20,7 +20,7 @@ def plot_sample_waveforms(f, n_samples=10, output_dir="figures/data_check"):
     """Plot a selection of waveforms showing amplitude and phase."""
     Path(output_dir).mkdir(parents=True, exist_ok=True)
 
-    Mf = f["frequency_grid"][:]
+    freqs = f["frequency_grid"][:]
     params = f["train/parameters"][:]
     log_amp = f["train/log_amplitude"][:]
     phase = f["train/phase"][:]
@@ -40,15 +40,15 @@ def plot_sample_waveforms(f, n_samples=10, output_dir="figures/data_check"):
         eta, chi1z, chi2z = params[idx]
         label = f"η={eta:.3f}, χ₁={chi1z:.2f}, χ₂={chi2z:.2f}"
 
-        axes[0].plot(Mf, log_amp[idx], color=colors[i], alpha=0.7, lw=0.8)
-        axes[1].plot(Mf, phase[idx], color=colors[i], alpha=0.7, lw=0.8, label=label)
+        axes[0].plot(freqs, log_amp[idx], color=colors[i], alpha=0.7, lw=0.8)
+        axes[1].plot(freqs, phase[idx], color=colors[i], alpha=0.7, lw=0.8, label=label)
 
     axes[0].set_ylabel("log₁₀(Amplitude)")
     axes[0].set_title(f"Sample Waveforms (n={n_samples})")
     axes[0].set_xscale("log")
     axes[0].grid(True, alpha=0.3)
 
-    axes[1].set_xlabel("Geometric Frequency Mf")
+    axes[1].set_xlabel("Frequency (Hz)")
     axes[1].set_ylabel("Phase (rad)")
     axes[1].set_xscale("log")
     axes[1].grid(True, alpha=0.3)
@@ -113,7 +113,7 @@ def plot_amplitude_phase_stats(f, output_dir="figures/data_check"):
     """Plot statistics of amplitude and phase across the dataset."""
     Path(output_dir).mkdir(parents=True, exist_ok=True)
 
-    Mf = f["frequency_grid"][:]
+    freqs = f["frequency_grid"][:]
     log_amp = f["train/log_amplitude"][:]
     phase = f["train/phase"][:]
 
@@ -130,9 +130,9 @@ def plot_amplitude_phase_stats(f, output_dir="figures/data_check"):
 
     # Amplitude mean and std
     ax = axes[0, 0]
-    ax.fill_between(Mf, amp_mean - amp_std, amp_mean + amp_std, alpha=0.3, label="±1σ")
-    ax.plot(Mf, amp_mean, "k-", lw=1.5, label="Mean")
-    ax.set_xlabel("Mf")
+    ax.fill_between(freqs, amp_mean - amp_std, amp_mean + amp_std, alpha=0.3, label="±1σ")
+    ax.plot(freqs, amp_mean, "k-", lw=1.5, label="Mean")
+    ax.set_xlabel("Frequency (Hz)")
     ax.set_ylabel("log₁₀(Amplitude)")
     ax.set_xscale("log")
     ax.set_title("Amplitude: Mean ± Std")
@@ -141,9 +141,9 @@ def plot_amplitude_phase_stats(f, output_dir="figures/data_check"):
 
     # Amplitude range
     ax = axes[0, 1]
-    ax.fill_between(Mf, amp_min, amp_max, alpha=0.3, label="Min-Max")
-    ax.plot(Mf, amp_mean, "k-", lw=1.5, label="Mean")
-    ax.set_xlabel("Mf")
+    ax.fill_between(freqs, amp_min, amp_max, alpha=0.3, label="Min-Max")
+    ax.plot(freqs, amp_mean, "k-", lw=1.5, label="Mean")
+    ax.set_xlabel("Frequency (Hz)")
     ax.set_ylabel("log₁₀(Amplitude)")
     ax.set_xscale("log")
     ax.set_title("Amplitude: Full Range")
@@ -152,9 +152,9 @@ def plot_amplitude_phase_stats(f, output_dir="figures/data_check"):
 
     # Phase mean and std
     ax = axes[1, 0]
-    ax.fill_between(Mf, phase_mean - phase_std, phase_mean + phase_std, alpha=0.3, label="±1σ")
-    ax.plot(Mf, phase_mean, "k-", lw=1.5, label="Mean")
-    ax.set_xlabel("Mf")
+    ax.fill_between(freqs, phase_mean - phase_std, phase_mean + phase_std, alpha=0.3, label="±1σ")
+    ax.plot(freqs, phase_mean, "k-", lw=1.5, label="Mean")
+    ax.set_xlabel("Frequency (Hz)")
     ax.set_ylabel("Phase (rad)")
     ax.set_xscale("log")
     ax.set_title("Phase: Mean ± Std")
@@ -163,8 +163,8 @@ def plot_amplitude_phase_stats(f, output_dir="figures/data_check"):
 
     # Phase std only (shows variation)
     ax = axes[1, 1]
-    ax.plot(Mf, phase_std, "C0-", lw=1.5)
-    ax.set_xlabel("Mf")
+    ax.plot(freqs, phase_std, "C0-", lw=1.5)
+    ax.set_xlabel("Frequency (Hz)")
     ax.set_ylabel("Phase Std (rad)")
     ax.set_xscale("log")
     ax.set_title("Phase Variation Across Parameter Space")
@@ -180,7 +180,7 @@ def plot_extreme_cases(f, output_dir="figures/data_check"):
     """Plot waveforms at extreme parameter values."""
     Path(output_dir).mkdir(parents=True, exist_ok=True)
 
-    Mf = f["frequency_grid"][:]
+    freqs = f["frequency_grid"][:]
     params = f["train/parameters"][:]
     log_amp = f["train/log_amplitude"][:]
     phase = f["train/phase"][:]
@@ -200,8 +200,8 @@ def plot_extreme_cases(f, output_dir="figures/data_check"):
     for name, idx in extremes.items():
         eta, chi1z, chi2z = params[idx]
         label = f"{name}: η={eta:.3f}, χ₁={chi1z:.2f}, χ₂={chi2z:.2f}"
-        axes[0].plot(Mf, log_amp[idx], lw=1.2, label=label)
-        axes[1].plot(Mf, phase[idx], lw=1.2)
+        axes[0].plot(freqs, log_amp[idx], lw=1.2, label=label)
+        axes[1].plot(freqs, phase[idx], lw=1.2)
 
     axes[0].set_ylabel("log₁₀(Amplitude)")
     axes[0].set_title("Extreme Cases in Parameter Space")
@@ -209,7 +209,7 @@ def plot_extreme_cases(f, output_dir="figures/data_check"):
     axes[0].legend(fontsize=8)
     axes[0].grid(True, alpha=0.3)
 
-    axes[1].set_xlabel("Geometric Frequency Mf")
+    axes[1].set_xlabel("Frequency (Hz)")
     axes[1].set_ylabel("Phase (rad)")
     axes[1].set_xscale("log")
     axes[1].grid(True, alpha=0.3)

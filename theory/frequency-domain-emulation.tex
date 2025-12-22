@@ -65,11 +65,14 @@ and its Fourier transform is
 \end{equation}
 We work with positive frequencies $f > 0$ throughout; negative frequencies are related by conjugate symmetry of the real time-domain signal.
 
-\paragraph{Geometric units.} We use units with $G = c = 1$, so mass has dimensions of time (or length). The total mass $M = m_1 + m_2$ sets the characteristic timescale. Physical quantities are recovered via:
-\begin{align}
-    M_{\text{phys}} &= M \times \frac{c^3}{G} = M \times 2.03 \times 10^5 \, M_\odot^{-1} \, \text{s} \\
-    f_{\text{phys}} &= \frac{f}{M} \times \frac{c^3}{G M_\odot} = \frac{f}{M/M_\odot} \times 2.03 \times 10^5 \, \text{Hz}
-\end{align}
+\paragraph{Geometric units.} We use units with $G = c = 1$, so mass has dimensions of time (or length). The total mass $M = m_1 + m_2$ sets the characteristic timescale. Define the solar mass timescale:
+\begin{equation}
+    \tau_\odot \equiv \frac{G M_\odot}{c^3} \approx 4.926 \times 10^{-6} \, \text{s}
+\end{equation}
+For a binary with total mass $M$ (expressed in solar masses), the geometric timescale is $M \tau_\odot$. Physical frequency is recovered from dimensionless frequency $Mf$ via:
+\begin{equation}
+    f_{\rm phys} = \frac{Mf}{M \tau_\odot} = \frac{Mf}{M/M_\odot} \times \frac{1}{\tau_\odot} \approx \frac{Mf}{M/M_\odot} \times 2.03 \times 10^5 \, \text{Hz}
+\end{equation}
 
 \paragraph{Dimensionless frequency.} The key insight for emulation is that gravitational waveforms depend on the \emph{dimensionless} combination
 \begin{equation}
@@ -157,23 +160,28 @@ All extrinsic parameters are applied analytically at inference time. This reduce
 \subsection{The Mass Scaling}
 \label{sec:mass_scaling}
 
-The dependence on total mass deserves careful treatment. For a waveform at physical frequency $f_{\rm phys}$:
+The dependence on total mass deserves careful treatment. We \emph{define} a dimensionless reduced waveform $H_{\ell m}$ by factoring out the mass and distance dependence:
 \begin{equation}
-    \tilde{h}_{\ell m}(f_{\rm phys}) = \frac{G M}{c^2 D_L} \times \frac{G M}{c^3} \times H_{\ell m}(\Mf; \veclambda)
+    \boxed{
+    \tilde{h}_{\ell m}(f_{\rm phys}) \equiv \frac{(G M / c^3)^2}{D_L} \times H_{\ell m}(\Mf; \veclambda)
+    }
     \label{eq:mass_scaling}
 \end{equation}
-where $H_{\ell m}$ is a dimensionless shape function that depends only on $\Mf = G M f_{\rm phys} / c^3$ and intrinsic parameters.
+where $\Mf = G M f_{\rm phys} / c^3$ is the dimensionless frequency and $H_{\ell m}$ depends only on $\Mf$ and intrinsic parameters $\veclambda$.
 
-The first factor $GM/c^2 D_L$ is the strain amplitude scale (Schwarzschild radius over distance). The second factor $GM/c^3$ gives the Fourier-transform dimensions (time). Together:
+The prefactor $(GM/c^3)^2 / D_L$ has dimensions of time (consistent with $\tilde{h}$ being a Fourier transform). In geometric units ($G = c = 1$), this simplifies to $M^2 / D_L$.
+
+\paragraph{Consistency check.} The Newtonian inspiral amplitude scales as $\tilde{A}_{22} \propto \mathcal{M}_c^{5/6} f^{-7/6} / D_L$ where $\mathcal{M}_c = M \eta^{3/5}$ is the chirp mass. Rewriting in terms of $\Mf$:
 \begin{equation}
-    \tilde{h}_{\ell m}(f_{\rm phys}) \propto \frac{M^2}{D_L} \times H_{\ell m}(\Mf; \veclambda)
+    f^{-7/6} = M^{7/6} (Mf)^{-7/6}, \quad \mathcal{M}_c^{5/6} = M^{5/6} \eta^{1/2}
 \end{equation}
+so $\tilde{A}_{22} \propto M^2 (Mf)^{-7/6} \eta^{1/2} / D_L$, confirming that the $M^2/D_L$ prefactor is absorbed leaving $H_{22} \propto (Mf)^{-7/6} \eta^{1/2}$.
 
-\textbf{For emulation}: The network learns $H_{\ell m}(\Mf; \veclambda)$. At inference:
+\textbf{For emulation}: The network learns the dimensionless shape $H_{\ell m}(\Mf; \veclambda)$. At inference:
 \begin{enumerate}
-    \item Given physical parameters $(M, D_L, f_{\rm phys})$, compute $\Mf = M f_{\rm phys}$
+    \item Given physical parameters $(M, D_L, f_{\rm phys})$, compute $\Mf = G M f_{\rm phys} / c^3$
     \item Evaluate $H_{\ell m}(\Mf; \veclambda)$ from network
-    \item Apply prefactors: $\tilde{h}_{\ell m} = (M^2 / D_L) \times H_{\ell m}$
+    \item Apply prefactor: $\tilde{h}_{\ell m} = (G M / c^3)^2 / D_L \times H_{\ell m}$
 \end{enumerate}
 
 \subsection{Amplitude--Phase Representation}
@@ -212,30 +220,41 @@ where $\Atlm(f) \geq 0$ is the (real, positive) amplitude and $\Philm(f)$ is the
 
 \subsection{Reality Condition}
 
-The time-domain strain is real: $h(t) = h^*(t)$. In the frequency domain, this implies:
+The polarisations $h_+(t)$ and $h_\times(t)$ are real-valued functions. Although the complex strain $h = h_+ - i h_\times$ is itself complex, the reality of its components implies:
 \begin{equation}
     \tilde{h}(-f) = \tilde{h}^*(f)
 \end{equation}
-We need only model positive frequencies $f > 0$.
+We need only model positive frequencies $f > 0$; negative frequency content is determined by this conjugate relation. The standard matched-filter inner product uses only positive frequencies, with the ``$4 \, \text{Re}$'' prefactor accounting for the negative-frequency contribution.
 
 \subsection{Conjugate Mode Symmetry (Non-Precessing)}
 \label{sec:conjugate_symmetry}
 
-For non-precessing systems with \emph{aligned} spins, the waveform has a reflection symmetry about the orbital plane. This implies:
+For non-precessing systems with \emph{aligned} spins, the waveform has a reflection symmetry about the orbital plane. In the \emph{time domain}, this implies:
+\begin{equation}
+    h_{\ell,-m}(t) = (-1)^\ell \, h_{\ell m}^*(t)
+    \label{eq:conjugate_time}
+\end{equation}
+Taking the Fourier transform:
+\begin{equation}
+    \tilde{h}_{\ell,-m}(f) = (-1)^\ell \, \tilde{h}_{\ell m}^*(-f)
+    \label{eq:conjugate_freq}
+\end{equation}
+This relates the $m < 0$ mode at frequency $f$ to the $m > 0$ mode at frequency $-f$.
+
+\textbf{Implication for emulation.}
+For quasi-circular non-precessing binaries, the $m > 0$ and $m < 0$ modes are not independent---they are related by the symmetry \eqref{eq:conjugate_freq}. We therefore emulate only $\htlm(f)$ for $m > 0$ and $f > 0$.
+
+\textbf{Strain reconstruction.}
+Within the standard matched-filter inner product (one-sided, with the ``$4\,\text{Re}$'' prefactor), the strain at positive frequency is computed as:
 \begin{equation}
     \boxed{
-    \htlm[h_{\ell,-m}](f) = (-1)^\ell \, \htlm^*(f)
+    \tilde{h}(f > 0) = \sum_{\ell} \sum_{m > 0} \htlm(f) \, \Ylm(\iota, \varphi_0)
     }
-    \label{eq:conjugate_symmetry}
+    \label{eq:strain_reconstruction}
 \end{equation}
+The negative-frequency contribution (and hence the $m < 0$ mode content) is accounted for by the inner product convention. When a two-sided Fourier representation is required (e.g., for IFFT to time domain), one first assembles $\tilde{h}(f > 0)$ using \eqref{eq:strain_reconstruction}, then constructs $\tilde{h}(f < 0) = \tilde{h}^*(-f)$ from the full-strain reality condition.
 
-\textbf{Implication for emulation}: We only need to model modes with $m > 0$. The $m < 0$ modes are obtained by conjugation:
-\begin{align}
-    \tilde{A}_{\ell,-m}(f) &= \Atlm(f) \\
-    \Phi_{\ell,-m}(f) &= -\Philm(f) + \ell \pi
-\end{align}
-
-For IMRPhenomXHM, the relevant positive-$m$ modes are: $(2,2)$, $(2,1)$, $(3,3)$, $(3,2)$, $(4,4)$.
+For IMRPhenomXHM, the relevant modes are: $(2,2)$, $(2,1)$, $(3,3)$, $(3,2)$, $(4,4)$.
 
 \subsection{Mode Hierarchy}
 
@@ -333,8 +352,8 @@ The phase $\Philm(\Mf)$ accumulates hundreds of radians. Options:
 \end{equation}
 Reconstruct phase by integration: $\Philm(\Mf) = \int^{\Mf} \omega_{\ell m} \, d(\Mf')$
 
-\textbf{Pros}: Bounded output, physical interpretation (GW frequency) \\
-\textbf{Cons}: Integration accumulates errors, boundary condition needed
+\textbf{Pros}: Physical interpretation (related to time-to-merger) \\
+\textbf{Cons}: Large dynamic range at low frequency ($d\Phi/d(Mf) \propto (Mf)^{-8/3}$ in inspiral), integration accumulates errors, boundary condition needed
 
 \paragraph{Option C: Residual after PN subtraction.}
 \begin{equation}
@@ -373,8 +392,9 @@ Train and evaluate on a fixed set of geometric frequencies $\{\Mf_1, \Mf_2, \ldo
 
 A log-spaced grid is natural, matching the power-law inspiral behaviour:
 \begin{equation}
-    \Mf_k = \Mf_{\min} \times \left( \frac{\Mf_{\max}}{\Mf_{\min}} \right)^{k/N}, \quad k = 0, \ldots, N
+    \Mf_k = \Mf_{\min} \times \left( \frac{\Mf_{\max}}{\Mf_{\min}} \right)^{k/(N-1)}, \quad k = 0, \ldots, N-1
 \end{equation}
+giving $N$ points from $\Mf_{\min}$ to $\Mf_{\max}$.
 
 \paragraph{Continuous evaluation.}
 Instead of a fixed grid, output basis coefficients that allow evaluation at any $\Mf$:
@@ -404,7 +424,7 @@ The simplest architecture evaluates each frequency independently:
     box/.style={rectangle, draw, minimum width=2.5cm, minimum height=0.8cm, align=center},
     arrow/.style={-{Stealth[length=2mm]}, thick}
 ]
-    \node[box] (input) {$(\Mf, \eta, \chi_1, \chi_2)$};
+    \node[box] (input) {$(\Mf, \eta, \chi_{1z}, \chi_{2z})$};
     \node[box, below=of input] (nn) {MLP};
     \node[box, below=of nn] (output) {$(\log \Atlm, \Philm)$\\for each mode};
 
@@ -434,7 +454,7 @@ Following CosmoPower \cite{cosmopower}:
     box/.style={rectangle, draw, minimum width=2.5cm, minimum height=0.8cm, align=center},
     arrow/.style={-{Stealth[length=2mm]}, thick}
 ]
-    \node[box] (input) {$(\eta, \chi_1, \chi_2)$};
+    \node[box] (input) {$(\eta, \chi_{1z}, \chi_{2z})$};
     \node[box, below=of input] (nn) {MLP};
     \node[box, below=of nn] (pca) {PCA coefficients\\$(c_1, \ldots, c_K)$};
     \node[box, below=of pca] (output) {Reconstruct\\$\sum_k c_k B_k(\Mf)$};
@@ -459,7 +479,7 @@ Higher modes are correlated with the $(2,2)$ mode (they come from the same binar
     box/.style={rectangle, draw, minimum width=2.2cm, minimum height=0.8cm, align=center},
     arrow/.style={-{Stealth[length=2mm]}, thick}
 ]
-    \node[box] (input) {$(\eta, \chi_1, \chi_2)$};
+    \node[box] (input) {$(\eta, \chi_{1z}, \chi_{2z})$};
     \node[box, below=of input] (shared) {Shared\\encoder};
     \node[box, below left=1cm and 0.3cm of shared] (h22) {$(2,2)$ head};
     \node[box, below=1cm of shared] (h33) {$(3,3)$ head};
@@ -503,7 +523,7 @@ IMRPhenomXPHM and similar models use the ``twisting-up'' approach:
     \item Apply frequency-dependent rotation to account for precession
 \end{enumerate}
 
-The key approximation is the \textbf{stationary phase assumption}: each frequency component $f$ corresponds to a single time $t(f)$ via the time-frequency relation of the dominant mode. The Euler angles at that time, $\alpha(t(f)), \beta(t(f)), \gamma(t(f))$, are then used to rotate the modes:
+The key approximation is the \textbf{stationary phase assumption}: each frequency component $f$ corresponds to a single time $t(f)$ via the time-frequency relation. In practice, the mapping $t(f)$ is derived from the \emph{dominant $(2,2)$ mode} and then applied to all modes---an approximation that becomes less accurate for subdominant modes with different frequency content. The Euler angles at that time, $\alpha(t(f)), \beta(t(f)), \gamma(t(f))$, are then used to rotate the modes:
 
 \begin{equation}
     \htlm(f) = \sum_{m'=-\ell}^{+\ell} D^\ell_{mm'}\bigl(\alpha(t(f)), \beta(t(f)), \gamma(t(f))\bigr) \, \tilde{h}^{\rm AS}_{\ell m'}(f)
@@ -514,9 +534,9 @@ where $\tilde{h}^{\rm AS}$ are aligned-spin modes.
 
 The twisting-up approach has known limitations:
 \begin{itemize}
-    \item \textbf{Mode mixing}: Power can leak between modes during precession
-    \item \textbf{Multiple timescales}: Strong precession violates stationary phase
-    \item \textbf{Transitional precession}: Near $L \sim S$, the frame can flip rapidly
+    \item \textbf{Mode mixing}: The Wigner rotation redistributes power among modes with different $m'$---this is the \emph{intended} effect. The limitation is that the rotation is evaluated at a single $t(f)$ per frequency, whereas true precession creates sidebands at multiple frequencies.
+    \item \textbf{Multiple timescales}: Strong precession violates stationary phase---a single frequency $f$ may correspond to multiple times $t$, or the precession timescale may be comparable to the orbital timescale.
+    \item \textbf{Transitional precession}: Near $L \sim S$, the frame can flip rapidly, causing the Euler angles to vary on timescales faster than the $(2,2)$ mode frequency evolution.
 \end{itemize}
 
 For highly precessing systems, time-domain modelling (as in the companion document) may be more appropriate.
@@ -573,12 +593,23 @@ hp, hc = lalsim.SimIMRPhenomXHM(
 )
 \end{verbatim}
 
+\paragraph{Time and phase alignment.}
+\textbf{Critical}: All training waveforms must be consistently aligned before extracting amplitude and phase. A time shift $t_0$ in the time domain corresponds to a phase term $e^{-2\pi i f t_0}$ in the frequency domain, adding a linear component $2\pi f t_0$ to the phase. If waveforms have different effective $t_0$ values (due to different merger times relative to the data window), the phase $\Phi(\Mf)$ will contain a parameter-dependent linear trend that is extremely difficult for the network to learn.
+
+\textbf{Alignment procedure}:
+\begin{enumerate}
+    \item Generate waveforms with a common reference (e.g., coalescence at $t_c = 0$)
+    \item Alternatively, post-process by fitting and removing a linear phase: $\Phi(f) \to \Phi(f) - 2\pi f t_0 - \phi_0$
+    \item Fix the $(2,2)$ phase at the reference frequency: $\Phi_{22}(\Mf_{\rm ref}) = 0$
+\end{enumerate}
+Without proper alignment, the phase emulator will likely fail to converge.
+
 \paragraph{Data format.}
 Store in HDF5:
 \begin{itemize}
     \item Frequency grid: $\Mf$ values (common to all waveforms)
-    \item Per waveform: parameters $(\eta, \chi_1, \chi_2)$, amplitudes, phases for each mode
-    \item Metadata: LAL version, waveform approximant, options used
+    \item Per waveform: parameters $(\eta, \chi_{1z}, \chi_{2z})$, amplitudes, phases for each mode
+    \item Metadata: LAL version, waveform approximant, alignment convention used
 \end{itemize}
 
 \subsection{Loss Functions}
@@ -627,6 +658,8 @@ The mismatch can be used directly as a loss function, but requires:
     \item Handling of maximisation over $t_c$, $\phi_c$
     \item Choice of reference PSD $S_n(f)$
 \end{itemize}
+
+The maximisation over $t_c$ is typically performed via inverse FFT of the frequency-domain inner product integrand, which finds the optimal time shift efficiently. This operation is differentiable (FFTs are linear), enabling end-to-end training with mismatch loss if desired.
 
 For initial training, MSE is simpler. Mismatch is better suited for validation and fine-tuning.
 
