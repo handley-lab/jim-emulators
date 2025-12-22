@@ -2,7 +2,9 @@
 
 This document records the workflow used to bootstrap the jim-emulators project, demonstrating an AI-assisted approach to scientific software development.
 
-## Session: 2024-12-22
+## Session: 2024-12-22 (Morning - Gail's, Cambridge)
+
+*Will Handley and James Alvey met at Gail's bakery in Cambridge. We had intended to work from Gonville & Caius College (both being Fellows), but fire damage from the previous day closed the college. The session ran until 10am when Will had to attend College Council and James had calls with prospective PhD students.*
 
 ### 1. Project Initialization
 
@@ -207,7 +209,9 @@ Created `HANDOVER_INSTRUCTIONS.md` for continuation on a different machine:
 
 ---
 
-## Session: 2024-12-22 (Continued - Machine Handover)
+## Session: 2024-12-22 (Late Morning - James solo)
+
+*While Will attended College Council, James continued development, building out the LAL wrapper infrastructure and parameter sensitivity analysis.*
 
 ### 12. Machine Handover & Environment Setup
 
@@ -381,7 +385,9 @@ jim-emulators/
 
 ---
 
-## Session: 2024-12-22 (Continued - Parallel Work)
+## Session: 2024-12-22 (Afternoon - KICC K19, Cambridge)
+
+*Reconvened at Will's office in the Kavli Institute for Cosmology (KICC), room K19. Reviewed James's progress from the morning and began parallel work streams: Will on deep research literature survey, James on mode selection and sensitivity analysis.*
 
 ### 19. Review of Parameter Sensitivity Plots
 
@@ -862,6 +868,39 @@ figures/
 **Updated files:**
 - `src/jim_emulators/waveforms/lal_waveforms.py` - added mode selection + multibanding control
 - `src/jim_emulators/waveforms/__init__.py` - exported new functions
+
+---
+
+## Session: 2024-12-22 (Lunch - Dulcedo, Eddington)
+
+*Walked to Dulcedo café in the Eddington development for lunch (most of the department closed for the Christmas break on 22nd December). Consolidated findings and discussed strategy over food.*
+
+### 38. Strategy Consolidation
+
+Reviewed the day's progress and crystallized the implementation strategy:
+
+**Core findings confirmed:**
+- Modes decompose additively (verified to machine precision)
+- Per-mode amplitude/phase are dramatically smoother than full waveform
+- XPHM with only (2,2) mode gives XHM-like behavior for free
+
+**Implementation strategy:**
+- Start with (2,2) mode, aligned spins only (3D parameter space: η, χ₁z, χ₂z)
+- Data generation is cheap (~tens of minutes for large sample)
+- Build up mode by mode once (2,2) works
+- η is the natural mass parameterization (not m₁, m₂) since we scale by total mass M
+
+### 39. Literature Gap Analysis
+
+Second deep research (seeded with mlgw_NN paper 2402.06587) revealed the actual PCA+NN lineage. Key observation: no good JAX emulator for XPHM currently exists in the literature.
+
+**Additional papers found:**
+- `2205.14066`: Useful decomposition of precessing modes, writes out spherical harmonics explicitly
+- `2411.14893` (SEOBNRE-AI): Eccentric binaries, but mismatches ~10⁻² (poor)
+
+**Key insight from mlgw_NN:** Inclination can be factored out by modeling spherical harmonics directly, reducing the parameter space further.
+
+**Observation on existing work:** Several papers achieve only ~10⁻¹ to 10⁻³ mismatch. The consensus was that the core ideas are sound but implementations may be suboptimal - "they might just suck at machine learning."
 
 ---
 
