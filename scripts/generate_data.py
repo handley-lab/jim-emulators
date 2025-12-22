@@ -188,8 +188,10 @@ def generate_waveform_geometric(
         approximant="IMRPhenomXPHM",
     )
 
-    # Generate waveform
-    freqs, hp, hc = generate_fd_waveform(params, mode_array=mode_array)
+    # Generate waveform (disable multibanding for smooth waveforms)
+    freqs, hp, hc = generate_fd_waveform(
+        params, mode_array=mode_array, disable_multibanding=True
+    )
 
     # Convert generated frequencies to geometric
     Mf_generated = np.array(physical_to_geometric_frequency(freqs, M_total))

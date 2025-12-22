@@ -181,7 +181,7 @@ def compute_mismatch_lal(
     )
 
     freqs_lal, hp_lal, _ = generate_fd_waveform(
-        lal_params, mode_array=[(2, 2), (2, -2)]
+        lal_params, mode_array=[(2, 2), (2, -2)], disable_multibanding=True
     )
 
     Mf_lal = np.array(physical_to_geometric_frequency(jnp.array(freqs_lal), M_total))
