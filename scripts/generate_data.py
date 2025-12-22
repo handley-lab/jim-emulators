@@ -38,7 +38,8 @@ PARAM_BOUNDS = {
 }
 
 # Linear Mf grid
-MF_MIN = 0.003
+# For M_REF=50 Msun: Mf=0.005 -> f~20Hz, Mf=0.25 -> f~1015Hz
+MF_MIN = 0.005   # Start above where waveform begins (~20 Hz for 50 Msun)
 MF_MAX = 0.25
 N_FREQ = 1000
 
