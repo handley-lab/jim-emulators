@@ -42,10 +42,9 @@ from tqdm import tqdm
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from jim_emulators.waveforms import WaveformParameters, generate_fd_mode
+from jim_emulators.waveforms import generate_fd_mode_at_frequencies
 from jim_emulators.waveforms.utils import (
     get_geometric_frequency_grid,
-    physical_to_geometric_frequency,
     geometric_to_physical_frequency,
 )
 
@@ -64,14 +63,18 @@ PARAM_BOUNDS = {
     "chi2z": (-0.99, 0.99),   # Secondary aligned spin
 }
 
-# Geometric frequency grid (theory document recommends Mf in [1e-4, 0.3])
-# We use a slightly narrower range that covers typical LIGO sources well
-MF_MIN = 0.0005   # Early inspiral (f ~ 10 Hz for 50 Msun)
+# Geometric frequency grid
+# Note: At very low Mf, the phase evolves rapidly and can alias on a log-spaced grid.
+# MF_MIN = 0.004 avoids aliasing while covering the detector-sensitive band:
+#   - For M = 50 Msun: f_min ~ 16 Hz
+#   - For M = 20 Msun: f_min ~ 40 Hz
+MF_MIN = 0.004    # Avoids phase aliasing at low frequencies
 MF_MAX = 0.3      # Well past ringdown
 N_FREQ = 2000     # Number of frequency points (log-spaced)
 
 # Reference frequency for phase alignment (in geometric units)
-MF_REF = 0.003    # Reference point where Phi = 0
+# Must be safely above MF_MIN to ensure well-resolved phase
+MF_REF = 0.006    # Reference point where Phi = 0 (f ~ 24 Hz for 50 Msun)
 
 # Reference total mass for waveform generation
 # The specific value doesn't matter for the dimensionless shape function,
@@ -157,11 +160,9 @@ def generate_mode_on_geometric_grid(
     """
     Generate a single mode h_lm on a geometric frequency grid.
 
-    This extracts the dimensionless shape function H_lm(Mf; lambda) by:
-    1. Generating the mode at a reference mass M and distance D
-    2. Converting to geometric frequency Mf = M*f
-    3. Removing the M^2/D scaling to get the shape function
-    4. Aligning phase at reference frequency
+    Evaluates the waveform directly at the specified Mf grid points
+    (no interpolation). Uses LAL's frequency sequence function for
+    exact evaluation at arbitrary frequencies.
 
     Parameters
     ----------
@@ -170,114 +171,71 @@ def generate_mode_on_geometric_grid(
     chi1z, chi2z : float
         Aligned spin components.
     Mf_grid : np.ndarray
-        Target geometric frequency grid.
+        Target geometric frequency grid (can be log-spaced or arbitrary).
     Mf_ref : float
         Reference geometric frequency for phase alignment.
     ell, emm : int
         Spherical harmonic mode numbers.
     M_total : float
-        Reference total mass for generation (cancels out).
+        Reference total mass for converting Mf to physical f.
 
     Returns
     -------
     log_amplitude : np.ndarray
-        Log10 of the dimensionless amplitude |H_lm| on Mf grid.
+        Log10 of amplitude |h_lm| on Mf grid.
     phase : np.ndarray
-        Unwrapped phase of H_lm on Mf grid, aligned so phase(Mf_ref) = 0.
+        Unwrapped phase of h_lm on Mf grid, aligned so phase(Mf_ref) = 0.
     """
     # Convert eta to component masses
     m1, m2 = eta_to_masses(eta, M_total)
 
     # Convert geometric to physical frequencies
     f_physical = np.array(geometric_to_physical_frequency(Mf_grid, M_total))
-    f_min = float(f_physical[0])
-    f_max = float(f_physical[-1])
 
     # Reference frequency in physical units
     f_ref_physical = float(geometric_to_physical_frequency(np.array([Mf_ref]), M_total)[0])
 
-    # Use fine delta_f for accuracy, we'll interpolate
-    delta_f = min(0.1, (f_max - f_min) / 10000)
-
-    # Create waveform parameters
-    # Distance = 1 Mpc for reference (will be scaled out)
-    D_ref_Mpc = 1.0
-    params = WaveformParameters(
+    # Generate mode at exact frequencies (no interpolation)
+    h_lm = generate_fd_mode_at_frequencies(
+        frequencies=f_physical,
         mass_1=m1,
         mass_2=m2,
         chi1z=chi1z,
         chi2z=chi2z,
-        luminosity_distance=D_ref_Mpc,
-        inclination=0.0,  # Not used for individual modes
-        phase=0.0,        # Reference phase
-        f_min=max(f_min * 0.9, 1.0),  # Start a bit earlier for interpolation
-        f_max=f_max * 1.1,
-        delta_f=delta_f,
+        ell=ell,
+        emm=emm,
+        luminosity_distance=1.0,  # Reference distance
+        phase=0.0,
         f_ref=f_ref_physical,
     )
 
-    # Generate mode
-    freqs, h_lm = generate_fd_mode(params, ell=ell, emm=emm)
+    # Extract amplitude and phase
+    amplitude = np.abs(h_lm)
+    phase = np.unwrap(np.angle(h_lm))
 
-    # Convert generated frequencies to geometric
-    Mf_generated = np.array(physical_to_geometric_frequency(freqs, M_total))
-
-    # Extract amplitude and phase from complex mode
-    amplitude_raw = np.abs(h_lm)
-    phase_raw = np.unwrap(np.angle(h_lm))
-
-    # Find valid range (non-zero amplitude)
-    valid_mask = amplitude_raw > 0
-    if not np.any(valid_mask):
+    # Check for valid data
+    if np.all(amplitude == 0):
         raise ValueError(f"No valid waveform data for eta={eta}, chi1z={chi1z}, chi2z={chi2z}")
 
-    # Convert to dimensionless shape function H_lm
-    # h_lm(f) = (M^2/D_L) * H_lm(Mf)
-    # So H_lm = h_lm * D_L / M^2
-    D_ref_m = D_ref_Mpc * 1e6 * 3.086e16  # Mpc to meters
-    M_seconds = M_total * MTSUN_SI
-    # M^2 in geometric units (seconds^2) needs conversion
-    # Actually h has units of strain (dimensionless in natural units)
-    # The mass scaling is h ~ M/D, and Fourier transform adds another M
-    # So h_tilde(f) ~ M^2/D * H(Mf) where H is dimensionless
-    # H = h_tilde * D / M^2
-    scale_factor = D_ref_m / (M_total * MTSUN_SI)**2 * MTSUN_SI  # Include time units
+    # Log amplitude (handle zeros at edges)
+    with np.errstate(divide='ignore'):
+        log_amplitude = np.log10(amplitude)
+    log_amplitude[amplitude == 0] = np.nan
 
-    # For now, just store the raw amplitude in geometric units
-    # The exact normalization can be refined later
-    amplitude_geom = amplitude_raw
+    # Align phase at reference frequency
+    ref_idx = np.argmin(np.abs(Mf_grid - Mf_ref))
+    if amplitude[ref_idx] > 0:
+        phase = phase - phase[ref_idx]
+    else:
+        # Find first valid point if reference is outside valid range
+        valid_idx = np.where(amplitude > 0)[0]
+        if len(valid_idx) > 0:
+            phase = phase - phase[valid_idx[0]]
 
-    # Interpolate log-amplitude to target grid
-    log_amp_interp = np.interp(
-        Mf_grid,
-        Mf_generated[valid_mask],
-        np.log10(amplitude_geom[valid_mask] + 1e-100),
-        left=np.nan,
-        right=np.nan,
-    )
+    # Set phase to NaN where amplitude is zero
+    phase[amplitude == 0] = np.nan
 
-    # Interpolate phase to target grid
-    phase_interp = np.interp(
-        Mf_grid,
-        Mf_generated[valid_mask],
-        phase_raw[valid_mask],
-        left=np.nan,
-        right=np.nan,
-    )
-
-    # Align phase: set phase(Mf_ref) = 0
-    # Find the index closest to Mf_ref
-    valid_interp = ~np.isnan(log_amp_interp)
-    if np.any(valid_interp):
-        ref_idx = np.argmin(np.abs(Mf_grid - Mf_ref))
-        if valid_interp[ref_idx]:
-            phase_interp = phase_interp - phase_interp[ref_idx]
-        else:
-            # If reference not in valid range, use first valid point
-            first_valid = np.where(valid_interp)[0][0]
-            phase_interp = phase_interp - phase_interp[first_valid]
-
-    return log_amp_interp, phase_interp
+    return log_amplitude, phase
 
 
 # =============================================================================

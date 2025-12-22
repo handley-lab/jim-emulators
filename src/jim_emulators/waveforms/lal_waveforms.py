@@ -419,7 +419,7 @@ def generate_fd_mode(
     Returns
     -------
     frequencies : np.ndarray
-        Frequency array in Hz.
+        Frequency array in Hz (uniform grid from 0 to f_max with spacing delta_f).
     h_lm : np.ndarray
         Complex mode amplitude h_lm(f).
 
@@ -427,7 +427,10 @@ def generate_fd_mode(
     -----
     Uses LALSimulation's SimIMRPhenomXHMGenerateFDOneMode for aligned-spin
     waveforms. The output is the raw mode h_lm, not weighted by spherical
-    harmonics.
+    harmonics. This function generates on LAL's native uniform frequency grid.
+
+    For evaluation at arbitrary frequencies (e.g., log-spaced), use
+    generate_fd_mode_at_frequencies() instead.
 
     The mode satisfies: h(f) = sum_{lm} h_lm(f) * Y_{lm}(iota, phi)
 
@@ -475,6 +478,100 @@ def generate_fd_mode(
     frequencies = np.arange(n_points) * params.delta_f
 
     return frequencies, h_lm
+
+
+def generate_fd_mode_at_frequencies(
+    frequencies: np.ndarray,
+    mass_1: float,
+    mass_2: float,
+    chi1z: float,
+    chi2z: float,
+    ell: int,
+    emm: int,
+    luminosity_distance: float = 1.0,
+    phase: float = 0.0,
+    f_ref: Optional[float] = None,
+) -> np.ndarray:
+    """
+    Generate a single mode h_lm evaluated at specified frequencies.
+
+    Unlike generate_fd_mode(), this evaluates the waveform at exactly the
+    frequencies provided, without interpolation. Use this for log-spaced
+    or other non-uniform frequency grids.
+
+    Parameters
+    ----------
+    frequencies : np.ndarray
+        Array of frequencies in Hz at which to evaluate the mode.
+    mass_1 : float
+        Mass of primary in solar masses.
+    mass_2 : float
+        Mass of secondary in solar masses.
+    chi1z, chi2z : float
+        Aligned spin components (dimensionless).
+    ell, emm : int
+        Spherical harmonic mode numbers.
+    luminosity_distance : float
+        Luminosity distance in Mpc.
+    phase : float
+        Reference phase in radians.
+    f_ref : float, optional
+        Reference frequency in Hz. Defaults to first frequency in array.
+
+    Returns
+    -------
+    h_lm : np.ndarray
+        Complex mode amplitude h_lm evaluated at the input frequencies.
+
+    Notes
+    -----
+    Uses LALSimulation's SimIMRPhenomXHMFrequencySequenceOneMode which
+    evaluates the waveform model at arbitrary frequency points without
+    interpolation.
+
+    Examples
+    --------
+    >>> # Log-spaced frequency grid
+    >>> freqs = np.logspace(np.log10(20), np.log10(512), 1000)
+    >>> h22 = generate_fd_mode_at_frequencies(
+    ...     freqs, mass_1=30.0, mass_2=25.0,
+    ...     chi1z=0.3, chi2z=-0.2, ell=2, emm=2
+    ... )
+    """
+    # Ensure m1 >= m2
+    if mass_1 < mass_2:
+        mass_1, mass_2 = mass_2, mass_1
+        chi1z, chi2z = chi2z, chi1z
+
+    # Convert to SI units
+    mass_1_si = mass_1 * MSUN_SI
+    mass_2_si = mass_2 * MSUN_SI
+    distance_si = luminosity_distance * MPC_SI
+
+    # Reference frequency defaults to first frequency
+    if f_ref is None:
+        f_ref = float(frequencies[0])
+
+    # Create LAL frequency vector
+    freqs_lal = lal.CreateREAL8Vector(len(frequencies))
+    freqs_lal.data[:] = frequencies
+
+    # Evaluate mode at specified frequencies
+    hlm_lal = lalsim.SimIMRPhenomXHMFrequencySequenceOneMode(
+        freqs_lal,
+        mass_1_si,
+        mass_2_si,
+        float(chi1z),
+        float(chi2z),
+        int(ell),
+        int(emm),
+        distance_si,
+        float(phase),
+        float(f_ref),
+        None,  # LAL dictionary
+    )
+
+    return hlm_lal.data.data
 
 
 def generate_fd_modes(

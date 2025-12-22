@@ -14,6 +14,7 @@ from jim_emulators.waveforms.lal_waveforms import (
     generate_fd_waveform,
     generate_fd_waveform_on_grid,
     generate_fd_mode,
+    generate_fd_mode_at_frequencies,
     generate_fd_modes,
     get_waveform_amplitude_phase,
     SUPPORTED_APPROXIMANTS,
@@ -280,6 +281,116 @@ class TestModeExtraction:
         # Reconstruct should match original
         h22_reconstructed = amplitude * np.exp(1j * phase)
         np.testing.assert_allclose(h22_reconstructed, h22_valid, rtol=1e-10)
+
+
+class TestFrequencySequenceGeneration:
+    """Tests for arbitrary frequency evaluation (no interpolation)."""
+
+    def test_generate_at_arbitrary_frequencies(self):
+        """Test generation at arbitrary (log-spaced) frequencies."""
+        # Log-spaced frequencies typical for training
+        frequencies = np.logspace(np.log10(20), np.log10(1000), 500)
+
+        h_lm = generate_fd_mode_at_frequencies(
+            frequencies=frequencies,
+            mass_1=30.0,
+            mass_2=25.0,
+            chi1z=0.3,
+            chi2z=-0.2,
+            ell=2,
+            emm=2,
+        )
+
+        # Check output shape matches input frequencies
+        assert h_lm.shape == frequencies.shape
+        assert h_lm.dtype == np.complex128
+
+        # Check waveform is nonzero
+        assert np.any(np.abs(h_lm) > 0)
+
+    def test_frequency_sequence_vs_uniform_grid(self):
+        """Test that frequency sequence gives same result as uniform grid at matching points."""
+        # Generate on uniform grid
+        params = WaveformParameters(
+            mass_1=30.0,
+            mass_2=25.0,
+            chi1z=0.3,
+            chi2z=-0.2,
+            luminosity_distance=100.0,
+            f_min=20.0,
+            f_max=512.0,
+            delta_f=1.0,
+        )
+        freqs_uniform, h22_uniform = generate_fd_mode(params, ell=2, emm=2)
+
+        # Select subset of frequencies and evaluate with frequency sequence
+        # Use frequencies that exist on the uniform grid
+        mask = (freqs_uniform >= 50.0) & (freqs_uniform <= 200.0) & (np.abs(h22_uniform) > 0)
+        test_freqs = freqs_uniform[mask][::10]  # Every 10th point
+
+        h22_seq = generate_fd_mode_at_frequencies(
+            frequencies=test_freqs,
+            mass_1=30.0,
+            mass_2=25.0,
+            chi1z=0.3,
+            chi2z=-0.2,
+            ell=2,
+            emm=2,
+            luminosity_distance=100.0,
+            f_ref=params.f_ref,
+        )
+
+        # Get corresponding values from uniform grid
+        indices = np.searchsorted(freqs_uniform, test_freqs)
+        h22_uniform_subset = h22_uniform[indices]
+
+        # Should match exactly (no interpolation)
+        np.testing.assert_allclose(h22_seq, h22_uniform_subset, rtol=1e-10)
+
+    def test_log_spaced_grid_no_interpolation(self):
+        """Test that log-spaced evaluation works correctly."""
+        # This is the key use case: training on log-spaced Mf grid
+        frequencies = np.logspace(np.log10(10), np.log10(1000), 100)
+
+        h_lm = generate_fd_mode_at_frequencies(
+            frequencies=frequencies,
+            mass_1=35.0,
+            mass_2=15.0,
+            chi1z=0.5,
+            chi2z=-0.3,
+            ell=2,
+            emm=2,
+        )
+
+        # Extract amplitude and phase
+        amplitude = np.abs(h_lm)
+        valid = amplitude > 0
+        phase = np.unwrap(np.angle(h_lm[valid]))
+
+        # Amplitude should be positive where valid
+        assert np.all(amplitude[valid] > 0)
+
+        # Phase should be continuous
+        phase_diff = np.abs(np.diff(phase))
+        assert np.all(phase_diff < np.pi), "Phase has discontinuities"
+
+    def test_higher_modes_at_frequencies(self):
+        """Test higher mode extraction at arbitrary frequencies."""
+        frequencies = np.logspace(np.log10(20), np.log10(500), 200)
+
+        for ell, emm in [(2, 1), (3, 3), (3, 2), (4, 4)]:
+            h_lm = generate_fd_mode_at_frequencies(
+                frequencies=frequencies,
+                mass_1=40.0,
+                mass_2=20.0,
+                chi1z=0.2,
+                chi2z=0.1,
+                ell=ell,
+                emm=emm,
+            )
+            assert h_lm.shape == frequencies.shape
+            # Higher modes may be weaker but should exist
+            assert np.any(np.abs(h_lm) > 0), f"Mode ({ell},{emm}) is all zeros"
 
 
 class TestMatch:

@@ -25,7 +25,8 @@ import numpy as np
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from jim_emulators.waveforms import WaveformParameters, generate_fd_mode
+from jim_emulators.waveforms import generate_fd_mode_at_frequencies
+from jim_emulators.waveforms.utils import geometric_to_physical_frequency
 
 MTSUN_SI = 4.925491025543576e-6
 M_REF = 50.0
@@ -147,10 +148,14 @@ def validate_dataset(filepath: str, make_plots: bool = True) -> bool:
         if max_phase_jump > np.pi:
             print(f"  Note: Phase jump > pi may indicate unwrapping issues at high Mf")
 
-        # 7. Verification against LAL
+        # 7. Verification against LAL (using direct frequency evaluation, no interpolation)
         print("\n7. VERIFICATION: Compare against fresh LAL generation")
         print("-" * 40)
+        print("(Using direct frequency evaluation - no interpolation)")
         test_indices = [0, len(train_params)//2, len(train_params)-1]
+
+        ell = f.attrs.get('ell', 2)
+        emm = f.attrs.get('emm', 2)
 
         for idx in test_indices:
             params = train_params[idx]
@@ -163,45 +168,39 @@ def validate_dataset(filepath: str, make_plots: bool = True) -> bool:
             m1 = M_REF / (1 + q)
             m2 = M_REF * q / (1 + q)
 
-            # Convert Mf to physical frequency for LAL
-            f_physical = Mf_grid / (M_REF * MTSUN_SI)
-            f_min = f_physical[0]
-            f_max = f_physical[-1]
-            f_ref = Mf_ref / (M_REF * MTSUN_SI)
-            delta_f = min(0.1, (f_max - f_min) / 10000)
+            # Convert Mf to physical frequency for LAL (direct evaluation, no interpolation)
+            f_physical = np.array(geometric_to_physical_frequency(Mf_grid, M_REF))
+            f_ref = float(geometric_to_physical_frequency(np.array([Mf_ref]), M_REF)[0])
 
-            wf_params = WaveformParameters(
-                mass_1=m1, mass_2=m2,
-                chi1z=chi1z, chi2z=chi2z,
+            # Generate mode at exact frequencies
+            h_lm = generate_fd_mode_at_frequencies(
+                frequencies=f_physical,
+                mass_1=m1,
+                mass_2=m2,
+                chi1z=chi1z,
+                chi2z=chi2z,
+                ell=ell,
+                emm=emm,
                 luminosity_distance=1.0,
-                f_min=max(f_min * 0.9, 1.0),
-                f_max=f_max * 1.1,
-                delta_f=delta_f,
+                phase=0.0,
                 f_ref=f_ref,
             )
 
-            freqs, h22 = generate_fd_mode(wf_params, ell=2, emm=2)
+            # Extract amplitude and phase
+            amp_gen = np.abs(h_lm)
+            phase_gen = np.unwrap(np.angle(h_lm))
 
-            # Convert to geometric and interpolate
-            Mf_gen = freqs * M_REF * MTSUN_SI
-            amp_gen = np.abs(h22)
-            phase_gen = np.unwrap(np.angle(h22))
-
-            valid_mask = amp_gen > 0
-
-            # Interpolate to our grid
-            log_amp_fresh = np.interp(
-                Mf_grid, Mf_gen[valid_mask], np.log10(amp_gen[valid_mask] + 1e-100),
-                left=np.nan, right=np.nan
-            )
-            phase_fresh = np.interp(
-                Mf_grid, Mf_gen[valid_mask], phase_gen[valid_mask],
-                left=np.nan, right=np.nan
-            )
+            # Log amplitude
+            with np.errstate(divide='ignore'):
+                log_amp_fresh = np.log10(amp_gen)
+            log_amp_fresh[amp_gen == 0] = np.nan
 
             # Align phase at reference
-            if not np.isnan(phase_fresh[ref_idx]):
-                phase_fresh = phase_fresh - phase_fresh[ref_idx]
+            if amp_gen[ref_idx] > 0:
+                phase_fresh = phase_gen - phase_gen[ref_idx]
+            else:
+                phase_fresh = phase_gen
+            phase_fresh[amp_gen == 0] = np.nan
 
             # Compare
             valid = ~np.isnan(train_log_amp[idx]) & ~np.isnan(log_amp_fresh)
@@ -209,13 +208,13 @@ def validate_dataset(filepath: str, make_plots: bool = True) -> bool:
             amp_diff = np.abs(train_log_amp[idx][valid] - log_amp_fresh[valid])
             phase_diff = np.abs(train_phase[idx][valid] - phase_fresh[valid])
 
-            print(f"  Amplitude: max diff={amp_diff.max():.6f}, mean={amp_diff.mean():.6f}")
-            print(f"  Phase: max diff={phase_diff.max():.6f} rad, mean={phase_diff.mean():.6f}")
+            print(f"  Amplitude: max diff={amp_diff.max():.2e}, mean={amp_diff.mean():.2e}")
+            print(f"  Phase: max diff={phase_diff.max():.2e} rad, mean={phase_diff.mean():.2e}")
 
-            if amp_diff.max() < 1e-6 and phase_diff.max() < 1e-6:
-                print("  ✓ Perfect match!")
-            elif amp_diff.max() < 1e-3 and phase_diff.max() < 1e-3:
-                print("  ✓ Good match (< 1e-3)")
+            if amp_diff.max() < 1e-10 and phase_diff.max() < 1e-10:
+                print("  ✓ Perfect match (machine precision)!")
+            elif amp_diff.max() < 1e-6 and phase_diff.max() < 1e-6:
+                print("  ✓ Excellent match (< 1e-6)")
             else:
                 print("  ⚠ Mismatch detected!")
                 all_checks_passed = False

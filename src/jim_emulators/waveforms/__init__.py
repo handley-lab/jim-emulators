@@ -11,6 +11,7 @@ This module provides:
 from .lal_waveforms import (
     generate_fd_waveform,
     generate_fd_mode,
+    generate_fd_mode_at_frequencies,
     generate_fd_modes,
     WaveformParameters,
     SUPPORTED_APPROXIMANTS,
