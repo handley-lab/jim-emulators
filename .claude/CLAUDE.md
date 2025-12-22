@@ -39,12 +39,23 @@ All paper sources downloaded to project root.
 | `2004.06503/` | **IMRPhenomXPHM**: Computationally efficient models for precessing BBH with higher modes | `phenomx.tex` |
 | `2001.10914/` | **IMRPhenomXHM**: Multi-mode frequency-domain model for non-precessing BBH | `hmc2.tex` |
 
+### Waveform Surrogates (from Deep Research)
+
+| ArXiv ID | Paper | Main File |
+|----------|-------|-----------|
+| `2402.06587/` | **Grimbergen**: HOMs from BBH mergers with ML (PCA + Ensemble NNs, TD) | `mlgw_NN.tex` |
+| `2205.14066/` | **Thomas**: Accelerating precessing waveforms with ANNs (coprecessing frame, TD) | `main.tex` |
+| `2411.14893/` | **Shi**: Rapid eccentric waveforms via deep learning (GPU-native, TD) | `templateArxiv.tex` |
+| `2504.12420/` | **gwharmone**: First FD surrogate for eccentric harmonics (SVD + GPR) | `main.tex` |
+| `2510.00116/` | **Chase Orbits**: Mean anomaly parameterization for eccentric surrogates | `main.tex` |
+
 ### Key Authors
 
 - **CosmoPower**: A. Spurio Mancini, D. Piras, J. Alsing
 - **Speculator**: Justin Alsing, Hiranya Peiris, Joel Leja
 - **ripple**: Thomas D. P. Edwards, Kaze W. K. Wong, Kelvin K. H. Lam
 - **IMRPhenomX**: Geraint Pratten, Cecilio García-Quirós, Marta Colleoni, Sascha Husa
+- **Waveform Surrogates**: T. Grimbergen, L. Thomas, R. Shi, T. Islam (gwharmone), A. Maurya
 
 ## Code Repositories
 
