@@ -1,0 +1,1836 @@
+%apsrev4-2.bst 2019-01-14 (MD) hand-edited version of apsrev4-1.bst
+%Control: key (0)
+%Control: author (8) initials jnrlst
+%Control: editor formatted (1) identically to author
+%Control: production of article title (0) allowed
+%Control: page (0) single
+%Control: year (1) truncated
+%Control: production of eprint (0) enabled
+\begin{thebibliography}{129}%
+\makeatletter
+\providecommand \@ifxundefined [1]{%
+ \@ifx{#1\undefined}
+}%
+\providecommand \@ifnum [1]{%
+ \ifnum #1\expandafter \@firstoftwo
+ \else \expandafter \@secondoftwo
+ \fi
+}%
+\providecommand \@ifx [1]{%
+ \ifx #1\expandafter \@firstoftwo
+ \else \expandafter \@secondoftwo
+ \fi
+}%
+\providecommand \natexlab [1]{#1}%
+\providecommand \enquote  [1]{``#1''}%
+\providecommand \bibnamefont  [1]{#1}%
+\providecommand \bibfnamefont [1]{#1}%
+\providecommand \citenamefont [1]{#1}%
+\providecommand \href@noop [0]{\@secondoftwo}%
+\providecommand \href [0]{\begingroup \@sanitize@url \@href}%
+\providecommand \@href[1]{\@@startlink{#1}\@@href}%
+\providecommand \@@href[1]{\endgroup#1\@@endlink}%
+\providecommand \@sanitize@url [0]{\catcode `\\12\catcode `\$12\catcode
+  `\&12\catcode `\#12\catcode `\^12\catcode `\_12\catcode `\%12\relax}%
+\providecommand \@@startlink[1]{}%
+\providecommand \@@endlink[0]{}%
+\providecommand \url  [0]{\begingroup\@sanitize@url \@url }%
+\providecommand \@url [1]{\endgroup\@href {#1}{\urlprefix }}%
+\providecommand \urlprefix  [0]{URL }%
+\providecommand \Eprint [0]{\href }%
+\providecommand \doibase [0]{https://doi.org/}%
+\providecommand \selectlanguage [0]{\@gobble}%
+\providecommand \bibinfo  [0]{\@secondoftwo}%
+\providecommand \bibfield  [0]{\@secondoftwo}%
+\providecommand \translation [1]{[#1]}%
+\providecommand \BibitemOpen [0]{}%
+\providecommand \bibitemStop [0]{}%
+\providecommand \bibitemNoStop [0]{.\EOS\space}%
+\providecommand \EOS [0]{\spacefactor3000\relax}%
+\providecommand \BibitemShut  [1]{\csname bibitem#1\endcsname}%
+\let\auto@bib@innerbib\@empty
+%</preamble>
+\bibitem [{\citenamefont {Abbott}\ \emph
+  {et~al.}(2019{\natexlab{a}})\citenamefont {Abbott} \emph
+  {et~al.}}]{LIGOScientific:2018mvr}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {B.~P.}\ \bibnamefont
+  {Abbott}} \emph {et~al.} (\bibinfo {collaboration} {LIGO Scientific,
+  Virgo}),\ }\bibfield  {title} {\bibinfo {title} {{GWTC-1: A
+  Gravitational-Wave Transient Catalog of Compact Binary Mergers Observed by
+  LIGO and Virgo during the First and Second Observing Runs}},\ }\href
+  {https://doi.org/10.1103/PhysRevX.9.031040} {\bibfield  {journal} {\bibinfo
+  {journal} {Phys. Rev. X}\ }\textbf {\bibinfo {volume} {9}},\ \bibinfo {pages}
+  {031040} (\bibinfo {year} {2019}{\natexlab{a}})},\ \Eprint
+  {https://arxiv.org/abs/1811.12907} {arXiv:1811.12907 [astro-ph.HE]}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Abbott}\ \emph
+  {et~al.}(2021{\natexlab{a}})\citenamefont {Abbott} \emph
+  {et~al.}}]{LIGOScientific:2020ibl}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {R.}~\bibnamefont
+  {Abbott}} \emph {et~al.} (\bibinfo {collaboration} {LIGO Scientific,
+  Virgo}),\ }\bibfield  {title} {\bibinfo {title} {{GWTC-2: Compact Binary
+  Coalescences Observed by LIGO and Virgo During the First Half of the Third
+  Observing Run}},\ }\href {https://doi.org/10.1103/PhysRevX.11.021053}
+  {\bibfield  {journal} {\bibinfo  {journal} {Phys. Rev. X}\ }\textbf {\bibinfo
+  {volume} {11}},\ \bibinfo {pages} {021053} (\bibinfo {year}
+  {2021}{\natexlab{a}})},\ \Eprint {https://arxiv.org/abs/2010.14527}
+  {arXiv:2010.14527 [gr-qc]} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Abbott}\ \emph
+  {et~al.}(2023{\natexlab{a}})\citenamefont {Abbott} \emph
+  {et~al.}}]{KAGRA:2021vkt}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {R.}~\bibnamefont
+  {Abbott}} \emph {et~al.} (\bibinfo {collaboration} {KAGRA, VIRGO, LIGO
+  Scientific}),\ }\bibfield  {title} {\bibinfo {title} {{GWTC-3: Compact Binary
+  Coalescences Observed by LIGO and Virgo during the Second Part of the Third
+  Observing Run}},\ }\href {https://doi.org/10.1103/PhysRevX.13.041039}
+  {\bibfield  {journal} {\bibinfo  {journal} {Phys. Rev. X}\ }\textbf {\bibinfo
+  {volume} {13}},\ \bibinfo {pages} {041039} (\bibinfo {year}
+  {2023}{\natexlab{a}})},\ \Eprint {https://arxiv.org/abs/2111.03606}
+  {arXiv:2111.03606 [gr-qc]} \BibitemShut {NoStop}%
+\bibitem [{LIG(2025{\natexlab{a}})}]{LIGOScientific:2025slb}%
+  \BibitemOpen
+  \bibfield  {title} {\bibinfo {title} {{GWTC-4.0: Updating the
+  Gravitational-Wave Transient Catalog with Observations from the First Part of
+  the Fourth LIGO-Virgo-KAGRA Observing Run}},\ }\href@noop {} {\  (\bibinfo
+  {year} {2025}{\natexlab{a}})},\ \Eprint {https://arxiv.org/abs/2508.18082}
+  {arXiv:2508.18082 [gr-qc]} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Abbott}\ \emph
+  {et~al.}(2019{\natexlab{b}})\citenamefont {Abbott} \emph
+  {et~al.}}]{LIGOScientific:2018jsj}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {B.~P.}\ \bibnamefont
+  {Abbott}} \emph {et~al.} (\bibinfo {collaboration} {LIGO Scientific,
+  Virgo}),\ }\bibfield  {title} {\bibinfo {title} {{Binary Black Hole
+  Population Properties Inferred from the First and Second Observing Runs of
+  Advanced LIGO and Advanced Virgo}},\ }\href
+  {https://doi.org/10.3847/2041-8213/ab3800} {\bibfield  {journal} {\bibinfo
+  {journal} {Astrophys. J. Lett.}\ }\textbf {\bibinfo {volume} {882}},\
+  \bibinfo {pages} {L24} (\bibinfo {year} {2019}{\natexlab{b}})},\ \Eprint
+  {https://arxiv.org/abs/1811.12940} {arXiv:1811.12940 [astro-ph.HE]}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Abbott}\ \emph
+  {et~al.}(2021{\natexlab{b}})\citenamefont {Abbott} \emph
+  {et~al.}}]{LIGOScientific:2020kqk}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {R.}~\bibnamefont
+  {Abbott}} \emph {et~al.} (\bibinfo {collaboration} {LIGO Scientific,
+  Virgo}),\ }\bibfield  {title} {\bibinfo {title} {{Population Properties of
+  Compact Objects from the Second LIGO-Virgo Gravitational-Wave Transient
+  Catalog}},\ }\href {https://doi.org/10.3847/2041-8213/abe949} {\bibfield
+  {journal} {\bibinfo  {journal} {Astrophys. J. Lett.}\ }\textbf {\bibinfo
+  {volume} {913}},\ \bibinfo {pages} {L7} (\bibinfo {year}
+  {2021}{\natexlab{b}})},\ \Eprint {https://arxiv.org/abs/2010.14533}
+  {arXiv:2010.14533 [astro-ph.HE]} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Abbott}\ \emph
+  {et~al.}(2023{\natexlab{b}})\citenamefont {Abbott} \emph
+  {et~al.}}]{KAGRA:2021duu}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {R.}~\bibnamefont
+  {Abbott}} \emph {et~al.} (\bibinfo {collaboration} {KAGRA, VIRGO, LIGO
+  Scientific}),\ }\bibfield  {title} {\bibinfo {title} {{Population of Merging
+  Compact Binaries Inferred Using Gravitational Waves through GWTC-3}},\ }\href
+  {https://doi.org/10.1103/PhysRevX.13.011048} {\bibfield  {journal} {\bibinfo
+  {journal} {Phys. Rev. X}\ }\textbf {\bibinfo {volume} {13}},\ \bibinfo
+  {pages} {011048} (\bibinfo {year} {2023}{\natexlab{b}})},\ \Eprint
+  {https://arxiv.org/abs/2111.03634} {arXiv:2111.03634 [astro-ph.HE]}
+  \BibitemShut {NoStop}%
+\bibitem [{LIG(2025{\natexlab{b}})}]{LIGOScientific:2025pvj}%
+  \BibitemOpen
+  \bibfield  {title} {\bibinfo {title} {{GWTC-4.0: Population Properties of
+  Merging Compact Binaries}},\ }\href@noop {} {\  (\bibinfo {year}
+  {2025}{\natexlab{b}})},\ \Eprint {https://arxiv.org/abs/2508.18083}
+  {arXiv:2508.18083 [astro-ph.HE]} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Postnov}\ and\ \citenamefont
+  {Yungelson}(2014)}]{Postnov:2014tza}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {K.~A.}\ \bibnamefont
+  {Postnov}}\ and\ \bibinfo {author} {\bibfnamefont {L.~R.}\ \bibnamefont
+  {Yungelson}},\ }\bibfield  {title} {\bibinfo {title} {{The Evolution of
+  Compact Binary Star Systems}},\ }\href {https://doi.org/10.12942/lrr-2014-3}
+  {\bibfield  {journal} {\bibinfo  {journal} {Living Rev. Rel.}\ }\textbf
+  {\bibinfo {volume} {17}},\ \bibinfo {pages} {3} (\bibinfo {year} {2014})},\
+  \Eprint {https://arxiv.org/abs/1403.4754} {arXiv:1403.4754 [astro-ph.HE]}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Peters}(1964)}]{PhysRev.136.B1224}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {P.~C.}\ \bibnamefont
+  {Peters}},\ }\bibfield  {title} {\bibinfo {title} {Gravitational radiation
+  and the motion of two point masses},\ }\href
+  {https://doi.org/10.1103/PhysRev.136.B1224} {\bibfield  {journal} {\bibinfo
+  {journal} {Phys. Rev.}\ }\textbf {\bibinfo {volume} {136}},\ \bibinfo {pages}
+  {B1224} (\bibinfo {year} {1964})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Gultekin}\ \emph {et~al.}(2006)\citenamefont
+  {Gultekin}, \citenamefont {Coleman~Miller},\ and\ \citenamefont
+  {Hamilton}}]{Gultekin:2005fd}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {K.}~\bibnamefont
+  {Gultekin}}, \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Coleman~Miller}},\ and\ \bibinfo {author} {\bibfnamefont {D.~P.}\
+  \bibnamefont {Hamilton}},\ }\bibfield  {title} {\bibinfo {title} {{Three-body
+  dynamics with gravitational wave emission}},\ }\href
+  {https://doi.org/10.1086/499917} {\bibfield  {journal} {\bibinfo  {journal}
+  {Astrophys. J.}\ }\textbf {\bibinfo {volume} {640}},\ \bibinfo {pages} {156}
+  (\bibinfo {year} {2006})},\ \Eprint {https://arxiv.org/abs/astro-ph/0509885}
+  {arXiv:astro-ph/0509885} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Samsing}\ \emph {et~al.}(2014)\citenamefont
+  {Samsing}, \citenamefont {MacLeod},\ and\ \citenamefont
+  {Ramirez-Ruiz}}]{Samsing:2013kua}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.}~\bibnamefont
+  {Samsing}}, \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {MacLeod}},\
+  and\ \bibinfo {author} {\bibfnamefont {E.}~\bibnamefont {Ramirez-Ruiz}},\
+  }\bibfield  {title} {\bibinfo {title} {{The Formation of Eccentric Compact
+  Binary Inspirals and the Role of Gravitational Wave Emission in Binary-Single
+  Stellar Encounters}},\ }\href {https://doi.org/10.1088/0004-637X/784/1/71}
+  {\bibfield  {journal} {\bibinfo  {journal} {Astrophys. J.}\ }\textbf
+  {\bibinfo {volume} {784}},\ \bibinfo {pages} {71} (\bibinfo {year} {2014})},\
+  \Eprint {https://arxiv.org/abs/1308.2964} {arXiv:1308.2964 [astro-ph.HE]}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Antonini}\ \emph {et~al.}(2016)\citenamefont
+  {Antonini}, \citenamefont {Chatterjee}, \citenamefont {Rodriguez},
+  \citenamefont {Morscher}, \citenamefont {Pattabiraman}, \citenamefont
+  {Kalogera},\ and\ \citenamefont {Rasio}}]{Antonini:2015zsa}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {F.}~\bibnamefont
+  {Antonini}}, \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont
+  {Chatterjee}}, \bibinfo {author} {\bibfnamefont {C.~L.}\ \bibnamefont
+  {Rodriguez}}, \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {Morscher}},
+  \bibinfo {author} {\bibfnamefont {B.}~\bibnamefont {Pattabiraman}}, \bibinfo
+  {author} {\bibfnamefont {V.}~\bibnamefont {Kalogera}},\ and\ \bibinfo
+  {author} {\bibfnamefont {F.~A.}\ \bibnamefont {Rasio}},\ }\bibfield  {title}
+  {\bibinfo {title} {{Black hole mergers and blue stragglers from hierarchical
+  triples formed in globular clusters}},\ }\href
+  {https://doi.org/10.3847/0004-637X/816/2/65} {\bibfield  {journal} {\bibinfo
+  {journal} {Astrophys. J.}\ }\textbf {\bibinfo {volume} {816}},\ \bibinfo
+  {pages} {65} (\bibinfo {year} {2016})},\ \Eprint
+  {https://arxiv.org/abs/1509.05080} {arXiv:1509.05080 [astro-ph.GA]}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Samsing}\ and\ \citenamefont
+  {Ramirez-Ruiz}(2017)}]{Samsing:2017rat}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.}~\bibnamefont
+  {Samsing}}\ and\ \bibinfo {author} {\bibfnamefont {E.}~\bibnamefont
+  {Ramirez-Ruiz}},\ }\bibfield  {title} {\bibinfo {title} {{On the Assembly
+  Rate of Highly Eccentric Binary Black Hole Mergers}},\ }\href
+  {https://doi.org/10.3847/2041-8213/aa6f0b} {\bibfield  {journal} {\bibinfo
+  {journal} {Astrophys. J. Lett.}\ }\textbf {\bibinfo {volume} {840}},\
+  \bibinfo {pages} {L14} (\bibinfo {year} {2017})},\ \Eprint
+  {https://arxiv.org/abs/1703.09703} {arXiv:1703.09703 [astro-ph.HE]}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Rodriguez}\ \emph {et~al.}(2018)\citenamefont
+  {Rodriguez}, \citenamefont {Amaro-Seoane}, \citenamefont {Chatterjee},\ and\
+  \citenamefont {Rasio}}]{Rodriguez:2017pec}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {C.~L.}\ \bibnamefont
+  {Rodriguez}}, \bibinfo {author} {\bibfnamefont {P.}~\bibnamefont
+  {Amaro-Seoane}}, \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont
+  {Chatterjee}},\ and\ \bibinfo {author} {\bibfnamefont {F.~A.}\ \bibnamefont
+  {Rasio}},\ }\bibfield  {title} {\bibinfo {title} {{Post-Newtonian Dynamics in
+  Dense Star Clusters: Highly-Eccentric, Highly-Spinning, and Repeated Binary
+  Black Hole Mergers}},\ }\href
+  {https://doi.org/10.1103/PhysRevLett.120.151101} {\bibfield  {journal}
+  {\bibinfo  {journal} {Phys. Rev. Lett.}\ }\textbf {\bibinfo {volume} {120}},\
+  \bibinfo {pages} {151101} (\bibinfo {year} {2018})},\ \Eprint
+  {https://arxiv.org/abs/1712.04937} {arXiv:1712.04937 [astro-ph.HE]}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Zevin}\ \emph {et~al.}(2019)\citenamefont {Zevin},
+  \citenamefont {Samsing}, \citenamefont {Rodriguez}, \citenamefont {Haster},\
+  and\ \citenamefont {Ramirez-Ruiz}}]{Zevin:2018kzq}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Zevin}}, \bibinfo {author} {\bibfnamefont {J.}~\bibnamefont {Samsing}},
+  \bibinfo {author} {\bibfnamefont {C.}~\bibnamefont {Rodriguez}}, \bibinfo
+  {author} {\bibfnamefont {C.-J.}\ \bibnamefont {Haster}},\ and\ \bibinfo
+  {author} {\bibfnamefont {E.}~\bibnamefont {Ramirez-Ruiz}},\ }\bibfield
+  {title} {\bibinfo {title} {{Eccentric Black Hole Mergers in Dense Star
+  Clusters: The Role of Binary\textendash{}Binary Encounters}},\ }\href
+  {https://doi.org/10.3847/1538-4357/aaf6ec} {\bibfield  {journal} {\bibinfo
+  {journal} {Astrophys. J.}\ }\textbf {\bibinfo {volume} {871}},\ \bibinfo
+  {pages} {91} (\bibinfo {year} {2019})},\ \Eprint
+  {https://arxiv.org/abs/1810.00901} {arXiv:1810.00901 [astro-ph.HE]}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Samsing}\ \emph {et~al.}(2022)\citenamefont
+  {Samsing}, \citenamefont {Bartos}, \citenamefont {D'Orazio}, \citenamefont
+  {Haiman}, \citenamefont {Kocsis}, \citenamefont {Leigh}, \citenamefont {Liu},
+  \citenamefont {Pessah},\ and\ \citenamefont {Tagawa}}]{Samsing:2020tda}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.}~\bibnamefont
+  {Samsing}}, \bibinfo {author} {\bibfnamefont {I.}~\bibnamefont {Bartos}},
+  \bibinfo {author} {\bibfnamefont {D.~J.}\ \bibnamefont {D'Orazio}}, \bibinfo
+  {author} {\bibfnamefont {Z.}~\bibnamefont {Haiman}}, \bibinfo {author}
+  {\bibfnamefont {B.}~\bibnamefont {Kocsis}}, \bibinfo {author} {\bibfnamefont
+  {N.~W.~C.}\ \bibnamefont {Leigh}}, \bibinfo {author} {\bibfnamefont
+  {B.}~\bibnamefont {Liu}}, \bibinfo {author} {\bibfnamefont {M.~E.}\
+  \bibnamefont {Pessah}},\ and\ \bibinfo {author} {\bibfnamefont
+  {H.}~\bibnamefont {Tagawa}},\ }\bibfield  {title} {\bibinfo {title} {{AGN as
+  potential factories for eccentric black hole mergers}},\ }\href
+  {https://doi.org/10.1038/s41586-021-04333-1} {\bibfield  {journal} {\bibinfo
+  {journal} {Nature}\ }\textbf {\bibinfo {volume} {603}},\ \bibinfo {pages}
+  {237} (\bibinfo {year} {2022})},\ \Eprint {https://arxiv.org/abs/2010.09765}
+  {arXiv:2010.09765 [astro-ph.HE]} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Fabj}\ and\ \citenamefont
+  {Samsing}(2024)}]{Fabj:2024jns}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {G.}~\bibnamefont
+  {Fabj}}\ and\ \bibinfo {author} {\bibfnamefont {J.}~\bibnamefont {Samsing}},\
+  }\bibfield  {title} {\bibinfo {title} {{Eccentric mergers in AGN discs:
+  influence of the supermassive black hole on three-body interactions}},\
+  }\href {https://doi.org/10.1093/mnras/stae2499} {\bibfield  {journal}
+  {\bibinfo  {journal} {Mon. Not. Roy. Astron. Soc.}\ }\textbf {\bibinfo
+  {volume} {535}},\ \bibinfo {pages} {3630} (\bibinfo {year} {2024})},\ \Eprint
+  {https://arxiv.org/abs/2402.16948} {arXiv:2402.16948 [astro-ph.GA]}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Samsing}\ \emph {et~al.}(2024)\citenamefont
+  {Samsing}, \citenamefont {Hendriks}, \citenamefont {Zwick}, \citenamefont
+  {D'Orazio},\ and\ \citenamefont {Liu}}]{Samsing:2024syt}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.}~\bibnamefont
+  {Samsing}}, \bibinfo {author} {\bibfnamefont {K.}~\bibnamefont {Hendriks}},
+  \bibinfo {author} {\bibfnamefont {L.}~\bibnamefont {Zwick}}, \bibinfo
+  {author} {\bibfnamefont {D.~J.}\ \bibnamefont {D'Orazio}},\ and\ \bibinfo
+  {author} {\bibfnamefont {B.}~\bibnamefont {Liu}},\ }\bibfield  {title}
+  {\bibinfo {title} {{Gravitational Wave Phase Shifts in Eccentric Black Hole
+  Mergers as a Probe of Dynamical Formation Environments}},\ }\href@noop {} {\
+  (\bibinfo {year} {2024})},\ \Eprint {https://arxiv.org/abs/2403.05625}
+  {arXiv:2403.05625 [astro-ph.HE]} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Kozai}(1962)}]{Kozai:1962zz}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {Y.}~\bibnamefont
+  {Kozai}},\ }\bibfield  {title} {\bibinfo {title} {{Secular perturbations of
+  asteroids with high inclination and eccentricity}},\ }\href
+  {https://doi.org/10.1086/108790} {\bibfield  {journal} {\bibinfo  {journal}
+  {Astron. J.}\ }\textbf {\bibinfo {volume} {67}},\ \bibinfo {pages} {591}
+  (\bibinfo {year} {1962})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Lidov}(1962)}]{Lidov:1962wjn}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.~L.}\ \bibnamefont
+  {Lidov}},\ }\bibfield  {title} {\bibinfo {title} {{The evolution of orbits of
+  artificial satellites of planets under the action of gravitational
+  perturbations of external bodies}},\ }\href
+  {https://doi.org/10.1016/0032-0633(62)90129-0} {\bibfield  {journal}
+  {\bibinfo  {journal} {Planet. Space Sci.}\ }\textbf {\bibinfo {volume} {9}},\
+  \bibinfo {pages} {719} (\bibinfo {year} {1962})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Zevin}\ \emph {et~al.}(2021)\citenamefont {Zevin},
+  \citenamefont {Romero-Shaw}, \citenamefont {Kremer}, \citenamefont {Thrane},\
+  and\ \citenamefont {Lasky}}]{Zevin:2021rtf}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Zevin}}, \bibinfo {author} {\bibfnamefont {I.~M.}\ \bibnamefont
+  {Romero-Shaw}}, \bibinfo {author} {\bibfnamefont {K.}~\bibnamefont {Kremer}},
+  \bibinfo {author} {\bibfnamefont {E.}~\bibnamefont {Thrane}},\ and\ \bibinfo
+  {author} {\bibfnamefont {P.~D.}\ \bibnamefont {Lasky}},\ }\bibfield  {title}
+  {\bibinfo {title} {{Implications of Eccentric Observations on Binary Black
+  Hole Formation Channels}},\ }\href {https://doi.org/10.3847/2041-8213/ac32dc}
+  {\bibfield  {journal} {\bibinfo  {journal} {Astrophys. J. Lett.}\ }\textbf
+  {\bibinfo {volume} {921}},\ \bibinfo {pages} {L43} (\bibinfo {year}
+  {2021})},\ \Eprint {https://arxiv.org/abs/2106.09042} {arXiv:2106.09042
+  [astro-ph.HE]} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Wu}\ \emph {et~al.}(2020)\citenamefont {Wu},
+  \citenamefont {Cao},\ and\ \citenamefont {Zhu}}]{Wu:2020zwr}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {S.}~\bibnamefont
+  {Wu}}, \bibinfo {author} {\bibfnamefont {Z.}~\bibnamefont {Cao}},\ and\
+  \bibinfo {author} {\bibfnamefont {Z.-H.}\ \bibnamefont {Zhu}},\ }\bibfield
+  {title} {\bibinfo {title} {{Measuring the eccentricity of binary black holes
+  in GWTC-1 by using the inspiral-only waveform}},\ }\href
+  {https://doi.org/10.1093/mnras/staa1176} {\bibfield  {journal} {\bibinfo
+  {journal} {Mon. Not. Roy. Astron. Soc.}\ }\textbf {\bibinfo {volume} {495}},\
+  \bibinfo {pages} {466} (\bibinfo {year} {2020})},\ \Eprint
+  {https://arxiv.org/abs/2002.05528} {arXiv:2002.05528 [astro-ph.IM]}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Romero-Shaw}\ \emph {et~al.}(2021)\citenamefont
+  {Romero-Shaw}, \citenamefont {Lasky},\ and\ \citenamefont
+  {Thrane}}]{Romero-Shaw:2021ual}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {I.~M.}\ \bibnamefont
+  {Romero-Shaw}}, \bibinfo {author} {\bibfnamefont {P.~D.}\ \bibnamefont
+  {Lasky}},\ and\ \bibinfo {author} {\bibfnamefont {E.}~\bibnamefont
+  {Thrane}},\ }\bibfield  {title} {\bibinfo {title} {{Signs of Eccentricity in
+  Two Gravitational-wave Signals May Indicate a Subpopulation of Dynamically
+  Assembled Binary Black Holes}},\ }\href
+  {https://doi.org/10.3847/2041-8213/ac3138} {\bibfield  {journal} {\bibinfo
+  {journal} {Astrophys. J. Lett.}\ }\textbf {\bibinfo {volume} {921}},\
+  \bibinfo {pages} {L31} (\bibinfo {year} {2021})},\ \Eprint
+  {https://arxiv.org/abs/2108.01284} {arXiv:2108.01284 [astro-ph.HE]}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Romero-Shaw}\ \emph {et~al.}(2022)\citenamefont
+  {Romero-Shaw}, \citenamefont {Lasky},\ and\ \citenamefont
+  {Thrane}}]{Romero-Shaw:2022xko}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {I.~M.}\ \bibnamefont
+  {Romero-Shaw}}, \bibinfo {author} {\bibfnamefont {P.~D.}\ \bibnamefont
+  {Lasky}},\ and\ \bibinfo {author} {\bibfnamefont {E.}~\bibnamefont
+  {Thrane}},\ }\bibfield  {title} {\bibinfo {title} {{Four Eccentric Mergers
+  Increase the Evidence that
+  LIGO\textendash{}Virgo\textendash{}KAGRA\textquoteright{}s Binary Black Holes
+  Form Dynamically}},\ }\href {https://doi.org/10.3847/1538-4357/ac9798}
+  {\bibfield  {journal} {\bibinfo  {journal} {Astrophys. J.}\ }\textbf
+  {\bibinfo {volume} {940}},\ \bibinfo {pages} {171} (\bibinfo {year}
+  {2022})},\ \Eprint {https://arxiv.org/abs/2206.14695} {arXiv:2206.14695
+  [astro-ph.HE]} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Romero-Shaw}\ \emph {et~al.}(2020)\citenamefont
+  {Romero-Shaw}, \citenamefont {Lasky}, \citenamefont {Thrane},\ and\
+  \citenamefont {Bustillo}}]{Romero-Shaw:2020thy}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {I.~M.}\ \bibnamefont
+  {Romero-Shaw}}, \bibinfo {author} {\bibfnamefont {P.~D.}\ \bibnamefont
+  {Lasky}}, \bibinfo {author} {\bibfnamefont {E.}~\bibnamefont {Thrane}},\ and\
+  \bibinfo {author} {\bibfnamefont {J.~C.}\ \bibnamefont {Bustillo}},\
+  }\bibfield  {title} {\bibinfo {title} {{GW190521: orbital eccentricity and
+  signatures of dynamical formation in a binary black hole merger signal}},\
+  }\href {https://doi.org/10.3847/2041-8213/abbe26} {\bibfield  {journal}
+  {\bibinfo  {journal} {Astrophys. J. Lett.}\ }\textbf {\bibinfo {volume}
+  {903}},\ \bibinfo {pages} {L5} (\bibinfo {year} {2020})},\ \Eprint
+  {https://arxiv.org/abs/2009.04771} {arXiv:2009.04771 [astro-ph.HE]}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Gayathri}\ \emph {et~al.}(2022)\citenamefont
+  {Gayathri}, \citenamefont {Healy}, \citenamefont {Lange}, \citenamefont
+  {O'Brien}, \citenamefont {Szczepanczyk}, \citenamefont {Bartos},
+  \citenamefont {Campanelli}, \citenamefont {Klimenko}, \citenamefont
+  {Lousto},\ and\ \citenamefont {O'Shaughnessy}}]{Gayathri:2020coq}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {V.}~\bibnamefont
+  {Gayathri}}, \bibinfo {author} {\bibfnamefont {J.}~\bibnamefont {Healy}},
+  \bibinfo {author} {\bibfnamefont {J.}~\bibnamefont {Lange}}, \bibinfo
+  {author} {\bibfnamefont {B.}~\bibnamefont {O'Brien}}, \bibinfo {author}
+  {\bibfnamefont {M.}~\bibnamefont {Szczepanczyk}}, \bibinfo {author}
+  {\bibfnamefont {I.}~\bibnamefont {Bartos}}, \bibinfo {author} {\bibfnamefont
+  {M.}~\bibnamefont {Campanelli}}, \bibinfo {author} {\bibfnamefont
+  {S.}~\bibnamefont {Klimenko}}, \bibinfo {author} {\bibfnamefont {C.~O.}\
+  \bibnamefont {Lousto}},\ and\ \bibinfo {author} {\bibfnamefont
+  {R.}~\bibnamefont {O'Shaughnessy}},\ }\bibfield  {title} {\bibinfo {title}
+  {{Eccentricity estimate for black hole mergers with numerical relativity
+  simulations}},\ }\href {https://doi.org/10.1038/s41550-021-01568-w}
+  {\bibfield  {journal} {\bibinfo  {journal} {Nature Astron.}\ }\textbf
+  {\bibinfo {volume} {6}},\ \bibinfo {pages} {344} (\bibinfo {year} {2022})},\
+  \Eprint {https://arxiv.org/abs/2009.05461} {arXiv:2009.05461 [astro-ph.HE]}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Gupte}\ \emph {et~al.}(2024)\citenamefont {Gupte}
+  \emph {et~al.}}]{Gupte:2024jfe}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {N.}~\bibnamefont
+  {Gupte}} \emph {et~al.},\ }\bibfield  {title} {\bibinfo {title} {{Evidence
+  for eccentricity in the population of binary black holes observed by
+  LIGO-Virgo-KAGRA}},\ }\href@noop {} {\  (\bibinfo {year} {2024})},\ \Eprint
+  {https://arxiv.org/abs/2404.14286} {arXiv:2404.14286 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Planas}\ \emph
+  {et~al.}(2025{\natexlab{a}})\citenamefont {Planas}, \citenamefont
+  {Ramos-Buades}, \citenamefont {Garc\'\i{}a-Quir\'os}, \citenamefont
+  {Estell\'es}, \citenamefont {Husa},\ and\ \citenamefont
+  {Haney}}]{Planas:2025jny}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.~d.~L.}\
+  \bibnamefont {Planas}}, \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
+  {Ramos-Buades}}, \bibinfo {author} {\bibfnamefont {C.}~\bibnamefont
+  {Garc\'\i{}a-Quir\'os}}, \bibinfo {author} {\bibfnamefont {H.}~\bibnamefont
+  {Estell\'es}}, \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont {Husa}},\
+  and\ \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {Haney}},\ }\bibfield
+   {title} {\bibinfo {title} {{Eccentric or circular? A reanalysis of binary
+  black hole gravitational wave events for orbital eccentricity signatures}},\
+  }\href@noop {} {\  (\bibinfo {year} {2025}{\natexlab{a}})},\ \Eprint
+  {https://arxiv.org/abs/2504.15833} {arXiv:2504.15833 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Morras}\ \emph
+  {et~al.}(2025{\natexlab{a}})\citenamefont {Morras}, \citenamefont {Pratten},\
+  and\ \citenamefont {Schmidt}}]{Morras:2025xfu}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {G.}~\bibnamefont
+  {Morras}}, \bibinfo {author} {\bibfnamefont {G.}~\bibnamefont {Pratten}},\
+  and\ \bibinfo {author} {\bibfnamefont {P.}~\bibnamefont {Schmidt}},\
+  }\bibfield  {title} {\bibinfo {title} {{Orbital eccentricity in a neutron
+  star - black hole binary}},\ }\href@noop {} {\  (\bibinfo {year}
+  {2025}{\natexlab{a}})},\ \Eprint {https://arxiv.org/abs/2503.15393}
+  {arXiv:2503.15393 [astro-ph.HE]} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Planas}\ \emph
+  {et~al.}(2025{\natexlab{b}})\citenamefont {Planas}, \citenamefont {Husa},
+  \citenamefont {Ramos-Buades},\ and\ \citenamefont
+  {Valencia}}]{Planas:2025plq}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.~d.~L.}\
+  \bibnamefont {Planas}}, \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont
+  {Husa}}, \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont {Ramos-Buades}},\
+  and\ \bibinfo {author} {\bibfnamefont {J.}~\bibnamefont {Valencia}},\
+  }\bibfield  {title} {\bibinfo {title} {{First eccentric
+  inspiral-merger-ringdown analysis of neutron star-black hole mergers}},\
+  }\href@noop {} {\  (\bibinfo {year} {2025}{\natexlab{b}})},\ \Eprint
+  {https://arxiv.org/abs/2506.01760} {arXiv:2506.01760 [astro-ph.HE]}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Kacanja}\ \emph {et~al.}(2025)\citenamefont
+  {Kacanja}, \citenamefont {Soni},\ and\ \citenamefont
+  {Nitz}}]{Kacanja:2025kpr}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {K.}~\bibnamefont
+  {Kacanja}}, \bibinfo {author} {\bibfnamefont {K.}~\bibnamefont {Soni}},\ and\
+  \bibinfo {author} {\bibfnamefont {A.~H.}\ \bibnamefont {Nitz}},\ }\bibfield
+  {title} {\bibinfo {title} {{Eccentricity signatures in LIGO-Virgo-KAGRA's BNS
+  and NSBH binaries}},\ }\href@noop {} {\  (\bibinfo {year} {2025})},\ \Eprint
+  {https://arxiv.org/abs/2508.00179} {arXiv:2508.00179 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Jan}\ \emph {et~al.}(2025)\citenamefont {Jan},
+  \citenamefont {Tsao}, \citenamefont {O'Shaughnessy}, \citenamefont
+  {Shoemaker},\ and\ \citenamefont {Laguna}}]{Jan:2025fps}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
+  {Jan}}, \bibinfo {author} {\bibfnamefont {B.-J.}\ \bibnamefont {Tsao}},
+  \bibinfo {author} {\bibfnamefont {R.}~\bibnamefont {O'Shaughnessy}}, \bibinfo
+  {author} {\bibfnamefont {D.}~\bibnamefont {Shoemaker}},\ and\ \bibinfo
+  {author} {\bibfnamefont {P.}~\bibnamefont {Laguna}},\ }\bibfield  {title}
+  {\bibinfo {title} {{GW200105: A detailed study of eccentricity in the neutron
+  star-black hole binary}},\ }\href@noop {} {\  (\bibinfo {year} {2025})},\
+  \Eprint {https://arxiv.org/abs/2508.12460} {arXiv:2508.12460 [gr-qc]}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {{Amaro-Seoane}}\ \emph {et~al.}(2017)\citenamefont
+  {{Amaro-Seoane}} \emph {et~al.}}]{2017arXiv170200786A}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {P.}~\bibnamefont
+  {{Amaro-Seoane}}} \emph {et~al.},\ }\bibfield  {title} {\bibinfo {title}
+  {{Laser Interferometer Space Antenna}},\ }\href
+  {https://doi.org/10.48550/arXiv.1702.00786} {\bibfield  {journal} {\bibinfo
+  {journal} {arXiv e-prints}\ ,\ \bibinfo {eid} {arXiv:1702.00786}} (\bibinfo
+  {year} {2017})},\ \Eprint {https://arxiv.org/abs/1702.00786}
+  {arXiv:1702.00786 [astro-ph.IM]} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Punturo}\ \emph {et~al.}(2010)\citenamefont {Punturo}
+  \emph {et~al.}}]{Punturo:2010zz}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Punturo}} \emph {et~al.},\ }\bibfield  {title} {\bibinfo {title} {{The
+  Einstein Telescope: A third-generation gravitational wave observatory}},\
+  }\href {https://doi.org/10.1088/0264-9381/27/19/194002} {\bibfield  {journal}
+  {\bibinfo  {journal} {Class. Quant. Grav.}\ }\textbf {\bibinfo {volume}
+  {27}},\ \bibinfo {pages} {194002} (\bibinfo {year} {2010})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Hild}(2012)}]{Hild:2011np}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {S.}~\bibnamefont
+  {Hild}},\ }\bibfield  {title} {\bibinfo {title} {{Beyond the Second
+  Generation of Laser-Interferometric Gravitational Wave Observatories}},\
+  }\href {https://doi.org/10.1088/0264-9381/29/12/124006} {\bibfield  {journal}
+  {\bibinfo  {journal} {Class. Quant. Grav.}\ }\textbf {\bibinfo {volume}
+  {29}},\ \bibinfo {pages} {124006} (\bibinfo {year} {2012})},\ \Eprint
+  {https://arxiv.org/abs/1111.6277} {arXiv:1111.6277 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Reitze}\ \emph {et~al.}(2019)\citenamefont {Reitze}
+  \emph {et~al.}}]{Reitze:2019iox}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {D.}~\bibnamefont
+  {Reitze}} \emph {et~al.},\ }\bibfield  {title} {\bibinfo {title} {{Cosmic
+  Explorer: The U.S. Contribution to Gravitational-Wave Astronomy beyond
+  LIGO}},\ }\href@noop {} {\bibfield  {journal} {\bibinfo  {journal} {Bull. Am.
+  Astron. Soc.}\ }\textbf {\bibinfo {volume} {51}},\ \bibinfo {pages} {035}
+  (\bibinfo {year} {2019})},\ \Eprint {https://arxiv.org/abs/1907.04833}
+  {arXiv:1907.04833 [astro-ph.IM]} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Abbott}\ \emph {et~al.}(2017)\citenamefont {Abbott}
+  \emph {et~al.}}]{LIGOScientific:2016wof}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {B.~P.}\ \bibnamefont
+  {Abbott}} \emph {et~al.} (\bibinfo {collaboration} {LIGO Scientific}),\
+  }\bibfield  {title} {\bibinfo {title} {{Exploring the Sensitivity of Next
+  Generation Gravitational Wave Detectors}},\ }\href
+  {https://doi.org/10.1088/1361-6382/aa51f4} {\bibfield  {journal} {\bibinfo
+  {journal} {Class. Quant. Grav.}\ }\textbf {\bibinfo {volume} {34}},\ \bibinfo
+  {pages} {044001} (\bibinfo {year} {2017})},\ \Eprint
+  {https://arxiv.org/abs/1607.08697} {arXiv:1607.08697 [astro-ph.IM]}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Saini}(2024)}]{Saini:2023wdk}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {P.}~\bibnamefont
+  {Saini}},\ }\bibfield  {title} {\bibinfo {title} {{Resolving the eccentricity
+  of stellar mass binary black holes with next generation ground-based
+  gravitational wave detectors}},\ }\href
+  {https://doi.org/10.1093/mnras/stae037} {\bibfield  {journal} {\bibinfo
+  {journal} {Mon. Not. Roy. Astron. Soc.}\ }\textbf {\bibinfo {volume} {528}},\
+  \bibinfo {pages} {833} (\bibinfo {year} {2024})},\ \Eprint
+  {https://arxiv.org/abs/2308.07565} {arXiv:2308.07565 [astro-ph.HE]}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Yunes}\ \emph {et~al.}(2009)\citenamefont {Yunes},
+  \citenamefont {Arun}, \citenamefont {Berti},\ and\ \citenamefont
+  {Will}}]{Yunes:2009yz}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {N.}~\bibnamefont
+  {Yunes}}, \bibinfo {author} {\bibfnamefont {K.~G.}\ \bibnamefont {Arun}},
+  \bibinfo {author} {\bibfnamefont {E.}~\bibnamefont {Berti}},\ and\ \bibinfo
+  {author} {\bibfnamefont {C.~M.}\ \bibnamefont {Will}},\ }\bibfield  {title}
+  {\bibinfo {title} {{Post-Circular Expansion of Eccentric Binary Inspirals:
+  Fourier-Domain Waveforms in the Stationary Phase Approximation}},\ }\href
+  {https://doi.org/10.1103/PhysRevD.80.084001} {\bibfield  {journal} {\bibinfo
+  {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {80}},\ \bibinfo
+  {pages} {084001} (\bibinfo {year} {2009})},\ \bibinfo {note} {[Erratum:
+  Phys.Rev.D 89, 109901 (2014)]},\ \Eprint {https://arxiv.org/abs/0906.0313}
+  {arXiv:0906.0313 [gr-qc]} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Cornish}\ and\ \citenamefont
+  {Shapiro~Key}(2010)}]{Cornish:2010cd}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {N.~J.}\ \bibnamefont
+  {Cornish}}\ and\ \bibinfo {author} {\bibfnamefont {J.}~\bibnamefont
+  {Shapiro~Key}},\ }\bibfield  {title} {\bibinfo {title} {{Computing waveforms
+  for spinning compact binaries in quasi-eccentric orbits}},\ }\href
+  {https://doi.org/10.1103/PhysRevD.82.044028} {\bibfield  {journal} {\bibinfo
+  {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {82}},\ \bibinfo
+  {pages} {044028} (\bibinfo {year} {2010})},\ \bibinfo {note} {[Erratum:
+  Phys.Rev.D 84, 029901 (2011)]},\ \Eprint {https://arxiv.org/abs/1004.5322}
+  {arXiv:1004.5322 [gr-qc]} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Shapiro~Key}\ and\ \citenamefont
+  {Cornish}(2011)}]{ShapiroKey:2010cnz}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.}~\bibnamefont
+  {Shapiro~Key}}\ and\ \bibinfo {author} {\bibfnamefont {N.~J.}\ \bibnamefont
+  {Cornish}},\ }\bibfield  {title} {\bibinfo {title} {{Characterizing Spinning
+  Black Hole Binaries in Eccentric Orbits with LISA}},\ }\href
+  {https://doi.org/10.1103/PhysRevD.83.083001} {\bibfield  {journal} {\bibinfo
+  {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {83}},\ \bibinfo
+  {pages} {083001} (\bibinfo {year} {2011})},\ \Eprint
+  {https://arxiv.org/abs/1006.3759} {arXiv:1006.3759 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Huerta}\ \emph {et~al.}(2014)\citenamefont {Huerta},
+  \citenamefont {Kumar}, \citenamefont {McWilliams}, \citenamefont
+  {O'Shaughnessy},\ and\ \citenamefont {Yunes}}]{Huerta:2014eca}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {E.~A.}\ \bibnamefont
+  {Huerta}}, \bibinfo {author} {\bibfnamefont {P.}~\bibnamefont {Kumar}},
+  \bibinfo {author} {\bibfnamefont {S.~T.}\ \bibnamefont {McWilliams}},
+  \bibinfo {author} {\bibfnamefont {R.}~\bibnamefont {O'Shaughnessy}},\ and\
+  \bibinfo {author} {\bibfnamefont {N.}~\bibnamefont {Yunes}},\ }\bibfield
+  {title} {\bibinfo {title} {{Accurate and efficient waveforms for compact
+  binaries on eccentric orbits}},\ }\href
+  {https://doi.org/10.1103/PhysRevD.90.084016} {\bibfield  {journal} {\bibinfo
+  {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {90}},\ \bibinfo
+  {pages} {084016} (\bibinfo {year} {2014})},\ \Eprint
+  {https://arxiv.org/abs/1408.3406} {arXiv:1408.3406 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Tanay}\ \emph {et~al.}(2016)\citenamefont {Tanay},
+  \citenamefont {Haney},\ and\ \citenamefont {Gopakumar}}]{Tanay:2016zog}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {S.}~\bibnamefont
+  {Tanay}}, \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {Haney}},\ and\
+  \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont {Gopakumar}},\ }\bibfield
+  {title} {\bibinfo {title} {{Frequency and time domain inspiral templates for
+  comparable mass compact binaries in eccentric orbits}},\ }\href
+  {https://doi.org/10.1103/PhysRevD.93.064031} {\bibfield  {journal} {\bibinfo
+  {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {93}},\ \bibinfo
+  {pages} {064031} (\bibinfo {year} {2016})},\ \Eprint
+  {https://arxiv.org/abs/1602.03081} {arXiv:1602.03081 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Loutrel}\ and\ \citenamefont
+  {Yunes}(2017)}]{Loutrel:2017fgu}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {N.}~\bibnamefont
+  {Loutrel}}\ and\ \bibinfo {author} {\bibfnamefont {N.}~\bibnamefont
+  {Yunes}},\ }\bibfield  {title} {\bibinfo {title} {{Eccentric Gravitational
+  Wave Bursts in the Post-Newtonian Formalism}},\ }\href
+  {https://doi.org/10.1088/1361-6382/aa7449} {\bibfield  {journal} {\bibinfo
+  {journal} {Class. Quant. Grav.}\ }\textbf {\bibinfo {volume} {34}},\ \bibinfo
+  {pages} {135011} (\bibinfo {year} {2017})},\ \Eprint
+  {https://arxiv.org/abs/1702.01818} {arXiv:1702.01818 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Tiwari}\ \emph {et~al.}(2019)\citenamefont {Tiwari},
+  \citenamefont {Achamveedu}, \citenamefont {Haney},\ and\ \citenamefont
+  {Hemantakumar}}]{Tiwari:2019jtz}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {S.}~\bibnamefont
+  {Tiwari}}, \bibinfo {author} {\bibfnamefont {G.}~\bibnamefont {Achamveedu}},
+  \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {Haney}},\ and\ \bibinfo
+  {author} {\bibfnamefont {P.}~\bibnamefont {Hemantakumar}},\ }\bibfield
+  {title} {\bibinfo {title} {{Ready-to-use Fourier domain templates for compact
+  binaries inspiraling along moderately eccentric orbits}},\ }\href
+  {https://doi.org/10.1103/PhysRevD.99.124008} {\bibfield  {journal} {\bibinfo
+  {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {99}},\ \bibinfo
+  {pages} {124008} (\bibinfo {year} {2019})},\ \Eprint
+  {https://arxiv.org/abs/1905.07956} {arXiv:1905.07956 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Tiwari}\ and\ \citenamefont
+  {Gopakumar}(2020)}]{Tiwari:2020hsu}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {S.}~\bibnamefont
+  {Tiwari}}\ and\ \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
+  {Gopakumar}},\ }\bibfield  {title} {\bibinfo {title} {{Combining
+  post-circular and Pad\'e approximations to compute Fourier domain templates
+  for eccentric inspirals}},\ }\href
+  {https://doi.org/10.1103/PhysRevD.102.084042} {\bibfield  {journal} {\bibinfo
+   {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {102}},\ \bibinfo
+  {pages} {084042} (\bibinfo {year} {2020})},\ \Eprint
+  {https://arxiv.org/abs/2009.11333} {arXiv:2009.11333 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Moore}\ \emph {et~al.}(2018)\citenamefont {Moore},
+  \citenamefont {Robson}, \citenamefont {Loutrel},\ and\ \citenamefont
+  {Yunes}}]{Moore:2018kvz}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {B.}~\bibnamefont
+  {Moore}}, \bibinfo {author} {\bibfnamefont {T.}~\bibnamefont {Robson}},
+  \bibinfo {author} {\bibfnamefont {N.}~\bibnamefont {Loutrel}},\ and\ \bibinfo
+  {author} {\bibfnamefont {N.}~\bibnamefont {Yunes}},\ }\bibfield  {title}
+  {\bibinfo {title} {{Towards a Fourier domain waveform for non-spinning
+  binaries with arbitrary eccentricity}},\ }\href
+  {https://doi.org/10.1088/1361-6382/aaea00} {\bibfield  {journal} {\bibinfo
+  {journal} {Class. Quant. Grav.}\ }\textbf {\bibinfo {volume} {35}},\ \bibinfo
+  {pages} {235006} (\bibinfo {year} {2018})},\ \Eprint
+  {https://arxiv.org/abs/1807.07163} {arXiv:1807.07163 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Moore}\ and\ \citenamefont
+  {Yunes}(2019)}]{Moore:2019xkm}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {B.}~\bibnamefont
+  {Moore}}\ and\ \bibinfo {author} {\bibfnamefont {N.}~\bibnamefont {Yunes}},\
+  }\bibfield  {title} {\bibinfo {title} {{A 3PN Fourier Domain Waveform for
+  Non-Spinning Binaries with Moderate Eccentricity}},\ }\href
+  {https://doi.org/10.1088/1361-6382/ab3778} {\bibfield  {journal} {\bibinfo
+  {journal} {Class. Quant. Grav.}\ }\textbf {\bibinfo {volume} {36}},\ \bibinfo
+  {pages} {185003} (\bibinfo {year} {2019})},\ \Eprint
+  {https://arxiv.org/abs/1903.05203} {arXiv:1903.05203 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Sridhar}\ \emph {et~al.}(2025)\citenamefont
+  {Sridhar}, \citenamefont {Bhattacharyya}, \citenamefont {Paul},\ and\
+  \citenamefont {Mishra}}]{Sridhar:2024zms}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {O.}~\bibnamefont
+  {Sridhar}}, \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont
+  {Bhattacharyya}}, \bibinfo {author} {\bibfnamefont {K.}~\bibnamefont
+  {Paul}},\ and\ \bibinfo {author} {\bibfnamefont {C.~K.}\ \bibnamefont
+  {Mishra}},\ }\bibfield  {title} {\bibinfo {title} {{Spin effects in the
+  phasing formula of eccentric compact binary inspirals up to the third
+  post-Newtonian order}},\ }\href {https://doi.org/10.1103/7xw4-flsn}
+  {\bibfield  {journal} {\bibinfo  {journal} {Phys. Rev. D}\ }\textbf {\bibinfo
+  {volume} {112}},\ \bibinfo {pages} {024026} (\bibinfo {year} {2025})},\
+  \Eprint {https://arxiv.org/abs/2412.10909} {arXiv:2412.10909 [gr-qc]}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Klein}\ \emph {et~al.}(2018)\citenamefont {Klein},
+  \citenamefont {Boetzel}, \citenamefont {Gopakumar}, \citenamefont {Jetzer},\
+  and\ \citenamefont {de~Vittori}}]{Klein:2018ybm}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
+  {Klein}}, \bibinfo {author} {\bibfnamefont {Y.}~\bibnamefont {Boetzel}},
+  \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont {Gopakumar}}, \bibinfo
+  {author} {\bibfnamefont {P.}~\bibnamefont {Jetzer}},\ and\ \bibinfo {author}
+  {\bibfnamefont {L.}~\bibnamefont {de~Vittori}},\ }\bibfield  {title}
+  {\bibinfo {title} {{Fourier domain gravitational waveforms for precessing
+  eccentric binaries}},\ }\href {https://doi.org/10.1103/PhysRevD.98.104043}
+  {\bibfield  {journal} {\bibinfo  {journal} {Phys. Rev. D}\ }\textbf {\bibinfo
+  {volume} {98}},\ \bibinfo {pages} {104043} (\bibinfo {year} {2018})},\
+  \Eprint {https://arxiv.org/abs/1801.08542} {arXiv:1801.08542 [gr-qc]}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Klein}(2021)}]{Klein:2021jtd}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
+  {Klein}},\ }\bibfield  {title} {\bibinfo {title} {{EFPE: Efficient fully
+  precessing eccentric gravitational waveforms for binaries with long
+  inspirals}},\ }\href@noop {} {\  (\bibinfo {year} {2021})},\ \Eprint
+  {https://arxiv.org/abs/2106.10291} {arXiv:2106.10291 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Morras}\ \emph
+  {et~al.}(2025{\natexlab{b}})\citenamefont {Morras}, \citenamefont {Pratten},\
+  and\ \citenamefont {Schmidt}}]{Morras:2025nlp}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {G.}~\bibnamefont
+  {Morras}}, \bibinfo {author} {\bibfnamefont {G.}~\bibnamefont {Pratten}},\
+  and\ \bibinfo {author} {\bibfnamefont {P.}~\bibnamefont {Schmidt}},\
+  }\bibfield  {title} {\bibinfo {title} {{Improved post-Newtonian waveform
+  model for inspiralling precessing-eccentric compact binaries}},\ }\href
+  {https://doi.org/10.1103/PhysRevD.111.084052} {\bibfield  {journal} {\bibinfo
+   {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {111}},\ \bibinfo
+  {pages} {084052} (\bibinfo {year} {2025}{\natexlab{b}})},\ \Eprint
+  {https://arxiv.org/abs/2502.03929} {arXiv:2502.03929 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Huerta}\ \emph {et~al.}(2017)\citenamefont {Huerta}
+  \emph {et~al.}}]{Huerta:2016rwp}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {E.~A.}\ \bibnamefont
+  {Huerta}} \emph {et~al.},\ }\bibfield  {title} {\bibinfo {title} {{Complete
+  waveform model for compact binaries on eccentric orbits}},\ }\href
+  {https://doi.org/10.1103/PhysRevD.95.024038} {\bibfield  {journal} {\bibinfo
+  {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {95}},\ \bibinfo
+  {pages} {024038} (\bibinfo {year} {2017})},\ \Eprint
+  {https://arxiv.org/abs/1609.05933} {arXiv:1609.05933 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Huerta}\ \emph {et~al.}(2018)\citenamefont {Huerta}
+  \emph {et~al.}}]{Huerta:2017kez}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {E.~A.}\ \bibnamefont
+  {Huerta}} \emph {et~al.},\ }\bibfield  {title} {\bibinfo {title} {{Eccentric,
+  nonspinning, inspiral, Gaussian-process merger approximant for the detection
+  and characterization of eccentric binary black hole mergers}},\ }\href
+  {https://doi.org/10.1103/PhysRevD.97.024031} {\bibfield  {journal} {\bibinfo
+  {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {97}},\ \bibinfo
+  {pages} {024031} (\bibinfo {year} {2018})},\ \Eprint
+  {https://arxiv.org/abs/1711.06276} {arXiv:1711.06276 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Chen}\ \emph {et~al.}(2021)\citenamefont {Chen},
+  \citenamefont {Huerta}, \citenamefont {Adamo}, \citenamefont {Haas},
+  \citenamefont {O'Shea}, \citenamefont {Kumar},\ and\ \citenamefont
+  {Moore}}]{Chen:2020lzc}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {Z.}~\bibnamefont
+  {Chen}}, \bibinfo {author} {\bibfnamefont {E.~A.}\ \bibnamefont {Huerta}},
+  \bibinfo {author} {\bibfnamefont {J.}~\bibnamefont {Adamo}}, \bibinfo
+  {author} {\bibfnamefont {R.}~\bibnamefont {Haas}}, \bibinfo {author}
+  {\bibfnamefont {E.}~\bibnamefont {O'Shea}}, \bibinfo {author} {\bibfnamefont
+  {P.}~\bibnamefont {Kumar}},\ and\ \bibinfo {author} {\bibfnamefont
+  {C.}~\bibnamefont {Moore}},\ }\bibfield  {title} {\bibinfo {title}
+  {{Observation of eccentric binary black hole mergers with second and third
+  generation gravitational wave detector networks}},\ }\href
+  {https://doi.org/10.1103/PhysRevD.103.084018} {\bibfield  {journal} {\bibinfo
+   {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {103}},\ \bibinfo
+  {pages} {084018} (\bibinfo {year} {2021})},\ \Eprint
+  {https://arxiv.org/abs/2008.03313} {arXiv:2008.03313 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Paul}\ \emph
+  {et~al.}(2025{\natexlab{a}})\citenamefont {Paul}, \citenamefont {Maurya},
+  \citenamefont {Henry}, \citenamefont {Sharma}, \citenamefont {Satheesh},
+  \citenamefont {Divyajyoti}, \citenamefont {Kumar},\ and\ \citenamefont
+  {Mishra}}]{Paul:2024ujx}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {K.}~\bibnamefont
+  {Paul}}, \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont {Maurya}},
+  \bibinfo {author} {\bibfnamefont {Q.}~\bibnamefont {Henry}}, \bibinfo
+  {author} {\bibfnamefont {K.}~\bibnamefont {Sharma}}, \bibinfo {author}
+  {\bibfnamefont {P.}~\bibnamefont {Satheesh}}, \bibinfo {author} {\bibnamefont
+  {Divyajyoti}}, \bibinfo {author} {\bibfnamefont {P.}~\bibnamefont {Kumar}},\
+  and\ \bibinfo {author} {\bibfnamefont {C.~K.}\ \bibnamefont {Mishra}},\
+  }\bibfield  {title} {\bibinfo {title} {{Eccentric, spinning,
+  inspiral-merger-ringdown waveform model with higher modes for the detection
+  and characterization of binary black holes}},\ }\href
+  {https://doi.org/10.1103/PhysRevD.111.084074} {\bibfield  {journal} {\bibinfo
+   {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {111}},\ \bibinfo
+  {pages} {084074} (\bibinfo {year} {2025}{\natexlab{a}})},\ \Eprint
+  {https://arxiv.org/abs/2409.13866} {arXiv:2409.13866 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Hinder}\ \emph {et~al.}(2018)\citenamefont {Hinder},
+  \citenamefont {Kidder},\ and\ \citenamefont {Pfeiffer}}]{Hinder:2017sxy}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {I.}~\bibnamefont
+  {Hinder}}, \bibinfo {author} {\bibfnamefont {L.~E.}\ \bibnamefont {Kidder}},\
+  and\ \bibinfo {author} {\bibfnamefont {H.~P.}\ \bibnamefont {Pfeiffer}},\
+  }\bibfield  {title} {\bibinfo {title} {{Eccentric binary black hole
+  inspiral-merger-ringdown gravitational waveform model from numerical
+  relativity and post-Newtonian theory}},\ }\href
+  {https://doi.org/10.1103/PhysRevD.98.044015} {\bibfield  {journal} {\bibinfo
+  {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {98}},\ \bibinfo
+  {pages} {044015} (\bibinfo {year} {2018})},\ \Eprint
+  {https://arxiv.org/abs/1709.02007} {arXiv:1709.02007 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Chattaraj}\ \emph {et~al.}(2022)\citenamefont
+  {Chattaraj}, \citenamefont {RoyChowdhury}, \citenamefont {Divyajyoti},
+  \citenamefont {Mishra},\ and\ \citenamefont {Gupta}}]{Chattaraj:2022tay}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
+  {Chattaraj}}, \bibinfo {author} {\bibfnamefont {T.}~\bibnamefont
+  {RoyChowdhury}}, \bibinfo {author} {\bibnamefont {Divyajyoti}}, \bibinfo
+  {author} {\bibfnamefont {C.~K.}\ \bibnamefont {Mishra}},\ and\ \bibinfo
+  {author} {\bibfnamefont {A.}~\bibnamefont {Gupta}},\ }\bibfield  {title}
+  {\bibinfo {title} {{High accuracy post-Newtonian and numerical relativity
+  comparisons involving higher modes for eccentric binary black holes and a
+  dominant mode eccentric inspiral-merger-ringdown model}},\ }\href
+  {https://doi.org/10.1103/PhysRevD.106.124008} {\bibfield  {journal} {\bibinfo
+   {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {106}},\ \bibinfo
+  {pages} {124008} (\bibinfo {year} {2022})},\ \Eprint
+  {https://arxiv.org/abs/2204.02377} {arXiv:2204.02377 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Manna}\ \emph {et~al.}(2025)\citenamefont {Manna},
+  \citenamefont {RoyChowdhury},\ and\ \citenamefont {Mishra}}]{Manna:2024ycx}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {P.}~\bibnamefont
+  {Manna}}, \bibinfo {author} {\bibfnamefont {T.}~\bibnamefont
+  {RoyChowdhury}},\ and\ \bibinfo {author} {\bibfnamefont {C.~K.}\ \bibnamefont
+  {Mishra}},\ }\bibfield  {title} {\bibinfo {title} {{Improved
+  inspiral-merger-ringdown model for BBHs on elliptical orbits}},\ }\href
+  {https://doi.org/10.1103/849s-3zy8} {\bibfield  {journal} {\bibinfo
+  {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {111}},\ \bibinfo
+  {pages} {124026} (\bibinfo {year} {2025})},\ \Eprint
+  {https://arxiv.org/abs/2409.10672} {arXiv:2409.10672 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Cao}\ and\ \citenamefont {Han}(2017)}]{Cao:2017ndf}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {Z.}~\bibnamefont
+  {Cao}}\ and\ \bibinfo {author} {\bibfnamefont {W.-B.}\ \bibnamefont {Han}},\
+  }\bibfield  {title} {\bibinfo {title} {{Waveform model for an eccentric
+  binary black hole based on the effective-one-body-numerical-relativity
+  formalism}},\ }\href {https://doi.org/10.1103/PhysRevD.96.044028} {\bibfield
+  {journal} {\bibinfo  {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume}
+  {96}},\ \bibinfo {pages} {044028} (\bibinfo {year} {2017})},\ \Eprint
+  {https://arxiv.org/abs/1708.00166} {arXiv:1708.00166 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Liu}\ \emph {et~al.}(2020)\citenamefont {Liu},
+  \citenamefont {Cao},\ and\ \citenamefont {Shao}}]{Liu:2019jpg}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {X.}~\bibnamefont
+  {Liu}}, \bibinfo {author} {\bibfnamefont {Z.}~\bibnamefont {Cao}},\ and\
+  \bibinfo {author} {\bibfnamefont {L.}~\bibnamefont {Shao}},\ }\bibfield
+  {title} {\bibinfo {title} {{Validating the Effective-One-Body
+  Numerical-Relativity Waveform Models for Spin-aligned Binary Black Holes
+  along Eccentric Orbits}},\ }\href
+  {https://doi.org/10.1103/PhysRevD.101.044049} {\bibfield  {journal} {\bibinfo
+   {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {101}},\ \bibinfo
+  {pages} {044049} (\bibinfo {year} {2020})},\ \Eprint
+  {https://arxiv.org/abs/1910.00784} {arXiv:1910.00784 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Liu}\ \emph {et~al.}(2022)\citenamefont {Liu},
+  \citenamefont {Cao},\ and\ \citenamefont {Zhu}}]{Liu:2021pkr}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {X.}~\bibnamefont
+  {Liu}}, \bibinfo {author} {\bibfnamefont {Z.}~\bibnamefont {Cao}},\ and\
+  \bibinfo {author} {\bibfnamefont {Z.-H.}\ \bibnamefont {Zhu}},\ }\bibfield
+  {title} {\bibinfo {title} {{A higher-multipole gravitational waveform model
+  for an eccentric binary black holes based on the
+  effective-one-body-numerical-relativity formalism}},\ }\href
+  {https://doi.org/10.1088/1361-6382/ac4119} {\bibfield  {journal} {\bibinfo
+  {journal} {Class. Quant. Grav.}\ }\textbf {\bibinfo {volume} {39}},\ \bibinfo
+  {pages} {035009} (\bibinfo {year} {2022})},\ \Eprint
+  {https://arxiv.org/abs/2102.08614} {arXiv:2102.08614 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Liu}\ \emph {et~al.}(2023)\citenamefont {Liu},
+  \citenamefont {Cao},\ and\ \citenamefont {Shao}}]{Liu:2023dgl}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {X.}~\bibnamefont
+  {Liu}}, \bibinfo {author} {\bibfnamefont {Z.}~\bibnamefont {Cao}},\ and\
+  \bibinfo {author} {\bibfnamefont {L.}~\bibnamefont {Shao}},\ }\bibfield
+  {title} {\bibinfo {title} {{Upgraded waveform model of eccentric binary black
+  hole based on effective-one-body-numerical-relativity for spin-aligned binary
+  black holes}},\ }\href {https://doi.org/10.1142/S0218271823500153} {\bibfield
+   {journal} {\bibinfo  {journal} {Int. J. Mod. Phys. D}\ }\textbf {\bibinfo
+  {volume} {32}},\ \bibinfo {pages} {2350015} (\bibinfo {year} {2023})},\
+  \Eprint {https://arxiv.org/abs/2306.15277} {arXiv:2306.15277 [gr-qc]}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Chiaramello}\ and\ \citenamefont
+  {Nagar}(2020)}]{Chiaramello:2020ehz}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {D.}~\bibnamefont
+  {Chiaramello}}\ and\ \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
+  {Nagar}},\ }\bibfield  {title} {\bibinfo {title} {{Faithful analytical
+  effective-one-body waveform model for spin-aligned, moderately eccentric,
+  coalescing black hole binaries}},\ }\href
+  {https://doi.org/10.1103/PhysRevD.101.101501} {\bibfield  {journal} {\bibinfo
+   {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {101}},\ \bibinfo
+  {pages} {101501} (\bibinfo {year} {2020})},\ \Eprint
+  {https://arxiv.org/abs/2001.11736} {arXiv:2001.11736 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Nagar}\ \emph {et~al.}(2021)\citenamefont {Nagar},
+  \citenamefont {Bonino},\ and\ \citenamefont {Rettegno}}]{Nagar:2021gss}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
+  {Nagar}}, \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont {Bonino}},\ and\
+  \bibinfo {author} {\bibfnamefont {P.}~\bibnamefont {Rettegno}},\ }\bibfield
+  {title} {\bibinfo {title} {{Effective one-body multipolar waveform model for
+  spin-aligned, quasicircular, eccentric, hyperbolic black hole binaries}},\
+  }\href {https://doi.org/10.1103/PhysRevD.103.104021} {\bibfield  {journal}
+  {\bibinfo  {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {103}},\
+  \bibinfo {pages} {104021} (\bibinfo {year} {2021})},\ \Eprint
+  {https://arxiv.org/abs/2101.08624} {arXiv:2101.08624 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Gamba}\ \emph {et~al.}(2024)\citenamefont {Gamba},
+  \citenamefont {Chiaramello},\ and\ \citenamefont {Neogi}}]{Gamba:2024cvy}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {R.}~\bibnamefont
+  {Gamba}}, \bibinfo {author} {\bibfnamefont {D.}~\bibnamefont {Chiaramello}},\
+  and\ \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont {Neogi}},\ }\bibfield
+   {title} {\bibinfo {title} {{Toward efficient effective-one-body models for
+  generic, nonplanar orbits}},\ }\href
+  {https://doi.org/10.1103/PhysRevD.110.024031} {\bibfield  {journal} {\bibinfo
+   {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {110}},\ \bibinfo
+  {pages} {024031} (\bibinfo {year} {2024})},\ \Eprint
+  {https://arxiv.org/abs/2404.15408} {arXiv:2404.15408 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Nagar}\ \emph {et~al.}(2024)\citenamefont {Nagar},
+  \citenamefont {Gamba}, \citenamefont {Rettegno}, \citenamefont {Fantini},\
+  and\ \citenamefont {Bernuzzi}}]{Nagar:2024dzj}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
+  {Nagar}}, \bibinfo {author} {\bibfnamefont {R.}~\bibnamefont {Gamba}},
+  \bibinfo {author} {\bibfnamefont {P.}~\bibnamefont {Rettegno}}, \bibinfo
+  {author} {\bibfnamefont {V.}~\bibnamefont {Fantini}},\ and\ \bibinfo {author}
+  {\bibfnamefont {S.}~\bibnamefont {Bernuzzi}},\ }\bibfield  {title} {\bibinfo
+  {title} {{Effective-one-body waveform model for noncircularized, planar,
+  coalescing black hole binaries: The importance of radiation reaction}},\
+  }\href {https://doi.org/10.1103/PhysRevD.110.084001} {\bibfield  {journal}
+  {\bibinfo  {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {110}},\
+  \bibinfo {pages} {084001} (\bibinfo {year} {2024})},\ \Eprint
+  {https://arxiv.org/abs/2404.05288} {arXiv:2404.05288 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Ramos-Buades}\ \emph {et~al.}(2022)\citenamefont
+  {Ramos-Buades}, \citenamefont {Buonanno}, \citenamefont {Khalil},\ and\
+  \citenamefont {Ossokine}}]{Ramos-Buades:2021adz}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
+  {Ramos-Buades}}, \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
+  {Buonanno}}, \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {Khalil}},\
+  and\ \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont {Ossokine}},\
+  }\bibfield  {title} {\bibinfo {title} {{Effective-one-body multipolar
+  waveforms for eccentric binary black holes with nonprecessing spins}},\
+  }\href {https://doi.org/10.1103/PhysRevD.105.044035} {\bibfield  {journal}
+  {\bibinfo  {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {105}},\
+  \bibinfo {pages} {044035} (\bibinfo {year} {2022})},\ \Eprint
+  {https://arxiv.org/abs/2112.06952} {arXiv:2112.06952 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Gamboa}\ \emph {et~al.}(2025)\citenamefont {Gamboa}
+  \emph {et~al.}}]{Gamboa:2024hli}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
+  {Gamboa}} \emph {et~al.},\ }\bibfield  {title} {\bibinfo {title} {{Accurate
+  waveforms for eccentric, aligned-spin binary black holes: The multipolar
+  effective-one-body model \texttt{SEOBNRv5EHM}}},\ }\href
+  {https://doi.org/10.1103/jxrc-z298} {\bibfield  {journal} {\bibinfo
+  {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {112}},\ \bibinfo
+  {pages} {044038} (\bibinfo {year} {2025})},\ \Eprint
+  {https://arxiv.org/abs/2412.12823} {arXiv:2412.12823 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Planas}\ \emph
+  {et~al.}(2025{\natexlab{c}})\citenamefont {Planas}, \citenamefont
+  {Ramos-Buades}, \citenamefont {Garc\'\i{}a-Quir\'os}, \citenamefont
+  {Estell\'es}, \citenamefont {Husa},\ and\ \citenamefont
+  {Haney}}]{Planas:2025feq}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.~d.~L.}\
+  \bibnamefont {Planas}}, \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
+  {Ramos-Buades}}, \bibinfo {author} {\bibfnamefont {C.}~\bibnamefont
+  {Garc\'\i{}a-Quir\'os}}, \bibinfo {author} {\bibfnamefont {H.}~\bibnamefont
+  {Estell\'es}}, \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont {Husa}},\
+  and\ \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {Haney}},\ }\bibfield
+   {title} {\bibinfo {title} {{Time-domain phenomenological multipolar
+  waveforms for aligned-spin binary black holes in elliptical orbits}},\
+  }\href@noop {} {\  (\bibinfo {year} {2025}{\natexlab{c}})},\ \Eprint
+  {https://arxiv.org/abs/2503.13062} {arXiv:2503.13062 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Setyawati}\ and\ \citenamefont
+  {Ohme}(2021)}]{Setyawati:2021gom}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {Y.}~\bibnamefont
+  {Setyawati}}\ and\ \bibinfo {author} {\bibfnamefont {F.}~\bibnamefont
+  {Ohme}},\ }\bibfield  {title} {\bibinfo {title} {{Adding eccentricity to
+  quasicircular binary-black-hole waveform models}},\ }\href
+  {https://doi.org/10.1103/PhysRevD.103.124011} {\bibfield  {journal} {\bibinfo
+   {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {103}},\ \bibinfo
+  {pages} {124011} (\bibinfo {year} {2021})},\ \Eprint
+  {https://arxiv.org/abs/2101.11033} {arXiv:2101.11033 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Wang}\ \emph {et~al.}(2023)\citenamefont {Wang},
+  \citenamefont {Zou},\ and\ \citenamefont {Liu}}]{Wang:2023ueg}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {H.}~\bibnamefont
+  {Wang}}, \bibinfo {author} {\bibfnamefont {Y.-C.}\ \bibnamefont {Zou}},\ and\
+  \bibinfo {author} {\bibfnamefont {Y.}~\bibnamefont {Liu}},\ }\bibfield
+  {title} {\bibinfo {title} {{Phenomenological relationship between eccentric
+  and quasicircular orbital binary black hole waveform}},\ }\href
+  {https://doi.org/10.1103/PhysRevD.107.124061} {\bibfield  {journal} {\bibinfo
+   {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {107}},\ \bibinfo
+  {pages} {124061} (\bibinfo {year} {2023})},\ \Eprint
+  {https://arxiv.org/abs/2302.11227} {arXiv:2302.11227 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Islam}(2024)}]{Islam:2024tcs}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {T.}~\bibnamefont
+  {Islam}},\ }\bibfield  {title} {\bibinfo {title} {{Study of eccentric binary
+  black hole mergers using numerical relativity and an inspiral-merger-ringdown
+  model}},\ }\href@noop {} {\  (\bibinfo {year} {2024})},\ \Eprint
+  {https://arxiv.org/abs/2403.03487} {arXiv:2403.03487 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Islam}\ and\ \citenamefont
+  {Venumadhav}(2025{\natexlab{a}})}]{Islam:2024bza}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {T.}~\bibnamefont
+  {Islam}}\ and\ \bibinfo {author} {\bibfnamefont {T.}~\bibnamefont
+  {Venumadhav}},\ }\bibfield  {title} {\bibinfo {title} {{Universal
+  phenomenological relations between spherical harmonic modes in nonprecessing
+  eccentric binary black hole merger waveforms}},\ }\href
+  {https://doi.org/10.1103/PhysRevD.111.L081503} {\bibfield  {journal}
+  {\bibinfo  {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {111}},\
+  \bibinfo {pages} {L081503} (\bibinfo {year} {2025}{\natexlab{a}})},\ \Eprint
+  {https://arxiv.org/abs/2408.14654} {arXiv:2408.14654 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Islam}\ \emph
+  {et~al.}(2025{\natexlab{a}})\citenamefont {Islam}, \citenamefont {Khanna},\
+  and\ \citenamefont {Field}}]{Islam:2024zqo}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {T.}~\bibnamefont
+  {Islam}}, \bibinfo {author} {\bibfnamefont {G.}~\bibnamefont {Khanna}},\ and\
+  \bibinfo {author} {\bibfnamefont {S.~E.}\ \bibnamefont {Field}},\ }\bibfield
+  {title} {\bibinfo {title} {{Adding higher-order spherical harmonics in
+  nonspinning eccentric binary black hole merger waveform models}},\ }\href
+  {https://doi.org/10.1103/63d1-hh8k} {\bibfield  {journal} {\bibinfo
+  {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {111}},\ \bibinfo
+  {pages} {124023} (\bibinfo {year} {2025}{\natexlab{a}})},\ \Eprint
+  {https://arxiv.org/abs/2408.02762} {arXiv:2408.02762 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Lumley}(1967)}]{Lumley1967}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.~L.}\ \bibnamefont
+  {Lumley}},\ }\bibfield  {title} {\bibinfo {title} {{The Structure of
+  Inhomogeneous Turbulent Flows}},\ }in\ \href@noop {} {\emph {\bibinfo
+  {booktitle} {{Atmospheric Turbulence and Radio Wave Propagation}}}},\
+  \bibinfo {editor} {edited by\ \bibinfo {editor} {\bibfnamefont {A.~M.}\
+  \bibnamefont {Yaglom}}\ and\ \bibinfo {editor} {\bibfnamefont {V.~I.}\
+  \bibnamefont {Tatarskiĭ}}}\ (\bibinfo  {publisher} {Nauka, Moscow},\
+  \bibinfo {year} {1967})\ pp.\ \bibinfo {pages} {166--178}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Sacks}\ \emph {et~al.}(1989)\citenamefont {Sacks},
+  \citenamefont {Welch}, \citenamefont {Mitchell},\ and\ \citenamefont
+  {Wynn}}]{Sacks1989}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.}~\bibnamefont
+  {Sacks}}, \bibinfo {author} {\bibfnamefont {W.~J.}\ \bibnamefont {Welch}},
+  \bibinfo {author} {\bibfnamefont {T.~J.}\ \bibnamefont {Mitchell}},\ and\
+  \bibinfo {author} {\bibfnamefont {H.~P.}\ \bibnamefont {Wynn}},\ }\bibfield
+  {title} {\bibinfo {title} {Design and analysis of computer experiments},\
+  }\href {http://www.jstor.org/stable/2245858} {\bibfield  {journal} {\bibinfo
+  {journal} {Statistical Science}\ }\textbf {\bibinfo {volume} {4}},\ \bibinfo
+  {pages} {409} (\bibinfo {year} {1989})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Box}\ and\ \citenamefont {Wilson}(1951)}]{Box1951}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {G.~E.~P.}\
+  \bibnamefont {Box}}\ and\ \bibinfo {author} {\bibfnamefont {K.~B.}\
+  \bibnamefont {Wilson}},\ }\bibfield  {title} {\bibinfo {title} {On the
+  experimental attainment of optimum conditions},\ }\href
+  {http://www.jstor.org/stable/2983966} {\bibfield  {journal} {\bibinfo
+  {journal} {Journal of the Royal Statistical Society. Series B
+  (Methodological)}\ }\textbf {\bibinfo {volume} {13}},\ \bibinfo {pages} {1}
+  (\bibinfo {year} {1951})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Simpson}\ \emph {et~al.}(2001)\citenamefont
+  {Simpson}, \citenamefont {Poplinski}, \citenamefont {Koch},\ and\
+  \citenamefont {Allen}}]{Simpson2001}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {T.~W.}\ \bibnamefont
+  {Simpson}}, \bibinfo {author} {\bibfnamefont {J.~D.}\ \bibnamefont
+  {Poplinski}}, \bibinfo {author} {\bibfnamefont {P.~N.}\ \bibnamefont
+  {Koch}},\ and\ \bibinfo {author} {\bibfnamefont {J.~K.}\ \bibnamefont
+  {Allen}},\ }\bibfield  {title} {\bibinfo {title} {Metamodels for
+  computer-based engineering design: Survey and recommendations},\ }\href
+  {https://doi.org/10.1007/PL00007198} {\bibfield  {journal} {\bibinfo
+  {journal} {Eng. with Comput.}\ }\textbf {\bibinfo {volume} {17}},\ \bibinfo
+  {pages} {129–150} (\bibinfo {year} {2001})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Forrester}\ \emph {et~al.}(2008)\citenamefont
+  {Forrester}, \citenamefont {Sóbester},\ and\ \citenamefont
+  {Keane}}]{Forrester2008}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.~I.~J.}\
+  \bibnamefont {Forrester}}, \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
+  {Sóbester}},\ and\ \bibinfo {author} {\bibfnamefont {A.~J.}\ \bibnamefont
+  {Keane}},\ }\href {https://doi.org/10.1002/9780470770801} {\emph {\bibinfo
+  {title} {Engineering Design via Surrogate Modelling: A Practical Guide}}}\
+  (\bibinfo  {publisher} {Wiley},\ \bibinfo {address} {Hoboken, NJ},\ \bibinfo
+  {year} {2008})\ pp.\ \bibinfo {pages} {I–XVIII + 1–210}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Field}\ \emph {et~al.}(2014)\citenamefont {Field},
+  \citenamefont {Galley}, \citenamefont {Hesthaven}, \citenamefont {Kaye},\
+  and\ \citenamefont {Tiglio}}]{Field:2013cfa}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {S.~E.}\ \bibnamefont
+  {Field}}, \bibinfo {author} {\bibfnamefont {C.~R.}\ \bibnamefont {Galley}},
+  \bibinfo {author} {\bibfnamefont {J.~S.}\ \bibnamefont {Hesthaven}}, \bibinfo
+  {author} {\bibfnamefont {J.}~\bibnamefont {Kaye}},\ and\ \bibinfo {author}
+  {\bibfnamefont {M.}~\bibnamefont {Tiglio}},\ }\bibfield  {title} {\bibinfo
+  {title} {{Fast prediction and evaluation of gravitational waveforms using
+  surrogate models}},\ }\href {https://doi.org/10.1103/PhysRevX.4.031006}
+  {\bibfield  {journal} {\bibinfo  {journal} {Phys. Rev. X}\ }\textbf {\bibinfo
+  {volume} {4}},\ \bibinfo {pages} {031006} (\bibinfo {year} {2014})},\ \Eprint
+  {https://arxiv.org/abs/1308.3565} {arXiv:1308.3565 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {P\"urrer}(2014)}]{Purrer:2014fza}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {P\"urrer}},\ }\bibfield  {title} {\bibinfo {title} {{Frequency domain
+  reduced order models for gravitational waves from aligned-spin compact
+  binaries}},\ }\href {https://doi.org/10.1088/0264-9381/31/19/195010}
+  {\bibfield  {journal} {\bibinfo  {journal} {Class. Quant. Grav.}\ }\textbf
+  {\bibinfo {volume} {31}},\ \bibinfo {pages} {195010} (\bibinfo {year}
+  {2014})},\ \Eprint {https://arxiv.org/abs/1402.4146} {arXiv:1402.4146
+  [gr-qc]} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {P\"urrer}(2016)}]{Purrer:2015tud}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {P\"urrer}},\ }\bibfield  {title} {\bibinfo {title} {{Frequency domain
+  reduced order model of aligned-spin effective-one-body waveforms with generic
+  mass-ratios and spins}},\ }\href {https://doi.org/10.1103/PhysRevD.93.064041}
+  {\bibfield  {journal} {\bibinfo  {journal} {Phys. Rev. D}\ }\textbf {\bibinfo
+  {volume} {93}},\ \bibinfo {pages} {064041} (\bibinfo {year} {2016})},\
+  \Eprint {https://arxiv.org/abs/1512.02248} {arXiv:1512.02248 [gr-qc]}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Lackey}\ \emph {et~al.}(2017)\citenamefont {Lackey},
+  \citenamefont {Bernuzzi}, \citenamefont {Galley}, \citenamefont {Meidam},\
+  and\ \citenamefont {Van Den~Broeck}}]{Lackey:2016krb}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {B.~D.}\ \bibnamefont
+  {Lackey}}, \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont {Bernuzzi}},
+  \bibinfo {author} {\bibfnamefont {C.~R.}\ \bibnamefont {Galley}}, \bibinfo
+  {author} {\bibfnamefont {J.}~\bibnamefont {Meidam}},\ and\ \bibinfo {author}
+  {\bibfnamefont {C.}~\bibnamefont {Van Den~Broeck}},\ }\bibfield  {title}
+  {\bibinfo {title} {{Effective-one-body waveforms for binary neutron stars
+  using surrogate models}},\ }\href
+  {https://doi.org/10.1103/PhysRevD.95.104036} {\bibfield  {journal} {\bibinfo
+  {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {95}},\ \bibinfo
+  {pages} {104036} (\bibinfo {year} {2017})},\ \Eprint
+  {https://arxiv.org/abs/1610.04742} {arXiv:1610.04742 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Lackey}\ \emph {et~al.}(2019)\citenamefont {Lackey},
+  \citenamefont {P\"urrer}, \citenamefont {Taracchini},\ and\ \citenamefont
+  {Marsat}}]{Lackey:2018zvw}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {B.~D.}\ \bibnamefont
+  {Lackey}}, \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {P\"urrer}},
+  \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont {Taracchini}},\ and\
+  \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont {Marsat}},\ }\bibfield
+  {title} {\bibinfo {title} {{Surrogate model for an aligned-spin effective one
+  body waveform model of binary neutron star inspirals using Gaussian process
+  regression}},\ }\href {https://doi.org/10.1103/PhysRevD.100.024002}
+  {\bibfield  {journal} {\bibinfo  {journal} {Phys. Rev. D}\ }\textbf {\bibinfo
+  {volume} {100}},\ \bibinfo {pages} {024002} (\bibinfo {year} {2019})},\
+  \Eprint {https://arxiv.org/abs/1812.08643} {arXiv:1812.08643 [gr-qc]}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Cotesta}\ \emph {et~al.}(2020)\citenamefont
+  {Cotesta}, \citenamefont {Marsat},\ and\ \citenamefont
+  {P\"urrer}}]{Cotesta:2020qhw}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {R.}~\bibnamefont
+  {Cotesta}}, \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont {Marsat}},\
+  and\ \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {P\"urrer}},\
+  }\bibfield  {title} {\bibinfo {title} {{Frequency domain reduced order model
+  of aligned-spin effective-one-body waveforms with higher-order modes}},\
+  }\href {https://doi.org/10.1103/PhysRevD.101.124040} {\bibfield  {journal}
+  {\bibinfo  {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {101}},\
+  \bibinfo {pages} {124040} (\bibinfo {year} {2020})},\ \Eprint
+  {https://arxiv.org/abs/2003.12079} {arXiv:2003.12079 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Khan}\ and\ \citenamefont
+  {Green}(2021)}]{Khan:2020fso}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {S.}~\bibnamefont
+  {Khan}}\ and\ \bibinfo {author} {\bibfnamefont {R.}~\bibnamefont {Green}},\
+  }\bibfield  {title} {\bibinfo {title} {{Gravitational-wave surrogate models
+  powered by artificial neural networks}},\ }\href
+  {https://doi.org/10.1103/PhysRevD.103.064015} {\bibfield  {journal} {\bibinfo
+   {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {103}},\ \bibinfo
+  {pages} {064015} (\bibinfo {year} {2021})},\ \Eprint
+  {https://arxiv.org/abs/2008.12932} {arXiv:2008.12932 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Nousi}\ \emph {et~al.}(2022)\citenamefont {Nousi},
+  \citenamefont {Fragkouli}, \citenamefont {Passalis}, \citenamefont {Iosif},
+  \citenamefont {Apostolatos}, \citenamefont {Pappas}, \citenamefont
+  {Stergioulas},\ and\ \citenamefont {Tefas}}]{Nousi:2021arn}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {P.}~\bibnamefont
+  {Nousi}}, \bibinfo {author} {\bibfnamefont {S.-C.}\ \bibnamefont
+  {Fragkouli}}, \bibinfo {author} {\bibfnamefont {N.}~\bibnamefont {Passalis}},
+  \bibinfo {author} {\bibfnamefont {P.}~\bibnamefont {Iosif}}, \bibinfo
+  {author} {\bibfnamefont {T.}~\bibnamefont {Apostolatos}}, \bibinfo {author}
+  {\bibfnamefont {G.}~\bibnamefont {Pappas}}, \bibinfo {author} {\bibfnamefont
+  {N.}~\bibnamefont {Stergioulas}},\ and\ \bibinfo {author} {\bibfnamefont
+  {A.}~\bibnamefont {Tefas}},\ }\bibfield  {title} {\bibinfo {title}
+  {{Autoencoder-driven Spiral Representation Learning for Gravitational Wave
+  Surrogate Modelling}},\ }\href {https://doi.org/10.1016/j.neucom.2022.03.052}
+  {\bibfield  {journal} {\bibinfo  {journal} {Neurocomput.}\ }\textbf {\bibinfo
+  {volume} {491}},\ \bibinfo {pages} {67} (\bibinfo {year} {2022})},\ \Eprint
+  {https://arxiv.org/abs/2107.04312} {arXiv:2107.04312 [cs.LG]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Gadre}\ \emph {et~al.}(2024)\citenamefont {Gadre},
+  \citenamefont {P\"urrer}, \citenamefont {Field}, \citenamefont {Ossokine},\
+  and\ \citenamefont {Varma}}]{Gadre:2022sed}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {B.}~\bibnamefont
+  {Gadre}}, \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {P\"urrer}},
+  \bibinfo {author} {\bibfnamefont {S.~E.}\ \bibnamefont {Field}}, \bibinfo
+  {author} {\bibfnamefont {S.}~\bibnamefont {Ossokine}},\ and\ \bibinfo
+  {author} {\bibfnamefont {V.}~\bibnamefont {Varma}},\ }\bibfield  {title}
+  {\bibinfo {title} {{Fully precessing higher-mode surrogate model of
+  effective-one-body waveforms}},\ }\href
+  {https://doi.org/10.1103/PhysRevD.110.124038} {\bibfield  {journal} {\bibinfo
+   {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {110}},\ \bibinfo
+  {pages} {124038} (\bibinfo {year} {2024})},\ \Eprint
+  {https://arxiv.org/abs/2203.00381} {arXiv:2203.00381 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Thomas}\ \emph {et~al.}(2022)\citenamefont {Thomas},
+  \citenamefont {Pratten},\ and\ \citenamefont {Schmidt}}]{Thomas:2022rmc}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {L.~M.}\ \bibnamefont
+  {Thomas}}, \bibinfo {author} {\bibfnamefont {G.}~\bibnamefont {Pratten}},\
+  and\ \bibinfo {author} {\bibfnamefont {P.}~\bibnamefont {Schmidt}},\
+  }\bibfield  {title} {\bibinfo {title} {{Accelerating multimodal gravitational
+  waveforms from precessing compact binaries with artificial neural
+  networks}},\ }\href {https://doi.org/10.1103/PhysRevD.106.104029} {\bibfield
+  {journal} {\bibinfo  {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume}
+  {106}},\ \bibinfo {pages} {104029} (\bibinfo {year} {2022})},\ \Eprint
+  {https://arxiv.org/abs/2205.14066} {arXiv:2205.14066 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Blackman}\ \emph {et~al.}(2015)\citenamefont
+  {Blackman}, \citenamefont {Field}, \citenamefont {Galley}, \citenamefont
+  {Szil\'agyi}, \citenamefont {Scheel}, \citenamefont {Tiglio},\ and\
+  \citenamefont {Hemberger}}]{Blackman:2015pia}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.}~\bibnamefont
+  {Blackman}}, \bibinfo {author} {\bibfnamefont {S.~E.}\ \bibnamefont {Field}},
+  \bibinfo {author} {\bibfnamefont {C.~R.}\ \bibnamefont {Galley}}, \bibinfo
+  {author} {\bibfnamefont {B.}~\bibnamefont {Szil\'agyi}}, \bibinfo {author}
+  {\bibfnamefont {M.~A.}\ \bibnamefont {Scheel}}, \bibinfo {author}
+  {\bibfnamefont {M.}~\bibnamefont {Tiglio}},\ and\ \bibinfo {author}
+  {\bibfnamefont {D.~A.}\ \bibnamefont {Hemberger}},\ }\bibfield  {title}
+  {\bibinfo {title} {{Fast and Accurate Prediction of Numerical Relativity
+  Waveforms from Binary Black Hole Coalescences Using Surrogate Models}},\
+  }\href {https://doi.org/10.1103/PhysRevLett.115.121102} {\bibfield  {journal}
+  {\bibinfo  {journal} {Phys. Rev. Lett.}\ }\textbf {\bibinfo {volume} {115}},\
+  \bibinfo {pages} {121102} (\bibinfo {year} {2015})},\ \Eprint
+  {https://arxiv.org/abs/1502.07758} {arXiv:1502.07758 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Blackman}\ \emph
+  {et~al.}(2017{\natexlab{a}})\citenamefont {Blackman}, \citenamefont {Field},
+  \citenamefont {Scheel}, \citenamefont {Galley}, \citenamefont {Hemberger},
+  \citenamefont {Schmidt},\ and\ \citenamefont {Smith}}]{Blackman:2017dfb}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.}~\bibnamefont
+  {Blackman}}, \bibinfo {author} {\bibfnamefont {S.~E.}\ \bibnamefont {Field}},
+  \bibinfo {author} {\bibfnamefont {M.~A.}\ \bibnamefont {Scheel}}, \bibinfo
+  {author} {\bibfnamefont {C.~R.}\ \bibnamefont {Galley}}, \bibinfo {author}
+  {\bibfnamefont {D.~A.}\ \bibnamefont {Hemberger}}, \bibinfo {author}
+  {\bibfnamefont {P.}~\bibnamefont {Schmidt}},\ and\ \bibinfo {author}
+  {\bibfnamefont {R.}~\bibnamefont {Smith}},\ }\bibfield  {title} {\bibinfo
+  {title} {{A Surrogate Model of Gravitational Waveforms from Numerical
+  Relativity Simulations of Precessing Binary Black Hole Mergers}},\ }\href
+  {https://doi.org/10.1103/PhysRevD.95.104023} {\bibfield  {journal} {\bibinfo
+  {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {95}},\ \bibinfo
+  {pages} {104023} (\bibinfo {year} {2017}{\natexlab{a}})},\ \Eprint
+  {https://arxiv.org/abs/1701.00550} {arXiv:1701.00550 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Blackman}\ \emph
+  {et~al.}(2017{\natexlab{b}})\citenamefont {Blackman}, \citenamefont {Field},
+  \citenamefont {Scheel}, \citenamefont {Galley}, \citenamefont {Ott},
+  \citenamefont {Boyle}, \citenamefont {Kidder}, \citenamefont {Pfeiffer},\
+  and\ \citenamefont {Szil\'agyi}}]{Blackman:2017pcm}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.}~\bibnamefont
+  {Blackman}}, \bibinfo {author} {\bibfnamefont {S.~E.}\ \bibnamefont {Field}},
+  \bibinfo {author} {\bibfnamefont {M.~A.}\ \bibnamefont {Scheel}}, \bibinfo
+  {author} {\bibfnamefont {C.~R.}\ \bibnamefont {Galley}}, \bibinfo {author}
+  {\bibfnamefont {C.~D.}\ \bibnamefont {Ott}}, \bibinfo {author} {\bibfnamefont
+  {M.}~\bibnamefont {Boyle}}, \bibinfo {author} {\bibfnamefont {L.~E.}\
+  \bibnamefont {Kidder}}, \bibinfo {author} {\bibfnamefont {H.~P.}\
+  \bibnamefont {Pfeiffer}},\ and\ \bibinfo {author} {\bibfnamefont
+  {B.}~\bibnamefont {Szil\'agyi}},\ }\bibfield  {title} {\bibinfo {title}
+  {{Numerical relativity waveform surrogate model for generically precessing
+  binary black hole mergers}},\ }\href
+  {https://doi.org/10.1103/PhysRevD.96.024058} {\bibfield  {journal} {\bibinfo
+  {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {96}},\ \bibinfo
+  {pages} {024058} (\bibinfo {year} {2017}{\natexlab{b}})},\ \Eprint
+  {https://arxiv.org/abs/1705.07089} {arXiv:1705.07089 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Varma}\ \emph
+  {et~al.}(2019{\natexlab{a}})\citenamefont {Varma}, \citenamefont {Field},
+  \citenamefont {Scheel}, \citenamefont {Blackman}, \citenamefont {Kidder},\
+  and\ \citenamefont {Pfeiffer}}]{Varma:2018mmi}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {V.}~\bibnamefont
+  {Varma}}, \bibinfo {author} {\bibfnamefont {S.~E.}\ \bibnamefont {Field}},
+  \bibinfo {author} {\bibfnamefont {M.~A.}\ \bibnamefont {Scheel}}, \bibinfo
+  {author} {\bibfnamefont {J.}~\bibnamefont {Blackman}}, \bibinfo {author}
+  {\bibfnamefont {L.~E.}\ \bibnamefont {Kidder}},\ and\ \bibinfo {author}
+  {\bibfnamefont {H.~P.}\ \bibnamefont {Pfeiffer}},\ }\bibfield  {title}
+  {\bibinfo {title} {{Surrogate model of hybridized numerical relativity binary
+  black hole waveforms}},\ }\href {https://doi.org/10.1103/PhysRevD.99.064045}
+  {\bibfield  {journal} {\bibinfo  {journal} {Phys. Rev. D}\ }\textbf {\bibinfo
+  {volume} {99}},\ \bibinfo {pages} {064045} (\bibinfo {year}
+  {2019}{\natexlab{a}})},\ \Eprint {https://arxiv.org/abs/1812.07865}
+  {arXiv:1812.07865 [gr-qc]} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Varma}\ \emph
+  {et~al.}(2019{\natexlab{b}})\citenamefont {Varma}, \citenamefont {Field},
+  \citenamefont {Scheel}, \citenamefont {Blackman}, \citenamefont {Gerosa},
+  \citenamefont {Stein}, \citenamefont {Kidder},\ and\ \citenamefont
+  {Pfeiffer}}]{Varma:2019csw}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {V.}~\bibnamefont
+  {Varma}}, \bibinfo {author} {\bibfnamefont {S.~E.}\ \bibnamefont {Field}},
+  \bibinfo {author} {\bibfnamefont {M.~A.}\ \bibnamefont {Scheel}}, \bibinfo
+  {author} {\bibfnamefont {J.}~\bibnamefont {Blackman}}, \bibinfo {author}
+  {\bibfnamefont {D.}~\bibnamefont {Gerosa}}, \bibinfo {author} {\bibfnamefont
+  {L.~C.}\ \bibnamefont {Stein}}, \bibinfo {author} {\bibfnamefont {L.~E.}\
+  \bibnamefont {Kidder}},\ and\ \bibinfo {author} {\bibfnamefont {H.~P.}\
+  \bibnamefont {Pfeiffer}},\ }\bibfield  {title} {\bibinfo {title} {{Surrogate
+  models for precessing binary black hole simulations with unequal masses}},\
+  }\href {https://doi.org/10.1103/PhysRevResearch.1.033015} {\bibfield
+  {journal} {\bibinfo  {journal} {Phys. Rev. Research.}\ }\textbf {\bibinfo
+  {volume} {1}},\ \bibinfo {pages} {033015} (\bibinfo {year}
+  {2019}{\natexlab{b}})},\ \Eprint {https://arxiv.org/abs/1905.09300}
+  {arXiv:1905.09300 [gr-qc]} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Williams}\ \emph {et~al.}(2020)\citenamefont
+  {Williams}, \citenamefont {Heng}, \citenamefont {Gair}, \citenamefont
+  {Clark},\ and\ \citenamefont {Khamesra}}]{Williams:2019vub}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {D.}~\bibnamefont
+  {Williams}}, \bibinfo {author} {\bibfnamefont {I.~S.}\ \bibnamefont {Heng}},
+  \bibinfo {author} {\bibfnamefont {J.}~\bibnamefont {Gair}}, \bibinfo {author}
+  {\bibfnamefont {J.~A.}\ \bibnamefont {Clark}},\ and\ \bibinfo {author}
+  {\bibfnamefont {B.}~\bibnamefont {Khamesra}},\ }\bibfield  {title} {\bibinfo
+  {title} {{Precessing numerical relativity waveform surrogate model for binary
+  black holes: A Gaussian process regression approach}},\ }\href
+  {https://doi.org/10.1103/PhysRevD.101.063011} {\bibfield  {journal} {\bibinfo
+   {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {101}},\ \bibinfo
+  {pages} {063011} (\bibinfo {year} {2020})},\ \Eprint
+  {https://arxiv.org/abs/1903.09204} {arXiv:1903.09204 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Yoo}\ \emph {et~al.}(2023)\citenamefont {Yoo} \emph
+  {et~al.}}]{Yoo:2023spi}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.}~\bibnamefont
+  {Yoo}} \emph {et~al.},\ }\bibfield  {title} {\bibinfo {title} {{Numerical
+  relativity surrogate model with memory effects and post-Newtonian
+  hybridization}},\ }\href {https://doi.org/10.1103/PhysRevD.108.064027}
+  {\bibfield  {journal} {\bibinfo  {journal} {Phys. Rev. D}\ }\textbf {\bibinfo
+  {volume} {108}},\ \bibinfo {pages} {064027} (\bibinfo {year} {2023})},\
+  \Eprint {https://arxiv.org/abs/2306.03148} {arXiv:2306.03148 [gr-qc]}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Rifat}\ \emph {et~al.}(2020)\citenamefont {Rifat},
+  \citenamefont {Field}, \citenamefont {Khanna},\ and\ \citenamefont
+  {Varma}}]{Rifat:2019ltp}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {N.~E.~M.}\
+  \bibnamefont {Rifat}}, \bibinfo {author} {\bibfnamefont {S.~E.}\ \bibnamefont
+  {Field}}, \bibinfo {author} {\bibfnamefont {G.}~\bibnamefont {Khanna}},\ and\
+  \bibinfo {author} {\bibfnamefont {V.}~\bibnamefont {Varma}},\ }\bibfield
+  {title} {\bibinfo {title} {{Surrogate model for gravitational wave signals
+  from comparable and large-mass-ratio black hole binaries}},\ }\href
+  {https://doi.org/10.1103/PhysRevD.101.081502} {\bibfield  {journal} {\bibinfo
+   {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {101}},\ \bibinfo
+  {pages} {081502} (\bibinfo {year} {2020})},\ \Eprint
+  {https://arxiv.org/abs/1910.10473} {arXiv:1910.10473 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Islam}\ \emph {et~al.}(2022)\citenamefont {Islam},
+  \citenamefont {Field}, \citenamefont {Hughes}, \citenamefont {Khanna},
+  \citenamefont {Varma}, \citenamefont {Giesler}, \citenamefont {Scheel},
+  \citenamefont {Kidder},\ and\ \citenamefont {Pfeiffer}}]{Islam:2022laz}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {T.}~\bibnamefont
+  {Islam}}, \bibinfo {author} {\bibfnamefont {S.~E.}\ \bibnamefont {Field}},
+  \bibinfo {author} {\bibfnamefont {S.~A.}\ \bibnamefont {Hughes}}, \bibinfo
+  {author} {\bibfnamefont {G.}~\bibnamefont {Khanna}}, \bibinfo {author}
+  {\bibfnamefont {V.}~\bibnamefont {Varma}}, \bibinfo {author} {\bibfnamefont
+  {M.}~\bibnamefont {Giesler}}, \bibinfo {author} {\bibfnamefont {M.~A.}\
+  \bibnamefont {Scheel}}, \bibinfo {author} {\bibfnamefont {L.~E.}\
+  \bibnamefont {Kidder}},\ and\ \bibinfo {author} {\bibfnamefont {H.~P.}\
+  \bibnamefont {Pfeiffer}},\ }\bibfield  {title} {\bibinfo {title} {{Surrogate
+  model for gravitational wave signals from nonspinning, comparable-to
+  large-mass-ratio black hole binaries built on black hole perturbation theory
+  waveforms calibrated to numerical relativity}},\ }\href
+  {https://doi.org/10.1103/PhysRevD.106.104025} {\bibfield  {journal} {\bibinfo
+   {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {106}},\ \bibinfo
+  {pages} {104025} (\bibinfo {year} {2022})},\ \Eprint
+  {https://arxiv.org/abs/2204.01972} {arXiv:2204.01972 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Rink}\ \emph {et~al.}(2024)\citenamefont {Rink},
+  \citenamefont {Bachhar}, \citenamefont {Islam}, \citenamefont {Rifat},
+  \citenamefont {Gonzalez-Quesada}, \citenamefont {Field}, \citenamefont
+  {Khanna}, \citenamefont {Hughes},\ and\ \citenamefont
+  {Varma}}]{Rink:2024swg}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {K.}~\bibnamefont
+  {Rink}}, \bibinfo {author} {\bibfnamefont {R.}~\bibnamefont {Bachhar}},
+  \bibinfo {author} {\bibfnamefont {T.}~\bibnamefont {Islam}}, \bibinfo
+  {author} {\bibfnamefont {N.~E.~M.}\ \bibnamefont {Rifat}}, \bibinfo {author}
+  {\bibfnamefont {K.}~\bibnamefont {Gonzalez-Quesada}}, \bibinfo {author}
+  {\bibfnamefont {S.~E.}\ \bibnamefont {Field}}, \bibinfo {author}
+  {\bibfnamefont {G.}~\bibnamefont {Khanna}}, \bibinfo {author} {\bibfnamefont
+  {S.~A.}\ \bibnamefont {Hughes}},\ and\ \bibinfo {author} {\bibfnamefont
+  {V.}~\bibnamefont {Varma}},\ }\bibfield  {title} {\bibinfo {title}
+  {{Gravitational wave surrogate model for spinning, intermediate mass ratio
+  binaries based on perturbation theory and numerical relativity}},\ }\href
+  {https://doi.org/10.1103/PhysRevD.110.124069} {\bibfield  {journal} {\bibinfo
+   {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {110}},\ \bibinfo
+  {pages} {124069} (\bibinfo {year} {2024})},\ \Eprint
+  {https://arxiv.org/abs/2407.18319} {arXiv:2407.18319 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Kumar}\ \emph {et~al.}(2019)\citenamefont {Kumar},
+  \citenamefont {Blackman}, \citenamefont {Field}, \citenamefont {Scheel},
+  \citenamefont {Galley}, \citenamefont {Boyle}, \citenamefont {Kidder},
+  \citenamefont {Pfeiffer}, \citenamefont {Szilagyi},\ and\ \citenamefont
+  {Teukolsky}}]{Kumar:2018hml}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {P.}~\bibnamefont
+  {Kumar}}, \bibinfo {author} {\bibfnamefont {J.}~\bibnamefont {Blackman}},
+  \bibinfo {author} {\bibfnamefont {S.~E.}\ \bibnamefont {Field}}, \bibinfo
+  {author} {\bibfnamefont {M.}~\bibnamefont {Scheel}}, \bibinfo {author}
+  {\bibfnamefont {C.~R.}\ \bibnamefont {Galley}}, \bibinfo {author}
+  {\bibfnamefont {M.}~\bibnamefont {Boyle}}, \bibinfo {author} {\bibfnamefont
+  {L.~E.}\ \bibnamefont {Kidder}}, \bibinfo {author} {\bibfnamefont {H.~P.}\
+  \bibnamefont {Pfeiffer}}, \bibinfo {author} {\bibfnamefont {B.}~\bibnamefont
+  {Szilagyi}},\ and\ \bibinfo {author} {\bibfnamefont {S.~A.}\ \bibnamefont
+  {Teukolsky}},\ }\bibfield  {title} {\bibinfo {title} {{Constraining the
+  parameters of GW150914 and GW170104 with numerical relativity surrogates}},\
+  }\href {https://doi.org/10.1103/PhysRevD.99.124005} {\bibfield  {journal}
+  {\bibinfo  {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {99}},\
+  \bibinfo {pages} {124005} (\bibinfo {year} {2019})},\ \Eprint
+  {https://arxiv.org/abs/1808.08004} {arXiv:1808.08004 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Varma}\ \emph
+  {et~al.}(2019{\natexlab{c}})\citenamefont {Varma}, \citenamefont {Gerosa},
+  \citenamefont {Stein}, \citenamefont {H\'ebert},\ and\ \citenamefont
+  {Zhang}}]{Varma:2018aht}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {V.}~\bibnamefont
+  {Varma}}, \bibinfo {author} {\bibfnamefont {D.}~\bibnamefont {Gerosa}},
+  \bibinfo {author} {\bibfnamefont {L.~C.}\ \bibnamefont {Stein}}, \bibinfo
+  {author} {\bibfnamefont {F.}~\bibnamefont {H\'ebert}},\ and\ \bibinfo
+  {author} {\bibfnamefont {H.}~\bibnamefont {Zhang}},\ }\bibfield  {title}
+  {\bibinfo {title} {{High-accuracy mass, spin, and recoil predictions of
+  generic black-hole merger remnants}},\ }\href
+  {https://doi.org/10.1103/PhysRevLett.122.011101} {\bibfield  {journal}
+  {\bibinfo  {journal} {Phys. Rev. Lett.}\ }\textbf {\bibinfo {volume} {122}},\
+  \bibinfo {pages} {011101} (\bibinfo {year} {2019}{\natexlab{c}})},\ \Eprint
+  {https://arxiv.org/abs/1809.09125} {arXiv:1809.09125 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Haegel}\ and\ \citenamefont
+  {Husa}(2020)}]{Haegel:2019uop}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {L.}~\bibnamefont
+  {Haegel}}\ and\ \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont {Husa}},\
+  }\bibfield  {title} {\bibinfo {title} {{Predicting the properties of
+  black-hole merger remnants with deep neural networks}},\ }\href
+  {https://doi.org/10.1088/1361-6382/ab905c} {\bibfield  {journal} {\bibinfo
+  {journal} {Class. Quant. Grav.}\ }\textbf {\bibinfo {volume} {37}},\ \bibinfo
+  {pages} {135005} (\bibinfo {year} {2020})},\ \Eprint
+  {https://arxiv.org/abs/1911.01496} {arXiv:1911.01496 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Boschini}\ \emph {et~al.}(2023)\citenamefont
+  {Boschini} \emph {et~al.}}]{Boschini:2023ryi}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Boschini}} \emph {et~al.},\ }\bibfield  {title} {\bibinfo {title}
+  {{Extending black-hole remnant surrogate models to extreme mass ratios}},\
+  }\href {https://doi.org/10.1103/PhysRevD.108.084015} {\bibfield  {journal}
+  {\bibinfo  {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {108}},\
+  \bibinfo {pages} {084015} (\bibinfo {year} {2023})},\ \Eprint
+  {https://arxiv.org/abs/2307.03435} {arXiv:2307.03435 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Thomas}\ \emph {et~al.}(2025)\citenamefont {Thomas},
+  \citenamefont {Chatziioannou}, \citenamefont {Varma},\ and\ \citenamefont
+  {Field}}]{Thomas:2025rje}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {L.~M.}\ \bibnamefont
+  {Thomas}}, \bibinfo {author} {\bibfnamefont {K.}~\bibnamefont
+  {Chatziioannou}}, \bibinfo {author} {\bibfnamefont {V.}~\bibnamefont
+  {Varma}},\ and\ \bibinfo {author} {\bibfnamefont {S.~E.}\ \bibnamefont
+  {Field}},\ }\bibfield  {title} {\bibinfo {title} {{Optimizing neural network
+  surrogate models: Application to black hole merger remnants}},\ }\href
+  {https://doi.org/10.1103/PhysRevD.111.104029} {\bibfield  {journal} {\bibinfo
+   {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {111}},\ \bibinfo
+  {pages} {104029} (\bibinfo {year} {2025})},\ \Eprint
+  {https://arxiv.org/abs/2501.16462} {arXiv:2501.16462 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Deka}\ \emph {et~al.}(2025)\citenamefont {Deka},
+  \citenamefont {Prabhu}, \citenamefont {Shaikh}, \citenamefont {Kapadia},
+  \citenamefont {Varma},\ and\ \citenamefont {Field}}]{Deka:2025vzx}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {U.}~\bibnamefont
+  {Deka}}, \bibinfo {author} {\bibfnamefont {G.}~\bibnamefont {Prabhu}},
+  \bibinfo {author} {\bibfnamefont {M.~A.}\ \bibnamefont {Shaikh}}, \bibinfo
+  {author} {\bibfnamefont {S.~J.}\ \bibnamefont {Kapadia}}, \bibinfo {author}
+  {\bibfnamefont {V.}~\bibnamefont {Varma}},\ and\ \bibinfo {author}
+  {\bibfnamefont {S.~E.}\ \bibnamefont {Field}},\ }\bibfield  {title} {\bibinfo
+  {title} {{Surrogate modeling of gravitational waves microlensed by
+  spherically symmetric potentials}},\ }\href
+  {https://doi.org/10.1103/PhysRevD.111.104042} {\bibfield  {journal} {\bibinfo
+   {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {111}},\ \bibinfo
+  {pages} {104042} (\bibinfo {year} {2025})},\ \Eprint
+  {https://arxiv.org/abs/2501.02974} {arXiv:2501.02974 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Da~Re}\ \emph {et~al.}(2025)\citenamefont {Da~Re}
+  \emph {et~al.}}]{DaRe:2025glj}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {G.}~\bibnamefont
+  {Da~Re}} \emph {et~al.},\ }\bibfield  {title} {\bibinfo {title} {{Modeling
+  the BMS transformation induced by a binary black hole merger}},\ }\href
+  {https://doi.org/10.1103/PhysRevD.111.124019} {\bibfield  {journal} {\bibinfo
+   {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {111}},\ \bibinfo
+  {pages} {124019} (\bibinfo {year} {2025})},\ \Eprint
+  {https://arxiv.org/abs/2503.09569} {arXiv:2503.09569 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Doctor}\ \emph {et~al.}(2017)\citenamefont {Doctor},
+  \citenamefont {Farr}, \citenamefont {Holz},\ and\ \citenamefont
+  {P\"urrer}}]{Doctor:2017csx}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {Z.}~\bibnamefont
+  {Doctor}}, \bibinfo {author} {\bibfnamefont {B.}~\bibnamefont {Farr}},
+  \bibinfo {author} {\bibfnamefont {D.~E.}\ \bibnamefont {Holz}},\ and\
+  \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {P\"urrer}},\ }\bibfield
+  {title} {\bibinfo {title} {{Statistical Gravitational Waveform Models: What
+  to Simulate Next?}},\ }\href {https://doi.org/10.1103/PhysRevD.96.123011}
+  {\bibfield  {journal} {\bibinfo  {journal} {Phys. Rev. D}\ }\textbf {\bibinfo
+  {volume} {96}},\ \bibinfo {pages} {123011} (\bibinfo {year} {2017})},\
+  \Eprint {https://arxiv.org/abs/1706.05408} {arXiv:1706.05408 [astro-ph.HE]}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Chua}\ \emph {et~al.}(2019)\citenamefont {Chua},
+  \citenamefont {Galley},\ and\ \citenamefont {Vallisneri}}]{Chua:2018woh}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.~J.~K.}\
+  \bibnamefont {Chua}}, \bibinfo {author} {\bibfnamefont {C.~R.}\ \bibnamefont
+  {Galley}},\ and\ \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Vallisneri}},\ }\bibfield  {title} {\bibinfo {title} {{Reduced-order
+  modeling with artificial neurons for gravitational-wave inference}},\ }\href
+  {https://doi.org/10.1103/PhysRevLett.122.211101} {\bibfield  {journal}
+  {\bibinfo  {journal} {Phys. Rev. Lett.}\ }\textbf {\bibinfo {volume} {122}},\
+  \bibinfo {pages} {211101} (\bibinfo {year} {2019})},\ \Eprint
+  {https://arxiv.org/abs/1811.05491} {arXiv:1811.05491 [astro-ph.IM]}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Islam}\ \emph {et~al.}(2021)\citenamefont {Islam},
+  \citenamefont {Varma}, \citenamefont {Lodman}, \citenamefont {Field},
+  \citenamefont {Khanna}, \citenamefont {Scheel}, \citenamefont {Pfeiffer},
+  \citenamefont {Gerosa},\ and\ \citenamefont {Kidder}}]{Islam:2021mha}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {T.}~\bibnamefont
+  {Islam}}, \bibinfo {author} {\bibfnamefont {V.}~\bibnamefont {Varma}},
+  \bibinfo {author} {\bibfnamefont {J.}~\bibnamefont {Lodman}}, \bibinfo
+  {author} {\bibfnamefont {S.~E.}\ \bibnamefont {Field}}, \bibinfo {author}
+  {\bibfnamefont {G.}~\bibnamefont {Khanna}}, \bibinfo {author} {\bibfnamefont
+  {M.~A.}\ \bibnamefont {Scheel}}, \bibinfo {author} {\bibfnamefont {H.~P.}\
+  \bibnamefont {Pfeiffer}}, \bibinfo {author} {\bibfnamefont {D.}~\bibnamefont
+  {Gerosa}},\ and\ \bibinfo {author} {\bibfnamefont {L.~E.}\ \bibnamefont
+  {Kidder}},\ }\bibfield  {title} {\bibinfo {title} {{Eccentric binary black
+  hole surrogate models for the gravitational waveform and remnant properties:
+  comparable mass, nonspinning case}},\ }\href
+  {https://doi.org/10.1103/PhysRevD.103.064022} {\bibfield  {journal} {\bibinfo
+   {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {103}},\ \bibinfo
+  {pages} {064022} (\bibinfo {year} {2021})},\ \Eprint
+  {https://arxiv.org/abs/2101.11798} {arXiv:2101.11798 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Yun}\ \emph {et~al.}(2021)\citenamefont {Yun},
+  \citenamefont {Han}, \citenamefont {Zhong},\ and\ \citenamefont
+  {Benavides-Gallego}}]{Yun:2021jnh}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {Q.}~\bibnamefont
+  {Yun}}, \bibinfo {author} {\bibfnamefont {W.-B.}\ \bibnamefont {Han}},
+  \bibinfo {author} {\bibfnamefont {X.}~\bibnamefont {Zhong}},\ and\ \bibinfo
+  {author} {\bibfnamefont {C.~A.}\ \bibnamefont {Benavides-Gallego}},\
+  }\bibfield  {title} {\bibinfo {title} {{Surrogate model for gravitational
+  waveforms of spin-aligned binary black holes with eccentricities}},\ }\href
+  {https://doi.org/10.1103/PhysRevD.103.124053} {\bibfield  {journal} {\bibinfo
+   {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {103}},\ \bibinfo
+  {pages} {124053} (\bibinfo {year} {2021})},\ \Eprint
+  {https://arxiv.org/abs/2104.03789} {arXiv:2104.03789 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Shi}\ \emph {et~al.}(2025)\citenamefont {Shi},
+  \citenamefont {Zhou}, \citenamefont {Zhao}, \citenamefont {Wang},
+  \citenamefont {Ren},\ and\ \citenamefont {Cao}}]{Shi:2024age}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {R.}~\bibnamefont
+  {Shi}}, \bibinfo {author} {\bibfnamefont {Y.}~\bibnamefont {Zhou}}, \bibinfo
+  {author} {\bibfnamefont {T.}~\bibnamefont {Zhao}}, \bibinfo {author}
+  {\bibfnamefont {Z.}~\bibnamefont {Wang}}, \bibinfo {author} {\bibfnamefont
+  {Z.}~\bibnamefont {Ren}},\ and\ \bibinfo {author} {\bibfnamefont
+  {Z.}~\bibnamefont {Cao}},\ }\bibfield  {title} {\bibinfo {title} {{Rapid
+  eccentric spin-aligned binary black hole waveform generation based on deep
+  learning}},\ }\href {https://doi.org/10.1103/PhysRevD.111.044016} {\bibfield
+  {journal} {\bibinfo  {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume}
+  {111}},\ \bibinfo {pages} {044016} (\bibinfo {year} {2025})},\ \Eprint
+  {https://arxiv.org/abs/2411.14893} {arXiv:2411.14893 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Islam}\ \emph
+  {et~al.}(2025{\natexlab{b}})\citenamefont {Islam}, \citenamefont
+  {Venumadhav}, \citenamefont {Mehta}, \citenamefont {Anantpurkar},
+  \citenamefont {Wadekar}, \citenamefont {Roulet}, \citenamefont {Mushkin},
+  \citenamefont {Zackay},\ and\ \citenamefont {Zaldarriaga}}]{Islam:2025llx}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {T.}~\bibnamefont
+  {Islam}}, \bibinfo {author} {\bibfnamefont {T.}~\bibnamefont {Venumadhav}},
+  \bibinfo {author} {\bibfnamefont {A.~K.}\ \bibnamefont {Mehta}}, \bibinfo
+  {author} {\bibfnamefont {I.}~\bibnamefont {Anantpurkar}}, \bibinfo {author}
+  {\bibfnamefont {D.}~\bibnamefont {Wadekar}}, \bibinfo {author} {\bibfnamefont
+  {J.}~\bibnamefont {Roulet}}, \bibinfo {author} {\bibfnamefont
+  {J.}~\bibnamefont {Mushkin}}, \bibinfo {author} {\bibfnamefont
+  {B.}~\bibnamefont {Zackay}},\ and\ \bibinfo {author} {\bibfnamefont
+  {M.}~\bibnamefont {Zaldarriaga}},\ }\bibfield  {title} {\bibinfo {title}
+  {{gwharmone: first data-driven surrogate for eccentric harmonics in binary
+  black hole merger waveforms}},\ }\href@noop {} {\  (\bibinfo {year}
+  {2025}{\natexlab{b}})},\ \Eprint {https://arxiv.org/abs/2504.12420}
+  {arXiv:2504.12420 [astro-ph.HE]} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Islam}\ \emph
+  {et~al.}(2025{\natexlab{c}})\citenamefont {Islam}, \citenamefont
+  {Venumadhav}, \citenamefont {Mehta}, \citenamefont {Anantpurkar},
+  \citenamefont {Wadekar}, \citenamefont {Roulet}, \citenamefont {Mushkin},
+  \citenamefont {Zackay},\ and\ \citenamefont {Zaldarriaga}}]{Islam:2025rjl}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {T.}~\bibnamefont
+  {Islam}}, \bibinfo {author} {\bibfnamefont {T.}~\bibnamefont {Venumadhav}},
+  \bibinfo {author} {\bibfnamefont {A.~K.}\ \bibnamefont {Mehta}}, \bibinfo
+  {author} {\bibfnamefont {I.}~\bibnamefont {Anantpurkar}}, \bibinfo {author}
+  {\bibfnamefont {D.}~\bibnamefont {Wadekar}}, \bibinfo {author} {\bibfnamefont
+  {J.}~\bibnamefont {Roulet}}, \bibinfo {author} {\bibfnamefont
+  {J.}~\bibnamefont {Mushkin}}, \bibinfo {author} {\bibfnamefont
+  {B.}~\bibnamefont {Zackay}},\ and\ \bibinfo {author} {\bibfnamefont
+  {M.}~\bibnamefont {Zaldarriaga}},\ }\bibfield  {title} {\bibinfo {title}
+  {{Data-driven extraction, phenomenology, and modeling of eccentric harmonics
+  in binary black hole merger waveforms}},\ }\href
+  {https://doi.org/10.1103/pk8n-fxvw} {\bibfield  {journal} {\bibinfo
+  {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {112}},\ \bibinfo
+  {pages} {044070} (\bibinfo {year} {2025}{\natexlab{c}})},\ \Eprint
+  {https://arxiv.org/abs/2504.12469} {arXiv:2504.12469 [gr-qc]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Maggiore}\ \emph {et~al.}(2020)\citenamefont
+  {Maggiore} \emph {et~al.}}]{ET:2019dnz}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Maggiore}} \emph {et~al.} (\bibinfo {collaboration} {ET}),\ }\bibfield
+  {title} {\bibinfo {title} {{Science Case for the Einstein Telescope}},\
+  }\href {https://doi.org/10.1088/1475-7516/2020/03/050} {\bibfield  {journal}
+  {\bibinfo  {journal} {JCAP}\ }\textbf {\bibinfo {volume} {03}},\ \bibinfo
+  {pages} {050}},\ \Eprint {https://arxiv.org/abs/1912.02622} {arXiv:1912.02622
+  [astro-ph.CO]} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Galley}(2020)}]{rompy}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {C.}~\bibnamefont
+  {Galley}},\ }\href@noop {} {\bibinfo {title} {{\texttt{RomPy}}}},\ \bibinfo
+  {howpublished} {\url{https://bitbucket.org/chadgalley/rompy/src/master/}}
+  (\bibinfo {year} {2020})\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Paul}\ \emph
+  {et~al.}(2025{\natexlab{b}})\citenamefont {Paul}, \citenamefont {Maurya},
+  \citenamefont {Sharma},\ and\ \citenamefont {Kumar}}]{esigmapy}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {K.}~\bibnamefont
+  {Paul}}, \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont {Maurya}},
+  \bibinfo {author} {\bibfnamefont {K.}~\bibnamefont {Sharma}},\ and\ \bibinfo
+  {author} {\bibfnamefont {P.}~\bibnamefont {Kumar}},\ }\href
+  {https://github.com/gwnrtools/esigmapy} {\bibinfo {title}
+  {{\texttt{ESIGMAPy}: a Python package to generate ESIGMAHM waveforms}}},\
+  \bibinfo {howpublished} {\url{https://github.com/gwnrtools/esigmapy}}
+  (\bibinfo {year} {2025}{\natexlab{b}})\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Shaikh}\ \emph {et~al.}(2023)\citenamefont {Shaikh},
+  \citenamefont {Varma}, \citenamefont {Pfeiffer}, \citenamefont
+  {Ramos-Buades},\ and\ \citenamefont {van~de Meent}}]{Shaikh:2023ypz}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.~A.}\ \bibnamefont
+  {Shaikh}}, \bibinfo {author} {\bibfnamefont {V.}~\bibnamefont {Varma}},
+  \bibinfo {author} {\bibfnamefont {H.~P.}\ \bibnamefont {Pfeiffer}}, \bibinfo
+  {author} {\bibfnamefont {A.}~\bibnamefont {Ramos-Buades}},\ and\ \bibinfo
+  {author} {\bibfnamefont {M.}~\bibnamefont {van~de Meent}},\ }\bibfield
+  {title} {\bibinfo {title} {{Defining eccentricity for gravitational wave
+  astronomy}},\ }\href {https://doi.org/10.1103/PhysRevD.108.104007} {\bibfield
+   {journal} {\bibinfo  {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume}
+  {108}},\ \bibinfo {pages} {104007} (\bibinfo {year} {2023})},\ \bibinfo
+  {note}
+  {{\href{https://pypi.org/project/gw_eccentricity}{pypi.org/project/gw\_eccentricity}}},\
+  \Eprint {https://arxiv.org/abs/2302.11257} {arXiv:2302.11257 [gr-qc]}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Shaikh}\ \emph {et~al.}(2025)\citenamefont {Shaikh},
+  \citenamefont {Varma}, \citenamefont {Ramos-Buades}, \citenamefont
+  {Pfeiffer}, \citenamefont {Boyle}, \citenamefont {Kidder},\ and\
+  \citenamefont {Scheel}}]{Shaikh:2025tae}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.~A.}\ \bibnamefont
+  {Shaikh}}, \bibinfo {author} {\bibfnamefont {V.}~\bibnamefont {Varma}},
+  \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont {Ramos-Buades}}, \bibinfo
+  {author} {\bibfnamefont {H.~P.}\ \bibnamefont {Pfeiffer}}, \bibinfo {author}
+  {\bibfnamefont {M.}~\bibnamefont {Boyle}}, \bibinfo {author} {\bibfnamefont
+  {L.~E.}\ \bibnamefont {Kidder}},\ and\ \bibinfo {author} {\bibfnamefont
+  {M.~A.}\ \bibnamefont {Scheel}},\ }\bibfield  {title} {\bibinfo {title}
+  {{Defining eccentricity for spin-precessing binaries}},\ }\href@noop {} {\
+  (\bibinfo {year} {2025})},\ \Eprint {https://arxiv.org/abs/2507.08345}
+  {arXiv:2507.08345 [gr-qc]} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {P{\"u}rrer}\ and\ \citenamefont
+  {Blackman}(2022)}]{TPI}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {P{\"u}rrer}}\ and\ \bibinfo {author} {\bibfnamefont {J.}~\bibnamefont
+  {Blackman}},\ }\href@noop {} {\bibinfo {title} {{\texttt{TPI}: Tensor Product
+  Interpolation Package for Python}}},\ \bibinfo {howpublished}
+  {\url{https://github.com/mpuerrer/TPI}} (\bibinfo {year} {2022})\BibitemShut
+  {NoStop}%
+\bibitem [{LIG(2009{\natexlab{a}})}]{LIGO-T0900288-v3}%
+  \BibitemOpen
+  \href {https://dcc.ligo.org/ligo-t0900288/public} {\emph {\bibinfo {title}
+  {{Advanced LIGO anticipated sensitivity curves}}}},\ \bibinfo {type} {Tech.
+  Rep.}\ \bibinfo {number} {LIGO-T0900288-v3 (Technical Note)}\ (\bibinfo
+  {institution} {LIGO Laboratory (Caltech \& MIT)},\ \bibinfo {year}
+  {2009})\BibitemShut {NoStop}%
+\bibitem [{LIG(2009{\natexlab{b}})}]{LIGO-T070247-v1}%
+  \BibitemOpen
+  \href {https://dcc.ligo.org/LIGO-T070247/public} {\emph {\bibinfo {title}
+  {{AdvLIGO Interferometer Sensing and Control Conceptual Design}}}},\ \bibinfo
+  {type} {Tech. Rep.}\ \bibinfo {number} {LIGO-T070247-v1 (Technical Note)}\
+  (\bibinfo  {institution} {LIGO Laboratory (Caltech \& MIT)},\ \bibinfo {year}
+  {2009})\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Mora}\ and\ \citenamefont
+  {Will}(2002)}]{Mora:2002gf}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {T.}~\bibnamefont
+  {Mora}}\ and\ \bibinfo {author} {\bibfnamefont {C.~M.}\ \bibnamefont
+  {Will}},\ }\bibfield  {title} {\bibinfo {title} {{Numerically generated
+  quasiequilibrium orbits of black holes: Circular or eccentric?}},\ }\href
+  {https://doi.org/10.1103/PhysRevD.66.101501} {\bibfield  {journal} {\bibinfo
+  {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {66}},\ \bibinfo
+  {pages} {101501} (\bibinfo {year} {2002})},\ \Eprint
+  {https://arxiv.org/abs/gr-qc/0208089} {arXiv:gr-qc/0208089} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Boschini}\ \emph {et~al.}(2025)\citenamefont
+  {Boschini}, \citenamefont {Loutrel}, \citenamefont {Gerosa},\ and\
+  \citenamefont {Fumagalli}}]{Boschini:2024scu}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Boschini}}, \bibinfo {author} {\bibfnamefont {N.}~\bibnamefont {Loutrel}},
+  \bibinfo {author} {\bibfnamefont {D.}~\bibnamefont {Gerosa}},\ and\ \bibinfo
+  {author} {\bibfnamefont {G.}~\bibnamefont {Fumagalli}},\ }\bibfield  {title}
+  {\bibinfo {title} {{Orbital eccentricity in general relativity from
+  catastrophe theory}},\ }\href {https://doi.org/10.1103/PhysRevD.111.024008}
+  {\bibfield  {journal} {\bibinfo  {journal} {Phys. Rev. D}\ }\textbf {\bibinfo
+  {volume} {111}},\ \bibinfo {pages} {024008} (\bibinfo {year} {2025})},\
+  \Eprint {https://arxiv.org/abs/2411.00098} {arXiv:2411.00098 [gr-qc]}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Islam}\ and\ \citenamefont
+  {Venumadhav}(2025{\natexlab{b}})}]{Islam:2025oiv}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {T.}~\bibnamefont
+  {Islam}}\ and\ \bibinfo {author} {\bibfnamefont {T.}~\bibnamefont
+  {Venumadhav}},\ }\bibfield  {title} {\bibinfo {title} {{Post-Newtonian
+  theory-inspired framework for characterizing eccentricity in gravitational
+  waveforms}},\ }\href@noop {} {\  (\bibinfo {year} {2025}{\natexlab{b}})},\
+  \Eprint {https://arxiv.org/abs/2502.02739} {arXiv:2502.02739 [gr-qc]}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Nee}\ \emph {et~al.}(2025)\citenamefont {Nee},
+  \citenamefont {Ravichandran}, \citenamefont {Field}, \citenamefont {Islam},
+  \citenamefont {Pfeiffer}, \citenamefont {Varma}, \citenamefont {Boyle},
+  \citenamefont {Ceja}, \citenamefont {Ghadiri}, \citenamefont {Kidder},
+  \citenamefont {Kumar}, \citenamefont {Maurya}, \citenamefont {Morales},
+  \citenamefont {Ramos-Buades}, \citenamefont {Ravishankar}, \citenamefont
+  {Rink}, \citenamefont {R\"uter}, \citenamefont {Scheel}, \citenamefont
+  {Shaikh},\ and\ \citenamefont {Tellez}}]{Nee:2025nmh}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {P.~J.}\ \bibnamefont
+  {Nee}}, \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont {Ravichandran}},
+  \bibinfo {author} {\bibfnamefont {S.~E.}\ \bibnamefont {Field}}, \bibinfo
+  {author} {\bibfnamefont {T.}~\bibnamefont {Islam}}, \bibinfo {author}
+  {\bibfnamefont {H.~P.}\ \bibnamefont {Pfeiffer}}, \bibinfo {author}
+  {\bibfnamefont {V.}~\bibnamefont {Varma}}, \bibinfo {author} {\bibfnamefont
+  {M.}~\bibnamefont {Boyle}}, \bibinfo {author} {\bibfnamefont
+  {A.}~\bibnamefont {Ceja}}, \bibinfo {author} {\bibfnamefont {N.}~\bibnamefont
+  {Ghadiri}}, \bibinfo {author} {\bibfnamefont {L.~E.}\ \bibnamefont {Kidder}},
+  \bibinfo {author} {\bibfnamefont {P.}~\bibnamefont {Kumar}}, \bibinfo
+  {author} {\bibfnamefont {A.}~\bibnamefont {Maurya}}, \bibinfo {author}
+  {\bibfnamefont {M.}~\bibnamefont {Morales}}, \bibinfo {author} {\bibfnamefont
+  {A.}~\bibnamefont {Ramos-Buades}}, \bibinfo {author} {\bibfnamefont
+  {A.}~\bibnamefont {Ravishankar}}, \bibinfo {author} {\bibfnamefont
+  {K.}~\bibnamefont {Rink}}, \bibinfo {author} {\bibfnamefont {H.~R.}\
+  \bibnamefont {R\"uter}}, \bibinfo {author} {\bibfnamefont {M.~A.}\
+  \bibnamefont {Scheel}}, \bibinfo {author} {\bibfnamefont {M.~A.}\
+  \bibnamefont {Shaikh}},\ and\ \bibinfo {author} {\bibfnamefont
+  {D.}~\bibnamefont {Tellez}},\ }\bibfield  {title} {\bibinfo {title}
+  {{Eccentric binary black holes: A new framework for numerical relativity
+  waveform surrogates}},\ }\href@noop {} {\  (\bibinfo {year} {2025})},\
+  \Eprint {https://arxiv.org/abs/2510.00106} {arXiv:2510.00106 [gr-qc]}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Edwards}\ \emph {et~al.}(2024)\citenamefont
+  {Edwards}, \citenamefont {Wong}, \citenamefont {Lam}, \citenamefont {Coogan},
+  \citenamefont {Foreman-Mackey}, \citenamefont {Isi},\ and\ \citenamefont
+  {Zimmerman}}]{Edwards:2023sak}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {T.~D.~P.}\
+  \bibnamefont {Edwards}}, \bibinfo {author} {\bibfnamefont {K.~W.~K.}\
+  \bibnamefont {Wong}}, \bibinfo {author} {\bibfnamefont {K.~K.~H.}\
+  \bibnamefont {Lam}}, \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
+  {Coogan}}, \bibinfo {author} {\bibfnamefont {D.}~\bibnamefont
+  {Foreman-Mackey}}, \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Isi}},\ and\ \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
+  {Zimmerman}},\ }\bibfield  {title} {\bibinfo {title} {{Differentiable and
+  hardware-accelerated waveforms for gravitational wave data analysis}},\
+  }\href {https://doi.org/10.1103/PhysRevD.110.064028} {\bibfield  {journal}
+  {\bibinfo  {journal} {Phys. Rev. D}\ }\textbf {\bibinfo {volume} {110}},\
+  \bibinfo {pages} {064028} (\bibinfo {year} {2024})},\ \Eprint
+  {https://arxiv.org/abs/2302.05329} {arXiv:2302.05329 [astro-ph.IM]}
+  \BibitemShut {NoStop}%
+\bibitem [{Note1()}]{Note1}%
+  \BibitemOpen
+  \bibinfo {note} {Similarly, we build surrogates of the eccentricity $e(t;
+  \protect \bm {\theta })$ and the (unwrapped) mean anomaly $l(t; \protect \bm
+  {\theta })$ evolution as a function of $t$ for the time-parameterized
+  surrogates constructed in this work.}\BibitemShut {Stop}%
+\end{thebibliography}%

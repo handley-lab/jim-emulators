@@ -1146,6 +1146,47 @@ The frequency-domain document underwent iterative review using the same OpenAI (
 | Gemini-3-pro | Iteration 2 |
 | GPT-5.2 | Iteration 4 |
 
+### 17. Deep Research: Computational Paradigms in GW Waveform Modeling
+
+Conducted comprehensive literature review using Gemini Deep Research to understand the state of the art in waveform surrogate modeling across time and frequency domains.
+
+**Source:** https://gemini.google.com/share/3500cf3dbd3a
+
+**Document:** `docs/literature/deep-research/computational-paradigms-gw-modeling.md`
+
+**Key Findings:**
+
+1. **Universal Triad Pattern**: All modern surrogate models follow Decomposition → Compression → Regression:
+   - Decomposition: Amplitude/phase, coprecessing frames, eccentric harmonics
+   - Compression: SVD/PCA (reduces ~10⁴ → ~10¹ dimensions)
+   - Regression: Neural networks or GPR for parameter interpolation
+
+2. **Papers Analyzed:**
+
+   | ArXiv ID | Domain | Focus |
+   |----------|--------|-------|
+   | 2402.06587 | Time | Higher modes via PCA + Ensemble NNs |
+   | 2205.14066 | Time | Precessing binaries with coprecessing frame + ANN |
+   | 2411.14893 | Time | Eccentric dynamics via deep learning |
+   | 2504.12420 | Frequency | gwharmone: Eccentric harmonics + GPR |
+   | 2510.00116 | Both | Mean anomaly parameterization |
+
+3. **Validation of Our Approach**: The frequency-domain framework in `theory/frequency-domain-emulation.tex` aligns with established practices:
+   - Dimensionless Mf as domain variable ✓
+   - PCA + MLP architecture (CosmoPower-style) ✓
+   - Aligned-spin as starting point ✓
+   - Log-amplitude + direct phase ✓
+
+4. **Future Techniques Identified:**
+   - **EIM** (Empirical Interpolation Method): Fast evaluation at sparse frequency nodes
+   - **GPR**: Alternative to NNs with uncertainty quantification
+   - **Fourier Feature Embeddings**: Overcome spectral bias in MLPs
+   - **Greedy basis construction**: Scalable SVD without full matrix
+
+5. **Eccentricity Frontier**: Current FD eccentric work uses harmonic decomposition to disentangle spectral "wiggles"—validates our choice to start with circular orbits.
+
+6. **3G Detector Implications**: FD techniques scale naturally to long-duration signals (hours for Einstein Telescope) because they track spectral line evolution rather than individual time steps.
+
 ---
 
 ### Next Steps

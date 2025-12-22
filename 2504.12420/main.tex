@@ -1,0 +1,264 @@
+% This voodoo is needed for arXiv scripts and must appear within the first 4 lines
+\pdfoutput=1
+\documentclass[aps,prd,amsmath,floats,floatfix, twocolumn,
+superscriptaddress,nofootinbib,showpacs,longbibliography]{revtex4-1}
+% UTF8 always
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+%\usepackage{lmodern}
+\usepackage{txfonts}
+\usepackage{verbatim}
+\usepackage[dvipsnames, usenames]{xcolor}
+\definecolor{linkcolor}{rgb}{0.0,0.3,0.5}
+\usepackage[hypertexnames=false, unicode, colorlinks=true, linkcolor=linkcolor,
+citecolor=linkcolor, filecolor=linkcolor,urlcolor=linkcolor,
+pdfusetitle]{hyperref}
+\usepackage[all]{hypcap}
+\usepackage{graphicx}
+\usepackage{xspace}
+\usepackage{amssymb}
+% Better spacing
+\usepackage{microtype}
+\usepackage{subfigure}
+\usepackage{url}
+\usepackage[english]{babel}
+\usepackage{blindtext}
+\usepackage[normalem]{ulem} %for \sout
+\usepackage{bm} % boldmath
+\usepackage{mathrsfs}
+\usepackage{xspace} % for \xspace
+%\usepackage[caption=false]{subfig}
+\usepackage{fontawesome}
+
+\DeclareMathAlphabet{\mathpzc}{OT1}{pzc}{m}{it}
+\newcommand{\roughly}{\mathchar"5218\relax\,} % Different from \sim in spacing
+\newcommand{\into}{\!\times\!\relax} % Different from \times in spacing
+
+\newcommand{\tousif}[1]{\textcolor{red}{#1}}
+\newcommand{\ajitm}[1]{\textcolor{blue}{#1}}
+\newcommand{\jay}[1]{ {\color{orange} #1} }
+
+\usepackage[nomessages]{fp}
+\newcommand{\txt}[1]{{\textrm{\tiny{#1}}}}
+\newcommand{\hlm}{h_{\ell m}}
+\newcommand{\ylm}{{}_{-2}Y_{\ell m}}
+\newcommand{\tv}[1]{\textcolor{blue}{TV: #1}}
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\newcommand{\bl}{\ensuremath{\boldsymbol{\lambda}}\xspace}
+\newcommand{\sk}[1]{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\title{\texttt{gwharmone:} first data-driven surrogate \\for eccentric harmonics in binary black hole merger waveforms}
+\newcommand{\KITP}{\affiliation{Kavli Institute for Theoretical Physics, University of California Santa Barbara, Kohn Hall, Lagoon Rd, Santa Barbara, CA 93106}} 
+\newcommand{\TAPIR}{\affiliation{Theoretical AstroPhysics Including Relativity and Cosmology, California Institute of Technology, Pasadena, California, USA}}
+\author{Tousif Islam}
+\email{tousifislam@ucsb.edu}
+\KITP
+\TAPIR
+\author{Tejaswi Venumadhav}
+\affiliation{\mbox{Department of Physics, University of California at Santa Barbara, Santa Barbara, CA 93106, USA}}
+\affiliation{\mbox{International Centre for Theoretical Sciences, Tata Institute of Fundamental Research, Bangalore 560089, India}}
+\author{Ajit Kumar Mehta}
+\affiliation{\mbox{Department of Physics, University of California at Santa Barbara, Santa Barbara, CA 93106, USA}}
+\author{Isha Anantpurkar}
+\affiliation{\mbox{Department of Physics, University of California at Santa Barbara, Santa Barbara, CA 93106, USA}}
+\author{Digvijay Wadekar}
+\affiliation{\mbox{Department of Physics and Astronomy, Johns Hopkins University,
+3400 N. Charles Street, Baltimore, Maryland, 21218, USA}}
+\affiliation{\mbox{School of Natural Sciences, Institute for Advanced Study, 1 Einstein Drive, Princeton, NJ 08540, USA}}
+\author{Javier Roulet}
+\affiliation{\mbox{TAPIR, Walter Burke Institute for Theoretical Physics, California Institute of Technology, Pasadena, CA 91125, USA}}
+\author{Jonathan Mushkin}
+\affiliation{\mbox{Department of Particle Physics \& Astrophysics, Weizmann Institute of Science, Rehovot 76100, Israel}}
+\author{Barak Zackay}
+\affiliation{\mbox{Department of Particle Physics \& Astrophysics, Weizmann Institute of Science, Rehovot 76100, Israel}}
+\author{Matias Zaldarriaga}
+\affiliation{\mbox{School of Natural Sciences, Institute for Advanced Study, 1 Einstein Drive, Princeton, NJ 08540, USA}}
+
+% Because hyperref only gets the *last* author, we need to be explicit.
+\hypersetup{pdfauthor={Islam et al.}}
+\date{\today}
+
+%==========================================================================
+%==========================================================================
+\begin{abstract}
+We present \texttt{gwharmone}, the first data-driven surrogate model for eccentric harmonics (as well as the full radiation content) of the dominant quadrupolar mode in eccentric, non-spinning binary black hole mergers.  
+Our model is trained on 173 waveforms, each $100,000M$ long (where $M$ is the total mass), generated for mass ratios $q \in [1,3.5]$ and eccentricities $e_{\rm ref} \in [0,0.2]$ (at the start of the waveform). The eccentric harmonics are extracted from the effective-one-body waveforms using the \texttt{gwMiner} package.  
+We apply a singular value decomposition (SVD) to obtain a set of reduced basis vectors, necessary to construct a lower-dimensional representation of data, and use Gaussian Process Regression (GPR) to interpolate SVD coefficients across parameter space, allowing for prediction at new parameter points. 
+The model includes the effect of mean anomaly, its evaluation cost is only $\sim 0.1$ second and it achieves an average time-domain (validation) error of $\sim 10^{-3}$ and frequency-domain (validation) mismatches below $10^{-2}$ for advanced LIGO sensitivity. Our model can therefore be useful in efficient searches and parameter estimation of eccentric mergers. \texttt{gwharmone} will be publicly available through the \texttt{gwModels} package. \href{https://github.com/tousifislam/gwModels}{\faGithub}
+\end{abstract}
+%==========================================================================
+%==========================================================================
+\maketitle
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent {\textbf{\textit{Introduction}}.}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Eccentric binary black hole (BBH) mergers are among the most anticipated sources of gravitational waves (GWs), given their rarity in observational data so far~\cite{Harry:2010zz,VIRGO:2014yos,KAGRA:2020tym,LIGOScientific:2018mvr,LIGOScientific:2020ibl,LIGOScientific:2021usb,LIGOScientific:2021djp}. These systems have garnered significant attention due to the complex features they introduce into waveforms and their potential to probe dense stellar clusters and galactic nuclei, where they are most likely to form. More importantly, measuring eccentricity can help distinguish different formation channels of BBH mergers~\cite{Rodriguez:2017pec,Rodriguez:2018pss,Samsing:2017xmd,Zevin:2018kzq,Zevin:2021rtf,Samsing:2020tda}. However, achieving this requires faithful and computationally efficient waveform models, which are essential for developing robust detection pipelines and parameter estimation frameworks. Recently, considerable efforts have been made to perform large-scale eccentric numerical relativity (NR) simulations~\cite{Mroue:2010re, Healy:2017zqj,Buonanno:2006ui,Husa:2007rh,Ramos-Buades:2018azo,Ramos-Buades:2019uvh,Purrer:2012wy,Bonino:2024xrv,Ramos-Buades:2022lgf}, investigate eccentricity effects within the post-Newtonian (PN) calculations~\cite{Arun:2009mc,Tanay:2016zog,Paul:2022xfy,Henry:2023tka}, incorporate eccentricity into waveform models~\cite{Tiwari:2019jtz, Huerta:2014eca, Moore:2016qxz, Damour:2004bz, Konigsdorffer:2006zt, Memmesheimer:2004cv,Hinder:2017sxy, Cho:2021oai,Chattaraj:2022tay,Hinderer:2017jcs,Cao:2017ndf,Chiaramello:2020ehz,Albanesi:2023bgi,Albanesi:2022xge,Riemenschneider:2021ppj,Chiaramello:2020ehz,Ramos-Buades:2021adz,Liu:2023ldr,Huerta:2016rwp,Huerta:2017kez,Joshi:2022ocr,Setyawati:2021gom,Wang:2023ueg,Islam:2021mha,Carullo:2023kvj,Nagar:2021gss,Tanay:2016zog,Paul:2024ujx,Manna:2024ycx,Gamboa:2024hli,Gamboa:2024imd,Buonanno:1998gg,Buonanno:2000ef}, and estimate eccentricity in LIGO-Virgo-KAGRA BBH merger events~\cite{Romero-Shaw:2020thy,Gayathri:2020coq,Gamba:2021gap,Ramos-Buades:2023yhy,Gupte:2024jfe}. Parallel to these advancements, efforts are underway to standardize the definition of eccentricity in gravitational waveforms~\cite{blanchet:2013haa,Mroue:2010re, Healy:2017zqj,Mora:2002gf,Ramos-Buades:2021adz,Islam:2021mha,Ramos-Buades:2019uvh,Shaikh:2023ypz,Knee:2022hth,Boschini:2024scu,Islam:2025oiv} and identify simple relationships that connect waveform features to eccentricity. Despite this progress, developing accurate and efficient waveform and remnant models for eccentric BBH systems remains a key challenge in the community.
+
+Early studies using Newtonian~\cite{Yunes:2009yz} and PN frameworks~\cite{VanDenBroeck:2006qu,Arun:2007qv,Seto:2001pg,2012ApJ74537V} have hinted at a simple decomposition of the spherical harmonic modes of GW signals from eccentric binaries. These studies suggest that each spherical harmonic mode can be expressed as a sum of monotonic eccentric harmonics, whose frequencies and phases follow a simple hierarchical structure. Recently, Ref.~\cite{Patterson:2024vbo,Islam2025InPrep} introduced efficient frameworks for extracting these harmonics directly from waveform data. The phenomenology of these harmonics is further explored in the companion paper. However, properly extracting the harmonics for each point in the parameter space is computationally expensive (as detailed below). In this work, we therefore develop a fast and data-driven (surrogate) model for the eccentric harmonics extracted in Ref.~\cite{Islam2025InPrep}.
+
+\begin{figure*}
+\includegraphics[width=\textwidth]{training_validation_points.pdf}
+\caption{(\textit{Left panel}:) We show the training points (both for the circular and eccentric cases) used in building the \texttt{gwharmone} model with \texttt{TEOBResumS} eccentric waveforms. The red dashed rectangle indicates our target parameter space. (\textit{Middle panel}): We show the $3$PN eccentricity evolution of these systems. (\textit{Right panel}): We show the Newtonian expectation of the leading eccentric harmonic $j_{\rm M}$ as a function of the Newtonian eccentricity. Red dashed vertical line shows the boundary of our training region.}
+\label{fig:training}
+\end{figure*}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent {\textbf{\textit{Full order model}}.}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+The structure of these eccentric harmonics $\{h_{\ell m, j}\}$ within any spherical harmonic $h_{\ell,m}(t; \boldsymbol\lambda)$ is the following:
+\begin{align}
+h_{\ell,m}(t; \boldsymbol\lambda) &= \sum_{j=1}^\infty h_{\ell m, j}(t; \boldsymbol\lambda).
+\label{hmodes}
+\end{align}
+Here, $\boldsymbol{\lambda}$ is the set of parameters that describe the binary, given by:  $\boldsymbol{\lambda} = \{q, \boldsymbol{\chi}_1, \boldsymbol{\chi}_2, e_{\rm ref}, l_{\rm ref} \}$,  
+where $q$ is the mass ratio, $\boldsymbol{\chi}_1$ and $\boldsymbol{\chi}_2$ are the three-dimensional spin vectors of the two black holes, and $e_{\rm ref}$ and $l_{\rm ref}$ denote the eccentricity and mean anomaly, respectively, both defined at a chosen reference time or frequency. Because we work in the non-spinning limit, $\boldsymbol{\chi}_1 = \boldsymbol{\chi}_2 = [0,0,0]$ for us. We simulate the first four eccentric harmonics indexed by $j = [1,2,3,4]$, from the dominant quadrupolar mode (i.e. $\ell=2$, $m=2$) using the \texttt{TEOBResumS} approximant~\cite{Chiaramello:2020ehz} via the \texttt{gwMiner} package~\cite{Islam2025InPrep}~\footnote{\href{https://github.com/tousifislam/gwMiner}{https://github.com/tousifislam/gwMiner} (available on request)} (\texttt{full order model}), where $i$ indexes the training waveforms. \texttt{TEOBResumS}~\footnote{\href{https://bitbucket.org/teobresums/teobresums}{https://bitbucket.org/teobresums/teobresums/} package (available at the \texttt{attic/eccentric} branch)} is based on the effective one-body (EOB) formalism and is tuned to NR data, while \texttt{gwMiner} is a package that provides an efficient computational framework based on signal processing and SVD to extract eccentric harmonics from a given eccentric approximant (in our case, from \texttt{TEOBResumS}~\cite{Chiaramello:2020ehz}). Typically, the \texttt{full order model} requires $\sim 50$ \texttt{TEOBResumS} waveform generations for the same $[q,e_{\rm ref}]$ but with different values of $l_{\rm ref}$ to calculate the eccentric harmonics.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent {\textbf{\textit{Snapshot data}}.}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Our target parameter space is $q \in [1,3.5]$ and $e_{\rm ref} \in [0.03,0.175]$. We generate eccentric harmonics at a total of 162 points within the range $q \in [1,3.5]$ and $e_{\rm ref} \in [0.03,0.2]$ (at the start of the waveform). While generating the harmonics, we fix mean anomaly $l_{\rm ref}=\pi$ (as the same choice is made within \texttt{TEOBResumS}). We then use the phenomenologically observed universal relation between eccentric harmonics at different $l_{\rm ref}$ values (for the same $q$ and $e_{\rm ref}$) to model the mean anomaly direction. Details of these relations are provided in Ref.~\cite{Islam2025InPrep}.
+
+Note that while generating training data, we extend beyond our eccentricity target limit of $e_{\rm ref} = 0.175$. This is because data-driven models typically exhibit larger errors near the boundaries~\cite{varma2019surrogate,Islam:2021mha}, and eccentricity is already a challenging feature to model. Therefore, extending the training range beyond the target range helps to ensure smaller errors throughout the target parameter space. Additionally, we include 11 non-eccentric anchor points generated using the \texttt{TEOBResumS} approximant (in its circular limit). 
+All our waveforms have a duration of $100,000M$~\footnote{This implies that the minimum detector-frame mass for which we can generate waveforms starting from $20$ Hz is $\sim 12M_{\odot}$ for $q=1$ and $\sim 19.5M_{\odot}$ for $q=4$.}. To ensure consistency in the training data, we cast the raw eccentric harmonics $\{h_{j,i}(t_i)\}$ onto a common time grid $t \in [t_{\rm min},t_{\rm max}]$, where $t_{\rm min} = \max (\{\min(t_i)\})$ and $t_{\rm max} = \min (\{\max(t_i)\})$.
+
+We use a uniform time step of $0.1M$. Additionally, we align the waveforms such that the initial phase of each harmonic (and thereby the full waveform) is set to zero at the beginning of the waveform.
+In Figure~\ref{fig:training}, we show the training points (both circular and eccentric) along with our target parameter space, highlighted by a red dashed rectangle. Furthermore, we depict the eccentricity evolution of all binaries used in training, estimated using the 3PN approximated analytical expression obtained from Ref.~\cite{Moore:2016qxz}. We also compute the Newtonian expectation of the leading eccentric harmonic $j_{\rm M}=2(1+e_{\rm N})^{1.1954}/(1-e_{\rm N}^2)^{1.5}$ (that has most of the radiated power) as a function of the Newtonian eccentricity $e_{\rm N}$ following expressions provided in Ref.~\cite{Wen:2002km}. For our case, we find that $j=2$ would always contain most of the radiation.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent {\textbf{\textit{Hierarchical modeling}}.}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Our goal is to model the extracted eccentric harmonics as a function of $q$, $e_{\rm ref}$ and $l_{\rm ref}$ while ensuring that any small noisy features in the extracted harmonics are excluded, resulting in smooth model outputs. Since the circular waveform can be generated directly from \texttt{TEOBResumS} (without requiring the \texttt{gwMiner} package) and is not affected by the small-scale noise that often appears in the extracted eccentric harmonics, we adopt a hierarchical modeling framework. We start with the circular base model and gradually incorporate corrections to account for eccentricity effects. Our modeling framework involves constructing sub-models for several key pieces of the waveform. Below, we outline the steps.
+
+First, we decompose the circular waveform into its amplitude, $A_{22}^{\rm cir}(t;q)$, and phase, $\phi_{22}^{\rm cir}(t;q)$. We then construct models for these quantities, denoted as $A_{22}^{\rm cir,M}(t;q)$ and $\phi_{22}^{\rm cir,M}(t;q)$, respectively. Throughout the paper, we will use superscript `$\rm M$' to denote a model. Next, for the dominant $j=2$ harmonic, we compute the amplitude correction relative to the circular expectation:
+\begin{equation}
+\Delta A_{22,2}(t) = A_{22,2}(t) - A_{22}^{\rm cir,M}(t),
+\end{equation}
+and build a model for it. Note that we use the modeled circular amplitude to subtract the circular expectation. For all other harmonics ($j \neq 2$), we directly model the full amplitudes, $A_{22,j}(t)$.
+
+For the $j=2$ harmonic, we compute the additional phase relative to the circular expectation (again using the modeled circular phase):
+\begin{equation}
+\Delta \phi_{22,2}(t) = \phi_{22,2}(t) - \phi_{22}^{\rm cir,M}(t).
+\end{equation}
+We then construct a model for this additional phase as a function of $q$ and $e_{\rm ref}$, denoted as $\Delta \phi_{22,2}^{\rm M}(t; q, e_{\rm ref})$.
+For the other harmonics ($j \neq 2$), we define the extra phases as:
+\begin{equation}
+\Delta \phi_{22,j}(t) = \phi_{22,j}(t) - \frac{j\phi_{22}^{\rm cir,M}(t)}{2} - \Delta \phi_{22,2}^{\rm M}(t),
+\end{equation}
+and subsequently build models for these extra phases, denoted as $\Delta \phi_{22,j}^{\rm M}(t)$. We call the resultant final waveform model \texttt{gwharmone}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent {\textbf{\textit{Model order reduction}}.}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+For each data piece $\{x_i\}$, we construct a matrix $X$ with dimensions $n \times m$, where $n$ is the number of training data points and $m$ is the number of points in the time grid. We then apply SVD, using the \texttt{scipy.linalg.svd} module~\footnote{\href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.svd.html}{https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.svd.html}}, to factorize $X$ into three matrices: $U$, $\Sigma$, and $V^T$, with dimensions $m \times m$, $n \times n$, and $m \times n$, respectively: $X = U \Sigma V^T$~\cite{10.5555/1538674}. Similar model reduction techniques have recently been used in waveform modelling and detection (e.g. see ~\cite{varma2019surrogate,Islam:2021mha,Pathak:2024zgo,Wadekar:2024zdq,Roulet:2019hzy}).
+Here, $V^T$ provides the `modes' or SVD basis vectors $\{v_1, v_2, \dots, v_n\}$ while (diagonal) matrix $\Sigma$ contains non-negative real numbers $\{\lambda_1, \lambda_2, \dots, \lambda_n\}$ (known as \textit{singular values}) that indicates the significance of the corresponding SVD vectors. Each data piece $x_i$ can now be approximated as a linear superposition of the SVD basis vectors:
+\begin{equation}
+x_i = \sum_{i^{\prime}=1}^{n} a_{i^{\prime}}(q, e_{\rm ref}) v_{i^{\prime}},
+\end{equation}
+where $a_{i^{\prime}}(q, e_{\rm ref})$ are the coefficients to the basis vectors.
+For each piece of data, instead of utilizing several basis vectors, we restrict ourselves to using only the most important two or three (and in some cases, even just one) basis vector - thereby reducing the model order. This ensures that we primarily model the most significant features of the data while minimizing the influence of noise, which is typically captured by the later basis vectors.
+
+\begin{figure}
+\includegraphics[width=\columnwidth]{mathcalerror.pdf}
+\caption{\textit{Upper panel:} We show the time-domain errors of the \texttt{gwharmone} model during the training and validation stages for eccentricities less than $0.175$ (our intended parameter space), compared against the baseline \texttt{TEOBResumS} eccentric waveforms. For comparison, we also present the reconstruction error of the eccentric harmonics obtained using the SVD method. \textit{Bottom panel:} Furthermore, we show the error as a function of the parameter space for all validation points, including those within the target parameter space (shown as a red rectangle).}
+\label{fig:time_domain_errors}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent {\textbf{\textit{Denoising certain SVD bases}}.}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+To ensure smoothness, we further inspect each SVD basis visually (despite the cumbersome nature of this task) and remove any noisy artifacts using smoothing splines. While these choices slightly reduce model accuracy, we prioritize smoothness over retaining noisy features in the final model. 
+Additionally, we find that the basis vectors obtained for the data components $\Delta \phi_{22,1}(t)$ and $\Delta \phi_{22,3}(t)$ exhibit significant noise, making it challenging to smooth them effectively. As a result, we choose not to model these data pieces using the SVD basis. Instead, we employ phenomenologically derived phase relations between eccentric harmonics to reconstruct these two phases at a later stage (using the framework given in Ref.~\cite{Islam2025InPrep}).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent {\textbf{\textit{Regression and Interpolation}}.}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Once we determine the coefficients as functions of the parameter space, we construct data-driven models using two regression methods: Gaussian process regression (GPR) and random forest (RF), to predict the SVD basis coefficients for each data piece. Additionally, we employ radial basis function (RBF) interpolators for mesh-free interpolation. 
+For each scenario, we test multiple kernel and hyperparameter choices while simultaneously verifying that the resulting regression/interpolation models extrapolate well beyond the training range. We find that in all cases, GPR outperforms the other methods. Consequently, we use GPR to fit the SVD basis coefficients for all data pieces, except for the circular case. For the circular waveform (both amplitude and phase), we instead use cubic splines.
+Our implementation of GPR, RF, RBF and cubic splines are based on \texttt{scikit-learn} modules~\footnote{\href{https://scikit-learn.org/}{https://scikit-learn.org/}}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent {\textbf{\textit{Model evaluation}}.}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+The model takes a specific mass ratio $q = q_0$, reference eccentricity $e_{\rm ref} = e_{\rm ref,0}$ and reference mean anomaly $l_{\rm ref} = l_{\rm ref,0}$ as input. It then utilizes splines (for the circular case) and GPRs (for the eccentric corrections) to predict all necessary SVD coefficients (for $l_{\rm ref}=\pi$). We then utilize the phenomenologically derived universal relation between SVD coefficients and mean anomaly values to obtain the corresponding coefficients for the input $l_{\rm ref}$ (using the framework given in Ref.~\cite{Islam2025InPrep}).
+These coefficients are then multiplied by their corresponding basis vectors to compute the following data pieces: (i) The circular waveform components: $A_{22}^{\rm cir}(t;q)$ and $\phi_{22}^{\rm cir}(t;q)$; (ii) The eccentric corrections for the $j=2$ harmonic: $\Delta A_{22,2}(t)$ and $\Delta \phi_{22,2}(t)$; and (iii) The eccentric harmonic amplitudes: $\Delta \phi_{22,4}(t)$, $A_{22,1}(t;q)$, $A_{22,3}(t;q)$, and $A_{22,4}(t;q)$.   
+For the $j=2$ harmonic, we obtain the total amplitude as: $A_{22,2}(t) = A_{22}^{\rm cir}(t) + \Delta A_{22,2}(t)$.
+The phases of the $j=2$ and $j=4$ harmonics are computed as:
+\begin{align}
+\phi_{22,2}(t) &= \phi_{22}^{\rm cir}(t) + \Delta \phi_{22,2}(t),\\
+\phi_{22,4}(t) &= 2\phi_{22}^{\rm cir}(t) + \Delta \phi_{22,2}(t) + \Delta \phi_{22,4}(t).
+\end{align}
+Next, we compute the secular orbital phase and the eccentric phase as:
+\begin{align}
+\phi_{\lambda} &= \frac{\phi_{22,4}(t) - \phi_{22,2}(t)}{2},\\
+\phi_{\rm ecc} &= \phi_{22,2}(t) - 2\phi_{\lambda}(t).
+\end{align}
+At this stage, we use the phase relations of the eccentric harmonics (provided in Eq.~(24) of Ref.~\cite{Islam2025InPrep}) to determine the phases for the $j=1$ and $j=3$ harmonics: 
+\begin{align}
+\phi_{22,1}(t) &= \phi_{\lambda} + \phi_{\rm ecc},\\
+\phi_{22,3}(t) &= 3\phi_{\lambda} + \phi_{\rm ecc} + \pi.
+\end{align}
+Finally, once we obtain the amplitudes and phases of each harmonic, we combine them to construct the full complex-valued waveform modes.
+
+\begin{figure}
+\includegraphics[width=\columnwidth]{harmone_mismatch.pdf}
+\caption{We show the frequency-domain mismatches of the \texttt{gwharmone} model when compared against the baseline \texttt{TEOBResumS} eccentric waveforms for eccentricities less than $0.175$, assuming the advanced LIGO noise sensitivity curve. The solid black line represents the average mismatch of the model, while the red lines indicate the $1\%$ and $3\%$ mismatch thresholds.
+}
+\label{fig:mismatches}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent {\textbf{\textit{Model accuracy}}.}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+To investigate the model accuracy, we calculate both time-domain and frequency-domain errors of the \texttt{gwharmone} predictions ($h_{\rm M}$) with respect to the base \texttt{TEOBResumS} model ($h_{\rm EOB}$). Time-domain errors are obtained by computing a relative $L_2$-norm error (denoted by $\mathcal{E}$) between the two waveforms while performing a time and phase optimization (as defined in Ref.~\cite{Blackman:2017dfb}).
+This is similar to calculating a mismatch over white noise but entirely in the time domain. We compute these errors in three cases: (i) error between \texttt{gwharmone} predictions and \texttt{TEOBResumS} waveforms at the 162 training points (\textit{training errors}); (ii) error between \texttt{gwharmone} predictions and \texttt{TEOBResumS} waveforms at 1751 validation points randomly distributed throughout the parameter space (\textit{validation errors}); and (iii) error between the total waveform obtained by summing the first four eccentric harmonics in the \texttt{gwMiner} output and \texttt{TEOBResumS} waveforms at all training points (\textit{reconstruction errors}). The latter also serves as a baseline numerical error for evaluating the model's accuracy.
+
+\begin{figure}
+\includegraphics[width=\columnwidth]{harmone_timings.pdf}
+\caption{We present the evaluation times for the full-order model (\texttt{TEOBResumS} with \texttt{gwMiner}), the base model (\texttt{TEOBResumS}) which only provides the full eccentric waveform (without the harmonics), and our surrogate model (\texttt{gwharmone}) which predicts both the eccentric harmonics and the quadrupolar mode, at the parameter points used for training.}
+\label{fig:harmone_timings}
+\end{figure}
+
+In Figure~\ref{fig:time_domain_errors}, the upper panel shows a histogram of these three errors for waveforms with initial eccentricities below $0.175$ (i.e. within our target space). We find that the validation and training errors are comparable, with validation errors having a slightly lower average than training errors. However, both training and validation errors are larger than the reconstruction errors. Overall, our validation errors (which are the true indicators of model accuracy) remain around $10^{-3}$ for most of the parameter space, suggesting that the model is quite accurate. In the lower panel of the same figure, we show the time-domain errors as a function of the parameter space, including regions where the model extrapolates beyond the training range. We find that the model performs well within the target parameter space and extrapolates accurately in the $q$ direction for moderate eccentricities, maintaining accuracy up to $q=4$.
+
+Next, we compute the frequency-domain mismatches (as defined in Ref.~\cite{Cutler:1994ys}) between \texttt{gwharmone} predictions and \texttt{TEOBResumS} waveforms for all 1570 validation points for which initial eccentricity is less than $0.175$, assuming the Advanced LIGO sensitivity noise curve~\cite{KAGRA:2013rdx} for total masses varying from $M=20M_{\odot}$ to $M=200M_{\odot}$~\footnote{For LISA or other 3G detectors, waveform models capable of generating longer harmonics are needed.}. The results are shown in Figure~\ref{fig:mismatches}. 
+We find that in most cases, the mismatches remain below $10^{-2}$, often reaching values as low as $10^{-4}$. The average mismatch is approximately $0.004$. However, for high eccentricity cases ($e_{\rm ref} \geq 0.15$), mismatches increase beyond $10^{-2}$ but do not exceed the $3\%$ mismatch threshold. This suggests that while our model achieves high accuracy across most of the intended parameter space, there is room for improvement at higher eccentricities. We leave further refinement for future work.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent {\textbf{\textit{Model evaluation cost}}.}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+We compute the evaluation times for the full-order model (\texttt{TEOBResumS} with \texttt{gwMiner}), the base model (\texttt{TEOBResumS}), and our surrogate model (\texttt{gwharmone}), which predicts both the eccentric harmonics and the quadrupolar mode, at the parameter points used for training (see Figure~\ref{fig:harmone_timings}). We find that the surrogate model (\texttt{gwharmone}) takes, on average, $0.1$ seconds to evaluate, while the base model takes approximately $1$ second (providing only the full quadrupolar mode). In contrast, the full-order model (which provides both the quadrupolar mode and the constituent eccentric harmonics) takes $\sim 300$ seconds to evaluate. Thus, our surrogate model is an order of magnitude faster than the base \texttt{TEOBResumS} model and at least three orders of magnitude faster than the full-order model. This demonstrates that \texttt{gwharmone} not only offers an accurate and efficient way of generating eccentric harmonics but also provides an efficient surrogate for the full quadrupolar mode of the \texttt{TEOBResumS} model.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent {\textbf{\textit{Summary and Future Work}}.}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+To summarize, we present the first data-driven, faithful, and fast surrogate model, \texttt{gwharmone}, for the dominant four eccentric harmonics, $j=[1,2,3,4]$, in non-spinning eccentric BBH merger quadrupolar waveforms. These harmonics are smooth, monotonic functions of time and frequency, unlike the complete quadrupole mode, which exhibits oscillatory behavior. The model is trained for mass ratios $q \in [1,3.5]$ and eccentricities $e_{\rm ref} \in [0,0.2]$ (at the start of the waveform). Our average frequency-domain model mismatches are approximately $0.004$, while the evaluation cost is one to three orders of magnitude lower than that of the base and full-order models, making it a suitable choice for routine detection and data analysis. This model also opens up the possibility of building efficient search algorithms based on the eccentric harmonics similar to those presented in Refs.~\cite{Wadekar:2024zdq} and developing faster eccentric data analysis frameworks akin to Refs.~\cite{Zackay:2018qdy, Roulet:2024hwz} by utilizing the monotonicity of the eccentric harmonics. These advancements will significantly aid in the detection and interpretation of eccentric binaries using GWs, and we will pursue these directions in the near future. While our model currently focuses on non-spinning eccentric systems, the harmonic extraction and modeling framework can also be applied to eccentric, non-precessing systems. One of our immediate goals is therefore to incorporate spins into the \texttt{gwharmone} model. Finally, in the future, we also aim to build similar models based on other state-of-the-art waveform frameworks, such as the \texttt{SEOBNR} models, as well as NR data.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent {\textbf{\textit{Model availability}}.}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+The model will be publicly available through the \texttt{gwModels} package, hosted at \href{https://github.com/tousifislam/gwModels}{https://github.com/tousifislam/gwModels}. It can also be accessed through the \texttt{PyPI} package manager.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{acknowledgments}
+We thank Steve Fairhurst, Ben Patterson, Scott Field, Peter James Nee and Antoni Ramos-Buades for useful discussions and Aldo Gamboa for helpful comments on an earlier version of the draft.
+This research was supported in part by the National Science Foundation under Grant No. NSF PHY-2309135 and the Simons Foundation (216179, LB). 
+Use was made of computational facilities purchased with funds from the National Science Foundation (CNS-1725797) and administered by the Center for Scientific Computing (CSC). The CSC is supported by the California NanoSystems Institute and the Materials Research Science and Engineering Center (MRSEC; NSF DMR 2308708) at UC Santa Barbara.
+JR acknowledges support from the Sherman Fairchild Foundation.
+\end{acknowledgments}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%==========================================================================
+%==========================================================================
+%==========================================================================
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bibliography{References}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}
