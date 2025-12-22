@@ -1,0 +1,406 @@
+\begin{thebibliography}{10}
+\expandafter\ifx\csname url\endcsname\relax
+  \def\url#1{\texttt{#1}}\fi
+\expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
+\expandafter\ifx\csname href\endcsname\relax
+  \def\href#1#2{#2} \def\path#1{#1}\fi
+
+\bibitem{Abbott:2016blz}
+B.~Abbott, et~al., {Observation of Gravitational Waves from a Binary Black Hole
+  Merger}, Physical Review Letters 116~(6) (2016) 061102.
+\newblock \href {http://arxiv.org/abs/1602.03837} {\path{arXiv:1602.03837}},
+  \href {https://doi.org/10.1103/PhysRevLett.116.061102}
+  {\path{doi:10.1103/PhysRevLett.116.061102}}.
+
+\bibitem{TheLIGOScientific:2014jea}
+J.~Aasi, et~al., {Advanced LIGO}, Class. Quant. Grav. 32 (2015) 074001.
+\newblock \href {http://arxiv.org/abs/1411.4547} {\path{arXiv:1411.4547}},
+  \href {https://doi.org/10.1088/0264-9381/32/7/074001}
+  {\path{doi:10.1088/0264-9381/32/7/074001}}.
+
+\bibitem{acernese2014advanced}
+F.~Acernese, et~al., {Advanced Virgo: a second-generation interferometric
+  gravitational wave detector}, Classical and Quantum Gravity 32~(2) (2014)
+  024001.
+\newblock \href {https://doi.org/10.1088/0264-9381/32/2/024001}
+  {\path{doi:10.1088/0264-9381/32/2/024001}}.
+
+\bibitem{TheLIGOScientific:2016pea}
+B.~Abbott, et~al., {Binary Black Hole Mergers in the first Advanced LIGO
+  Observing Run}, Phys. Rev. X 6~(4) (2016) 041015, [Erratum: Phys.Rev.X 8,
+  039903 (2018)].
+\newblock \href {http://arxiv.org/abs/1606.04856} {\path{arXiv:1606.04856}},
+  \href {https://doi.org/10.1103/PhysRevX.6.041015}
+  {\path{doi:10.1103/PhysRevX.6.041015}}.
+
+\bibitem{LIGOScientific:2018mvr}
+B.~Abbott, et~al., {GWTC-1: A Gravitational-Wave Transient Catalog of Compact
+  Binary Mergers Observed by LIGO and Virgo during the First and Second
+  Observing Runs}, Phys. Rev. X 9~(3) (2019) 031040.
+\newblock \href {http://arxiv.org/abs/1811.12907} {\path{arXiv:1811.12907}},
+  \href {https://doi.org/10.1103/PhysRevX.9.031040}
+  {\path{doi:10.1103/PhysRevX.9.031040}}.
+
+\bibitem{Abbott:2020niy}
+R.~Abbott, et~al., {GWTC-2: Compact Binary Coalescences Observed by LIGO and
+  Virgo During the First Half of the Third Observing Run}, Phys. Rev. X 11
+  (2021) 021053.
+\newblock \href {https://doi.org/10.1103/PhysRevX.11.021053}
+  {\path{doi:10.1103/PhysRevX.11.021053}}.
+
+\bibitem{akutsu2019kagra}
+T.~Akutsu, et~al., {KAGRA: 2.5 Generation Interferometric Gravitational Wave
+  Detector}, Nature Astronomy 3~(1) (2019) 35–40.
+\newblock \href {https://doi.org/10.1038/s41550-018-0658-y}
+  {\path{doi:10.1038/s41550-018-0658-y}}.
+
+\bibitem{2021arXiv210501716S}
+M.~{Saleem}, J.~{Rana}, V.~{Gayathri}, A.~{Vijaykumar}, S.~{Goyal},
+  S.~{Sachdev}, J.~{Suresh}, S.~{Sudhagar}, A.~{Mukherjee}, G.~{Gaur},
+  B.~{Sathyaprakash}, A.~{Pai}, R.~X. {Adhikari}, P.~{Ajith}, S.~{Bose}, {The
+  Science Case for LIGO-India}, arXiv e-prints (2021) arXiv:2105.01716\href
+  {http://arxiv.org/abs/2105.01716} {\path{arXiv:2105.01716}}.
+
+\bibitem{abbott2020prospects}
+B.~P. Abbott, et~al., {Prospects for observing and localizing
+  gravitational-wave transients with Advanced LIGO, Advanced Virgo and KAGRA},
+  {Living Reviews in Relativity} 23~(1) (2020) 3.
+\newblock \href {https://doi.org/10.1007/s41114-020-00026-9}
+  {\path{doi:10.1007/s41114-020-00026-9}}.
+
+\bibitem{mehta2017}
+A.~K. {Mehta}, C.~K. {Mishra}, V.~{Varma}, P.~{Ajith}, Accurate
+  inspiral-merger-ringdown gravitational waveforms for nonspinning black-hole
+  binaries including the effect of subdominant modes, Physical Review D 96~(12)
+  (2017) 124010.
+\newblock \href {http://arxiv.org/abs/1708.03501} {\path{arXiv:1708.03501}},
+  \href {https://doi.org/10.1103/PhysRevD.96.124010}
+  {\path{doi:10.1103/PhysRevD.96.124010}}.
+
+\bibitem{mehta2019}
+A.~K. {Mehta}, P.~{Tiwari}, N.~K. {Johnson-McDaniel}, C.~K. {Mishra},
+  V.~{Varma}, P.~{Ajith}, Including mode mixing in a higher-multipole model for
+  gravitational waveforms from nonspinning black-hole binaries, Physical Review
+  D 100~(2) (2019) 024032.
+\newblock \href {http://arxiv.org/abs/1902.02731} {\path{arXiv:1902.02731}},
+  \href {https://doi.org/10.1103/PhysRevD.100.024032}
+  {\path{doi:10.1103/PhysRevD.100.024032}}.
+
+\bibitem{khan2020}
+S.~{Khan}, F.~{Ohme}, K.~{Chatziioannou}, M.~{Hannam}, Including higher order
+  multipoles in gravitational-wave models for precessing binary black holes,
+  Physical Review D 101~(2) (2020) 024056.
+\newblock \href {http://arxiv.org/abs/1911.06050} {\path{arXiv:1911.06050}},
+  \href {https://doi.org/10.1103/PhysRevD.101.024056}
+  {\path{doi:10.1103/PhysRevD.101.024056}}.
+
+\bibitem{estelles2020}
+H.~{Estell{\'e}s}, A.~{Ramos-Buades}, S.~{Husa}, C.~{Garc{\'\i}a-Quir{\'o}s},
+  M.~{Colleoni}, L.~{Haegel}, R.~{Jaume}, {IMRPhenomTP: A phenomenological time
+  domain model for dominant quadrupole gravitational wave signal of coalescing
+  binary black holes}, arXiv e-prints (2020) arXiv:2004.08302\href
+  {http://arxiv.org/abs/2004.08302} {\path{arXiv:2004.08302}}.
+
+\bibitem{cotesta2018}
+R.~{Cotesta}, A.~{Buonanno}, A.~{Boh{\'e}}, A.~{Taracchini}, I.~{Hinder},
+  S.~{Ossokine}, Enriching the symphony of gravitational waves from binary
+  black holes by tuning higher harmonics, Physical Review D 98~(8) (2018)
+  084028.
+\newblock \href {http://arxiv.org/abs/1803.10701} {\path{arXiv:1803.10701}},
+  \href {https://doi.org/10.1103/PhysRevD.98.084028}
+  {\path{doi:10.1103/PhysRevD.98.084028}}.
+
+\bibitem{nagar2018}
+A.~{Nagar}, S.~{Bernuzzi}, W.~{Del Pozzo}, G.~{Riemenschneider}, S.~{Akcay},
+  G.~{Carullo}, P.~{Fleig}, S.~{Babak}, K.~W. {Tsang}, M.~{Colleoni},
+  F.~{Messina}, G.~{Pratten}, D.~{Radice}, P.~{Rettegno}, M.~{Agathos},
+  E.~{Fauchon-Jones}, M.~{Hannam}, S.~{Husa}, T.~{Dietrich},
+  P.~{Cerd{\'a}-Duran}, J.~A. {Font}, F.~{Pannarale}, P.~{Schmidt},
+  T.~{Damour}, Time-domain effective-one-body gravitational waveforms for
+  coalescing compact binaries with nonprecessing spins, tides, and self-spin
+  effects, Physical Review D 98~(10) (2018) 104052.
+\newblock \href {http://arxiv.org/abs/1806.01772} {\path{arXiv:1806.01772}},
+  \href {https://doi.org/10.1103/PhysRevD.98.104052}
+  {\path{doi:10.1103/PhysRevD.98.104052}}.
+
+\bibitem{nagar2020}
+A.~{Nagar}, G.~{Pratten}, G.~{Riemenschneider}, R.~{Gamba}, Multipolar
+  effective one body model for nonspinning black hole binaries, Physical Review
+  D 101~(2) (2020) 024041.
+\newblock \href {http://arxiv.org/abs/1904.09550} {\path{arXiv:1904.09550}},
+  \href {https://doi.org/10.1103/PhysRevD.101.024041}
+  {\path{doi:10.1103/PhysRevD.101.024041}}.
+
+\bibitem{rifat2020}
+N.~E.~M. {Rifat}, S.~E. {Field}, G.~{Khanna}, V.~{Varma}, Surrogate model for
+  gravitational wave signals from comparable and large-mass-ratio black hole
+  binaries, Physical Review D 101~(8) (2020) 081502.
+\newblock \href {http://arxiv.org/abs/1910.10473} {\path{arXiv:1910.10473}},
+  \href {https://doi.org/10.1103/PhysRevD.101.081502}
+  {\path{doi:10.1103/PhysRevD.101.081502}}.
+
+\bibitem{varma2019}
+V.~{Varma}, S.~E. {Field}, M.~A. {Scheel}, J.~{Blackman}, L.~E. {Kidder}, H.~P.
+  {Pfeiffer}, Surrogate model of hybridized numerical relativity binary black
+  hole waveforms, Physical Review D 99~(6) (2019) 064045.
+\newblock \href {http://arxiv.org/abs/1812.07865} {\path{arXiv:1812.07865}},
+  \href {https://doi.org/10.1103/PhysRevD.99.064045}
+  {\path{doi:10.1103/PhysRevD.99.064045}}.
+
+\bibitem{khan2019phenom}
+S.~{Khan}, K.~{Chatziioannou}, M.~{Hannam}, F.~{Ohme}, Phenomenological model
+  for the gravitational-wave signal from precessing binary black holes with
+  two-spin effects, Physical Review D 100~(2) (2019) 024059.
+\newblock \href {http://arxiv.org/abs/1809.10113} {\path{arXiv:1809.10113}},
+  \href {https://doi.org/10.1103/PhysRevD.100.024059}
+  {\path{doi:10.1103/PhysRevD.100.024059}}.
+
+\bibitem{varma2019precess}
+V.~{Varma}, S.~E. {Field}, M.~A. {Scheel}, J.~{Blackman}, D.~{Gerosa}, L.~C.
+  {Stein}, L.~E. {Kidder}, H.~P. {Pfeiffer}, Surrogate models for precessing
+  binary black hole simulations with unequal masses, Physical Review Research
+  1~(3) (2019) 033015.
+\newblock \href {http://arxiv.org/abs/1905.09300} {\path{arXiv:1905.09300}},
+  \href {https://doi.org/10.1103/PhysRevResearch.1.033015}
+  {\path{doi:10.1103/PhysRevResearch.1.033015}}.
+
+\bibitem{williams2020}
+D.~{Williams}, I.~S. {Heng}, J.~{Gair}, J.~A. {Clark}, B.~{Khamesra},
+  Precessing numerical relativity waveform surrogate model for binary black
+  holes: A gaussian process regression approach, Physical Review D 101~(6)
+  (2020) 063011.
+\newblock \href {http://arxiv.org/abs/1903.09204} {\path{arXiv:1903.09204}},
+  \href {https://doi.org/10.1103/PhysRevD.101.063011}
+  {\path{doi:10.1103/PhysRevD.101.063011}}.
+
+\bibitem{ossokine2020}
+S.~{Ossokine}, A.~{Buonanno}, S.~{Marsat}, R.~{Cotesta}, S.~{Babak},
+  T.~{Dietrich}, R.~{Haas}, I.~{Hinder}, H.~P. {Pfeiffer}, M.~{P{\"u}rrer},
+  C.~J. {Woodford}, M.~{Boyle}, L.~E. {Kidder}, M.~A. {Scheel},
+  B.~{Szil{\'a}gyi}, Multipolar effective-one-body waveforms for precessing
+  binary black holes: {Construction} and validation, Physical Review D 102~(4)
+  (2020) 044055.
+\newblock \href {http://arxiv.org/abs/2004.09442} {\path{arXiv:2004.09442}},
+  \href {https://doi.org/10.1103/PhysRevD.102.044055}
+  {\path{doi:10.1103/PhysRevD.102.044055}}.
+
+\bibitem{dietrich2019tidal}
+T.~{Dietrich}, S.~{Khan}, R.~{Dudi}, S.~J. {Kapadia}, P.~{Kumar}, A.~{Nagar},
+  F.~{Ohme}, F.~{Pannarale}, A.~{Samajdar}, S.~{Bernuzzi}, G.~{Carullo},
+  W.~{Del Pozzo}, M.~{Haney}, C.~{Markakis}, M.~{P{\"u}rrer},
+  G.~{Riemenschneider}, Y.~E. {Setyawati}, K.~W. {Tsang}, C.~{Van Den Broeck},
+  Matter imprints in waveform models for neutron star binaries: {Tidal} and
+  self-spin effects, Physical Review D 99~(2) (2019) 024029.
+\newblock \href {http://arxiv.org/abs/1804.02235} {\path{arXiv:1804.02235}},
+  \href {https://doi.org/10.1103/PhysRevD.99.024029}
+  {\path{doi:10.1103/PhysRevD.99.024029}}.
+
+\bibitem{dietrich2019improved}
+T.~{Dietrich}, A.~{Samajdar}, S.~{Khan}, N.~K. {Johnson-McDaniel}, R.~{Dudi},
+  W.~{Tichy}, Improving the {NRTidal} model for binary neutron star systems,
+  Physical Review D 100~(4) (2019) 044003.
+\newblock \href {http://arxiv.org/abs/1905.06011} {\path{arXiv:1905.06011}},
+  \href {https://doi.org/10.1103/PhysRevD.100.044003}
+  {\path{doi:10.1103/PhysRevD.100.044003}}.
+
+\bibitem{pratten2020domharm}
+G.~{Pratten}, S.~{Husa}, C.~{Garc{\'\i}a-Quir{\'o}s}, M.~{Colleoni},
+  A.~{Ramos-Buades}, H.~{Estell{\'e}s}, R.~{Jaume}, Setting the cornerstone for
+  a family of models for gravitational waves from compact binaries: The
+  dominant harmonic for nonprecessing quasicircular black holes, Physical
+  Review D 102~(6) (2020) 064001.
+\newblock \href {http://arxiv.org/abs/2001.11412} {\path{arXiv:2001.11412}},
+  \href {https://doi.org/10.1103/PhysRevD.102.064001}
+  {\path{doi:10.1103/PhysRevD.102.064001}}.
+
+\bibitem{london2018}
+L.~{London}, S.~{Khan}, E.~{Fauchon-Jones}, C.~{Garc{\'\i}a}, M.~{Hannam},
+  S.~{Husa}, X.~{Jim{\'e}nez-Forteza}, C.~{Kalaghatgi}, F.~{Ohme},
+  F.~{Pannarale}, First higher-multipole model of gravitational waves from
+  spinning and coalescing black-hole binaries, Physical Review Letters 120~(16)
+  (2018) 161102.
+\newblock \href {http://arxiv.org/abs/1708.00404} {\path{arXiv:1708.00404}},
+  \href {https://doi.org/10.1103/PhysRevLett.120.161102}
+  {\path{doi:10.1103/PhysRevLett.120.161102}}.
+
+\bibitem{nagar2020teob}
+A.~{Nagar}, G.~{Riemenschneider}, G.~{Pratten}, P.~{Rettegno}, F.~{Messina},
+  Multipolar effective one body waveform model for spin-aligned black hole
+  binaries, Physical Review D 102~(2) (2020) 024077.
+\newblock \href {http://arxiv.org/abs/2001.09082} {\path{arXiv:2001.09082}},
+  \href {https://doi.org/10.1103/PhysRevD.102.024077}
+  {\path{doi:10.1103/PhysRevD.102.024077}}.
+
+\bibitem{pratten2021IMRPhenomXPHM}
+G.~Pratten, C.~Garc\'{\i}a-Quir\'os, M.~Colleoni, A.~Ramos-Buades,
+  H.~Estell\'es, M.~Mateu-Lucena, R.~Jaume, M.~Haney, D.~Keitel, J.~E.
+  Thompson, S.~Husa, Computationally efficient models for the dominant and
+  subdominant harmonic modes of precessing binary black holes, Physical Review
+  D 103 (2021) 104056.
+\newblock \href {https://doi.org/10.1103/PhysRevD.103.104056}
+  {\path{doi:10.1103/PhysRevD.103.104056}}.
+
+\bibitem{garciaquiros2020}
+C.~{Garc{\'\i}a-Quir{\'o}s}, M.~{Colleoni}, S.~{Husa}, H.~{Estell{\'e}s},
+  G.~{Pratten}, A.~{Ramos-Buades}, M.~{Mateu-Lucena}, R.~{Jaume}, Multimode
+  frequency-domain model for the gravitational wave signal from nonprecessing
+  black-hole binaries, Physical Review D 102~(6) (2020) 064002.
+\newblock \href {http://arxiv.org/abs/2001.10914} {\path{arXiv:2001.10914}},
+  \href {https://doi.org/10.1103/PhysRevD.102.064002}
+  {\path{doi:10.1103/PhysRevD.102.064002}}.
+
+\bibitem{LIGOScientific:2020stg}
+R.~Abbott, et~al., {GW190412: Observation of a Binary-Black-Hole Coalescence
+  with Asymmetric Masses}, Phys. Rev. D 102~(4) (2020) 043015.
+\newblock \href {http://arxiv.org/abs/2004.08342} {\path{arXiv:2004.08342}},
+  \href {https://doi.org/10.1103/PhysRevD.102.043015}
+  {\path{doi:10.1103/PhysRevD.102.043015}}.
+
+\bibitem{Abbott:2020khf}
+R.~Abbott, et~al., {GW190814: Gravitational Waves from the Coalescence of a 23
+  Solar Mass Black Hole with a 2.6 Solar Mass Compact Object}, Astrophys. J.
+  896~(2) (2020) L44.
+\newblock \href {http://arxiv.org/abs/2006.12611} {\path{arXiv:2006.12611}},
+  \href {https://doi.org/10.3847/2041-8213/ab960f}
+  {\path{doi:10.3847/2041-8213/ab960f}}.
+
+\bibitem{bohe2017improved}
+A.~Boh{\'e}, L.~Shao, A.~Taracchini, A.~Buonanno, S.~Babak, I.~W. Harry,
+  I.~Hinder, S.~Ossokine, M.~P{\"u}rrer, V.~Raymond, et~al., Improved
+  effective-one-body model of spinning, nonprecessing binary black holes for
+  the era of gravitational-wave astrophysics with advanced detectors, Physical
+  Review D 95~(4) (2017) 044028.
+
+\bibitem{pan2011inspiral}
+Y.~Pan, A.~Buonanno, M.~Boyle, L.~T. Buchman, L.~E. Kidder, H.~P. Pfeiffer,
+  M.~A. Scheel, Inspiral-merger-ringdown multipolar waveforms of nonspinning
+  black-hole binaries using the effective-one-body formalism, Physical Review D
+  84~(12) (2011) 124052.
+
+\bibitem{field2014fast}
+S.~E. Field, C.~R. Galley, J.~S. Hesthaven, J.~Kaye, M.~Tiglio, Fast prediction
+  and evaluation of gravitational waveforms using surrogate models, Physical
+  Review X 4~(3) (2014) 031006.
+
+\bibitem{clrsalgorithms}
+T.~H. Cormen, C.~E. Leiserson, R.~L. Rivest, C.~Stein, Introduction to
+  Algorithms, 3rd Edition, MIT Press, 2009.
+
+\bibitem{barrault2004eim}
+M.~Barrault, Y.~Maday, N.~C. Nguyen, A.~T. Patera, An ‘empirical
+  interpolation’ method: application to efficient reduced-basis
+  discretization of partial differential equations, Comptes Rendus Mathematique
+  339~(9) (2004) 667--672.
+
+\bibitem{maday2009eim}
+Y.~Maday, N.~C. Nguyen, A.~T. Patera, S.~H. Pau, A general multipurpose
+  interpolation procedure: the magic points, Communications on Pure and Applied
+  Analysis 8~(1) (2009) 383--404.
+
+\bibitem{khan2021gravitational}
+S.~Khan, R.~Green, Gravitational-wave surrogate models powered by artificial
+  neural networks, Physical Review D 103~(6) (2021) 064015.
+
+\bibitem{setyawati2020regression}
+Y.~Setyawati, M.~P{\"u}rrer, F.~Ohme, Regression methods in waveform modeling:
+  a comparative study, Classical and Quantum Gravity 37~(7) (2020) 075012.
+
+\bibitem{cuoco2020review}
+E.~Cuoco, J.~Powell, M.~Cavagli{\`{a}}, K.~Ackley, M.~Bejger, C.~Chatterjee,
+  M.~Coughlin, S.~Coughlin, P.~Easter, R.~Essick, H.~Gabbard, T.~Gebhard,
+  S.~Ghosh, L.~Haegel, A.~Iess, D.~Keitel, Z.~M{\'{a}}rka, S.~M{\'{a}}rka,
+  F.~Morawski, T.~Nguyen, R.~Ormiston, M.~Pürrer, M.~Razzano, K.~Staats,
+  G.~Vajente, D.~Williams, Enhancing gravitational-wave science with machine
+  learning, Machine Learning: Science and Technology 2~(1) (2020) 011002.
+\newblock \href {https://doi.org/10.1088/2632-2153/abb93a}
+  {\path{doi:10.1088/2632-2153/abb93a}}.
+
+\bibitem{sonoda2017neural}
+S.~Sonoda, N.~Murata, Neural network with unbounded activation functions is
+  universal approximator, Applied and Computational Harmonic Analysis 43~(2)
+  (2017) 233--268.
+
+\bibitem{nousi2017deep}
+P.~Nousi, A.~Tefas, Deep learning algorithms for discriminant autoencoding,
+  Neurocomputing 266 (2017) 325--335.
+
+\bibitem{chua2019reduced}
+A.~J. Chua, C.~R. Galley, M.~Vallisneri, Reduced-order modeling with artificial
+  neurons for gravitational-wave inference, Physical Review Letters 122~(21)
+  (2019) 211101.
+
+\bibitem{nousi2018self}
+P.~Nousi, A.~Tefas, Self-supervised autoencoders for clustering and
+  classification, Evolving Systems (2018) 1--14.
+
+\bibitem{maggiore}
+M.~Maggiore, Gravitational Waves Volume 1: Theory and Experiments, Oxford
+  University Press, 2008.
+\newblock \href {https://doi.org/10.1093/acprof:oso/9780198570745.001.0001}
+  {\path{doi:10.1093/acprof:oso/9780198570745.001.0001}}.
+
+\bibitem{blackman2017surrogate}
+J.~Blackman, S.~E. Field, M.~A. Scheel, C.~R. Galley, D.~A. Hemberger,
+  P.~Schmidt, R.~Smith, A surrogate model of gravitational waveforms from
+  numerical relativity simulations of precessing binary black hole mergers,
+  Physical Review D 95~(10) (2017) 104023.
+
+\bibitem{pycbc}
+A.~Nitz, I.~Harry, D.~Brown, C.~M. Biwer, J.~Willis, T.~D. Canton, C.~Capano,
+  T.~Dent, L.~Pekowsky, A.~R. Williamson, G.~S.~C. Davies, S.~De, M.~Cabero,
+  B.~Machenschalk, P.~Kumar, D.~Macleod, S.~Reyes, dfinstad, F.~Pannarale,
+  T.~Massinger, S.~Kumar, M.~Tápai, L.~Singer, S.~Khan, S.~Fairhurst,
+  A.~Nielsen, S.~Singh, shasvath, B.~U.~V. Gadre, I.~Dorrington,
+  \href{https://doi.org/10.5281/zenodo.4849433}{gwastro/pycbc: Pycbc release
+  1.18.1} (May 2021).
+\newblock \href {https://doi.org/10.5281/zenodo.4849433}
+  {\path{doi:10.5281/zenodo.4849433}}.
+\newline\urlprefix\url{https://doi.org/10.5281/zenodo.4849433}
+
+\bibitem{vincent2008extracting}
+P.~Vincent, H.~Larochelle, Y.~Bengio, P.-A. Manzagol, Extracting and composing
+  robust features with denoising autoencoders, in: Proceedings of the 25th
+  international conference on Machine learning, 2008, pp. 1096--1103.
+
+\bibitem{xie2016unsupervised}
+J.~Xie, R.~Girshick, A.~Farhadi, Unsupervised deep embedding for clustering
+  analysis, in: International conference on machine learning, 2016, pp.
+  478--487.
+
+\bibitem{nousi2017discriminatively}
+P.~Nousi, A.~Tefas, Discriminatively trained autoencoders for fast and accurate
+  face recognition, in: International Conference on Engineering Applications of
+  Neural Networks, Springer, 2017, pp. 205--215.
+
+\bibitem{wu2013online}
+P.~Wu, S.~C. Hoi, H.~Xia, P.~Zhao, D.~Wang, C.~Miao, Online multimodal deep
+  similarity learning with application to image retrieval, in: Proceedings of
+  the 21st ACM international conference on Multimedia, 2013, pp. 153--162.
+
+\bibitem{carreira2015hashing}
+M.~A. Carreira-Perpin{\'a}n, R.~Raziperchikolaei, Hashing with binary
+  autoencoders, in: Proceedings of the IEEE conference on computer vision and
+  pattern recognition, 2015, pp. 557--566.
+
+\bibitem{rompy}
+C.~R. Galley, {RomPy} package, https://bitbucket.org/chadgalley/rompy/ (2020).
+
+\bibitem{he2015delving}
+K.~He, X.~Zhang, S.~Ren, J.~Sun, Delving deep into rectifiers: Surpassing
+  human-level performance on imagenet classification, in: Proceedings of the
+  IEEE international conference on computer vision, 2015, pp. 1026--1034.
+
+\bibitem{pytorch}
+A.~Paszke, S.~Gross, S.~Chintala, G.~Chanan, E.~Yang, Z.~DeVito, Z.~Lin,
+  A.~Desmaison, L.~Antiga, A.~Lerer, Automatic differentiation in pytorch, in:
+  NIPS-W, 2017.
+
+\bibitem{abdi2010principal}
+H.~Abdi, L.~J. Williams, Principal component analysis, Wiley interdisciplinary
+  reviews: computational statistics 2~(4) (2010) 433--459.
+
+\bibitem{kingma2014adam}
+D.~P. Kingma, J.~Ba, Adam: A method for stochastic optimization, arXiv preprint
+  arXiv:1412.6980 (2014).
+
+\end{thebibliography}

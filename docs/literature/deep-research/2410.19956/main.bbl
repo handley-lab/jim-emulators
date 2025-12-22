@@ -1,0 +1,205 @@
+\begin{thebibliography}{}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+\providecommand{\url}[1]{\href{#1}{#1}}
+\providecommand{\dodoi}[1]{doi:~\href{http://doi.org/#1}{\nolinkurl{#1}}}
+\providecommand{\doeprint}[1]{\href{http://ascl.net/#1}{\nolinkurl{http://ascl.net/#1}}}
+\providecommand{\doarXiv}[1]{\href{https://arxiv.org/abs/#1}{\nolinkurl{https://arxiv.org/abs/#1}}}
+
+\bibitem[{Aasi {et~al.}(2015)}]{LIGOScientific:2014pky}
+Aasi, J., {et~al.} 2015, Class. Quant. Grav., 32, 074001, \dodoi{10.1088/0264-9381/32/7/074001}
+
+\bibitem[{Abbot {et~al.}(2023)}]{gwosc:bulk}
+Abbot, R., {et~al.} 2023, Gravitational Wave Open Science Center (1126216262-1126302662).
+\newblock \url{https://gwosc.org/archive/links/O1/H1/1126216262/1126302662/simple/}
+
+\bibitem[{Abbott {et~al.}(2016{\natexlab{a}})}]{LIGOScientific:2016aoc}
+Abbott, B.~P., {et~al.} 2016{\natexlab{a}}, Phys. Rev. Lett., 116, 061102, \dodoi{10.1103/PhysRevLett.116.061102}
+
+\bibitem[{Abbott {et~al.}(2016{\natexlab{b}})}]{LIGOScientific:2016gtq}
+---. 2016{\natexlab{b}}, Class. Quant. Grav., 33, 134001, \dodoi{10.1088/0264-9381/33/13/134001}
+
+\bibitem[{Abbott {et~al.}(2016{\natexlab{c}})}]{Abbott:2016xvh}
+---. 2016{\natexlab{c}}, Phys. Rev. D, 93, 112004, \dodoi{10.1103/PhysRevD.93.112004}
+
+\bibitem[{Abbott {et~al.}(2016{\natexlab{d}})}]{LIGOScientific:2016vlm}
+---. 2016{\natexlab{d}}, Phys. Rev. Lett., 116, 241102, \dodoi{10.1103/PhysRevLett.116.241102}
+
+\bibitem[{Abbott {et~al.}(2017)}]{LIGOScientific:2017vwq}
+---. 2017, Phys. Rev. Lett., 119, 161101, \dodoi{10.1103/PhysRevLett.119.161101}
+
+\bibitem[{Abbott {et~al.}(2020)}]{LIGOScientific:2019hgc}
+---. 2020, Class. Quant. Grav., 37, 055002, \dodoi{10.1088/1361-6382/ab685e}
+
+\bibitem[{Abbott {et~al.}(2021)}]{LIGOScientific:2019lzm}
+Abbott, R., {et~al.} 2021, SoftwareX, 13, 100658, \dodoi{10.1016/j.softx.2021.100658}
+
+\bibitem[{Abbott {et~al.}(2023)}]{LIGOScientific:2021djp}
+---. 2023, Phys. Rev. X, 13, 041039, \dodoi{10.1103/PhysRevX.13.041039}
+
+\bibitem[{Abbott {et~al.}(2024)}]{LIGOScientific:2021usb}
+---. 2024, Phys. Rev. D, 109, 022001, \dodoi{10.1103/PhysRevD.109.022001}
+
+\bibitem[{Acernese {et~al.}(2015)}]{VIRGO:2014yos}
+Acernese, F., {et~al.} 2015, Class. Quant. Grav., 32, 024001, \dodoi{10.1088/0264-9381/32/2/024001}
+
+\bibitem[{Ashton(2023)}]{Ashton:2022ztk}
+Ashton, G. 2023, Mon. Not. Roy. Astron. Soc., 520, 2983, \dodoi{10.1093/mnras/stad341}
+
+\bibitem[{Ashton {et~al.}(2019)}]{Ashton:2018jfp}
+Ashton, G., {et~al.} 2019, Astrophys. J. Suppl., 241, 27, \dodoi{10.3847/1538-4365/ab06fc}
+
+\bibitem[{Aso {et~al.}(2013)Aso, Michimura, Somiya, Ando, Miyakawa, Sekiguchi, Tatsumi, \& Yamamoto}]{Aso:2013eba}
+Aso, Y., Michimura, Y., Somiya, K., {et~al.} 2013, Phys. Rev. D, 88, 043007, \dodoi{10.1103/PhysRevD.88.043007}
+
+\bibitem[{Berry {et~al.}(2015)}]{Berry:2014jja}
+Berry, C. P.~L., {et~al.} 2015, Astrophys. J., 804, 114, \dodoi{10.1088/0004-637X/804/2/114}
+
+\bibitem[{Biwer {et~al.}(2019)Biwer, Capano, De, Cabero, Brown, Nitz, \& Raymond}]{Biwer:2018osg}
+Biwer, C.~M., Capano, C.~D., De, S., {et~al.} 2019, Publ. Astron. Soc. Pac., 131, 024503, \dodoi{10.1088/1538-3873/aaef0b}
+
+\bibitem[{{Brock} {et~al.}(2018){Brock}, {Donahue}, \& {Simonyan}}]{Brock2018}
+{Brock}, A., {Donahue}, J., \& {Simonyan}, K. 2018, arXiv e-prints, arXiv:1809.11096, \dodoi{10.48550/arXiv.1809.11096}
+
+\bibitem[{Buikema {et~al.}(2020)}]{aLIGO:2020wna}
+Buikema, A., {et~al.} 2020, Phys. Rev. D, 102, 062003, \dodoi{10.1103/PhysRevD.102.062003}
+
+\bibitem[{Chatziioannou {et~al.}(2021)Chatziioannou, Cornish, Wijngaarden, \& Littenberg}]{Chatziioannou:2021ezd}
+Chatziioannou, K., Cornish, N., Wijngaarden, M., \& Littenberg, T.~B. 2021, Phys. Rev. D, 103, 044013, \dodoi{10.1103/PhysRevD.103.044013}
+
+\bibitem[{Cook {et~al.}(2006)Cook, Gelman, \& Rubin}]{cook2006validation}
+Cook, S.~R., Gelman, A., \& Rubin, D.~B. 2006, Journal of Computational and Graphical Statistics, 15, 675.
+\newblock \url{http://www.jstor.org/stable/27594203}
+
+\bibitem[{Cornish \& Littenberg(2015)}]{Cornish:2014kda}
+Cornish, N.~J., \& Littenberg, T.~B. 2015, Class. Quant. Grav., 32, 135012, \dodoi{10.1088/0264-9381/32/13/135012}
+
+\bibitem[{Cornish {et~al.}(2021)Cornish, Littenberg, B\'ecsy, Chatziioannou, Clark, Ghonge, \& Millhouse}]{Cornish:2020dwh}
+Cornish, N.~J., Littenberg, T.~B., B\'ecsy, B., {et~al.} 2021, Phys. Rev. D, 103, 044006, \dodoi{10.1103/PhysRevD.103.044006}
+
+\bibitem[{Davis {et~al.}(2022)Davis, Littenberg, Romero-Shaw, Millhouse, McIver, Di~Renzo, \& Ashton}]{Davis:2022ird}
+Davis, D., Littenberg, T.~B., Romero-Shaw, I.~M., {et~al.} 2022, Class. Quant. Grav., 39, 245013, \dodoi{10.1088/1361-6382/aca238}
+
+\bibitem[{Davis {et~al.}(2019)Davis, Massinger, Lundgren, Driggers, Urban, \& Nuttall}]{Davis:2018yrz}
+Davis, D., Massinger, T.~J., Lundgren, A.~P., {et~al.} 2019, Class. Quant. Grav., 36, 055011, \dodoi{10.1088/1361-6382/ab01c5}
+
+\bibitem[{{Dax} {et~al.}(2021){Dax}, {Green}, {Gair}, {Macke}, {Buonanno}, \& {Sch{\"o}lkopf}}]{2021PhRvL.127x1103D}
+{Dax}, M., {Green}, S.~R., {Gair}, J., {et~al.} 2021, \prl, 127, 241103, \dodoi{10.1103/PhysRevLett.127.241103}
+
+\bibitem[{Dax {et~al.}(2024)Dax, Green, Gair, Gupte, P\"urrer, Raymond, Wildberger, Macke, Buonanno, \& Sch\"olkopf}]{Dax:2024mcn}
+Dax, M., Green, S.~R., Gair, J., {et~al.} 2024.
+\newblock \doarXiv{2407.09602}
+
+\bibitem[{Edwards {et~al.}(2024)Edwards, Wong, Lam, Coogan, Foreman-Mackey, Isi, \& Zimmerman}]{Edwards:2023sak}
+Edwards, T. D.~P., Wong, K. W.~K., Lam, K. K.~H., {et~al.} 2024, Phys. Rev. D, 110, 064028, \dodoi{10.1103/PhysRevD.110.064028}
+
+\bibitem[{Hannam {et~al.}(2022)}]{Hannam:2021pit}
+Hannam, M., {et~al.} 2022, Nature, 610, 652, \dodoi{10.1038/s41586-022-05212-z}
+
+\bibitem[{Heinzel {et~al.}(2023)Heinzel, Talbot, Ashton, \& Vitale}]{Heinzel:2023vkq}
+Heinzel, J., Talbot, C., Ashton, G., \& Vitale, S. 2023, Mon. Not. Roy. Astron. Soc., 523, 5972, \dodoi{10.1093/mnras/stad1823}
+
+\bibitem[{{Ho} {et~al.}(2020){Ho}, {Jain}, \& {Abbeel}}]{Ho2020}
+{Ho}, J., {Jain}, A., \& {Abbeel}, P. 2020, arXiv e-prints, arXiv:2006.11239, \dodoi{10.48550/arXiv.2006.11239}
+
+\bibitem[{Hourihane {et~al.}(2022)Hourihane, Chatziioannou, Wijngaarden, Davis, Littenberg, \& Cornish}]{Hourihane:2022doe}
+Hourihane, S., Chatziioannou, K., Wijngaarden, M., {et~al.} 2022, Phys. Rev. D, 106, 042006, \dodoi{10.1103/PhysRevD.106.042006}
+
+\bibitem[{Hyv\"{a}rinen(2005)}]{Hyvarinen2005}
+Hyv\"{a}rinen, A. 2005, J. Mach. Learn. Res., 6, 695–709
+
+\bibitem[{Khan {et~al.}(2016)Khan, Husa, Hannam, Ohme, P\"urrer, Jim\'enez~Forteza, \& Boh\'e}]{Khan:2015jqa}
+Khan, S., Husa, S., Hannam, M., {et~al.} 2016, Phys. Rev. D, 93, 044007, \dodoi{10.1103/PhysRevD.93.044007}
+
+\bibitem[{Kingma \& Ba(2014)}]{kingma2014adam}
+Kingma, D.~P., \& Ba, J. 2014, arXiv preprint arXiv:1412.6980
+
+\bibitem[{{Kobyzev} {et~al.}(2019){Kobyzev}, {Prince}, \& {Brubaker}}]{2019NFreview}
+{Kobyzev}, I., {Prince}, S. J.~D., \& {Brubaker}, M.~A. 2019, arXiv e-prints, arXiv:1908.09257, \dodoi{10.48550/arXiv.1908.09257}
+
+\bibitem[{Legin(2024)}]{scoregen_jax}
+Legin, R. 2024, scoregen\_jax.
+\newblock \url{https://github.com/RonanLegin/scoregen_jax}
+
+\bibitem[{{Legin} {et~al.}(2023){Legin}, {Adam}, {Hezaveh}, \& {Perreault Levasseur}}]{legin}
+{Legin}, R., {Adam}, A., {Hezaveh}, Y., \& {Perreault Levasseur}, L. 2023, arXiv e-prints, arXiv:2302.03046, \dodoi{10.48550/arXiv.2302.03046}
+
+\bibitem[{Legin {et~al.}(2023)Legin, Isi, Wong, Adam, Perreault-Levasseur, \& Hezaveh}]{Legin2023icml}
+Legin, R., Isi, M., Wong, K., {et~al.} 2023, in Machine Learning for Astrophysics. Workshop at the Fortieth International Conference on Machine Learning (ICML 2023), 17.
+\newblock \url{https://ml4astro.github.io/icml2023/assets/70.pdf}
+
+\bibitem[{Legin {et~al.}(2024)Legin, Wong, \& Isi}]{slicgw_repo}
+Legin, R., Wong, K., \& Isi, M. 2024, slicgw.
+\newblock \url{https://github.com/RonanLegin/slicgw}
+
+\bibitem[{{Lemos} {et~al.}(2023){Lemos}, {Coogan}, {Hezaveh}, \& {Perreault-Levasseur}}]{2023Pablo}
+{Lemos}, P., {Coogan}, A., {Hezaveh}, Y., \& {Perreault-Levasseur}, L. 2023, 40th International Conference on Machine Learning, 202, 19256, \dodoi{10.48550/arXiv.2302.03026}
+
+\bibitem[{{Leyde} {et~al.}(2024){Leyde}, {Green}, {Toubiana}, \& {Gair}}]{2024PhRvD.109f4056L}
+{Leyde}, K., {Green}, S.~R., {Toubiana}, A., \& {Gair}, J. 2024, \prd, 109, 064056, \dodoi{10.1103/PhysRevD.109.064056}
+
+\bibitem[{Macas {et~al.}(2024)Macas, Lundgren, \& Ashton}]{Macas:2023wiw}
+Macas, R., Lundgren, A., \& Ashton, G. 2024, Phys. Rev. D, 109, 062006, \dodoi{10.1103/PhysRevD.109.062006}
+
+\bibitem[{Pankow {et~al.}(2018)}]{Pankow:2018qpo}
+Pankow, C., {et~al.} 2018, Phys. Rev. D, 98, 084016, \dodoi{10.1103/PhysRevD.98.084016}
+
+\bibitem[{{Papamakarios} {et~al.}(2019){Papamakarios}, {Nalisnick}, {Jimenez Rezende}, {Mohamed}, \& {Lakshminarayanan}}]{2019arXiv191202762P}
+{Papamakarios}, G., {Nalisnick}, E., {Jimenez Rezende}, D., {Mohamed}, S., \& {Lakshminarayanan}, B. 2019, arXiv e-prints, arXiv:1912.02762, \dodoi{10.48550/arXiv.1912.02762}
+
+\bibitem[{Payne {et~al.}(2022)Payne, Hourihane, Golomb, Udall, Udall, Davis, \& Chatziioannou}]{Payne:2022spz}
+Payne, E., Hourihane, S., Golomb, J., {et~al.} 2022, Phys. Rev. D, 106, 104017, \dodoi{10.1103/PhysRevD.106.104017}
+
+\bibitem[{Raymond {et~al.}(2024)Raymond, Al-Shammari, \& G\"ottel}]{Raymond:2024xzj}
+Raymond, V., Al-Shammari, S., \& G\"ottel, A. 2024.
+\newblock \doarXiv{2406.03935}
+
+\bibitem[{{Remy} {et~al.}(2023){Remy}, {Lanusse}, {Jeffrey}, {Liu}, {Starck}, {Osato}, \& {Schrabback}}]{2023Remy}
+{Remy}, B., {Lanusse}, F., {Jeffrey}, N., {et~al.} 2023, \aap, 672, A51, \dodoi{10.1051/0004-6361/202243054}
+
+\bibitem[{Roberts \& Tweedie(1996)}]{MALA}
+Roberts, G.~O., \& Tweedie, R.~L. 1996, Bernoulli, 2, 341.
+\newblock \url{http://www.jstor.org/stable/3318418}
+
+\bibitem[{Romero-Shaw {et~al.}(2020)}]{Romero-Shaw:2020owr}
+Romero-Shaw, I.~M., {et~al.} 2020, Mon. Not. Roy. Astron. Soc., 499, 3295, \dodoi{10.1093/mnras/staa2850}
+
+\bibitem[{{Song} \& {Ermon}(2019)}]{2019arXiv190705600S}
+{Song}, Y., \& {Ermon}, S. 2019, arXiv e-prints, arXiv:1907.05600, \dodoi{10.48550/arXiv.1907.05600}
+
+\bibitem[{{Song} {et~al.}(2020){Song}, {Sohl-Dickstein}, {Kingma}, {Kumar}, {Ermon}, \& {Poole}}]{song2020sde}
+{Song}, Y., {Sohl-Dickstein}, J., {Kingma}, D.~P., {et~al.} 2020, arXiv e-prints, arXiv:2011.13456, \dodoi{10.48550/arXiv.2011.13456}
+
+\bibitem[{Srivastava {et~al.}(2014)Srivastava, Hinton, Krizhevsky, Sutskever, \& Salakhutdinov}]{Dropout2014}
+Srivastava, N., Hinton, G., Krizhevsky, A., Sutskever, I., \& Salakhutdinov, R. 2014, Journal of Machine Learning Research, 15, 1929.
+\newblock \url{http://jmlr.org/papers/v15/srivastava14a.html}
+
+\bibitem[{{Talts} {et~al.}(2018){Talts}, {Betancourt}, {Simpson}, {Vehtari}, \& {Gelman}}]{2018arXiv180406788T}
+{Talts}, S., {Betancourt}, M., {Simpson}, D., {Vehtari}, A., \& {Gelman}, A. 2018, arXiv e-prints, arXiv:1804.06788, \dodoi{10.48550/arXiv.1804.06788}
+
+\bibitem[{Udall \& Davis(2023)}]{Udall:2022vkv}
+Udall, R., \& Davis, D. 2023, Appl. Phys. Lett., 122, 094103, \dodoi{10.1063/5.0136896}
+
+\bibitem[{Udall {et~al.}(2024)Udall, Hourihane, Miller, Davis, Chatziioannou, Isi, \& Deshong}]{Udall:2024ovp}
+Udall, R., Hourihane, S., Miller, S., {et~al.} 2024.
+\newblock \doarXiv{2409.03912}
+
+\bibitem[{Veitch {et~al.}(2015)}]{Veitch:2014wba}
+Veitch, J., {et~al.} 2015, Phys. Rev. D, 91, 042003, \dodoi{10.1103/PhysRevD.91.042003}
+
+\bibitem[{Vincent(2011)}]{Vincent2011}
+Vincent, P. 2011, Neural Comput., 23, 1661, \dodoi{10.1162/NECO\_a\_00142}
+
+\bibitem[{Wong {et~al.}(2023{\natexlab{a}})Wong, Gabri\'e, \& Foreman-Mackey}]{Wong:2022xvh}
+Wong, K. W.~k., Gabri\'e, M., \& Foreman-Mackey, D. 2023{\natexlab{a}}, J. Open Source Softw., 8, 5021, \dodoi{10.21105/joss.05021}
+
+\bibitem[{Wong {et~al.}(2023{\natexlab{b}})Wong, Isi, \& Edwards}]{Wong:2023lgb}
+Wong, K. W.~K., Isi, M., \& Edwards, T. D.~P. 2023{\natexlab{b}}, Astrophys. J., 958, 129, \dodoi{10.3847/1538-4357/acf5cd}
+
+\bibitem[{Xiong {et~al.}(2024)Xiong, Sun, Zhang, \& Zhang}]{Xiong:2024gpx}
+Xiong, C.-Y., Sun, T.-Y., Zhang, J.-F., \& Zhang, X. 2024.
+\newblock \doarXiv{2405.09475}
+
+\bibitem[{{Yang} {et~al.}(2022){Yang}, {Zhang}, {Song}, {Hong}, {Xu}, {Zhao}, {Zhang}, {Cui}, \& {Yang}}]{2022arXiv220900796Y}
+{Yang}, L., {Zhang}, Z., {Song}, Y., {et~al.} 2022, arXiv e-prints, arXiv:2209.00796, \dodoi{10.48550/arXiv.2209.00796}
+
+\end{thebibliography}

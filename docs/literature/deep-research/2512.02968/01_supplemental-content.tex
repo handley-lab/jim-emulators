@@ -1,0 +1,472 @@
+\section{Full amortization in gravitational wave posterior estimation}
+In gravitational wave~(GW) inference, the data representation depends on the analysis settings, such as available detectors and frequency ranges. 
+We define full amortization in this context as the ability to perform parameter estimation with a single model that generalizes across these settings. 
+\dingoT advances toward this goal by learning a flexible representation that adapts to varying data configurations at inference time.
+
+Formally, the goal of GW inference is to estimate the Bayesian posterior over parameters~$\theta$
+\begin{equation}\label{eq:app-Bayes}
+    p(\theta | d) = \frac{p(\theta)p(d | \theta)}{p(d)}~,
+\end{equation}
+defined by prior $p(\theta)$ and likelihood $p(d|\theta)$. 
+Assuming additive, stationary, and Gaussian detector noise characterized by its noise amplitude---the power spectral density~(PSD)~$S_n(f)$---the likelihood takes the form
+\begin{equation}
+    p(d|\theta, S_n) \propto \exp \left( - \frac{1}{2} \big(d-h(\theta) | d- h(\theta)\big)_{S_n} \right)~,
+\end{equation}
+where $h(\theta)$ denotes the simulated GW signal for source parameters~$\theta$.
+With both $d$ and $h(\theta)$ represented as frequency series, the noise-weighted inner product is given by
+\begin{equation}\label{eq:app-inner-product}
+    \big( a | b \big)_{S_n} = 4 \sum_I \mathcal{R} \int_{f_{\min, I}}^{f_{\max, I}} \frac{a_I^*(f) b_I (f)}{S_{n, I}(f)} ~\mathrm{d}f~.
+\end{equation}
+This inner product---and consequently the likelihood---quantifies how well the simulated signal~$h(\theta)$ matches the observed data~$d$ across detectors~$I$.
+Although the posterior~$p(\theta | d)$ is often written as depending only on~$d$, it in fact reflects several modeling and analysis choices implicit in Eqs.~\eqref{eq:app-Bayes}--\eqref{eq:app-inner-product}: the prior distribution, the waveform model used to generate $h(\theta)$, the noise PSDs, the set of detectors, the frequency range~$[f_{\mathrm{min}, I}, f_{\mathrm{max}, I}]$, and the discretization $\Delta f$ defining the resolution of the integral in the inner product. 
+These quantities can vary between events, meaning that a fully amortized inference model~$q(\theta|d)$ must accommodate such variations.
+The \dingo framework already supports changing PSDs via PSD-conditional models~$q(\theta|d,S_n)$~\cite{dax_dingo:2021}, and can, in restricted cases, also accommodate varying priors~\cite{dax_bns:2025}.
+Adjustments to the lower frequency cutoff~$f_{\mathrm{min},I}$ have been explored by masking the corresponding data segments with zeros~\cite{dax_bns:2025}, though this approach can lead to suboptimal performance and biases in the posterior estimates~\citep{wang_missing_data:2024, verma:2025}.
+
+A flexible model like \dingoT provides the key to achieving full amortization in GW~inference since such a model can flexibly accommodate the diverse data analysis settings encountered in practice, as illustrated in Fig.~\ref{fig:settings_o3} for O3~events.
+\begin{figure}[t]
+    \includegraphics[width=\columnwidth]{figures/fig_04.pdf}
+    \caption{The 48 GW events considered in this study are analyzed in 17 different data analysis settings in O3~LVK catalogs~\cite{ligo_gwtc-21:2024,ligo_gwtc-3:2023}. 
+    Each event is based on data from a subset of the three detectors~(HLV) and spans frequency ranges that vary with data quality and source properties. The \dingoT model accommodates all of these settings with a single neural network.
+    } 
+    \label{fig:settings_o3}
+\end{figure}
+The detector configuration can change from event to event due to maintenance, instrumental issues, earthquakes, or poor data quality~\citep{ligo_gwtc-21:2024,ligo_gwtc-3:2023}.
+Similarly, the analysis frequency range may be adjusted: the minimum frequency, typically $f_\mathrm{min} = \SI{20}{\hertz}$, can be increased to exclude non-Gaussian noise artifacts that cannot be subtracted from the data~\citep{ligo_gwtc-21:2024}, as is the case for the three events highlighted in Tab.~\ref{table:event_configs}.
+The maximum frequency of each event is determined by the sampling rate $f_s$ needed to fully resolve the signal, with $f_\mathrm{max} \propto f_s/2$~\citep{ligo_gwtc-21:2024, ligo_gwtc-3:2023}.
+In addition to such global adjustments, narrow frequency bands may be excluded to correct for systematic calibration errors, a procedure known as ``PSD notching.''
+For example, several O3b~events involving the Virgo detector exhibited a narrow-band calibration error between \SI{46}{\hertz} and \SI{51}{\hertz} due to a mis-specification in the calibration models.
+To mitigate its impact on parameter estimation, this frequency interval is effectively removed in standard samplers by assigning an artificially large noise level~\citep{ligo_gwtc-3:2023}.
+
+In summary, \dingoT amortizes over key data-analysis variations---noise PSDs, detector setups, frequency ranges, and calibration errors---while full amortization over frequency resolution, priors, and waveform models remains future work.
+\looseness=-1
+
+\section{Data settings}
+\sec{Prior}
+The prior ranges follow~\citep{dax_is:2022}, except for the luminosity distance, for which we adopt $d_L \in [0.1, 6]~\mathrm{Gpc}$.
+This choice reflects that we train a single \dingoT model rather than three separate models for different $d_L$ ranges.
+
+\sec{Frequency settings} 
+For the 48~events consistent with the chosen prior ranges, we extracted the frequency ranges from the \mbox{GWTC-2.1}~\citep{ligo_data_release_gwtc21_zenodo:2022} and \mbox{GWTC-3}~\citep{ligo_data_release_gwtc3_zenodo:2021} data releases and the detector configurations from the corresponding catalogs~\citep{ligo_gwtc-21:2024, ligo_gwtc-3:2023}.
+These configurations cover an overall frequency range of $[20,~1792]~\si{\hertz}$, and all events are analyzed using a fixed signal duration of \mbox{$T = \SI{8}{\second}$}, leaving amortization over different frequency resolutions for future work. 
+A complete summary of the event-specific settings is provided in Tab.~\ref{table:event_configs}.
+
+\sec{Multibanding} 
+We employ multibanding~\citep{vinciguerra_mb:2017, morisaki:2021} to compress GW signals without loss of information before passing them to the \dingoT model. 
+In this approach, neighboring frequency bins are averaged when the signal is approximately constant, resulting in a non-uniform frequency grid with coarser resolution at high frequencies.
+Following~\citep{dax_bns:2025}, the frequency resolution is typically decreased by a factor of two from one multibanded frequency band to the next, with band boundaries (called "nodes") determined by requiring 32~frequency bins per waveform period. 
+However, this approach of determining the bands is not directly applicable to precessing waveforms such as IMRPhenomXPHM~\citep{pratten_imrphenomxphm:2021}, because precession introduces complex behavior between zero-crossings. 
+To address this, we decimate $10^3$~whitened waveforms for a range of potential compression factors and compute the difference between each decimated waveform and its high-resolution counterpart. 
+This provides a local quality metric for information loss at each frequency. 
+By constraining the maximally allowed local deviation, we identify the frequency above which a lower resolution can be used. 
+Going from lower to higher frequencies, we group consecutive token segments of fixed size until resolution reduction is permitted, defining the nodes of the multibanded frequency domain.
+To validate the compression as loss-free, we compute the mismatch between $10^3$~decimated waveforms and their interpolated counterparts under extreme conditions (minimal chirp mass and maximal time-shift). 
+We obtain a maximal mismatch of \mbox{$1.3\cdot 10^{-3}$}, comparable to the lower end of mismatches reported between IMRPhenomXPHM and numerical relativity simulations~\citep{pratten_imrphenomxphm:2021}.
+
+The resulting multibanded domain defined on the frequency range~$[20,~ 1810]~\si{\hertz}$ achieves a compression factor of~$\sim 9$ % from 14,000 to 1,500 values
+and is used to generate a dataset of $2.5 \cdot 10^7$ waveforms for training.
+Since the multibanding nodes are defined based on the size of the token segment, we can directly partition the multibanded data into segments of fixed length that serve as tokenizer input.
+We adopt a token size of 16: smaller tokens (4~or~8) increase sequence length and training time without yielding noticeable improvements in model performance. 
+Larger token sizes would result in less fine-grained control over frequency ranges at inference time.
+\looseness=-1
+
+\section{Architecture}
+Each low-dimensional segment of 16~multibanded frequency bins is mapped to a token embedding vector of length~$d_\mathrm{model} = 1024$ by the tokenizer, using fully connected layers together with a 512-dimensional residual block. 
+Conditional inputs---including the segment boundaries $\big(f^{(k)}, f^{(k+1)}\big)$ and the detector identity $I$ (encoded as a one-hot vector)---are injected within the residual block via a gated linear unit~\citep{dauphin_glu:2017}. 
+This is illustrated in Fig.~\ref{fig:architecture} on the left at the example of multibanded data from the Hanford detector.
+We also experimented with an unconditional tokenizer together with additive positional encodings as in standard language models~\citep{vaswani:2017}. 
+However, such encodings are less suitable for continuous, non-uniform quantities like frequency values, and multiple encodings would be needed to incorporate both $\big(f^{(k)}, f^{(k+1)}\big)$ and~$I$, resulting in a large number of design choices.
+Over the full frequency range, we obtain 69~tokens per detector. 
+Tokens from all detectors are concatenated together with a learnable, randomly initialized summary token~\citep{devlin:2019, darcet_registers:2024}, yielding a total of $n = 69 \cdot 3 + 1 = 208$ tokens, each of size~$d_\mathrm{model}$.
+These token embeddings, represented as \mbox{$X \in \mathbb{R}^{n \times d_\mathrm{model}}$}, serve as the input to the transformer encoder which captures complex correlations between the $n$~tokens via masked self-attention:
+\begin{equation}
+    \mathrm{Attention}(Q, K, V) = \mathrm{softmax} \left( \frac{QK^T}{\sqrt{d_k}} + M\right) V
+\end{equation}
+where the mask is defined as $M_{ij} = 0$ for allowed and $M_{ij} = - \infty$ for disallowed positions~\citep{vaswani:2017, cheng_mask2former:2021} (see Fig.~\ref{fig:architecture} on the right). 
+The query, key, and value matrices are computed as
+\begin{equation}
+    Q = X \cdot W^Q,~ K = X \cdot W^K,~ V = X \cdot W^V 
+\end{equation} 
+with weights $W^K, W^Q, W^V \in \mathbb{R}^{d_\mathrm{model} \times d_k}$.
+To capture multiple representation subspaces, attention is extended to $h$~heads, whose outputs are concatenated and combined with the input~$X$ via a residual connection. 
+Each token is passed through a feed-forward layer~\citep{vaswani:2017}, with pre-layer normalization~(LN) applied before both the self-attention and feed-forward blocks~\citep{wang:2019, xiong:2020}. 
+We adopt the pre-LN variant instead of the original post-LN design~\citep{vaswani:2017} as it enables stable training without learning rate warm-up. 
+After $N=8$~transformer layers with $h=16$~attention heads and feed-forward hidden size~2048, the summary token is extracted and projected to a 128-dimensional context vector using a linear layer. 
+We found that varying the context size between 56~and 256~dimensions does not significantly affect the training loss, indicating that 128~values suffice for subsequent posterior estimation.
+
+For density estimation, we employ a conditional normalizing flow based on the rational-quadratic spline coupling transform~\citep{durkan_nsf:2019}, using the same architecture as in~\citep{dax_is:2022}. 
+The only difference is that we train a standard NPE network and do not include group equivariances between parameters and data~\citep{dax_gnpe:2021}.
+The conditional normalizing flow architecture is identical for all models.
+
+We compare \dingoT to a standard \dingo~NPE model, which uses a residual network similar to~\citep{dax_dingo:2021} and employs layer norm instead of batch norm in the embedding network. 
+The initial layer is seeded with components of a singular value decomposition, but we do not keep the initial embedding layer fixed~\citep{dax_dingo:2021} such that we can utilize the same optimizer and scheduler as the \dingoT models. 
+A summary of model sizes is provided in Tab.~\ref{table:model_sizes}.
+
+\begin{table}[ht]
+    \caption{Model sizes of the compared architectures.}
+    \label{table:model_sizes}
+    \centering
+    \setlength{\tabcolsep}{6pt}
+    \begin{tabularx}{\columnwidth}{l c c c}
+        \toprule
+         \multirow{3}{*}{Method} & \multicolumn{3}{c}{Number of parameters}\\
+         \cmidrule{2-4}
+         & Embedding & Normalizing & \multirow{2}{*}{Total}\\
+        & network & flow &\\
+        \midrule
+        \dingo Baseline & 22 Mio. & 92 Mio. & 114 Mio.\\
+        \dingoT & 68 Mio. & 92 Mio. & 160 Mio. \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\section{Masking strategies during training}
+To ensure the model can flexibly handle different data-analysis settings at inference time, it must be trained on data that reflect such variability.
+We therefore adopt a training strategy that mimics changing analysis conditions by removing tokens during training.
+Specifically, we compare two masking strategies: one uninformed by token relationships (random masking), and one that incorporates data-based structure, such as jointly masking tokens from the same detector (data-based masking), illustrated in Fig.~\ref{fig:masking_illustration}.
+\begin{figure*}[ht]
+    \subfloat{
+        \stackinset{l}{0.1cm}{t}{0cm}{\textbf{a}}{
+            \stackinset{l}{8.9cm}{t}{0cm}{\textbf{b}}{
+            \includegraphics[width=0.95\textwidth]{figures/fig_05.pdf}
+            }
+        }
+    }
+    \caption{\label{fig:masking_illustration}
+    Comparison of (a) random and (b) data-based masking across 100~samples.
+    Data-based masking jointly removes tokens from the same detector, yielding structured patterns, while random masking produces unstructured, scattered masks.
+    } 
+\end{figure*}
+
+\sec{Random masking}
+In the naive masking strategy, 40\% of training samples are partially masked.
+For each masked sample, we draw the number of tokens to remove as
+$n_\mathrm{masked} \sim \mathcal{U}[0,~181]$ where the upper bound allows for single-detector scenarios with additional frequency masking.
+The token mask~$m$ is created by randomly selecting $n_\mathrm{masked}$ tokens, without assuming any domain knowledge.
+This strategy thus provides unstructured masks (Fig.~\ref{fig:masking_illustration}a), serving as a simple baseline for testing the model’s robustness to missing information.
+
+\sec{Data-based masking}
+Informed by the structure of GW~data, we design a second masking strategy that explicitly captures realistic variations in detector configurations and frequency ranges.
+This procedure accounts for
+(1)~missing detectors,
+(2)~changes in the frequency range, and
+(3)~narrow-band frequency removal (“PSD notching”).
+
+(1)~To simulate missing detectors, we randomly decide whether to mask none (60\%), one (30\%), or two (10\%) detectors.
+Among the available detectors (H/L/V), the probabilities of masking are 30\%, 30\%, and 40\%, respectively, reflecting Virgo’s larger downtime relative to the LIGO instruments~\citep{ligo_gwtc-3:2023}.
+(2)~To model changing frequency ranges, we apply frequency updates to 25\% of training samples.
+For these, we mask the lower part (10\%), upper part (70\%), or both (20\%) of the range, inspired by Fig.~\ref{fig:settings_o3}.
+Since frequency updates often affect all detectors simultaneously, we apply the same mask across all detectors in 70\% of these cases.
+New cutoff frequencies are drawn from $f_\mathrm{min,new} \sim \mathcal{U}[20,180]~\mathrm{Hz}$ and $f_\mathrm{max,new} \sim \mathcal{U}[80,~1810]~\mathrm{Hz}$ to accommodate frequency updates required for inspiral-merger-ringdown consistency tests.
+In cases of $f_\mathrm{min,new} > f_\mathrm{max,new}$, we randomly decide to either mask the lower or upper range, depending on the probabilities given above.
+If a boundary falls within a token, the entire token is masked, ensuring that all affected frequency regions are consistently removed.
+(3)~To emulate PSD notching, we mask a narrow frequency band in 10\% of training samples, where the lower bound is sampled uniformly across the frequency range and the width is drawn as $\Delta f_\mathrm{mask} \sim \mathcal{U}[0,~10]~\mathrm{Hz}$.
+Overall, this data-based masking procedure closely reflects the detector and frequency conditions encountered in real gravitational-wave analyses, resulting in clearly visible boundaries between tokens from one detector in Fig.~\ref{fig:masking_illustration}b.
+On average, 18.0\% of tokens are masked during training for random masking and 25.5\% for data-based masking.
+We experimented with masking percentages ranging from 15\% to 30\%: Low masking percentages resulted in lower performance in two-detector events, but applying masks to a large number of samples during training can lead to decreased performance in three-detector events.
+
+\section{Training}
+We train all models using distributed data-parallel multi-GPU training with automatic mixed precision~\citep{micikevicius_amp:2018} to reduce memory usage.
+Training is performed on 8~NVIDIA~A100-SXM4-80GB~GPUs (CUDA~12.1) using the AdamW~\citep{loshchilov_adamw:2018} optimizer ($\beta_1 = 0.8$, $\beta_2 = 0.99$) with a learning rate of~0.001, weight decay of~0.005, and a \texttt{ReduceLROnPlateau} scheduler that halves the learning rate when the validation loss stagnates for 10~epochs.
+To ensure comparability, all models are trained with a fixed batch size of~16{,}384.
+Due to memory constraints, the \dingoT models require two gradient accumulation steps per optimizer update, effectively doubling their training time.
+The total training duration further depends on the scheduler convergence and early-stopping conditions; detailed timings and epoch counts are summarized in Tab.~\ref{table:trainig_times}.
+Because of the long training times, we do not perform extensive hyperparameter optimization beyond a small scan over the initial learning rate, as well as $\beta_1$ and $\beta_2$ considering the first 50 epochs.
+
+\begin{table}[ht]
+    \caption{
+    Training times determined by early stopping.}
+    \label{table:trainig_times}
+    \centering
+    \setlength{\tabcolsep}{6pt}
+    \begin{tabularx}{0.88\columnwidth}{l c r@{}l @{\,} r@{}l}
+        \toprule
+        Method & Epochs\hspace{+0.5cm} & \multicolumn{4}{c}{\hspace{-0.5cm}Training time}\\
+        \midrule
+        \dingo Baseline & 273\hspace{+0.5cm} & 3&d& 1&h\\
+        \dingoT Data-based & 183\hspace{+0.5cm} & 9&d& 9&h\\
+        \dingoT Random & 219\hspace{+0.5cm} & 11&d& 17&h\\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\section{Inference}
+During inference, the model has to adapt to the data analysis settings of the event of interest. 
+Since tokens are treated as indivisible elements, any token overlapping a masked range is completely removed, which can lead to slightly larger effective exclusions than strictly necessary.
+Potential effects on~$q(\theta | d)$ are mitigated by performing importance sampling~(IS, \citep{dax_is:2022}) in the uniform frequency domain.
+In IS, importance weights~$w_i = p(\theta_i | d, S_{n}) p(\theta_i) / q(\theta_i | d, S_{n})$ are computed for each sample~$\theta_i \sim q(\theta_i | d)$. 
+For $N$~weighted samples, the number of effective samples from the posterior~$p(\theta | d)$ corresponds to $N_\mathrm{eff} = (\sum_{i = 1}^N w_i )^2 / (\sum_{i = 1}^N w_i^2)$ and we employ the sample efficiency $\epsilon = N_\mathrm{eff} / N$ as a performance metric.
+In practice, a specific number of effective samples is required to obtain a reliable posterior estimate, with $N_\mathrm{eff} = 5,000$ defined by the LVK collaboration.
+Efficiencies $\epsilon \gtrsim 1\%$ therefore indicate that this requirement can be reached with minimal computational cost during IS; higher efficiencies (e.g., 2\% vs.~15\%) do not substantially reduce runtime and are therefore less critical.
+For $\epsilon < 1 \%$, it is still possible to obtain a sufficient number of effective samples, but at an increased computational cost.
+
+In principle, it is possible to further improve performance of \dingoT by incorporating additional knowledge about equivariances between data and parameters, called \textit{group-equivariant} NPE~(GNPE~\citep{dax_gnpe:2021,dax_gnpe:2021}).
+However, exploiting these equivariances has two main drawbacks:
+(i)~GNPE relies on the convergence of a costly iterative Gibbs sampling procedure at inference time since two models jointly estimate the data standardization and posterior distribution. 
+(ii)~GNPE only provides samples from the posterior distribution and the posterior density has to be recovered by training an unconditional normalizing flow to facilitate~IS.
+These points result in a complicated and impractical inference procedure.
+Furthermore, large inference times of roughly~\SI{1}{\hour} for $10^5$~importance-sampled posterior samples on one NVIDIA-A100 GPU and 64~CPUs~\citep{dax_is:2022} limit exploratory interaction when adapting data analysis settings. 
+In contrast, inference times of the \dingoT models are on the order of five to ten minutes for the same number of posterior samples, with initial low-latency samples being available within five seconds.
+Inference times of \dingoT are dominated by analytically reconstructing the phase~$\phi_c$ which suffers from an inefficient implementation for IMRPhenomXPHM~\citep{dax_is:2022}.
+
+\section{Comparing masking strategies}
+To compare the performance of the two masking strategies, we evaluate both models---trained with either random or data-based masking---on simulated and real events.
+
+\sec{Simulated data}For 1000~simulated signals, we draw $10^5$~posterior samples from each \dingoT model across all detector configurations evaluated on the full frequency range and show the obtained sample efficiencies in Fig.~\ref{fig:injections_violin_plot}.
+While the model trained with random masking achieves median efficiencies of 15.7\% (1-detector), 4.9\%~(2-detector), and 3.4\%~(3-detector), the efficiencies of the model trained with data-based masking are 26.9\%, 6.8\%, and 3.3\% for one-, two-, and three-detector configurations, respectively. 
+By only changing the detector configuration for each injection, we observe that the model trained with random masking performs worse on 1-~and 2-detector settings.
+This suggests that randomly masking tokens during training does not translate into performance equivalent to data-based masking.
+Since we do not apply any frequency masking in this experiment, the random masking seems to have a small advantage on HLV~injections.
+However, the frequency range has to be adapted for observed signals.
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\columnwidth]{figures/fig_06.pdf}
+    \caption{
+    Sample efficiency distributions for 1000 simulated GW~signals evaluated with different detector configurations, shown as violin plots. The dashed line represents the median, the dotted lines the quartiles. We compare data-based masking with random token masking for the same \dingoT architecture.}
+    \label{fig:injections_violin_plot}
+\end{figure}
+
+\sec{Real events}We compare the impact of data-based and random masking on observed signals from O3~\citep{ligo_gwtc-21:2024, ligo_gwtc-3:2023} analyzed with variable data settings (see Fig.~\ref{fig:settings_o3}).
+We summarize the obtained sample efficiencies in Fig.~\ref{fig:events_violin_plot} and provide a detailed event list in Tab.~\ref{table:efficiencies_events}.
+Across the 48~events, we find an overall median efficiency of 2.5\% for the model trained with random masking and 4.2\% for data-based masking.
+Specifically, the model trained with random masking obtains 1.2\% for 2-detector events (HL: 5.4\%, HV: 0.3\%, LV: 0.7\%), and 2.7\% for 3-detector events.
+\dingoT trained with data-based masking achieves median efficiencies of 4.5\% for 2-detector events (HL: 11.0\%, HV: 1.1\%, LV: 2.2\%), and 4.2\% for 3-detector events.
+The baseline \dingo NPE~model reaches a median sample efficiency of~1.4\% across 30~HLV events evaluated on the full frequency range.
+\begin{figure}[ht]
+    \includegraphics[width=\columnwidth]{figures/fig_07.pdf}
+    \caption{
+    Sample efficiency distributions of \dingo models across the 48~real GW~events, shown as violin plots. Dots denote 3-detector events, while circles refer to 2-detector events which cannot be analyzed with the fixed \dingo baseline model. The dashed line represents the median, the dotted lines the quartiles. For the \dingo baseline, we only include the 30 events for which data is available in all three detectors.}
+    \label{fig:events_violin_plot}
+\end{figure}
+In Tab.~\ref{table:efficiencies_events}, we observe that sample efficiencies are consistent across models, meaning that a certain event with low efficiency in \dingoT with data-based masking also has similar or even worse performance in the model trained with random masking or in the \dingo NPE baseline.
+Since data-based masking leads to better results than random masking on real events, we focus on the model with data-based masking in the following and refer to it as the \dingoT model.
+
+\section{Validating \dingoT}
+To ensure that the \dingoT model is well calibrated and aligns with standard methods, we provide P-P plots for each detector configuration and compare posteriors obtained with \dingoT to the standard sampling method Bilby~\citep{ashton:2018}, commonly used in official LVK~analyses.
+
+\sec{P-P plot per detector configuration}
+In a P-P plot, the percentile rank of the true value within its posterior marginal is computed, and the cumulative distribution function~(CDF) of these ranks is visualized for each parameter.
+A well-calibrated model yields uniformly distributed percentiles, producing a diagonal CDF.
+Based on the posterior samples obtained for $10^3$~injections, we construct separate P–P~plots per detector configuration and include them in Fig.~\ref{fig:pp_plot_data}.
+We also report the distribution of $p$-values from Kolmogorov–Smirnov tests to quantify deviations from uniformity and highlight the parameters where $p < 0.05$, indicating deviations larger than expected under the uniform assumption.
+Overall, the \dingoT models demonstrate good calibration across all detector configurations on simulated data.
+
+\sec{Comparison to Bilby and LVK catalogs}While we would ideally compare the \dingoT posteriors to the official LVK~catalog results, we do not expect perfect agreement between these results due to several reasons: 
+(1)~The posterior samples provided by the~LVK are obtained using BayesWave PSDs~\citep{cornish:2014, littenberg:2014, cornish:2020}, while \dingoT is trained with Welch PSDs. Furthermore, we include recent changes regarding the window factor which can lead to biases in the posterior~\citep{talbot_window_fix:2025}.
+(2)~Posterior samples from the catalogs are mixed results obtained from separate nested sampling runs using different waveform models and reference frequencies. 
+Since we train \dingoT only on IMRPhenomXPHM, it cannot be guaranteed to obtain aligned posteriors. 
+(3)~The prior ranges chosen for \dingoT might not be perfectly consistent with the prior ranges chosen for the analysis of a specific event in the LVK~catalogs. 
+To still allow for a valid comparison, we obtain posterior samples with Bilby using the PSDs, waveform model, window factor correction, and prior ranges selected for \dingoT.
+Since it would require significant compute resources to evaluate Bilby on all events reported in this \textit{Letter}, we select GW190701\_203306 as an example. 
+In Fig.~\ref{fig:bilby_posterior_comparison}, we show a corner plot of the posterior parameters exhibiting the largest deviations between Bilby and \dingoT.
+To illustrate that a direct comparison to GWTC-2.1 is not possible, we also include the official posterior samples from the LVK~data release~\citep{ligo_data_release_gwtc21_zenodo:2022}.
+
+\begin{figure}[ht]
+    \includegraphics[width=\columnwidth]{figures/fig_08.pdf}
+    \caption{\label{fig:bilby_posterior_comparison}
+    Comparison of \dingoT posteriors to GWTC-2.1 and Bilby results for the event GW190701\_203306.
+    Only the parameters displaying the largest deviations between Bilby and \dingoT are included. The GWTC-2.1 posterior displays deviations due to different analysis settings such as the type of PSD, the reference frequency, and mixed posterior samples from different waveform models.
+    } 
+\end{figure}
+
+\section{Applications}
+To demonstrate how the flexibility of \dingoT enables new studies and investigations, we select two examples applications:
+
+\sec{Posteriors under different detectors}Since we can flexibly adapt the \dingoT model to a different set of interferometers at inference time, we analyze the 48~events with all possible detector combinations and show the overview in Tab.~\ref{table:efficiencies_all_det_configs}. The posterior change of an exemplary event is shown in Fig.~\ref{fig:results_flexible_model}a.
+Such a study not only shows the consistent performance of \dingoT, but it can also provide additional insight into whether certain detectors are responsible for low sample efficiency.
+For example, GW200129\_065458 exhibits low efficiency across all detector configurations involving the Livingston detector---consistent with the glitch subtraction applied in the official LVK~analysis.
+Additionally, low sample efficiency in all detector configurations can point to mistakes in data pre-processing.
+In an initial analysis of the event GW190517\_055101, the Hanford~PSD used for conditioning the \dingo models did not capture access power around~\SI{500}{\hertz}, resulting in $\epsilon = 0\%$ across all models and detector configurations involving this detector.
+This failure case is resolved by either masking the affected frequency range or employing a more suitable PSD. The latter leads to an efficiency increase of up to 2.17\%.
+
+\sec{Inspiral–merger–ringdown consistency tests}General relativity~(GR) can be tested by comparing the final mass and spin of the remnant black hole inferred from the low- and high-frequency parts of the signals~\citep{ghosh:2018, ligo_test_gr_gwtc2:2020, lvk_gwtc3_tests_gr:2025}.
+For such inspiral–merger–ringdown~(IMR) consistency tests, the frequency-domain signal is divided into two parts defined by the cutoff frequency~$f_\mathrm{cut}$ and both segments---the inspiral part roughly corresponding to $[f_\mathrm{min}, f_\mathrm{cut}]$ and the postinspiral part corresponding to $[f_\mathrm{cut}, f_\mathrm{max}]$---are analyzed separately.
+The cutoff frequency is defined as the dominant mode GW~frequency of a remnant Kerr black hole's innermost stable circular orbit~\citep{lvk_gwtc3_tests_gr:2025}.
+To constrain deviations between the inspiral~(insp) and postinspiral~(postinsp), the following fractional deviations are defined for the final mass~$M_f$ and dimensionless spin~$\chi_f$:
+\begin{equation}
+	\frac{\Delta M_\text{f}}{\overline{M}_\text{f}} = 2\frac{M_\text{f}^\text{insp} -M_\text{f}^\text{postinsp} }{M_\text{f}^\text{insp} + M_\text{f}^\text{postinsp}}
+\end{equation}
+and 
+\begin{equation}
+	\frac{\Delta \chi_\text{f}}{\overline{\chi}_\text{f}} = 2\frac{\chi_\text{f}^\text{insp} -\chi_\text{f}^\text{postinsp} }{\chi_\text{f}^\text{insp} + \chi_\text{f}^\text{postinsp}}~,
+\end{equation}
+where $\overline{M}_\text{f}$ and $\overline{\chi}_\text{f}$ correspond to 
+the mean of the final mass and spin analyzed with inspiral and postinspiral data.
+The two dimensional posterior distribution for these fractional deviations is expected to peak at $(0,0)$ when the test is applied to a signal from a quasi-circular binary black hole coalescence in GR~\citep{ghosh:2018, ligo_test_gr_gwtc2:2020, lvk_gwtc3_tests_gr:2025}.
+
+% Colors for IMR table
+\definecolor{GW190408}{HTML}{3b4cc0}
+\definecolor{GW190521}{HTML}{c0282f}
+\definecolor{GW190630}{HTML}{afcafc}
+\definecolor{GW190828}{HTML}{f6bea4}
+\definecolor{GW200208}{HTML}{cb3e38}
+\definecolor{GW200224}{HTML}{b40426}
+\definecolor{GW200311}{HTML}{dcdddd}
+\begin{table}[ht]
+	\caption{
+		Frequency settings for the inspiral-merger-ringdown consistency tests. 
+        We provide the colors as a legend for Fig.~\ref{fig:results_flexible_model}b.
+        }
+	\label{table:IMR_consistency_tests}
+	\centering
+	\setlength{\tabcolsep}{6pt}
+	\begin{tabularx}{0.93\columnwidth}{l c c c}
+		\toprule
+		\multirow{2}{*}{Event} & \multirow{2}{*}{Color} & \multicolumn{2}{c}{Frequency ranges [\si{\hertz}]}
+		 \\
+		 & & Inspiral & Postinspiral \\
+		\midrule
+        GW190408\_181802 & \textcolor{GW190408}{\rule[0.5ex]{1em}{1pt}} & [20,~164] & [164,~896]\\
+        GW190521\_074359 & \textcolor{GW190521}{\rule[0.5ex]{1em}{1pt}} & [20,~105] & [105,~224]\\
+        GW190630\_185205 & \textcolor{GW190630}{\rule[0.5ex]{1em}{1pt}} & [20,~135] & [135,~896]\\
+		GW190828\_063205 & \textcolor{GW190828}{\rule[0.5ex]{1em}{1pt}} & [20,~132] & [132,~896]\\
+		GW200208\_130117 & \textcolor{GW200208}{\rule[0.5ex]{1em}{1pt}} & [20,~~98] & [~98,~448]\\
+		GW200224\_222234 & \textcolor{GW200224}{\rule[0.5ex]{1em}{1pt}} & [20,~107] & [107,~448]\\
+        GW200311\_115853 & \textcolor{GW200311}{\rule[0.5ex]{1em}{1pt}} & [20,~122] & [102,~896] \\
+		\bottomrule
+	\end{tabularx}
+\end{table}
+
+To demonstrate that we can employ the flexibility of the \dingoT model for in-depth studies, we investigate two separate objectives:
+
+We first perform IMR consistency tests for seven events listed in Tab.~\ref{table:IMR_consistency_tests} where we analyze the inspiral and postinspiral signals with the \dingoT model and draw 5,000~effective samples for both posteriors.
+The resulting 2D~posterior distributions of fractional deviations are shown in Fig.~\ref{fig:results_flexible_model}b which are not reweighed to a uniform prior as in~\citep{lvk_gwtc3_tests_gr:2025} and thus not directly comparable to the results shown in~\citep{lvk_gwtc3_tests_gr:2025}.
+
+Second, we repeat the IMR~consistency test for GW190630\_185205 with different frequency cuts to investigate the robustness of our previous result to varying assumptions about~$f_\mathrm{cut}$~\citep{ghosh:2018}.
+In addition to $f_\mathrm{cut} = \SI{135}{\hertz}$, we choose $120, 130, 140,$ and $\SI{150}{\hertz}$ and show the results in Fig.~\ref{fig:imrc_test_f_cut}.
+While we observe small deviations in the posterior distribution, the result for $f_\mathrm{cut} = \SI{135}{\hertz}$ is consistent with the results for different frequency cuts.
+
+This flexibility has the potential to reduce the computational cost of IMR~consistency tests and facilitate detailed robustness studies.
+\begin{figure}[ht]
+    \includegraphics[width=\columnwidth]{figures/fig_09.pdf}
+    \caption{
+    Inspiral-merger-ringdown consistency test for GW190630\_185205 where the signal was analyzed with the \dingoT model on the inspiral and postinspiral part of the waveform separated by different $f_\mathrm{cut}$ values. The main panel shows the 90\% credible regions of the 2D posteriors on $(\Delta M_f / \overline{M}_f, \Delta \chi_f / \overline{\chi}_f)$. The side panels show the marginalized posterior of $\Delta M_f / \overline{M}_f$ and $\Delta \chi_f / \overline{\chi}_f$.}
+    \label{fig:imrc_test_f_cut}
+\end{figure}
+%%%%%%%%%% Large tables and figures
+
+\begin{table*}[ht]
+    \caption{Detector and frequency configurations for 48~O3~events. Events with changes to~$f_\mathrm{min}$ are highlighted in bold.
+    Furthermore, we highlight events where different glitch mitigation techniques were applied to a specific detector: 
+    $*$ glitch subtraction, 
+    $\dagger$ update of $f_\mathrm{min}$, $\diamond$ BayesWave deglitching, 
+    and $\ddagger$ linear subtraction. Details are provided in Table~\ref{table:glitch_mitigation}.
+    }
+    \label{table:event_configs}
+    \centering
+    \setlength{\tabcolsep}{6pt}
+    \begin{tabularx}{0.84\linewidth}{l c ccc r cc l}
+        \toprule
+        \multirow{2}{*}{Event} & 
+        \multirow{2}{*}{Detectors} & 
+        \multicolumn{3}{c}{$f_\mathrm{min}$ [Hz]} & 
+        \multirow{2}{*}{\shortstack{$f_\mathrm{max}$[Hz] \\ {H/L/V}}} & 
+        \multicolumn{2}{c}{PSD Notching (V)} & 
+        \multirow{2}{*}{Catalog} \\
+        %\cmidrule(lr){3-5} \cmidrule(lr){7-8}
+        & & H & L & V & & $f_\mathrm{min}$[Hz] & $f_\mathrm{max}$[Hz] & \\
+        \midrule
+        \csvreader[late after line=\\,late after last line=\\\bottomrule]{data/table_event_configs.csv}
+          {}
+          {\csvcoli & \csvcolii & \csvcoliii & \csvcoliv & \csvcolv & \csvcolvi & \csvcolvii & \csvcolviii & \csvcolix}
+    \end{tabularx}
+\end{table*}
+
+\begin{table*}[ht]
+    \caption{
+        Overview of events from O3~\citep{ligo_gwtc-21:2024, ligo_gwtc-3:2023} where different glitch mitigation techniques are applied.
+    }
+    \label{table:glitch_mitigation}
+    \centering
+    \setlength{\tabcolsep}{6pt}
+    \begin{tabularx}{0.97\textwidth}{lccccl}
+        \toprule
+        \multirow{2}{*}{Event} & \multirow{2}{*}{Detectors} & \multirow{2}{*}{Mitigation} & Affected & Frequency & \multirow{2}{*}{Catalog} \\ 
+         & & & detectors & update & \\ \midrule GW190413\_134308$^{*\dagger\mathrm{L}}$ & HLV & glitch subtraction, glitch-only model & L & $f_\mathrm{min} = \SI{35}{\hertz}$ & GWTC-2.1 \\
+         GW190503\_185404$^{*\mathrm{L}}$ & HLV & glitch subtraction, glitch-only model & L & - & GWTC-2.1 \\
+        GW190513\_205428$^{*\mathrm{L}}$ & HLV & glitch subtraction, glitch-only model & L & - & GWTC-2.1 \\
+        GW190514\_065416$^{*\dagger\mathrm{L}}$ & HL & glitch subtraction, glitch-only model & L & $f_\mathrm{min} = \SI{50}{\hertz}$ & GWTC-2.1 \\
+        GW190701\_203306$^{*\mathrm{L}}$ & HLV & glitch subtraction, glitch+signal model & L & - & GWTC-2.1 \\
+        GW190727\_060333$^{\dagger\mathrm{L}}$ & HLV & - & L & $f_\mathrm{min} = \SI{50}{\hertz}$ & GWTC-2.1 \\
+        GW191109\_010717$^{\diamond\mathrm{HL}}$ & HL & BayesWave deglitching & HL & - & GWTC-3\\
+        GW191127\_050227$^{\diamond\mathrm{H}}$ & HLV & BayesWave deglitching & H & - & GWTC-3 \\
+        GW200129\_065458$^{\ddagger\mathrm{L}}$ & HLV & Linear subtraction & L & - & GWTC-3 \\
+        \bottomrule
+    \end{tabularx}
+\end{table*}
+
+\begin{table*}[ht]
+    \centering
+    \caption{
+        Sample efficiencies for 48 O3~events with 17~different data analysis settings evaluated with \dingoT.
+        The \dingo baseline is evaluated on HLV events without adapting the frequency domain.
+        We highlight events where different glitch mitigation techniques were applied to a specific detector: 
+        $*$ glitch subtraction, 
+        $\dagger$ update of $f_\mathrm{min}$, $\diamond$ BayesWave deglitching, 
+        and $\ddagger$ linear subtraction. Details are provided in Table~\ref{table:glitch_mitigation}.
+    }
+    \label{table:efficiencies_events}
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \small
+        \setlength{\tabcolsep}{0pt}
+        \begin{tabularx}{\textwidth}{lcccc}
+            \toprule
+            \multirow{2}{*}{Event} & 
+            \multirow{2}{*}{Det.~~~} & 
+            \multirow{2}{*}{\shortstack{\dingo \\ Baseline}} & 
+            \multicolumn{2}{c}{\dingoT} \\
+            & & & Random & Data-based \\ 
+            \midrule
+            \csvreader[late after line=\\,late after last line=\\\bottomrule]{data/table_efficiencies_1.csv}
+              {}
+              {\csvcoli & \csvcolii & \csvcoliii & \csvcoliv & \csvcolv}
+        \end{tabularx}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \small
+        \setlength{\tabcolsep}{0pt}
+        \begin{tabularx}{\textwidth}{lcccc}
+            \toprule
+            \multirow{2}{*}{Event} & 
+            \multirow{2}{*}{Det.~~~} & 
+            \multirow{2}{*}{\shortstack{\dingo \\ Baseline}} & 
+            \multicolumn{2}{c}{\dingoT} \\
+            & & & Random & Data-based \\ 
+            \midrule
+            \csvreader[late after line=\\,late after last line=\\\bottomrule]{data/table_efficiencies_2.csv}
+              {}
+              {\csvcoli & \csvcolii & \csvcoliii & \csvcoliv & \csvcolv}
+        \end{tabularx}
+    \end{minipage}
+\end{table*}
+
+\begin{figure*}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig_10.pdf}
+    \caption{
+    P-P plot for 1000 injections evaluated with different detector configurations for \dingoT. The parameters where the Kolmogorov-Smirnov~(KS) test falls below $\alpha = 0.05$ are included explicitly and the overall distribution of KS-based $p$-values is shown in a histogram. We show the $3\sigma$ confidence intervals as a gray shaded band.
+    }
+    \label{fig:pp_plot_data}
+\end{figure*}
+
+\begin{table*}[ht]
+    \caption{
+        Sample efficiencies for events evaluated on all potential detector configurations with \dingoT. We highlight events where different glitch mitigation techniques were applied to a specific detector: 
+        $*$ glitch subtraction, 
+        $\dagger$ update of $f_\mathrm{min}$, $\diamond$ BayesWave deglitching, 
+        and $\ddagger$ linear subtraction. Details are provided in Table~\ref{table:glitch_mitigation}.
+    }
+    \label{table:efficiencies_all_det_configs}
+    \centering
+    \begin{tabularx}{0.86\linewidth}{lcc@{}c@{}c@{}c@{}c@{}c@{}c@{}}
+        \toprule
+        Event & Detectors & HLV & HL & HV & LV & H & L & V \\ \midrule
+        \csvreader[late after line=\\,late after last line=\\\bottomrule]{data/table_all_detector_configs_efficiencies_04_data_based_larger_fmasking.csv}
+          {}
+          {\csvcoli & \csvcolii & \csvcoliii & \csvcoliv & \csvcolv & \csvcolvi & \csvcolvii & \csvcolviii & \csvcolix}
+    \end{tabularx}
+\end{table*}
+

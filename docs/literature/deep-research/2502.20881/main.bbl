@@ -1,0 +1,299 @@
+\begin{thebibliography}{10}
+
+\bibitem{HNN}
+Sam {Greydanus}, Misko {Dzamba}, and Jason {Yosinski}.
+\newblock {``Hamiltonian Neural Networks"}.
+\newblock {\em arXiv e-prints}, page arXiv:1906.01563, June 2019.
+
+\bibitem{Harvard}
+Marios Mattheakis, David Sondak, Akshunna~S. Dogra, and Pavlos Protopapas.
+\newblock {``Hamiltonian neural networks for solving equations of motion"}.
+\newblock {\em \underline{Physical Review E}}, \textbf{105}(6), June 2022.
+
+\bibitem{Crammer:2020}
+Miles {Cranmer}, Sam {Greydanus}, Stephan {Hoyer}, Peter {Battaglia}, David {Spergel}, and Shirley {Ho}.
+\newblock {``Lagrangian Neural Networks"}.
+\newblock {\em arXiv e-prints}, page arXiv:2003.04630, March 2020.
+
+\bibitem{DiHan:2021}
+Chen-Di {Han}, Bryan {Glaz}, Mulugeta {Haile}, and Ying-Cheng {Lai}.
+\newblock {``Adaptable Hamiltonian neural networks"}.
+\newblock {\em Physical Review Research}, 3(2):023156, May 2021.
+
+\bibitem{Greydanus:2019}
+Sam {Greydanus}, Misko {Dzamba}, and Jason {Yosinski}.
+\newblock {``Hamiltonian Neural Networks"}.
+\newblock {\em arXiv e-prints}, page arXiv:1906.01563, June 2019.
+
+\bibitem{deveney:2021}
+Teo Deveney, Eike Mueller, and Tony Shardlow.
+\newblock {``A deep surrogate approach to efficient Bayesian inversion in PDE and integral equation models"}, 2021.
+
+\bibitem{raissi:2017}
+Maziar {Raissi}, Paris {Perdikaris}, and George~Em {Karniadakis}.
+\newblock {``Physics Informed Deep Learning (Part I): Data-driven Solutions of Nonlinear Partial Differential Equations"}.
+\newblock {\em arXiv e-prints}, page arXiv:1711.10561, November 2017.
+
+\bibitem{Wu:2022}
+Benjamin {Wu}, Oliver {Hennigh}, Jan {Kautz}, Sanjay {Choudhry}, and Wonmin {Byeon}.
+\newblock {``Physics Informed RNN-DCT Networks for Time-Dependent Partial Differential Equations"}.
+\newblock {\em arXiv e-prints}, page arXiv:2202.12358, February 2022.
+
+\bibitem{Cornell:2022enn}
+Alan~S. Cornell, Anele Ncube, and Gerhard Harmsen.
+\newblock {``Using physics-informed neural networks to compute quasinormal modes"}.
+\newblock {\em \underline{Phys. Rev. D}}, \textbf{106}(12):124047, 2022.
+
+\bibitem{Jain:2022dsh}
+Aarjav Jain, Challenger Mishra, and Pietro Li\`o.
+\newblock {``A physics-informed search for metric solutions to Ricci flow, their embeddings, and visualisation"}.
+\newblock 11 2022.
+
+\bibitem{Luna:2022rql}
+Raimon Luna, Juan Calder\'on~Bustillo, Juan Jos\'e~Seoane Mart\'\i{}nez, Alejandro Torres-Forn\'e, and Jos\'e~A. Font.
+\newblock {``Solving the Teukolsky equation with physics-informed neural networks"}.
+\newblock {\em \underline{Phys. Rev. D}}, \textbf{107}(6):064025, 2023.
+
+\bibitem{Luna:2024spo}
+Raimon Luna, Daniela~D. Doneva, Jos\'e~A. Font, Jr-Hua Lien, and Stoytcho~S. Yazadjiev.
+\newblock {``Quasinormal modes in modified gravity using physics-informed neural networks"}.
+\newblock {\em \underline{Phys. Rev. D}}, \textbf{109}(12):124064, 2024.
+
+\bibitem{Geng:2024zzw}
+Ru~Geng, Yixian Gao, Jian Zu, and Hong-Kun Zhang.
+\newblock {``Graph Attention Hamiltonian Neural Networks: A Lattice System Analysis Model Based on Structural Learning"}.
+\newblock 12 2024.
+
+\bibitem{Louppe:2017ipp}
+Gilles Louppe, Kyunghyun Cho, Cyril Becot, and Kyle Cranmer.
+\newblock {``QCD-Aware Recursive Neural Networks for Jet Physics"}.
+\newblock {\em \underline{JHEP}}, \textbf{01}:057, 2019.
+
+\bibitem{Nabian:2020}
+Mohammad~Amin {Nabian} and Hadi {Meidani}.
+\newblock {``Adaptive Physics-Informed Neural Networks for Markov-Chain Monte Carlo"}.
+\newblock {\em arXiv e-prints}, page arXiv:2008.01604, August 2020.
+
+\bibitem{Hashemi:2024azx}
+Baran Hashemi, Roderic~G. Corominas, and Alessandro Giacchetto.
+\newblock {``Can Transformers Do Enumerative Geometry?"}.
+\newblock 8 2024.
+
+\bibitem{Lagaris_1998}
+I.E. Lagaris, A.~Likas, and D.I. Fotiadis.
+\newblock Artificial neural networks for solving ordinary and partial differential equations.
+\newblock {\em IEEE Transactions on Neural Networks}, 9(5):987–1000, 1998.
+
+\bibitem{Cole:2019enn}
+Alex Cole, Andreas Schachner, and Gary Shiu.
+\newblock {``Searching the Landscape of Flux Vacua with Genetic Algorithms"}.
+\newblock {\em \underline{JHEP}}, \textbf{11}:045, 2019.
+
+\bibitem{Cole:2021nnt}
+Alex Cole, Sven Krippendorf, Andreas Schachner, and Gary Shiu.
+\newblock {``Probing the Structure of String Theory Vacua with Genetic Algorithms and Reinforcement Learning"}.
+\newblock In {\em {35th Conference on Neural Information Processing Systems}}, 11 2021.
+
+\bibitem{MacFadden:2024him}
+Nate MacFadden, Andreas Schachner, and Elijah Sheridan.
+\newblock {``The DNA of Calabi-Yau Hypersurfaces"}.
+\newblock 5 2024.
+
+\bibitem{Lanza:2023vee}
+Stefano Lanza.
+\newblock {``Machine learning the breakdown of tame effective theories"}.
+\newblock {\em \underline{Eur. Phys. J. C}}, \textbf{84}(6):631, 2024.
+
+\bibitem{Lanza:2024mqp}
+Stefano Lanza.
+\newblock {``Neural network learning and Quantum Gravity"}.
+\newblock {\em \underline{JHEP}}, \textbf{07}:105, 2024.
+
+\bibitem{Deen:2020dlf}
+Rehan Deen, Yang-Hui He, Seung-Joo Lee, and Andre Lukas.
+\newblock {``Machine learning string standard models"}.
+\newblock {\em \underline{Phys. Rev. D}}, \textbf{105}(4):046001, 2022.
+
+\bibitem{PhysRevD.111.086007}
+Per Berglund, Giorgi Butbaia, Tristan H\"ubsch, Vishnu Jejjala, Dami\'an Mayorga Pe\~na, Challenger Mishra, and Justin Tan.
+\newblock Precision string phenomenology.
+\newblock {\em Phys. Rev. D}, 111:086007, Apr 2025.
+
+\bibitem{Ashmore:2019wzb}
+Anthony Ashmore, Yang-Hui He, and Burt~A. Ovrut.
+\newblock {``Machine Learning Calabi\textendash{}Yau Metrics"}.
+\newblock {\em \underline{Fortsch. Phys.}}, \textbf{68}(9):2000068, 2020.
+
+\bibitem{Jejjala:2020wcc}
+Vishnu Jejjala, Damian~Kaloni Mayorga~Pena, and Challenger Mishra.
+\newblock {``Neural network approximations for Calabi-Yau metrics"}.
+\newblock {\em \underline{JHEP}}, \textbf{08}:105, 2022.
+
+\bibitem{Larfors:2021pbb}
+Magdalena Larfors, Andre Lukas, Fabian Ruehle, and Robin Schneider.
+\newblock {``Learning Size and Shape of Calabi-Yau Spaces"}.
+\newblock 11 2021.
+
+\bibitem{Berglund:2022gvm}
+Per Berglund, Giorgi Butbaia, Tristan H\"uubsch, Vishnu Jejjala, Dami\'an Mayorga Pe\~na, Challenger Mishra, and Justin Tan.
+\newblock {``Machine-learned Calabi\textendash{}Yau metrics and curvature"}.
+\newblock {\em \underline{Adv. Theor. Math. Phys.}}, \textbf{27}(4):1107--1158, 2023.
+
+\bibitem{Berglund:2023ztk}
+Per Berglund, Yang-Hui He, Elli Heyes, Edward Hirst, Vishnu Jejjala, and Andre Lukas.
+\newblock {``New Calabi\textendash{}Yau manifolds from genetic algorithms"}.
+\newblock {\em \underline{Phys. Lett. B}}, \textbf{850}:138504, 2024.
+
+\bibitem{Anderson:2023viv}
+Lara~B. Anderson, James Gray, and Magdalena Larfors.
+\newblock {``Lectures on Numerical and Machine Learning Methods for Approximating Ricci-flat Calabi-Yau Metrics"}.
+\newblock 12 2023.
+
+\bibitem{Hendi:2024yin}
+Yacoub Hendi, Magdalena Larfors, and Moritz Walden.
+\newblock {Learning group invariant Calabi{\textendash}Yau metrics by fundamental domain projections}.
+\newblock {\em Mach. Learn. Sci. Tech.}, 6(1):015050, 2025.
+
+\bibitem{Mirjanic:2024gek}
+Viktor Mirjani\'c and Challenger Mishra.
+\newblock {``Symbolic Approximations to Ricci-flat Metrics Via Extrinsic Symmetries of Calabi-Yau Hypersurfaces"}.
+\newblock 12 2024.
+
+\bibitem{Seong:2023njx}
+Rak-Kyeong Seong.
+\newblock {``Unsupervised machine learning techniques for exploring tropical coamoeba, brane tilings and Seiberg duality"}.
+\newblock {\em \underline{Phys. Rev. D}}, \textbf{108}(10):106009, 2023.
+
+\bibitem{Choi:2023rqg}
+Eugene Choi and Rak-Kyeong Seong.
+\newblock {``Machine learning regularization for the minimum volume formula of toric Calabi-Yau 3-folds"}.
+\newblock {\em \underline{Phys. Rev. D}}, \textbf{109}(4):046015, 2024.
+
+\bibitem{Seong:2024wkt}
+Rak-Kyeong Seong.
+\newblock Generative ai for brane configurations and coamoeba.
+\newblock {\em Phys. Rev. D}, 111:086013, Apr 2025.
+
+\bibitem{He:2024jao}
+Yang-Hui He, Vishnu Jejjala, and Tomás~S.R. Silva.
+\newblock Metaheuristic generation of brane tilings.
+\newblock {\em Physics Letters B}, 862:139365, 2025.
+
+\bibitem{Bianchi:2017sds}
+M.~Bianchi, D.~Consoli, and J.~F. Morales.
+\newblock {``Probing Fuzzballs with Particles, Waves and Strings"}.
+\newblock {\em \underline{JHEP}}, \textbf{06}:157, 2018.
+
+\bibitem{Bianchi:2022qph}
+Massimo Bianchi and Giorgio Di~Russo.
+\newblock {``2-charge circular fuzz-balls and their perturbations"}.
+\newblock {\em \underline{JHEP}}, \textbf{08}:217, 2023.
+
+\bibitem{DiRusso:2024hmd}
+Giorgio Di~Russo, Francesco Fucito, and Jose~Francisco Morales.
+\newblock {Tidal resonances for fuzzballs}.
+\newblock {\em JHEP}, 04:149, 2024.
+
+\bibitem{Bianchi:2023rlt}
+Massimo Bianchi, Carlo Di~Benedetto, Giorgio Di~Russo, and Giuseppe Sudano.
+\newblock {``Charge instability of JMaRT geometries"}.
+\newblock {\em \underline{JHEP}}, \textbf{09}:078, 2023.
+
+\bibitem{Bianchi:2023sfs}
+Massimo Bianchi, Giorgio Di~Russo, Alfredo Grillo, Jose~Francisco Morales, and Giuseppe Sudano.
+\newblock {``On the stability and deformability of top stars"}.
+\newblock {\em \underline{JHEP}}, \textbf{12}:121, 2023.
+
+\bibitem{Cipriani:2024ygw}
+Andrea Cipriani, Carlo Di~Benedetto, Giorgio Di~Russo, Alfredo Grillo, and Giuseppe Sudano.
+\newblock {``Charge (in)stability and superradiance of Topological Stars"}.
+\newblock {\em \underline{JHEP}}, \textbf{07}:143, 2024.
+
+\bibitem{hornik1989multilayer}
+Kurt Hornik, Maxwell Stinchcombe, and Halbert White.
+\newblock {``Multilayer feedforward networks are universal approximators"}.
+\newblock {\em Neural networks}, 2(5):359--366, 1989.
+
+\bibitem{Goodfellow-et-al-2016}
+Ian Goodfellow, Yoshua Bengio, and Aaron Courville.
+\newblock {\em {``Deep Learning"}}.
+\newblock MIT Press, 2016.
+\newblock \url{http://www.deeplearningbook.org}.
+
+\bibitem{Mathur:2009hf}
+Samir~D. Mathur.
+\newblock {``The Information paradox: A Pedagogical introduction"}.
+\newblock {\em \underline{Class. Quant. Grav.}}, \textbf{26}:224001, 2009.
+
+\bibitem{PhysRevD.7.949}
+Jacob~D. Bekenstein.
+\newblock {``Extraction of Energy and Charge from a Black Hole"}.
+\newblock {\em \underline{Phys. Rev. D}}, \textbf{7}:949--953, Feb 1973.
+
+\bibitem{Lunin:2001fv}
+Oleg Lunin and Samir~D. Mathur.
+\newblock {``Metric of the multiply wound rotating string"}.
+\newblock {\em \underline{Nucl. Phys. B}}, \textbf{610}:49--76, 2001.
+
+\bibitem{Mathur:2005zp}
+Samir~D. Mathur.
+\newblock {``The Fuzzball proposal for black holes: An Elementary review"}.
+\newblock {\em \underline{Fortsch. Phys.}}, \textbf{53}:793--827, 2005.
+
+\bibitem{Bena:2022rna}
+Iosif Bena, Emil~J. Martinec, Samir~D. Mathur, and Nicholas~P. Warner.
+\newblock {``Fuzzballs and Microstate Geometries: Black-Hole Structure in String Theory"}.
+\newblock 4 2022.
+
+\bibitem{Chervonyi:2013eja}
+Yuri Chervonyi and Oleg Lunin.
+\newblock {``(Non)-Integrability of Geodesics in D-brane Backgrounds"}.
+\newblock {\em \underline{JHEP}}, \textbf{02}:061, 2014.
+
+\bibitem{Chandrasekhar:1984siy}
+S.~Chandrasekhar.
+\newblock {The Mathematical Theory of Black Holes}.
+\newblock {\em Fundam. Theor. Phys.}, 9:5--26, 1984.
+
+\bibitem{Bianchi:2020yzr}
+M.~Bianchi, D.~Consoli, A.~Grillo, and J.~F. Morales.
+\newblock {``Light rings of five-dimensional geometries"}.
+\newblock {\em \underline{JHEP}}, \textbf{03}:210, 2021.
+
+\bibitem{Bianchi:2021yqs}
+Massimo Bianchi and Giorgio Di~Russo.
+\newblock {``Turning black holes and D-branes inside out of their photon spheres"}.
+\newblock {\em \underline{Phys. Rev. D}}, \textbf{105}(12):126007, 2022.
+
+\bibitem{Bianchi:2022wku}
+Massimo Bianchi and Giorgio Di~Russo.
+\newblock {``Turning rotating D-branes and black holes inside out their photon-halo"}.
+\newblock {\em \underline{Phys. Rev. D}}, \textbf{106}(8):086009, 2022.
+
+\bibitem{notebook}
+\url{https://gitlab.com/AleDS/hnn_fuzzball_geodesics}.
+
+\bibitem{keras}
+Fran\c{c}ois Chollet et~al.
+\newblock {``Keras"}.
+\newblock \url{https://keras.io}, 2015.
+
+\bibitem{tensorflow}
+Mart\'{i}n Abadi, Ashish Agarwal, Paul Barham, Eugene Brevdo, Zhifeng Chen, Craig Citro, Greg~S. Corrado, Andy Davis, Jeffrey Dean, Matthieu Devin, Sanjay Ghemawat, Ian Goodfellow, Andrew Harp, Geoffrey Irving, Michael Isard, Yangqing Jia, Rafal Jozefowicz, Lukasz Kaiser, Manjunath Kudlur, Josh Levenberg, Dandelion Man\'{e}, Rajat Monga, Sherry Moore, Derek Murray, Chris Olah, Mike Schuster, Jonathon Shlens, Benoit Steiner, Ilya Sutskever, Kunal Talwar, Paul Tucker, Vincent Vanhoucke, Vijay Vasudevan, Fernanda Vi\'{e}gas, Oriol Vinyals, Pete Warden, Martin Wattenberg, Martin Wicke, Yuan Yu, and Xiaoqiang Zheng.
+\newblock {`` {TensorFlow}: Large-Scale Machine Learning on Heterogeneous Systems"}, 2015.
+\newblock Software available from tensorflow.org.
+
+\bibitem{Adam}
+Diederik~P. Kingma and Jimmy Ba.
+\newblock {``Adam: A Method for Stochastic Optimization"}, 2017.
+
+\bibitem{solve_ivp}
+$solve\_ivp$ by {SciPy}.
+\newblock \url{https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.solve_ivp.html}.
+
+\bibitem{Bianchi:2018kzy}
+M.~Bianchi, Dario Consoli, Alfredo Grillo, and Jose~F. Morales.
+\newblock {``The dark side of fuzzball geometries"}.
+\newblock {\em \underline{JHEP}}, \textbf{05}:126, 2019.
+
+\end{thebibliography}

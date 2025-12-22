@@ -1,0 +1,1810 @@
+\section{Proof of \Cref{sec:time-sampling-score}}
+\label{sec:proof-section21}
+
+In this section, we first present the continuous-time framework in a Gaussian
+setting in \Cref{sec:gaussian-setting-1}. The general outline of the proof of
+\Cref{prop:approx_gaussian_kl} is presented in
+\Cref{sec:conv-results-discr}. Technical lemmas are gathered in
+\Cref{sec:technical-lemmas}. The proof of \Cref{thm:control_diffusion} is
+presented in \Cref{sec:main-content}.
+
+\subsection{Gaussian setting}
+\label{sec:gaussian-setting-1}
+
+In what follows we present the Gaussian setting used in the proof of
+\Cref{prop:approx_gaussian_kl}. We assume that $p_0 = \mathrm{N}(0, \Sigma)$
+with $\Sigma \in \mathbb{S}_d(\rset)_+$.  Let $\rmD \in \mathcal{M}_d(\rset)_+$
+a diagonal positive matrix such that $\Sigma = \rmP^\top \rmD \rmP$ with $\rmP$
+an orthonormal matrix. We consider the following forward dynamics
+\begin{equation}
+  \rmd x_t = - x_t \rmd t + \sqrt{2} \rmd w_t ,
+\end{equation}
+with $\mathcal{L}(x_0) = p_0$.
+We also consider the backward dynamics given by
+\begin{equation}
+  \rmd y_t = \{ y_t + 2\nabla \log p_{T-t}(y_t)\} \rmd t + \sqrt{2} \rmd w_t ,
+\end{equation}
+with $\mathcal{L}(y_0) = p_\infty = \mathrm{N}(0, \Id)$. Note that since for any
+$t \in \ccint{0,T}$ and $x \in \rset^d$, $\nabla \log p_t(x) = - \Sigma_t^{-1}x$
+with $\Sigma_t = \exp[-2t]\Sigma + (1-\exp[-2t]) \Id$, we have that
+$(y_t)_{t \in \ccint{0,T}}$ is a Gaussian process. In particular, we can compute
+the mean and the covariance matrix of $y_t$ in a closed form for any
+$t \in \ccint{0,T}$. The results of \Cref{sec:gaussian-setting-continuous} will
+not be used to prove \Cref{prop:approx_gaussian_kl}. However, they provide some
+insights regarding the evolution of the mean and covariance of the backward
+process.
+
+\begin{proposition}
+  \label{sec:gaussian-setting-continuous}
+  For any $t \in \ccint{0,T}$, we have that
+  $\mathcal{L}(y_t) = \mathrm{N}(0, \bar{\Sigma}_t)$ with
+  \begin{equation}
+    \bar{\Sigma}_t = \rmP^\top ((1 - \exp[-2t])\bar{\rmD}_t + \exp[-2t] \bar{\rmD}_t^2) \rmP,
+  \end{equation}
+  and
+  \begin{equation}
+    \bar{\rmD}_t = (\Id + (\rmD - \Id)\exp[-2(T-t)]) \oslash (\Id + (\rmD - \Id)\exp[-2T]) \eqsp . 
+  \end{equation}
+\end{proposition}
+
+Note that $\bar{\rmD}_0 = \Id$ and
+$\bar{\rmD}_T = \rmD \oslash (\Id + (\rmD - \Id)\exp[-2T]) \approx \rmD$. Hence,
+we have $\bar{\Sigma}_T \approx \Sigma$ and therefore
+$\mathcal{L}(y_T) \approx p_0$.
+
+\begin{proof}
+  First, note that for any $t \in \ccint{0,T}$ we have that
+  \begin{equation}
+    \textstyle{
+      y_t = y_0 + \int_0^t ( \Id - 2\Sigma_{T-t}^{-1}) y_t + \sqrt{2} w_t = y_0 + \int_0^t ( \Id - 2\rmP^\top D_{T-t}^{-1} \rmP ) y_t + \sqrt{2} w_t ,
+      }
+  \end{equation}
+  with $\rmD_{T-t} = \exp[-2(T-t)] \rmD + (1 - \exp[-2(T-t)]) \Id$. Denote
+  $\{y_t^\rmP\}_{t \in \ccint{0,T}} = \{\rmP y_t\}_{t \in
+    \ccint{0,T}}$. Using that $\rmP^\top \rmP = \Id$, we have that for any
+  $t \in \ccint{0,T}$
+  \begin{equation}
+    \textstyle{
+      y_t^\rmP =y_0^\rmP + \int_0^t ( \Id - 2 D_{T-t}^{-1}) y_t^\rmP + \sqrt{2} w_t^\rmP ,
+      }
+    \end{equation}
+    where $\{w_t^\rmP\}_{t \in \ccint{0,T}} = \{\rmP w_t\}_{t \in
+      \ccint{0,T}}$. Note that since $\rmP$ is orthonormal,
+    $\{w_t^\rmP\}_{t \in \ccint{0,T}}$ is also a $d$-dimensional Brownian
+    motion. We also have that $\mathcal{L}(y_0^\rmP) = \mathrm{N}(0,
+    \Id)$. Hence for any $\{\{y_t^{\rmP, i}\}_{t\in \ccint{0,T}}\}_{i=1}^d$ is a
+    collection of $d$ independent Gaussian processes, where for any
+    $i \in \{1, \dots, d\}$ and $t \in \ccint{0,T}$,
+    $y_t^{\rmP, i} = \langle y_t^{\rmP}, e_i \rangle$ and $\{e_i\}_{i=1}^d$ is
+    the canonical basis of $\rset^d$. Let $i \in \{1, \dots, d\}$ and for any
+    $t \in \ccint{0,T}$ denote $u_t^i = \expeLigne{y_t^{\rmP, i}}$ and
+    $v_t^i = \expeLigne{(y_t^{\rmP, i})^2}$. We have that for any
+    $t \in \ccint{0,T}$, $\partial_t u_t^i = (1 - 1/\rmD_t^i) u_t^i$ with
+    $u_0 =0$ and $\rmD_t^i = \exp[-2t] \rmD_i + 1 - \exp[-2t]$. Hence, we get
+    that for any $t \in \ccint{0,T}$, $u_t^i = 0$. Using It\^o's lemma we have
+    that
+    \begin{equation}
+      \label{eq:edo}
+      \partial v_t^i = \{ 2 - 4 / \rmD_{T-t}^i \} v_t^i + 2 ,
+    \end{equation}
+    with $v_0^i = 1$. Denote $\alpha^i_T = (\rmD^i - 1)\exp[-2T]$, we have that
+    for any $t \in \ccint{0,T}$, $\rmD_{T-t}^i = 1 + \alpha^i_T
+    \exp[2t]$. Therefore, we get that for any $t \in \ccint{0,T}$
+    \begin{equation}
+      2 - 4 / \rmD_{T-t}^i = -2 + 2 \times (2\alpha_T^i)\exp[2t] /(1 + \alpha_T^i \exp[2t]) = - 2 + 2 \partial_t \log(1 + \alpha_T^i \exp[2t]) .
+    \end{equation}
+    Hence, we have that for any $t \in \ccint{0,T}$
+    \begin{equation}
+      \textstyle{
+        \int_0^t 2 - 4 / \rmD_{T-s}^i \rmd s = -2t + \log((1 + \alpha_T^i \exp[2t])^2/(1 + \alpha_T^i )^2) .
+        }
+      \end{equation}
+      Hence, there exists $C_t^i \in \rmc^1(\ccint{0,T}, \rset)$ such that for
+      any $t \in \ccint{0,T}$, $v_t^i = C_t^i \exp[-2t](1 + \alpha_T^i \exp[2t])^2/(1 + \alpha_T^i )^2$.
+      Using \eqref{eq:edo}, we have that for any $t \in \ccint{0,T}$
+      \begin{equation}
+        \partial_t C_t^i = 2 \exp[2t] ((1 + \alpha_T^i \exp[2t])/(1 + \alpha_T^i))^{-2} = -(1/\alpha_T^i)(1+\alpha_T^i)^2 \partial_t (1 + \alpha_T^i \exp[2t])^{-1}.
+      \end{equation}
+      Hence, we have that for any $t \in \ccint{0,T}$
+      \begin{equation}
+        C_t^i = (1/\alpha_T^i)(1+\alpha_T^i)^2 [ (1 + \alpha_T^i)^{-1} - (1 + \alpha_T^i \exp[2t])^{-1}  ] + A ,
+      \end{equation}
+      with $A \geq 0$. Hence, we get that for any $t \in \ccint{0,T}$
+      \begin{align}
+        v_t^i &= (1/\alpha_T^i) \exp[-2t] (1 + \alpha_T^i \exp[2t]) [ (1 + \alpha_T^i \exp[2t])/(1 + \alpha_T^i) - 1 ] \\
+        & \qquad \qquad + A \exp[-2t](1 + \alpha_T^i \exp[2t])^2/(1 + \alpha_T^i )^2 .
+      \end{align}
+      In addition, we have that $v_0^i=1$ and therefore $A=1$. Therefore, for any $t \in \ccint{0,T}$ we have
+      \begin{align}
+        v_t^i &= (1/\alpha_T^i) \exp[-2t] (1 + \alpha_T^i \exp[2t]) [ (1 + \alpha_T^i \exp[2t])/(1 + \alpha_T^i) - 1 ] \\
+              & \qquad \qquad + \exp[-2t](1 + \alpha_T^i \exp[2t])^2/(1 + \alpha_T^i )^2 \\
+         &=  (1 - \exp[-2t]) (1 + \alpha_T^i \exp[2t]) /(1 + \alpha_T^i)  + \exp[-2t](1 + \alpha_T^i \exp[2t])^2/(1 + \alpha_T^i )^2 ,      
+      \end{align}
+      which concludes the proof.
+    \end{proof}
+
+    \subsection{Convergence results for the discretization}
+\label{sec:conv-results-discr}
+
+In what follows, we denote
+$(Y_k)_{k \in \{0, \dots, N-1\}} = (\twx_{t_k})_{k \in \{0, \dots, N-1\}}$, the
+sequence given by \eqref{eq:backward_disc}. The following result gives an
+expansion of the covariance matrix and the mean of $Y_N$, i.e. the output of
+SGM, in the case where $p = \mathrm{N}(\mu, \Sigma)$.
+
+\begin{theorem}
+  \label{prop:approx_gaussian}
+  Let $N \in \nset$, $\delta > 0$ and $T = N \delta$. Then, we have that
+  $\twx_{t_N} \sim \mathrm{N}(\hat{\mu}_N, \hat{\Sigma}_N)$ with
+  \begin{equation}
+    \hat{\Sigma}_N = \Sigma + \exp[-4T] \hat{\Sigma}_T + \delta \hat{\mathrm{E}}_T + \delta^2 \mathrm{R}_{T, \delta} \eqsp , \qquad \hat{\mu}_N = \mu + \exp[-2T] \hat{\mu}_T + \delta \hat{e}_T + \delta^2 r_{T, \delta} \eqsp ,
+  \end{equation}
+  where
+  $\hat{\Sigma}_T, \hat{\mathrm{E}}_T, \mathrm{R}_{T, \delta} \in \rset^{d
+    \times d}$, $\hat{\mu}_T, \hat{e}_T, r_{T, \delta} \in \rset^d$ and
+  $\normLigne{\mathrm{R}_{T, \delta}} + \normLigne{r_{T, \delta}} \leq R$ not
+  dependent on $T \geq 0$ and $\delta >0$. We have that
+  \begin{align}
+  &\hat{\Sigma}_T =  - (\Sigma - \Id)(\Sigma \Sigma_T^{-1})^{2}  \eqsp , \label{eq:T_approx}\\
+    &\textstyle{ \hat{\mathrm{E}}_T = \Id - (1/2)\Sigma^2 (\Sigma - \Id)^{-1} \log(\Sigma)  + \exp[-2T] \tilde{\mathrm{E}}_T\eqsp .} \label{eq:gamma_approx}
+  \end{align}
+  In addition, we have 
+  \begin{align}
+    &\hat{\mu}_T = - \Sigma_T^{-1}\Sigma \mu \eqsp ,  \\
+    &\textstyle{ \hat{e}_T = \{-2 \Sigma^{-1} -  (1/4) \Sigma (\Sigma - \Id)^{-1} \log(\Sigma)\} \mu + \exp[-2T] \tilde{\mu}_T \eqsp ,  }
+  \end{align}
+  with $\tilde{\mathrm{E}}_T, \tilde \mu_T$ bounded and not dependent on $T$.
+\end{theorem}
+
+Before turning to the proof of \Cref{prop:approx_gaussian}, we state a few
+consequences of this result.
+
+\begin{corollary}
+  \label{sec:conv-results-discr-1}
+  Let $\{\twx_{t_k}\}_{k=0}^N$ the sequence defined by
+  \eqref{eq:backward_disc}. We have that
+  $\twx_{t_N} \sim \mathrm{N}(\mu_N, \Sigma_N)$ with
+  \begin{align}
+    &\Sigma_N = \Sigma + \delta \Sigma_\delta + \exp[-4T] \Sigma_T + \Sigma_{\delta, T} \eqsp , \\
+    &\mu_N = \mu + \delta \mu_\delta + \exp[-2T] \mu_T + \mu_{\delta, T} \eqsp ,
+  \end{align}
+  with
+  \begin{align}
+    & \Sigma_T = - (\Sigma - \Id)\Sigma^2 \eqsp , \\
+    & \Sigma_\delta = \Id - (1/2)\Sigma^2 (\Sigma - \Id)^{-1} \log(\Sigma) \eqsp , \\    
+    & \mu_T = \Sigma \mu  , \\
+    & \mu_\delta = \{-2 \Sigma^{-1}-  (1/4) \Sigma (\Sigma - \Id)^{-1} \log(\Sigma)\} \mu  \eqsp . 
+  \end{align}
+  In addition, we have
+  $\lim_{\delta \to 0, T \to +\infty} \normLigne{\Sigma_{\delta, T}}/(\delta +
+  \exp[-4T]) = 0$ and
+  $\lim_{\delta \to 0, T \to +\infty} \normLigne{\mu_{\delta, T}}/(\delta +
+  \exp[-2T]) = 0$
+\end{corollary}
+
+At first sight, it might appear surprising that $\Sigma^{-1}$ does not appear in
+${\Sigma}_T$ and ${\mu}_T$. Note that in the extreme case where
+$\Sigma =0$ and $\delta \to0$, i.e. we only consider the error associated with
+the fact that $T \neq +\infty$, then we have no error. This is because in this
+case the associated continuous-time process is an Ornstein-Uhlenbeck bridge which
+has distribution $\mathrm{N}(\mu, 0)$ at time $T$.
+
+We will use the following result.
+
+\begin{lemma}
+\label{lemma:kl_gaussian}
+  Let $\pi_i = \mathrm{N}(\mu_i, \Sigma_i)$ for $i \in \{0,1\}$, with
+  $\mu_0, \mu_1 \in \rset^d$ and $\Sigma_0, \Sigma_1 \in
+  \mathbb{S}_d(\rset)_+$. Then, we have that 
+  \begin{equation}
+    \KLLigne{\pi_0}{\pi_1} = (1/2) \{ \log(\det(\Sigma_1)/\det(\Sigma_0)) - d + \mathrm{Tr}(\Sigma_1^{-1}\Sigma_0) + (\mu_1 - \mu_0)^\top \Sigma_1^{-1}(\mu_1 - \mu_0)\} .
+  \end{equation}
+\end{lemma}
+
+In particular, applying \Cref{lemma:kl_gaussian} we have that for any
+$\Sigma \in \mathbb{S}_d(\rset)_+$
+\begin{equation}
+\label{eq:kl_computation}
+  \KLLigne{\mathrm{N}(0, \Sigma)}{\mathrm{N}(0, \Id)} = (1/2)\{-\log(\det(\Sigma)) + \mathrm{Tr}(\Sigma) -d \}.
+\end{equation}
+
+
+\begin{proposition}
+    \label{sec:conv-results-discr-2}
+    Let $\{\twx_{t_k}\}_{k=0}^N$ the sequence defined by
+    \eqref{eq:backward_disc}. We have that
+    $\twx_{t_N} \sim \mathrm{N}(\mu_N, \Sigma_N)$, with $\mu_N, \Sigma_N$ given
+    by \Cref{sec:conv-results-discr-1}.
+    We have that
+    \begin{align}
+      \KLLigne{\mathrm{N}(\mu, \Sigma)}{\mathrm{N}(\mu_N, \Sigma_N)} \leq \delta \absLigne{\trace(\Sigma^{-1}\Sigma_\delta)} + \exp[-4T] \absLigne{\trace(\Sigma^{-1}\Sigma_T)} + \exp[-4T]\mu^\top\Sigma \mu + E_{T, \delta} \eqsp ,
+    \end{align}
+    with $E_{T, \delta}$ a higher order term such that $\lim_{T \to +\infty, \delta \to 0} E_{T, \delta} /(\delta + \exp[-4T]) = 0$.
+\end{proposition}
+
+We now prove \Cref{prop:approx_gaussian}.
+
+\begin{proof}
+  For any $k$, denote $Y_k = \twx_{t_{N-k}}$.
+  First, we recall that for any $k \in \{0, \dots, N-1\}$ and $x \in \rset^d$,
+  $\nabla \log p_{T-k\gamma}(x) = -\Sigma_{T-k\gamma}^{-1} x$ where for any $t \in \ccint{0,T}$
+    \begin{equation}
+      \Sigma_t = (1 - \exp[-2t]) \Id + \exp[-2t] \Sigma \eqsp . 
+    \end{equation}
+Hence, we get that for any $k \in \{0, \dots, N-1\}$
+\begin{equation}
+  \label{eq:recur_recu}
+  Y_{k+1} = ((1 + \gamma) \Id - 2\gamma \Sigma_{T - k \gamma}^{-1}) Y_k  + 2 \gamma \Sigma_{T - k \gamma}^{-1} M_{T-k \gamma}+ \sqrt{2 \gamma} Z_{k+1} \eqsp ,
+\end{equation}
+where for any $t \in \ccint{0,T}$, $M_{t} = \exp[-t] \mu$. Therefore, we get
+that for any $k \in \{0, \dots, N\}$, $Y_k$ is a Gaussian random variable.  % In
+% addition, using \eqref{eq:recur_recu}, we have that for any
+% $k \in \{0, \dots, N-1\}$
+% \begin{equation}
+%   \expeLigne{Y_{k+1}} = ((1 + \gamma) \Id - 2\gamma \Sigma_{T - k \gamma}) \expeLigne{Y_k} \eqsp . 
+% \end{equation}
+% Since, $\expeLigne{Y_0} = 0$, we have that for any $k \in \{0, \dots, N\}$,
+% $\expeLigne{Y_k} = 0$.
+Using \eqref{eq:recur_recu}, we have that for any
+$k \in \{0, \dots, N-1\}$
+\begin{equation}
+  \label{eq:recursion_cov}
+  \expeLigne{\hat{Y}_{k+1} \hat{Y}_{k+1}^\top} = ((1 + \gamma) \Id - 2\gamma \Sigma_{T - k \gamma}^{-1}) \expeLigne{\hat{Y}_{k} \hat{Y}_{k}^\top} ((1 + \gamma) \Id - 2\gamma \Sigma_{T - k \gamma}^{-1}) + 2 \gamma \Id \eqsp ,
+\end{equation}
+where for any $k \in \{0, \dots, N\}$, $\hat{Y}_k = Y_k - \expeLigne{Y_k}$.
+There exists $\rmP \in \rset^{d \times d}$ orthogonal such that
+$\rmD = \rmP \Sigma \rmP^\top$ is diagonal. Note that for any
+$k \in \{0, \dots, N-1\}$, we have that
+$\Lambda_k = \rmP ((1+ \gamma) \Id - 2 \gamma \Sigma_{T-k\gamma}^{-1})
+\rmP^\top$ is diagonal. For any $k \in \{0, \dots, N\}$, define
+$\rmH_k = \rmP \expeLigne{\hat{Y}_{k} \hat{Y}_{k}^\top} \rmP^\top$. Note that
+$\rmH_0 = \Id$.  Using \eqref{eq:recursion_cov}, we have that for any
+$k \in \{0, \dots, N-1\}$
+\begin{equation}
+  \label{eq:recursion_cov_cov}
+  \rmH_{k+1} = \Lambda_k^2 \rmH_k + 2 \gamma \Id \eqsp . 
+\end{equation}
+Hence, for any $k \in \{0, \dots, N\}$, $\rmH_k$ is diagonal. For any diagonal
+matrix $C \in \rset^{d \times d}$ denote $\{c^1, \dots, c^d\}$ its diagonal
+elements. Let $i \in \{1, \dots, d\}$. Using \eqref{eq:recursion_cov_cov}, we have
+that for any $k \in \{0, \dots, N-1\}$
+\begin{equation}
+  h_{k+1}^i = (\lambda_k^i)^2 h_k^i + 2 \gamma \eqsp . 
+\end{equation}
+Using this result we have that for any $k \in \{0, \dots, N\}$
+\begin{equation}
+  \label{eq:unroll_recursion}
+  \textstyle{
+    h_k^i = (\prod_{\ell=0}^{k-1} \lambda_\ell^i)^2 + 2\gamma \sum_{\ell=0}^{k-1} (\prod_{j=0}^{\ell-1} \lambda_{k-1-j}^i)^2 = (\prod_{\ell=0}^{k-1} \lambda_\ell^i)^2 + 2\gamma \sum_{\ell=0}^{k-1} (\prod_{j=k-\ell}^{k-1} \lambda_{j}^i)^2 \eqsp . 
+    }
+\end{equation}
+Let $k_1, k_2 \in \{0, \dots, N\}$ with $k_1 < k_2$. In what follows, we derive
+an expansion of $I_{k_1, k_2} = \prod_{k=k_1}^{k_2} \lambda_k^i$ w.r.t.
+$\gamma >0$. We have that
+\begin{align}
+  \label{eq:Ik1k2}
+I_{k_1, k_2} &\textstyle{= \prod_{k=k_1}^{k_2} \lambda_k^i = \exp[\sum_{k=k_1}^{k_2} \log(\lambda_k^i)] = \exp[\sum_{k=k_1}^{k_2} \log(1 + \gamma a_k^i)]} \eqsp , 
+\end{align}
+where for any $k \in \{0, \dots, N\}$, $a_k^i = 1 - 2/d_{(N-k)\gamma}^i$, with
+$d_{(N-k)\gamma}^i = 1 + \exp[-2(N-k)\gamma](d^i - 1)$.  Hence, there exist
+$(b_{k, \gamma}^i)_{k \in \{0, \dots, N\}}$ bounded  such that for any $k \in \{0, \dots, N\}$ we have
+\begin{equation}
+  \log(1 + \gamma a_k^i) = \gamma a_k^i - (\gamma^2/2) (a_k^i)^2 + \gamma^3 b_{k, \gamma}^i \eqsp . 
+\end{equation}
+In addition, using \Cref{prop:maclaurin}, there exists
+$C_{k_1, k_2}^\gamma \geq 0$ such that $ \gamma C_{k_1, k_2}^\gamma \leq C$ with
+$C \geq 0$ not dependent on $k_2, k_2 \in \{0, \dots, N\}$, $\gamma >0$ and
+\begin{equation}
+  \textstyle{
+    \sum_{k=k_1}^{k_2} \log(1 + \gamma a_k^i) = \int_{t_1}^{t_2^+} a^i(t) \rmd t - (\gamma/2) [\int_{t_1}^{t_2^+} a^i(t)^2 \rmd t + a^i(t_2^+) - a^i(t_1)] + C_{k_1, k_2}^\gamma \gamma^3  \eqsp ,
+    }
+  \end{equation}
+  with $t_1 = k_1 \gamma$, $t_2^+ = (k_2 + 1) \gamma$ and for any
+  $t \in \ccint{0,T}$, $a_t = 1 - 2/d_{T-t}^i$ with
+  $d_{T-t}^i = 1 + \exp[-2(T-t)](d^i - 1)$.  Hence, using this result and
+  \eqref{eq:Ik1k2}, we get that there exists $D_{k_1, k_2}^\gamma \geq 0$ such
+  that $ \gamma D_{k_1, k_2}^\gamma \leq D$ with $D \geq 0$ not dependent on
+  $k_2, k_2 \in \{0, \dots, N\}$, $\gamma >0$ and
+\begin{equation}
+  \textstyle{I_{k_1, k_2} = \exp[\int_{t_1}^{t_2^+} a^i(t) \rmd t ] - \exp[\int_{t_1}^{t_2^+} a^i(t)](\gamma/2)[\int_{t_1}^{t_2^+} a^i(t)^2 \rmd t + a^i(t_2^+) - a^i(t_1)] + \gamma^3 D_{k_1, k_2}^\gamma  \eqsp . } \label{eq:val_Ik1k2}
+\end{equation}
+Using this result, we get that there exists $E^\gamma_1 \geq 0$ such that
+$\gamma E^\gamma_1 \leq E$ with $E \geq 0$ not dependent on $\gamma$ such that
+\begin{equation}
+  \textstyle{ (\prod_{\ell=0}^{N-1} \lambda_\ell^i)^2 =  \exp[2\int_0^T a^i(t) \rmd t] - \gamma \exp[2\int_0^T a^i(t) \rmd t][\int_{0}^{T} a^i(t)^2 \rmd t + a^i(T) - a^i(0)] + \gamma^3 E_1^\gamma \eqsp . } \label{eq:term_uno}
+\end{equation}
+Similarly, using \eqref{eq:val_Ik1k2}, there exist $E \geq 0$ and
+$(E^\gamma_{2, \ell})_{\ell \in \{0, \dots, N\}}$ such that for any
+$\ell \in \{0, \dots, N \}$, $E_{2, \ell}^\gamma \geq 0$ and
+$\gamma E^\gamma_{2, \ell} \leq E$ with $E \geq 0$ not dependent on $\gamma$ and
+$\ell$ such that
+\begin{align}
+  \textstyle{2 \gamma \sum_{\ell=0}^{N-1} (\prod_{j=N-\ell}^{N-1} \lambda_j^i)^2} &= \textstyle{ (2\gamma) \sum_{\ell=0}^{N-1}   \exp[2\int_{T-\ell \gamma}^T a^i(t) \rmd t]\}} \\
+                                                                                  & \textstyle{ -2\gamma^2 \sum_{\ell=0}^{N-1} \{ \exp[2\int_{T- \ell \gamma}^T a^i(t) \rmd t][\int_{T- \ell \gamma}^{T} a^i(t)^2 \rmd t + a^i(T) - a^i(T-\ell \gamma)] \} } \\
+  & + \textstyle{ \gamma^4 \sum_{\ell=0}^{N-1} E_{2, \ell}^\gamma \eqsp . }
+\end{align}
+Therefore, using \Cref{prop:maclaurin}, there exists $E_3^\gamma$ such that
+$\gamma E_3^\gamma \leq E$ with $E \geq 0$ not dependent on $\gamma$ and
+\begin{align}
+  \textstyle{2 \gamma \sum_{\ell=0}^{N-1} (\prod_{j=N-\ell}^{N-1} \lambda_j^i)^2} &= \textstyle{2 \int_0^T \exp[2 \int_{T-t}^T a^i(s) \rmd s] \rmd t + \gamma (1 - \exp[2 \int_0^Ta^i(t) \rmd t]) } \\
+                                                                                  &\textstyle{-2\gamma \int_0^T \{ \exp[2\int_{T-t}^T a^i(s) \rmd s][\int_{T- t}^{T} a^i(s)^2 \rmd t + a^i(T) - a^i(T-t)] \} \rmd t} \\
+  &+ \gamma^3 E_3^\gamma \eqsp . \label{eq:term_duo}
+\end{align}
+% \Cref{prop:maclaurin} and \eqref{eq:unroll_recursion},
+% \begin{align}
+%   h_N^i &= \textstyle{ \exp[2\int_0^T a^i(t) \rmd t] - \gamma \exp[2\int_0^T a^i(t) \rmd t]}[\int_{0}^{T} a^i(t)^2 \rmd t + a^i(T) - a^i(0)] \\
+%   & \qquad + 2\textstyle{\int_0^T \exp[2\int_{T-t}^T a^i(s) \rmd s] \rmd t + \gamma^3 E^\gamma }\\
+%   & \qquad \textstyle{- 2\gamma \int_0^T \exp[2\int_{T-t}^T a^i(s) \rmd s][\int_{T-t}^{T} a^i(s)^2 \rmd s + a^i(T) - a^i(T-t)] \rmd t \eqsp . }
+% \end{align}
+% This can be rewritten as
+Hence, combining \eqref{eq:term_uno} and \eqref{eq:term_duo} we get that 
+\begin{equation}
+  h_N^i = c_T^i - \gamma e_T^i + \gamma^3 E^\gamma \eqsp ,
+\end{equation}
+with
+\begin{equation}
+  \label{eq:ct_res}
+  \textstyle{
+    c_T^i  = \exp[2\int_0^T a^i(t) \rmd t] + 2\int_0^T \exp[2\int_{T-t}^T a^i(s) \rmd s] \rmd t \eqsp . 
+    }
+\end{equation}
+and 
+\begin{align}
+  \label{eq:et_res}
+  e_T^i  &= \textstyle{-\exp[2\int_0^T a^i(t) \rmd t][\int_{0}^{T} a^i(t)^2 \rmd t + a^i(T) - a^i(0)]} \textstyle{+ 1 - \exp[2 \int_0^T a^i(t) \rmd t ]} \\
+    & \qquad \textstyle{ - 2 \int_0^T \exp[2\int_{T-t}^T a^i(s) \rmd s][\int_{T-t}^{T} a^i(s)^2 \rmd s + a^i(T) - a^i(T-t)] \rmd t \eqsp . 
+    }
+\end{align}
+In what follows, we compute $c_T^i$ and $e_T^i$.
+\begin{enumerate}[wide, labelwidth=!, labelindent=0pt, label=(\roman*)]
+\item Using \Cref{lemma:integral_uno}  we have
+  \begin{equation}
+    \textstyle{ \exp[2\int_0^T a^i(t) \rmd t] = d^2 \exp[-2T]/(1 + \exp[-2T](d-1))^2 \eqsp . }
+  \end{equation}
+  In addition, using \Cref{lemma:integral_exp_uno} we have
+  \begin{equation}
+    \textstyle{ \int_0^T \exp[2\int_{T-t}^T a^i(s) \rmd s] = (d/2) (1 - \exp[-2T])/(1 + \exp[-2T](d-1)) \eqsp . }
+  \end{equation}
+  Combining these results and \eqref{eq:ct_res}, we get that
+  \begin{align}
+    c_T^i &= d + d^2 \exp[-2T](1 - (1 + \exp[-2T](d-1))^{-1})/(1 + \exp[-2T](d-1)) \\
+    &= d + d^2 (d-1) \exp[-4T]/(1 + \exp[-2T](d-1))^2 \eqsp . 
+  \end{align}
+\item We conclude for $e_T^i$ using \Cref{prop:explicit_lambda} with
+  $\lambda = d^i - 1$.
+\end{enumerate}
+This concludes the proof of \eqref{eq:gamma_approx}. Next, we compute the
+evolution of the mean. Using \eqref{eq:recur_recu}, we have 
+\begin{equation}
+  \label{eq:recur_recu}
+  \expeLigne{Y_{k+1}} = ((1 + \gamma) \Id - 2\gamma \Sigma_{T - k \gamma}^{-1}) \expeLigne{Y_k}  + 2 \gamma \expeLigne{\Sigma_{T - k \gamma}^{-1} M_{T-k \gamma}} \eqsp ,
+\end{equation}
+Note that for any $k \in \{0, \dots, N-1\}$, we have that
+$\Lambda_k = \rmP ((1+ \gamma) \Id - 2 \gamma \Sigma_{T-k\gamma}^{-1})
+\rmP^\top$ is diagonal. For any $k \in \{0, \dots, N\}$, define
+$\rmH_k = \rmP \expeLigne{Y_{k}} \rmP^\top$. Note that
+$\rmH_0 = 0$. For any $k \in \{0, \dots, N-1\}$ we have that
+\begin{equation}
+  \label{eq:recu_expectation}
+  \rmH_{k+1} = \Lambda_k \rmH_k + 2 \gamma \rmD_{T- k\gamma}^{-1} \rmV_{T- k \gamma} \eqsp ,
+\end{equation}
+where for any $t \in \ccint{0,T}$, $\rmD_t = \rmP \Sigma_t \rmP^\top$ and
+$\rmV_t = \rmP M_{t}$. Let $i \in \{1, \dots, d\}$. Using
+\eqref{eq:recu_expectation}, we have for any $k \in \{0, \dots, N-1\}$
+\begin{equation}
+  \label{eq:recu_one_dim_exp}
+  h_{k+1}^i = \lambda_k^i h_k^i + 2 \gamma v_{T-k \gamma}^i / d_{T-k\gamma}^i \eqsp . 
+\end{equation}
+In what follows, we define for any $t \in \ccint{0,T}$, $r(t)^i = v_{T-t}^i / d_{T-t}^i$
+and note that for any $t \in \ccint{0,T}$
+\begin{equation}
+  \label{eq:r_express}
+  r(t)^i = \exp[-(T-t)] / (1 + \exp[-2(T-t)](d^i - 1)) (\rmP \mu)^i \eqsp . 
+\end{equation}
+Using \eqref{eq:recu_one_dim_exp} and that $h_0^i = 0$, we have that for any $k \in \{0, \dots, N\}$
+\begin{equation}
+  \label{eq:unroll_recursion_exp}
+  \textstyle{
+    h_k^i =  2\gamma \sum_{\ell=0}^{k-1} r((k - \ell - 1)\gamma) \prod_{j=0}^{\ell-1} \lambda_{k-1-j}^i  =  2\gamma \sum_{\ell=0}^{k-1} r((k - \ell - 1)\gamma) \prod_{j=k-\ell}^{k-1} \lambda_{j}^i \eqsp . 
+  }
+\end{equation}
+Using \eqref{eq:val_Ik1k2}, we get that there exists $D^\gamma \geq 0$ such that
+$\gamma D^\gamma \leq D$ not dependent on $\gamma$ and
+\begin{align}
+  &h_N^i = \textstyle{2 \gamma \sum_{k=0}^{N-1}  r(T - (k + 1) \gamma) \exp[\int_{T - k \gamma}^{T} a^i(t) \rmd t ]} \\
+        & \quad  \textstyle{- \gamma^2 \sum_{k=0}^{N-1} r(T - (k + 1) \gamma) \exp[\int_{T - k \gamma}^{T} a^i(t) \rmd t ][\int_{T - k \gamma}^{T} a^i(t)^2 \rmd t + a^i(T) - a^i(T - k \gamma)] } \\
+        & \quad \textstyle{  + \sum_{k=0}^{N-1}  \gamma^4 D_{k, N}^\gamma} \\
+&= \textstyle{2 \gamma \sum_{k=0}^{N-1}  r(T - (k + 1) \gamma) \exp[\int_{T - k \gamma}^{T} a^i(t) \rmd t ]} \\
+        & \quad  \textstyle{- \gamma^2 \sum_{k=0}^{N-1} r(T - (k + 1) \gamma) \exp[\int_{T - k \gamma}^{T} a^i(t) \rmd t ][\int_{T - k \gamma}^{T} a^i(t)^2 \rmd t + a^i(T) - a^i(T - k \gamma)] } \\
+  & \quad \textstyle{  + \gamma^3  D^\gamma \eqsp . }   
+\end{align}
+Using \Cref{prop:maclaurin}, we get that there exists $E^\gamma \geq 0$ such that
+$\gamma E^\gamma \leq E$ not dependent on $\gamma$ and
+\begin{align}
+  &h_N^i = \textstyle{2 \gamma \sum_{k=0}^{N-1}  r(T - (k + 1) \gamma) \exp[\int_{T - k \gamma}^{T} a^i(t) \rmd t ]} \\
+  & \quad  \textstyle{- \gamma \int_0^T r(T - t) \exp[\int_{T - t}^{T} a^i(s) \rmd s ][\int_{T - t}^{T} a^i(t)^2 \rmd t + a^i(T) - a^i(T - t)] \rmd t } \\
+  & \quad \textstyle{  + \gamma^3  E^\gamma \eqsp . }     
+\end{align}
+In addition, for any $k \in \{0, \dots, N\}$, there exists $u_k \geq 0$ with
+$u_k \leq u$ and $u \geq 0$ not dependent on $k$ and
+\begin{equation}
+  r(T-(k+1)\gamma) = r(T-k\gamma) -r'(T-k \gamma)\gamma + u_k \gamma^2 \eqsp . 
+\end{equation}
+Using this result, we get that exists $F^\gamma \geq 0$ such that
+$\gamma F^\gamma \leq F$ not dependent on $\gamma$ and
+\begin{align}
+  &h_N^i = \textstyle{2 \gamma \sum_{k=0}^{N-1}  r(T - k \gamma) \exp[\int_{T - k \gamma}^{T} a^i(t) \rmd t ]} \\
+  & \quad \textstyle{-2\gamma^2 \sum_{k=0}^{N-1} r'(T-k \gamma) \exp[\int_{T - k \gamma}^{T} a^i(t) \rmd t ] } \\
+  & \quad  \textstyle{- \gamma \int_0^T r(T - t) \exp[\int_{T - t}^{T} a^i(s) \rmd s ][\int_{T - t}^{T} a^i(t)^2 \rmd t + a^i(T) - a^i(T - t)] \rmd t } \\
+  & \quad \textstyle{  + \gamma^3  F^\gamma \eqsp . }     
+\end{align}
+Using \Cref{prop:maclaurin}, we get that there exists $G^\gamma \geq 0$ such that
+$\gamma G^\gamma \leq G$ not dependent on $\gamma$ and
+\begin{align}
+  &h_N^i = \textstyle{2 \gamma \sum_{k=0}^{N-1}  r(T - k \gamma) \exp[\int_{T - k \gamma}^{T} a^i(t) \rmd t ]} \\
+  & \quad \textstyle{-2\gamma \int_0^T r'(T-t) \exp[\int_{T - t}^{T} a^i(t) \rmd s ] \rmd t } \\
+  & \quad  \textstyle{- \gamma \int_0^T r(T - t) \exp[\int_{T - t}^{T} a^i(s) \rmd s ][\int_{T - t}^{T} a^i(t)^2 \rmd t + a^i(T) - a^i(T - t)] \rmd t } \\
+  & \quad \textstyle{  + \gamma^3  G^\gamma \eqsp . }     
+\end{align}
+In addition, using \Cref{prop:maclaurin}, we get that there exists
+$H^\gamma \geq 0$ such that $\gamma H^\gamma \leq H$ not dependent on $\gamma$
+and
+\begin{align}
+  &h_N^i = \textstyle{2 \int_0^T  r(T - t) \exp[\int_{T - t}^{T} a^i(s) \rmd s ] \rmd t} \\
+  &\quad \textstyle{- \gamma \{r(0) \exp[\int_{0}^{T} a^i(t) \rmd t ]- r(T)\}}  \textstyle{-2\gamma \int_0^T r'(T-t) \exp[\int_{T - t}^{T} a^i(s) \rmd s ] \rmd t } \\
+  & \quad  \textstyle{- \gamma \int_0^T r(T - t) \exp[\int_{T - t}^{T} a^i(s) \rmd s ][\int_{T - t}^{T} a^i(t)^2 \rmd t + a^i(T) - a^i(T - t)] \rmd t } \\
+  & \quad \textstyle{  + \gamma^3  H^\gamma \eqsp . } \label{eq:inter_integ}    
+\end{align}
+In addition, we have by integration by part
+\begin{align}
+  &\textstyle{\int_0^T r'(T-t) \exp[\int_{T - t}^{T} a^i(s) \rmd s ] \rmd t} \\
+  & \qquad \qquad \textstyle{= - \{r(0) \exp[\int_0^T a^i(t) \rmd t] - r(T)\} - \int_0^T r(T-t) a^i(T-t) \exp[\int_{T - t}^{T} a^i(s) \rmd s ] \rmd t \eqsp .  }
+\end{align}
+Combining this result and \eqref{eq:inter_integ} we get that
+\begin{align}
+  &h_N^i = \textstyle{2 \int_0^T  r(T - t) \exp[\int_{T - t}^{T} a^i(s) \rmd s ] \rmd t} \\
+  &\quad \textstyle{+ \gamma \{r(0) \exp[\int_{0}^{T} a^i(t) \rmd t ]- r(T)\}}  \\
+  & \quad  \textstyle{- \gamma \int_0^T r(T - t) \exp[\int_{T - t}^{T} a^i(s) \rmd s ][\int_{T - t}^{T} a^i(t)^2 \rmd t + a^i(T) - 3 a^i(T - t)] \rmd t } \\
+  & \quad \textstyle{  + \gamma^3  H^\gamma \eqsp . }  \label{eq:almost_dooone}
+\end{align}
+In what follows, we assume that $d^i \neq 0$. The case where $d^i = 0$ is left
+to the reader.  Finally using \eqref{eq:r_express} and \Cref{lemma:integral_uno}
+we have that for any $t \in \ccint{0,T}$
+\begin{align}
+  \textstyle{
+  \exp[\int_{T - t}^{T} a^i(s) \rmd s ] r(T-t)^i} &= \exp[-2t] / (1 + \exp[-2t](d^i - 1))^2 (\rmP \mu)^i d^i \\
+  &= \textstyle{ \exp[2 \int_{T - t}^{T} a^i(s) \rmd s ] (\rmP \mu)^i / d^i \eqsp .
+    }
+\end{align}
+Therefore, combining this result and \eqref{eq:almost_dooone}, we get that 
+\begin{align}
+  &h_N^i   = (\rmP \mu)^i/d^i [\textstyle{2 \int_0^T \exp[2 \int_{T-t}^{T} a^i(s) \rmd s] \rmd t} \\
+  &\quad \textstyle{+ \gamma \{\exp[2 \int_{0}^{T} a^i(t) \rmd t] - 1\}}  \\
+  & \quad  \textstyle{- \gamma \int_0^T \exp[2\int_{T-t}^T a^i(s) \rmd s] [\int_{T - t}^{T} a^i(t)^2 \rmd t + a^i(T) - 3 a^i(T - t)] \rmd t }] \\
+  & \quad \textstyle{  + \gamma^3  H^\gamma \eqsp , }  \label{eq:almost_doooone}
+\end{align}
+which concludes the proof upon using \Cref{lemma:integral_exp_uno} and \Cref{prop:mean_mean}.
+\end{proof}
+
+\subsection{Technical lemmas}
+\label{sec:technical-lemmas}
+
+We are going to make use of the following lemma which is a direct consequence of
+the Euler-MacLaurin formula.
+
+\begin{proposition}
+  \label{prop:maclaurin}
+  Let $f \in \rmc^\infty(\ccint{0,T})$, and
+  $(u_k^\gamma)_{k \in \{0, \dots, N-1\}}$ with $N \in \nset$ and
+  $\gamma = T/N > 0$ such that for any $k \in \{0, \dots, N-1\}$,
+  $u_k^\gamma = f(k \gamma)$. Then, there exists $C \geq 0$ such that
+  \begin{equation}
+    \textstyle{
+      \int_0^T f(t) \rmd t - \gamma \sum_{k=0}^{N-1} u_k^\gamma -  (\gamma/2) \{f(T) - f(0)\} =   C \gamma^2 \eqsp .
+      }
+  \end{equation}
+\end{proposition}
+
+\begin{proof}
+  Apply the classical Euler-MacLaurin formula to $t \mapsto f(t \gamma)$.
+\end{proof}
+
+% \begin{proof}
+%   \textcolor{red}{Ref MacLaurin}
+% \end{proof}
+
+We will also use the following lemmas.
+
+\begin{lemma}
+  \label{lemma:integral_uno}
+  Let $\lambda \in \ooint{-1, +\infty}$ and $a: \ \ccint{0,T} \to \rset$ such
+  that for any $t \in \ccint{0,T}$,
+  \begin{equation}
+    a(t) = 1 - 2/(1 + \exp[-2(T-t)]\lambda) \eqsp . 
+  \end{equation}
+  Then, we have that for any $t \in \ccint{0,T}$,
+  \begin{equation}
+    \textstyle{
+      \int_{T-t}^T a(s) \rmd s = t + \log((1+\lambda)/(\exp[2t]+ \lambda)) \eqsp . 
+      }
+    \end{equation}
+    In particular, we have that for any $t \in \ccint{0,T}$
+    \begin{equation}
+          \textstyle{
+      \exp[2\int_{T-t}^T a(s) \rmd s] = \exp[-2t] (1+\lambda)^2 /(1+ \lambda\exp[-2t])^2 \eqsp . 
+      }
+    \end{equation}
+
+  \end{lemma}
+
+  \begin{proof}
+    Let $t \in \ccint{0,T}$. We have that
+    $\int_{T-t}^T a(s) \rmd s = \int_0^{t} a(T-s) \rmd s$.  Define $b$ such that
+    for any $t \in \ccint{0,T}$, $b(t) = a (T-t)$. In particular, we have that
+    for any $t \in \ccint{0,T}$
+    \begin{equation}
+      b(t) = 1 - 2 / (1 +\lambda \exp[-2t]) \eqsp . 
+    \end{equation}
+    Hence, we have
+    \begin{align}
+      \textstyle{\int_0^t b(s) \rmd s} &= \textstyle{t - 2 \int_0^t (1 + \lambda \exp[-2s])^{-1} \rmd s} \\
+                                       &= \textstyle{t - \int_0^t 2 \exp[2s] / (\exp[2s] + \lambda ) \rmd s} \\
+                                       &= \textstyle{t + \log((1 + \lambda)/(\exp[2t] + \lambda)) } \eqsp ,
+    \end{align}
+    which concludes the proof.
+  \end{proof}
+
+
+  \begin{lemma}
+  \label{lemma:integral_exp_uno}
+  Let $\lambda \in \ooint{-1, +\infty}$ and $a: \ \ccint{0,T} \to \rset$ such
+  that for any $t \in \ccint{0,T}$,
+  \begin{equation}
+    a(t) = 1 - 2/(1 + \exp[-2(T-t)]\lambda) \eqsp . 
+  \end{equation}
+  Then,  we have that for any $t \in \ccint{0,T}$,
+  \begin{align}
+      \textstyle{\int_0^t \exp[ 2\int_{T-s}^T a(u) \rmd u] \rmd s} &=     \textstyle{(1/2)(1+\lambda)^2 [(1 + \lambda \exp[-2t])^{-1} - 1/(1+\lambda)]/\lambda} \\
+      &= \textstyle{(1/2)(1+\lambda)  (1 -  \exp[-2t])/(1 + \lambda \exp[-2t])  } \eqsp . 
+    \end{align}
+  \end{lemma}
+
+  \begin{proof}
+    Let $t \in \ccint{0,T}$. Using \Cref{lemma:integral_uno} we have that for any $s \in \ccint{0,T}$
+    \begin{equation}
+      \textstyle{ \exp[2\int_{T-s}^T a(u) \rmd u] = (1+\lambda)^2 \exp[2s] / (\lambda + \exp[2s])^2 = (1+\lambda)^2 \exp[-2s]/(1 + \lambda \exp[-2s])^2 \eqsp .} 
+    \end{equation}
+    Assume that $\lambda \neq 0$. Then, we have that
+    \begin{align}
+      \textstyle{\int_0^t \exp[2\int_{T-s}^T a(u) \rmd u] \rmd s } &= \textstyle{(1/2)(1+\lambda)^2/\lambda\int_0^t 2 \lambda \exp[-2t]/(1 + \lambda \exp[-2t])^2 \rmd s} \\
+                                                                  &= \textstyle{(1/2)(1+\lambda)^2 [(1 + \lambda \exp[-2t])^{-1} - 1/(1+\lambda)]/\lambda  } \\
+      &= \textstyle{(1/2)(1+\lambda)  (1 -  \exp[-2t])/(1 + \lambda \exp[-2t])  } \eqsp .
+    \end{align}
+    We conclude the proof upon remarking that his result still holds in the case where $\lambda =0$.
+  \end{proof}
+
+  \begin{lemma}
+  \label{lemma:integral_exp_duo}
+  Let $\lambda \in \ooint{-1, +\infty}$ and $a: \ \ccint{0,T} \to \rset$ such
+  that for any $t \in \ccint{0,T}$,
+  \begin{equation}
+    a(t) = 1 - 2/(1 + \exp[-2(T-t)]\lambda) \eqsp . 
+  \end{equation}
+  Then, if $\lambda \neq 0$, we have that for any $t \in \ccint{0,T}$,
+  \begin{align}
+    &\textstyle{
+      \int_0^t \exp[ 2\int_{T-s}^T a(u) \rmd u]/(1 + \lambda \exp[-2s]) \rmd s} \\
+    & \qquad \qquad \qquad \textstyle{= (1/4)(1+\lambda)^2 [(1 + \lambda \exp[-2t])^{-2} - 1/(1+\lambda)^2]/\lambda 
+      } \\
+    & \qquad \qquad \qquad \textstyle{=   (1/4)(1 - \exp[-2t])(2 + \lambda (1 + \exp[-2t]))/(1 + \lambda \exp[-2t])^2 } \eqsp . 
+    \end{align}
+    If $\lambda =0$ we have
+    \begin{equation}
+      \label{eq:2}
+      \textstyle{
+        \int_0^t \exp[ 2\int_{T-s}^T a(u) \rmd u]/(1 + \lambda \exp[-2s]) \rmd s = (1/2)(1 - \exp[-2t]) \eqsp . 
+        }
+    \end{equation}
+
+  \end{lemma}
+
+  \begin{proof}
+    Let $t \in \ccint{0,T}$. Using \Cref{lemma:integral_uno} we have that for any $s \in \ccint{0,T}$
+    \begin{equation}
+      \textstyle{ \exp[\int_{T-s}^T a(u) \rmd u]/(1 + \lambda \exp[-2s]) = (1+\lambda)^2 \exp[-2s] / (1 + \lambda \exp[-2s])^3 \eqsp .} 
+    \end{equation}
+    Assume that $\lambda \neq 0$. Then, we have that
+    \begin{align}
+      &\textstyle{\int_0^t \exp[\int_{T-s}^T a(u) \rmd u]/(1 + \lambda \exp[-2s]) \rmd s } = \textstyle{(1/2)(1+\lambda)^2/\lambda\int_0^t 2 \lambda \exp[-2t]/(1 + \lambda \exp[-2t])^3 \rmd s} \\
+                                                                  & \qquad \qquad = \textstyle{(1/4)(1+\lambda)^2 [(1 + \lambda \exp[-2t])^{-2} - 1/(1+\lambda)^2]/\lambda  } \\
+      & \qquad \qquad = \textstyle{  (1/4)(1 - \exp[-2t])(2 + \lambda (1 + \exp[-2t]))/(1 + \lambda \exp[-2t])^2  } \eqsp .
+    \end{align}
+    We conclude the proof upon remarking that his result still holds in the case where $\lambda =0$.
+  \end{proof}
+
+  \begin{lemma}
+    \label{lemma:hola_pas_carre}
+  Let $\lambda \in \ooint{-1, +\infty}$ and $a: \ \ccint{0,T} \to \rset$ such
+  that for any $t \in \ccint{0,T}$,
+  \begin{equation}
+    a(t) = 1 - 2/(1 + \exp[-2(T-t)]\lambda) \eqsp . 
+  \end{equation}
+  Then, we have that for any $t \in \ccint{0,T}$
+  \begin{align}
+    &\textstyle{
+      \int_0^t \exp[ 2\int_{T-s}^T a(u) \rmd u] a(T-s) \rmd s} \\
+    & \qquad \qquad \textstyle{= -(1/2)(1- \exp[-2t])(1 - \lambda^2 \exp[-2t])/(1 + \lambda \exp[-2t])^2 \eqsp . 
+      }
+  \end{align}
+  % If $\lambda = 0$, we have
+  % \begin{equation}
+  %   \textstyle{ \int_0^t \exp[ 2\int_{T-s}^T a(u) \rmd u] a(T-s) \rmd s = -(1/2)(1 - \exp[-2t]) \eqsp .}
+  % \end{equation}  
+\end{lemma}
+
+\begin{proof}
+  Let $t \in \ccint{0,T}$. We have that
+  \begin{align}
+    &\textstyle{\int_0^t \exp[ 2\int_{T-s}^T a(u) \rmd u] a(T-s) \rmd s} \\
+    & \qquad \textstyle{= \int_0^t \exp[ 2\int_{T-s}^T a(u) \rmd u] \rmd s - 2 \int_0^t  \exp[ 2\int_{T-s}^T a(u) \rmd u] / (1 + \lambda \exp[-2s]) \rmd s } \eqsp . \label{eq:combi_i}
+  \end{align}
+  Using \Cref{lemma:integral_exp_uno}, we have that
+  \begin{equation}
+    \textstyle{
+      \int_0^t \exp[ 2\int_{T-s}^T a(u) \rmd u] \rmd t = (1/2)(1+\lambda)(1 - \exp[-2t])/(1 + \lambda \exp[-2t])\eqsp . 
+    }
+    \label{eq:uno_unO}
+  \end{equation}
+  In addition, using \Cref{lemma:integral_exp_duo}, we have 
+  \begin{align}
+    &\textstyle{
+      \int_0^t  \exp[ 2\int_{T-s}^T a(u) \rmd u] / (1 + \lambda \exp[-2s]) \rmd s} \\
+    & \qquad \qquad \textstyle{= (1/4)(1 - \exp[-2t])(2 + \lambda(1 + \exp[-2t]))/(1 + \lambda \exp[-2t])^2 \eqsp . 
+      } \label{eq:uno_duO}
+  \end{align}
+  Combining \eqref{eq:uno_unO} and \eqref{eq:uno_duO} in \eqref{eq:combi_i} we have that
+  \begin{align}
+    &\textstyle{\int_0^t \exp[ 2\int_{T-s}^T a(u) \rmd u] a(T-s) \rmd s} \\
+    & \qquad = (1/2)(1 - \exp[-2t])[(1+\lambda)(1 + \lambda \exp[-2t])]/(1 + \lambda \exp[-2t])^2 \\
+    & \qquad \qquad - (1/2)(1-\exp[-2t]) (2 + \lambda(1 + \exp[-2t]))/(1 + \lambda \exp[-2t])^2 \\
+    & \qquad = -(1/2)(1- \exp[-2t])(1 - \lambda^2 \exp[-2t])/(1 + \lambda \exp[-2t])^2 \eqsp ,
+  \end{align}
+  which concludes the proof.
+\end{proof}
+
+  \begin{lemma}
+    \label{lemma:integral_changement}
+    Let $\lambda \in \ooint{-1, +\infty}$ we have that for any $t \in \ccint{0,T}$
+    \begin{equation}
+      \textstyle{\int_0^t (1 + \lambda \exp[-2s])^{-1}} \rmd s = (1/2) \log((\lambda + \exp[2t])/(\lambda +1)) \eqsp . 
+    \end{equation}
+    In addition, we have for any $t \in \ccint{0,T}$
+        \begin{equation}
+      \textstyle{\int_0^t (1 + \lambda \exp[-2s])^{-2}} \rmd s = (1/2) \log((\lambda + \exp[2t])/(\lambda +1)) + (\lambda/2)[(\exp[2t] + \lambda)^{-1} - (\lambda + 1)^{-1}] \eqsp .
+    \end{equation}
+    Finally, we have that for any $t \in \ccint{0,T}$
+        \begin{align}
+      \textstyle{\int_0^t (1 + \lambda \exp[-2s])^{-3}} \rmd s &=  \textstyle{(1/2) \log((\lambda + \exp[2t])/(\lambda +1)) + \lambda [(\exp[2t] + \lambda)^{-1} - (\lambda + 1)^{-1}] } \\
+      & \qquad \qquad - (\lambda^2/4)[(\exp[2t] + \lambda)^{-2} - (\lambda + 1)^{-2}] \eqsp . 
+    \end{align}    
+  \end{lemma}
+
+  \begin{proof}
+    Let $k \in \{1, 2, 3\}$. Using the change of variable $u \mapsto \exp[2u]$
+    we have that
+    \begin{equation}
+      \textstyle{\int_0^{t}(1 + \lambda \exp[-2s])^{-k} \rmd s = (1/2) \int_1^{\exp[2t]} u^{k-1} / (u + \lambda) \rmd u \eqsp . }
+    \end{equation}
+    Therefore, we have that
+    \begin{equation}
+      \textstyle{\int_0^{t}(1 + \lambda \exp[-2s])^{-1} \rmd s = (1/2) \int_1^{\exp[2t]}  (u + \lambda)^{-1} \rmd u = (1/2)\log((\lambda + \exp[2t])/(\lambda +1)) \eqsp . }
+    \end{equation}
+    In addition, using that for any $u \in \ccint{0,T}$, $u = (u + \lambda) - \lambda$ we have that
+    \begin{align}
+      &\textstyle{\int_0^{t}(1 + \lambda \exp[-2s])^{-2} \rmd s} = \textstyle{(1/2) \int_1^{\exp[2t]}  u(u + \lambda)^{-2} \rmd u } \\
+      & \qquad = \textstyle{(1/2) \int_1^{\exp[2t]}  (u + \lambda)^{-1} \rmd u - (\lambda/2) \int_1^{\exp[2t]} (u + \lambda)^{-2} \rmd u } \\
+      & \qquad = \textstyle{(1/2)\log((\lambda + \exp[2t])/(\lambda +1)) + (\lambda/2)[(\exp[2t] + \lambda)^{-1} - (\lambda + 1)^{-1}] } \eqsp . 
+    \end{align}
+    Finally, using that for any $u \in \ccint{0,T}$, $u \in \ccint{0,T}$, $u^2 = (u + \lambda)^2 - 2\lambda(u+\lambda) + \lambda^2$ we have that
+    \begin{align}
+      &\textstyle{\int_0^{t}(1 + \lambda \exp[-2s])^{-3} \rmd s} = \textstyle{(1/2) \int_1^{\exp[2t]}  u^2(u + \lambda)^{-2} \rmd u } \\
+      & \qquad = \textstyle{(1/2) \int_1^{\exp[2t]}  (u + \lambda)^{-1} \rmd u - \lambda \int_1^{\exp[2t]} (u + \lambda)^{-2} \rmd u + (\lambda^2/2) \int_1^{\exp[2t]} (u + \lambda)^{-3} \rmd u} \\
+      & \qquad = \textstyle{(1/2) \log((\lambda + \exp[2t])/(\lambda +1)) + \lambda [(\exp[2t] + \lambda)^{-1} - (\lambda + 1)^{-1}] } \\
+      & \qquad \qquad - (\lambda^2/4)[(\exp[2t] + \lambda)^{-2} - (\lambda + 1)^{-2}] \eqsp ,
+    \end{align}
+    which concludes the proof.
+  \end{proof}
+  
+\begin{lemma}
+  \label{lemma:integral_duo}
+  Let $\lambda \in \ooint{-1, +\infty}$ and $a: \ \ccint{0,T} \to \rset$ such
+  that for any $t \in \ccint{0,T}$,
+  \begin{equation}
+    a(t) = 1 - 2/(1 + \exp[-2(T-t)]\lambda) \eqsp . 
+  \end{equation}
+  Then, we have that for any $t \in \ccint{0,T}$,  
+  \begin{equation}
+    \textstyle{\int_{T-t}^T a(s)^2 \rmd s} = t - 2\lambda(1 - \exp[-2t]) / [(1 + \lambda)(1 + \lambda \exp[-2t])] \eqsp . 
+  \end{equation}
+  \end{lemma}
+  
+  \begin{proof}
+    Let $t \in \ccint{0,T}$. Similarly to the proof of
+    \Cref{lemma:integral_uno}, we have that
+    $\int_{T-t}^T a(s) \rmd s = \int_0^{t} a(T-s) \rmd s$.  Define $b$ such that
+    for any $t \in \ccint{0,T}$, $b(t) = a (T-t)$. In particular, we have that
+    for any $t \in \ccint{0,T}$
+    \begin{equation}
+      b(t) = 1 - 2 / (1 +\lambda \exp[-2t]) \eqsp . 
+    \end{equation}
+    We have that
+    \begin{equation}
+      \textstyle{\int_{T-t}^Ta(s)^2 \rmd s = \int_0^t b(s)^2 \rmd s  = \int_0^t (1 - 4/(1 + \lambda \exp[-2s]) + 4/(1 + \lambda \exp[-2s])^2) \rmd s  \eqsp . }
+    \end{equation}
+    Combining this result and \Cref{lemma:integral_changement}, we have
+  \begin{align}
+    \textstyle{\int_{T-t}^T a(s)^2 \rmd s} &= t + 2\lambda [(\lambda + \exp[2t])^{-1} - (\lambda + 1)^{-1} ] \\
+    &= t - 2\lambda(1 - \exp[-2t]) / [(1 + \lambda)(1 + \lambda \exp[-2t])] \eqsp . 
+  \end{align}    
+    \end{proof}
+
+    \begin{lemma}
+      \label{lemma:hola_carre}
+  Let $\lambda \in \ooint{-1, +\infty}$ and $a: \ \ccint{0,T} \to \rset$ such
+  that for any $t \in \ccint{0,T}$,
+  \begin{equation}
+    a(t) = 1 - 2/(1 + \exp[-2(T-t)]\lambda) \eqsp . 
+  \end{equation}
+  Then, if $\lambda \neq 0$, we have that 
+  \begin{align}
+    &\textstyle{\int_0^T \exp[2\int_{T-t}^T a(s) \rmd s] (\int_{T-t}^T a(s)^2 \rmd s) \rmd t} = - (T/2)(1+\lambda)^2\exp[-2T]/(1+\lambda\exp[-2T]) \\
+                                                                                             & \qquad \qquad + (1+\lambda)^2/(4\lambda)\log((1+\lambda)/(1 + \lambda \exp[-2T])) \\
+    & \qquad \qquad -(\lambda/2)(1-\exp[-2T])^2/(1 + \lambda \exp[-2T])^2 \eqsp . \label{eq:big_eq_err}
+  \end{align}
+  If $\lambda = 0$, we have that
+  \begin{equation}
+    \textstyle{\int_0^T \exp[2\int_{T-t}^T a(s) \rmd s] (\int_{T-t}^T a(s)^2 \rmd s) \rmd t} = -(T/2) \exp[-2T] + (1/4)(1 - \exp[-2T]) \eqsp . \label{eq:small_eq}
+  \end{equation}
+\end{lemma}
+Note that taking $\lambda \to 0$ in \eqref{eq:big_eq_err} we recover
+\eqref{eq:small_eq}, using that for any $u > 0$,
+$\lim_{\lambda \to 0} \log(1 + \lambda u)/\lambda = u$.
+
+\begin{proof}
+  We first start with the case $\lambda \neq 0$.
+  Similarly to the proof of \Cref{lemma:integral_uno}, we have that
+  $\int_{T-t}^T a(s) \rmd s = \int_0^{t} a(T-s) \rmd s$.  Define $b$ such that
+  for any $t \in \ccint{0,T}$, $b(t) = a (T-t)$. We have that
+  \begin{equation}
+    \textstyle{
+      \int_0^T \exp[2\int_{T-t}^T a(s) \rmd s] (\int_{T-t}^T a(s)^2 \rmd s) \rmd t = \int_0^T \exp[2\int_{T-t}^T a(s) \rmd s] (\int_{0}^t b(s)^2 \rmd s) \rmd t \eqsp .
+      }
+    \end{equation}
+    Let $A: \ \ccint{0,T} \to \rset$ such that for any $t \in \ccint{0,T}$,
+    \begin{equation}
+      \textstyle{
+        A(t) = \int_0^t \exp[2\int_{T-s}^T a(u) \rmd u] \rmd s \eqsp .
+        }
+    \end{equation}
+    Note that $A(0) = 0$. Hence, by integration by parts, we have
+    \begin{equation}
+      \textstyle{ \int_0^T \exp[2\int_{T-t}^T a(s) \rmd s] (\int_{0}^t b(s)^2 \rmd s) \rmd t = A(T)\int_0^T b(t)^2 \rmd t - \int_0^T A(t) b(t)^2 \rmd t \eqsp . }
+    \end{equation}
+    In what follows, we compute $\int_0^T A(t) b(t)^2 \rmd t$. First, we recall that for any $t \in \ccint{0,T}$
+    \begin{equation}\label{eq:b_square}
+      b(t)^2 = (1 - 2/(1 + \lambda \exp[-2t]))^2 = 1 - 4/(1 + \lambda \exp[-2t]) + 4/(1 + \lambda \exp[-2t])^2 \eqsp . 
+    \end{equation}
+    In addition, using \Cref{lemma:integral_exp_uno}, we have that for any $t \in \ccint{0,T}$
+    \begin{equation}
+      \label{eq:A_exp}
+      A(t) = (1/2)\{ (1+\lambda)^2/(\lambda(1 + \lambda \exp[-2t])) - (1+\lambda)/\lambda\} \eqsp . 
+    \end{equation}
+    Using \eqref{eq:b_square} and \eqref{eq:A_exp} we have that for any $t \in \ccint{0,T}$
+    \begin{align}
+      2A(t)b(t)^2 &= -(1+\lambda)/\lambda + [4(1+\lambda)/\lambda +(1+\lambda)^2/\lambda] u_1(t) \\
+                 & \qquad - [4(1+\lambda)^2/\lambda + 4(1+\lambda)/\lambda] u_2(t) + [4(1+\lambda)^2/\lambda] u_3(t) \\
+      &= -(1+\lambda)/\lambda + [(1+\lambda)(5 + \lambda)/\lambda] u_1(t) \\
+      & \qquad - [4(1+\lambda)(2+\lambda)/\lambda] u_2(t) + [4(1+\lambda)^2/\lambda] u_3(t)\eqsp , \label{eq:dev_long}
+    \end{align}
+    where for any $k \in \{1,2, 3\}$ and $t \in \ccint{0,T}$ we have
+    \begin{equation}
+      u_k(t) = (1 + \lambda \exp[-2t])^{-k} \eqsp . 
+    \end{equation}
+    For any $k \in \{0, 1, 2\}$ denote $v_k : \ \ccint{0,T} \to \rset$ such that
+    for any $t \in \ccint{0,T}$ and $k \in \{1, 2\}$
+    \begin{equation}
+      v_0(t) = \log((\lambda + \exp[2t])/(\lambda+1)) \eqsp , \qquad v_k(t) = (\exp[2t] + \lambda)^{-k} - (1 + \lambda)^{-k}\eqsp .
+    \end{equation}
+    Combining \eqref{eq:dev_long} and \Cref{lemma:integral_changement}, we get
+    that for any $t \in \ccint{0,T}$
+    \begin{align}
+      &\textstyle{2 \int_0^t A(s) b(s)^2 \rmd s} = -[(1+\lambda)/\lambda]t \\
+                                              & \qquad + (1/2) \{ [(1+\lambda)(5 + \lambda)/\lambda] - [4(1+\lambda)(2+\lambda)/\lambda] + [4(1+\lambda)^2/\lambda] \} v_0(t) \\
+                                              & \qquad + \{ - (\lambda/2) [4(1+\lambda)(2+\lambda)/\lambda] + \lambda [4(1+\lambda)^2/\lambda]\} v_1(t) \\
+                                              & \qquad  - (\lambda^2/4)  [4(1+\lambda)^2/\lambda] v_2(t) \\
+      &= -[(1+\lambda)/\lambda]t + (1+\lambda)^2/(2\lambda) v_0(t) + 2(1+\lambda)\lambda v_1(t) - \lambda(1+\lambda)^2 v_2(t) \eqsp . 
+    \end{align}
+    In addition, we have that
+    \begin{align}
+      &-[(1+\lambda)/\lambda]t + (1+\lambda)^2/(2\lambda) v_0(t) = -[(1+\lambda)/\lambda]t + [(1+\lambda)^2/\lambda]t \\ 
+                                                                & \qquad \qquad \qquad + (1+\lambda)^2/(2\lambda)\log((1 + \lambda \exp[-2t])/(1 + \lambda)) \\
+      &\qquad \qquad =(1+\lambda)t +(1+\lambda)^2/(2\lambda)\log((1 + \lambda \exp[-2t])/(1 + \lambda)) \eqsp . 
+    \end{align}
+    Therefore, we get that
+    \begin{align}
+      \textstyle{2 \int_0^t A(s) b(s)^2 \rmd s} & = (1+\lambda)t +(1+\lambda)^2/(2\lambda)\log((1 + \lambda \exp[-2t])/(1 + \lambda))  \\
+      & \qquad + 2(1+\lambda)\lambda v_1(t) + \lambda(1+\lambda)^2 v_2(t) \eqsp . \label{eq:et_un}
+    \end{align}
+    In addition, we have that
+    \begin{equation}
+      (1+\lambda)\lambda v_1(t) = -\lambda(1 - \exp[-2T])/(1 + \lambda \exp[-2T]) \eqsp . \label{eq:et_deux}
+    \end{equation}
+    We also have that
+    \begin{align}
+      \lambda(1+\lambda)^2 v_2(t) &= \lambda (2 \lambda + 1 - 2 \lambda \exp[2T] - \exp[4T])/(\exp[2T] + \lambda)^2 \\
+                                  &= \lambda (1 - \exp[2T])(1 + 2\lambda  + \exp[2T]) /(\exp[2T] + \lambda)^2 \\
+                                    &= -\lambda (1 - \exp[-2T])(1 + (1 + 2\lambda) \exp[-2T]) /(1 + \lambda \exp[-2T])^2 \eqsp . \label{eq:et_trois}
+    \end{align}
+    Finally, using \Cref{lemma:integral_exp_uno} and \Cref{lemma:integral_duo} we have
+    \begin{align}
+      \textstyle{A(T) \int_0^T b(t)^2 \rmd t} &= \textstyle{(1/2)(1+\lambda)  (1 -  \exp[-2T])/(1 + \lambda \exp[-2T])}\\
+                                              & \qquad \times (T - 2 \lambda(1 - \exp[-2T]) / [(1 + \lambda)(1 + \lambda \exp[-2T])])   \\
+                                              & = (T/2)(1+\lambda)  (1 -  \exp[-2T])/(1 + \lambda \exp[-2T]) \\
+      & \qquad - \lambda (1 -  \exp[-2T])^2/(1 + \lambda \exp[-2T])^2 \eqsp .  \label{eq:et_quatre}
+    \end{align}
+    Combining \eqref{eq:et_un}, \eqref{eq:et_deux},
+    \eqref{eq:et_trois} and \eqref{eq:et_quatre} we get
+  \begin{align}
+    &\textstyle{\int_0^T \exp[2\int_{T-t}^T a(s) \rmd s] (\int_{T-t}^T a(s)^2 \rmd s) \rmd t} = (T/2)(1+\lambda)(1-\exp[-2T])/(1+\lambda \exp[-2T]) \\
+                                                                                             & \qquad \qquad - \lambda(1- \exp[-2T])^2/(1 + \lambda \exp[-2T])^2 \\
+                                                                                             & \qquad \qquad - (1 + \lambda)(T/2) + (1+\lambda)^2/(4\lambda)\log((1+\lambda)/(1 + \lambda \exp[-2T])) \\
+    & \qquad \qquad +\lambda(1 - \exp[-2T])/(1 + \lambda \exp[-2T]) \\
+    & \qquad \qquad -(\lambda/2)(1-\exp[-2T])((1+2\lambda)\exp[-2T] +1)/(1 + \lambda \exp[-2T])^2 \eqsp . \label{eq:big_eq_err_inter}
+  \end{align}
+  In addition, we have that
+  \begin{align}
+    &-(\lambda/2)(1-\exp[-2T])^2/(1 + \lambda \exp[-2T])^2 & \\
+    &\qquad \qquad \qquad = - \lambda(1- \exp[-2T])^2/(1 + \lambda \exp[-2T])^2 \\
+                                                                            & \qquad \qquad \qquad \qquad +\lambda(1 - \exp[-2T])/(1 + \lambda \exp[-2T]) \\
+    & \qquad \qquad \qquad \qquad -(\lambda/2)(1-\exp[-2T])((1+2\lambda)\exp[-2T] +1)/(1 + \lambda \exp[-2T])^2 \eqsp .
+  \end{align}
+  Combining this result and \eqref{eq:big_eq_err_inter}, we get
+  \begin{align}
+    &\textstyle{\int_0^T \exp[2\int_{T-t}^T a(s) \rmd s] (\int_{T-t}^T a(s)^2 \rmd s) \rmd t} = (T/2)(1+\lambda)(1-\exp[-2T])/(1+\lambda \exp[-2T]) \\
+                                                                                             & \qquad \qquad - (1 + \lambda)(T/2) + (1+\lambda)^2/(4\lambda)\log((1+\lambda)/(1 + \lambda \exp[-2T])) \\
+    & \qquad \qquad -(1/2)(1-\exp[-2T])^2/(1 + \lambda \exp[-2T])^2 \eqsp . \label{eq:big_eq_err_inter2}
+  \end{align}
+  Finally, we have
+  \begin{align}
+    &(T/2)(1+\lambda)(1-\exp[-2T])/(1+\lambda \exp[-2T]) - (T/2)(1+\lambda) \\
+    &\qquad = - (T/2)(1+\lambda)^2\exp[-2T]/(1+\lambda\exp[-2T]) \eqsp ,
+  \end{align}
+  which concludes the proof in the case $\lambda \neq 0$ upon combining this
+  result and \eqref{eq:big_eq_err_inter2}. In the case $\lambda = 0$, we have that
+  for any $t \in \ccint{0,T}$, $a(t) = -1$ and therefore by integration by part
+  we have
+    \begin{equation}
+      \textstyle{\int_0^T \exp[2\int_{T-t}^T a(s) \rmd s] (\int_{T-t}^T a(s)^2 \rmd s) \rmd t} = -(T/2) \exp[-2T] + (1/4)(1 - \exp[-2T]) \eqsp ,
+    \end{equation}
+    which concludes the proof.
+    % Note that taking the limit $\lambda \to 0$ we have
+    % \begin{equation}
+    %   \textstyle{
+    %     \lim_{\lambda \to 0} 2 \int_0^t A(s) b(s)^2 \rmd s = t + (1/2) (\exp[-2t] - 1) \eqsp .
+    %     }
+    %   \end{equation}
+    %   In addition, using \Cref{lemma:integral_exp_uno} and \Cref{lemma:integral_duo} we have 
+    %   \begin{equation}
+    %     \textstyle{
+    %       \lim_{\lambda \to 0} A(T) \int_0^T b(t)^2 \rmd t = (T/2) (1 - \exp[-2T])  \eqsp .
+    %       }
+    % \end{equation}
+    % Hence, we have
+    % \begin{equation}
+    %   \textstyle{ \lim_{\lambda \to 0} \{ A(T)\int_0^T b(t)^2 \rmd t  -\int_0^T A(t) b(t)^2 \rmd t\} = -(T/2) \exp[-2T] +(1/4)(1 - \exp[-2T]) \eqsp . }
+    % \end{equation}
+  \end{proof}
+
+    We are now ready to prove the following results.
+
+    \begin{proposition}
+      \label{prop:expression_fat_1}
+      Let $\lambda \in \ooint{-1, +\infty}$ and $a: \ \ccint{0,T} \to \rset$ such
+  that for any $t \in \ccint{0,T}$,
+  \begin{equation}
+    a(t) = 1 - 2/(1 + \exp[-2(T-t)]\lambda) \eqsp . 
+  \end{equation}
+  Then,  we have that for any $t \in \ccint{0,T}$,
+  \begin{align}
+    &\textstyle{\exp[2\int_0^T a(t) \rmd t]\{ \int_0^Ta(t)^2 \rmd t + a(T) - a(0) + 1\}} \\
+    & \qquad \qquad \qquad = (T+1)\exp[-2T](\lambda+1)^2/(1 +\lambda \exp[-2T])^2 \eqsp . 
+%    & \qquad \qquad \qquad \qquad -\lambda(1+\lambda)\exp[-2T](1-\exp[-2T])/(1 +\lambda \exp[-2T])^3 \eqsp . 
+  \end{align}
+  \end{proposition}
+
+  \begin{proof}
+    First, we have that
+    \begin{align}
+      a(T) - a(0) &= 1 - 2 /(1+\lambda) - 1 + 2/(1+\lambda \exp[-2T]) \\
+                  &= 2\lambda(1 - \exp[-2T])/[(1+\lambda)(1+\lambda \exp[-2T])] \eqsp .
+                    \label{eq:al_uno}
+    \end{align}
+    In addition, using \Cref{lemma:integral_duo} we have
+  \begin{equation}
+    \textstyle{\int_{0}^T a(s)^2 \rmd s} = T - 2 \lambda(1 - \exp[-2T]) / [(1 + \lambda)(1 + \lambda \exp[-2T])] \eqsp .
+    \label{eq:al_duo}
+  \end{equation}
+  Finally, using \Cref{lemma:integral_uno} we have that
+  \begin{equation}
+          \textstyle{
+      \exp[2\int_{0}^T a(s) \rmd s] = \exp[-2T] (\lambda+1)^2 /(1+ \lambda\exp[-2T])^2 \eqsp . 
+      }\label{eq:al_tertio}
+    \end{equation}
+    We conclude the proof upon combining \eqref{eq:al_uno}, \eqref{eq:al_duo}
+    and \eqref{eq:al_tertio}.
+  \end{proof}
+
+  Finally, we have the following proposition.
+
+  \begin{proposition}
+    \label{prop:expression_fat_2}
+      Let $\lambda \in \ooint{-1, +\infty}$ and $a: \ \ccint{0,T} \to \rset$ such
+  that for any $t \in \ccint{0,T}$,
+  \begin{equation}
+    a(t) = 1 - 2/(1 + \exp[-2(T-t)]\lambda) \eqsp . 
+  \end{equation}
+  Then, if $\lambda \neq 0$, we have that for any $t \in \ccint{0,T}$,
+  \begin{align}
+  &\textstyle{\int_0^T \exp[2\int_{T-t}^T a(s) \rmd s] [\int_{T-t}^T a(s)^2 \rmd s + a(T) - a(T-t)] \rmd t } \\
+  & \qquad = - (T/2)(1+\lambda)^2\exp[-2T]/(1+\lambda\exp[-2T]) \\
+   & \qquad \qquad + (1+\lambda)^2/(4\lambda)\log((1+\lambda)/(1 + \lambda \exp[-2T])) \\
+    & \qquad \qquad + (\lambda/2) \exp[-2T]/(1 + \lambda \exp[-2T])^2 \eqsp .
+  \end{align}
+  If $\lambda = 0$, we have that
+  \begin{align}
+    &\textstyle{\int_0^T \exp[2\int_{T-t}^T a(s) \rmd s] [\int_{T-t}^T a(s)^2 \rmd s + a(T) - a(T-t)] \rmd t } \\
+    & \qquad \qquad  \qquad \qquad = -(T/2)\exp[-2T] + (1/4)(1 - \exp[-2T]) \eqsp . 
+  \end{align}
+
+  \end{proposition}
+
+  \begin{proof}
+    We assume that $\lambda \neq 0$. The case where $\lambda = 0$ is left to the
+    reader.  First, using \Cref{lemma:hola_carre}, we have that
+    \begin{align}
+          &\textstyle{\int_0^T \exp[2\int_{T-t}^T a(s) \rmd s] (\int_{T-t}^T a(s)^2 \rmd s) \rmd t} = - (T/2)(1+\lambda)^2\exp[-2T]/(1+\lambda\exp[-2T]) \\
+                                                                                             & \qquad \qquad + (1+\lambda)^2/(4\lambda)\log((1+\lambda)/(1 + \lambda \exp[-2T])) \\
+          & \qquad \qquad +(3\lambda/2)\exp[-2T](1-\exp[-2T])(1+\lambda)/(1 + \lambda \exp[-2T])^2 \eqsp .
+              \label{eq:almost_uno}
+    \end{align}
+  Second, using \Cref{lemma:hola_pas_carre}, we have that
+  \begin{align}
+        &\textstyle{
+      \int_0^T \exp[ 2\int_{T-t}^T a(u) \rmd u] a(T-t) \rmd t} \\
+    & \qquad \qquad \textstyle{= -(1/2)(1- \exp[-2T])(1 - \lambda^2 \exp[-2T])/(1 + \lambda \exp[-2T])^2 \eqsp . \label{eq:almost_duo}
+      }
+  \end{align}
+  Third, using \Cref{lemma:integral_exp_uno} and that $a(T) = 1 -2/(1+\lambda)$, we have that
+  \begin{align}
+    \textstyle{
+    a(T) \int_0^T \exp[2\int_{T-t}^T a(s) \rmd s] \rmd t} &= a(T) \textstyle{(1/2)(1+\lambda)  (1 -  \exp[-2T])/(1 + \lambda \exp[-2T])  }\\
+                                                          &=(1/2)(1+\lambda)  (1 -  \exp[-2T])/(1 + \lambda \exp[-2T]) \\
+    & \qquad  -  (1 -  \exp[-2T])/(1 + \lambda \exp[-2T]) \eqsp .\label{eq:almost_tertio}
+  \end{align}
+  Combining \eqref{eq:almost_uno}, \eqref{eq:almost_duo} and \eqref{eq:almost_tertio} we get
+\begin{align}
+  &\textstyle{\int_0^T \exp[2\int_{T-t}^T a(s) \rmd s] [\int_{T-t}^T a(s)^2 \rmd s + a(T) - a(T-t)] \rmd t } \\
+  & \qquad = - (T/2)(1+\lambda)^2\exp[-2T]/(1+\lambda\exp[-2T]) \\
+   & \qquad \qquad + (1+\lambda)^2/(4\lambda)\log((1+\lambda)/(1 + \lambda \exp[-2T])) \\
+   & \qquad \qquad +(3\lambda/2)\exp[-2T](1-\exp[-2T])(1+\lambda)/(1 + \lambda \exp[-2T])^2 \\
+   & \qquad \qquad  +(1/2)(1- \exp[-2T])(1 - \lambda^2 \exp[-2T])/(1 + \lambda \exp[-2T])^2 \\ 
+      & \qquad \qquad + (1/2)(1+\lambda)  (1 -  \exp[-2T])/(1 + \lambda \exp[-2T]) \\
+     & \qquad \qquad  -  (1 -  \exp[-2T])/(1 + \lambda \exp[-2T])
+\end{align}
+In addition, we have
+\begin{align}
+  & (\lambda/2) (1 - \exp[-2T])/(1 + \lambda \exp[-2T])^2 \\
+  &\qquad = (1/2)(1- \exp[-2T])(1 - \lambda^2 \exp[-2T])/(1 + \lambda \exp[-2T])^2 \\ 
+      & \qquad \qquad + (1/2)(1+\lambda)  (1 -  \exp[-2T])/(1 + \lambda \exp[-2T]) \\
+     & \qquad \qquad  -  (1 -  \exp[-2T])/(1 + \lambda \exp[-2T]) \eqsp ,
+\end{align}
+Finally, we have
+\begin{align}
+  &(\lambda/2)\exp[-2T]/(1 + \lambda \exp[-2T])^2 \\
+    & \qquad \qquad = -(\lambda/2)(1-\exp[-2T])^2/(1 + \lambda \exp[-2T])^2 \\
+    & \qquad \qquad \qquad + (\lambda/2) (1 - \exp[-2T])/(1 + \lambda \exp[-2T])^2 \eqsp .
+\end{align}
+which concludes the proof.
+  % \begin{align}
+  %   &\textstyle{\int_0^T \exp[2\int_{T-t}^T a(s) \rmd s] [\int_{T-t}^T a(s)^2 \rmd s + a(T) - a(T-t)] \rmd t } \\
+  %     & \qquad = (T/2)(1+\lambda)(1-\exp[-2T])/(1+\lambda \exp[-2T]) \\
+  %                                                                                            & \qquad \qquad - (\lambda/2)(1- \exp[-2T])^2/(1 + \lambda \exp[-2T])^2 \\
+  %                                                                                            & \qquad \qquad - (1 + \lambda)(T/2) + (1+\lambda)^2/(4\lambda)\log((1+\lambda)/(1 + \lambda \exp[-2T])) \\
+  %   & \qquad \qquad +(\lambda/2)(1 - \exp[-2T])/(1 + \lambda \exp[-2T]) \\
+  %   & \qquad \qquad +(\lambda/3)(1-\exp[-2T])((1+2\lambda)\exp[-2T] +1)/(1 + \lambda \exp[-2T])^2 \\
+  %   & \qquad \qquad +(1/2)(1- \exp[-2T])(1 - \lambda^2 \exp[-2T])/(1 + \lambda \exp[-2T])^2 \\
+  %   & \qquad \qquad + (1/2)(1+\lambda)  (1 -  \exp[-2T])/(1 + \lambda \exp[-2T]) \\
+  %   & \qquad \qquad - (1+\lambda)  (1 -  \exp[-2T])/(1 + \lambda \exp[-2T])^2 \\
+  %     & \qquad = -(T/2)(1+\lambda)^2\exp[-2T]/(1+\lambda \exp[-2T]) \\
+  %                                                                                            & \qquad \qquad - (\lambda/2)(1- \exp[-2T])^2/(1 + \lambda \exp[-2T])^2 \\
+  %                                                                                            & \qquad \qquad  + (1+\lambda)^2/(4\lambda)\log((1+\lambda)/(1 + \lambda \exp[-2T])) \\
+  %   & \qquad \qquad +(\lambda/2)(1 - \exp[-2T])/(1 + \lambda \exp[-2T]) \\
+  %   & \qquad \qquad +(\lambda/3)(1-\exp[-2T])((1+2\lambda)\exp[-2T] +1)/(1 + \lambda \exp[-2T])^2 \\
+  %   & \qquad \qquad +(1/2)(1- \exp[-2T])(1 - \lambda^2 \exp[-2T])/(1 + \lambda \exp[-2T])^2 \\
+  %   & \qquad \qquad + (1/2)(1+\lambda)  (1 -  \exp[-2T])/(1 + \lambda \exp[-2T]) \\
+  %   & \qquad \qquad - (1+\lambda)  (1 -  \exp[-2T])/(1 + \lambda \exp[-2T])^2 \eqsp .
+  % \end{align}
+  % In addition, we have that
+  % \begin{equation}
+  %   (1 - \lambda^2 \exp[-2T]) + (1+\lambda)(1 + \lambda \exp[-2T]) - 2(1+\lambda) = - \lambda(1 - \exp[-2T) \eqsp . 
+  % \end{equation}
+  % Therefore, we get that
+  %   \begin{align}
+  %     &\textstyle{\int_0^T \exp[2\int_{T-t}^T a(s) \rmd s] [\int_{T-t}^T a(s)^2 \rmd s + a(T) - a(T-t)] \rmd t } \\
+  %     & \qquad = -(T/2)(1+\lambda)^2\exp[-2T]/(1+\lambda \exp[-2T]) \\
+  %                                                                                            & \qquad \qquad - \lambda (1- \exp[-2T])^2/(1 + \lambda \exp[-2T])^2 \\
+  %                                                                                            & \qquad \qquad  + (1+\lambda)^2/(4\lambda)\log((1+\lambda)/(1 + \lambda \exp[-2T])) \\
+  %   & \qquad \qquad +(\lambda/2)(1 - \exp[-2T])/(1 + \lambda \exp[-2T]) \\
+  %     & \qquad \qquad +(\lambda/3)(1-\exp[-2T])((1+2\lambda)\exp[-2T] +1)/(1 + \lambda \exp[-2T])^2 \eqsp ,
+  %   \end{align}
+  %   which concludes the proof
+  \end{proof}
+
+  Finally, we have the following result.
+
+  \begin{proposition}
+    \label{prop:explicit_lambda}
+        Let $\lambda \in \ooint{-1, +\infty}$ and $a: \ \ccint{0,T} \to \rset$ such
+  that for any $t \in \ccint{0,T}$,
+  \begin{equation}
+    a(t) = 1 - 2/(1 + \exp[-2(T-t)]\lambda) \eqsp . 
+  \end{equation}
+  Then, if $\lambda \neq 0$, we have that for any $t \in \ccint{0,T}$,
+%   \begin{align}
+%   &\textstyle{\int_0^T \exp[2\int_{T-t}^T a(s) \rmd s] [\int_{T-t}^T a(s)^2 \rmd s + a(T) - a(T-t)] \rmd t } \\
+%   & \qquad = - (T/2)(1+\lambda)^2\exp[-2T]/(1+\lambda\exp[-2T]) \\
+%    & \qquad \qquad + (1+\lambda)^2/(4\lambda)\log((1+\lambda)/(1 + \lambda \exp[-2T])) \\
+%   & \qquad \qquad +(3\lambda/2)\exp[-2T](1-\exp[-2T])(1+\lambda)/(1 + \lambda \exp[-2T])^2 \\
+%     & \qquad \qquad + (\lambda/2) (1 - \exp[-2T])/(1 + \lambda \exp[-2T])^2 \eqsp .
+%   \end{align}
+%   and
+%     \begin{align}
+%     &\textstyle{\exp[2\int_0^T a(t) \rmd t]\{ \int_0^Ta(t)^2 \rmd t + a(T) - a(0) + 1\}} \\
+%     & \qquad \qquad \qquad = (T+1)\exp[-2T](\lambda+1)^2/(1 +\lambda \exp[-2T])^2 \eqsp . 
+% %    & \qquad \qquad \qquad \qquad -\lambda(1+\lambda)\exp[-2T](1-\exp[-2T])/(1 +\lambda \exp[-2T])^3 \eqsp . 
+%   \end{align}
+  \begin{align}
+    &\textstyle{-\exp[2\int_0^T a(t) \rmd t]\{ \int_0^Ta(t)^2 \rmd t + a(T) - a(0)\} + 1 - \exp[2\int_0^T a(t) \rmd t]} \\
+    & \qquad \qquad - 2 \textstyle{\int_0^T \exp[2\int_{T-t}^T a(s) \rmd s] [\int_{T-t}^T a(s)^2 \rmd s + a(T) - a(T-t)] \rmd t } \\
+    & \qquad \qquad \qquad = 1 - \exp[-2T] (1 - \lambda T \exp[-2T]) (\lambda+1)^2/(1 +\lambda \exp[-2T])^2 \\
+   & \qquad \qquad \qquad \qquad - (1+\lambda)^2/(2\lambda)\log((1+\lambda)/(1 + \lambda \exp[-2T])) \\
+  & \qquad \qquad \qquad \qquad -\lambda\exp[-2T]/(1 + \lambda \exp[-2T])^2 \eqsp . 
+      \end{align}
+% OLD OLD OLD  
+%   \begin{align}
+%     &\textstyle{-\exp[2\int_0^T a(t) \rmd t]\{ \int_0^Ta(t)^2 \rmd t + a(T) - a(0)\} + 1 - \exp[2\int_0^T a(t) \rmd t]} \\
+%     & \qquad \qquad - 2 \textstyle{\int_0^T \exp[2\int_{T-t}^T a(s) \rmd s] [\int_{T-t}^T a(s)^2 \rmd s + a(T) - a(T-t)] \rmd t } \\
+%     & \qquad \qquad \qquad = 1 - (1 + T)\exp[-2T](\lambda+1)^2/(1 +\lambda \exp[-2T])^2 \\
+%      & \qquad \qquad \qquad\qquad + T(1+\lambda)^2\exp[-2T]/(1+\lambda \exp[-2T]) \\
+%     & \qquad \qquad \qquad \qquad - (1+\lambda)^2/(2\lambda)\log((1+\lambda)/(1 + \lambda \exp[-2T])) \\
+%     & \qquad \qquad \qquad \qquad +\lambda(1+\lambda)\exp[-2T](1-\exp[-2T])/(1 +\lambda \exp[-2T])^3 \\    
+%                                                                                              & \qquad \qquad \qquad \qquad+ 2 \lambda (1- \exp[-2T])^2/(1 + \lambda \exp[-2T])^2 \\    
+%     & \qquad \qquad \qquad \qquad -\lambda(1 - \exp[-2T])/(1 + \lambda \exp[-2T]) \\
+%       & \qquad \qquad \qquad \qquad -(2\lambda/3)(1-\exp[-2T])((1+2\lambda)\exp[-2T] +1)/(1 + \lambda \exp[-2T])^2 \eqsp .
+%   \end{align}
+%   In particular, we have that
+      In particular, we have that 
+  \begin{align}
+        & \textstyle{-\exp[2\int_0^T a(t) \rmd t]\{ \int_0^Ta(t)^2 \rmd t + a(T) - a(0)\} + 1 - \exp[2\int_0^T a(t) \rmd t]} \\
+        & \qquad \qquad - 2 \textstyle{\int_0^T \exp[2\int_{T-t}^T a(s) \rmd s] [\int_{T-t}^T a(s)^2 \rmd s + a(T) - a(T-t)] \rmd t } \\
+    & \qquad \qquad \qquad = 1 - (1/2) (1+\lambda)^2\log(1+\lambda)/\lambda + O(\exp[-2T]) \eqsp . 
+  \end{align}  
+  If $\lambda = 0$, we have that for any $t \in \ccint{0,T}$
+  \begin{align}
+        &\textstyle{-\exp[2\int_0^T a(t) \rmd t]\{ \int_0^Ta(t)^2 \rmd t + a(T) - a(0)\} + 1 - \exp[2\int_0^T a(t) \rmd t]} \\
+        & \qquad \qquad - 2 \textstyle{\int_0^T \exp[2\int_{T-t}^T a(s) \rmd s] [\int_{T-t}^T a(s)^2 \rmd s + a(T) - a(T-t)] \rmd t } \\
+    & \qquad \qquad \qquad = (1/2)(1 - \exp[-2T]) \eqsp . 
+  \end{align}
+
+  \end{proposition}
+
+  \begin{proof}
+    The proof is a direct consequence of \Cref{prop:expression_fat_1}, \Cref{prop:expression_fat_2} and the fact that
+    \begin{align}
+      &- \exp[-2T] (1 - \lambda T \exp[-2T]) (\lambda+1)^2/(1 +\lambda \exp[-2T])^2 \\      
+      &\qquad =-(T+1)\exp[-2T] (1+\lambda^2)/(1+\lambda\exp[-2T])^2 \\
+      &\qquad \qquad + T(1+\lambda)^2\exp[-2T]/(1+\lambda\exp[-2T]) \eqsp . 
+    \end{align}
+  \end{proof}
+
+  \begin{proposition}
+    \label{prop:mean_mean}
+        Let $\lambda \in \ooint{-1, +\infty}$ and $a: \ \ccint{0,T} \to \rset$ such
+  that for any $t \in \ccint{0,T}$,
+  \begin{equation}
+    a(t) = 1 - 2/(1 + \exp[-2(T-t)]\lambda) \eqsp . 
+  \end{equation}
+  Then, we have that
+  \begin{align}
+    &\textstyle{ \exp[2\int_0^T a(t) \rmd t] - 1 - \int_0^T\exp[2 \int_{T-t}^T a(s) \rmd s] \{ \int_{T-t}^T a(s)^2 \rmd s + a(T) - 3 a(T-t) \} \rmd t } \\
+    & \qquad = \exp[-2T] (1+\lambda)^2 /(1+ \lambda\exp[-2T])^2 - 1 \\
+    & \qquad \qquad -(1/2)(1+\lambda)  (1 -  \exp[-2T])/(1 + \lambda \exp[-2T])(1 -2/(1+\lambda)) \\
+    & \qquad \qquad -(3/2)(1- \exp[-2T])(1 - \lambda^2 \exp[-2T])/(1 + \lambda \exp[-2T])^2 \\
+& \qquad \qquad + (T/2)(1+\lambda)^2\exp[-2T]/(1+\lambda\exp[-2T]) \\
+    & \qquad \qquad - (1+\lambda)^2/(4\lambda)\log((1+\lambda)/(1 + \lambda \exp[-2T])) \\
+    & \qquad \qquad +(\lambda/2)(1-\exp[-2T])^2/(1 + \lambda \exp[-2T])^2 \eqsp .    
+  \end{align}
+  % OOOLLD OOOOLD
+  % \begin{align}
+  %   &\textstyle{ \exp[2\int_0^T a(t) \rmd t] - 1 - \int_0^T\exp[2 \int_{T-t}^T a(s) \rmd s] \{ \int_{T-t}^T a(s)^2 \rmd s + a(T) - 3 a(T-t) \} \rmd t } \\
+  %   & \qquad = \exp[-2T] (1+\lambda)^2 /(1+ \lambda\exp[-2T])^2 - 1 \\
+  %   & \qquad \qquad  - (T/2)(1+\lambda)(1-\exp[-2T])/(1+\lambda \exp[-2T]) \\    
+  %   & \qquad \qquad + (\lambda/2)(1- \exp[-2T])^2/(1 + \lambda \exp[-2T])^2 \\
+  %                                                                                            & \qquad \qquad + (1 + \lambda)(T/2) + (1+\lambda)^2/(4\lambda)\log((1+\lambda)/(1 + \lambda \exp[-2T])) \\
+  %   & \qquad \qquad -(\lambda/2)(1 - \exp[-2T])/(1 + \lambda \exp[-2T]) \\
+  %   & \qquad \qquad -(\lambda/3)(1-\exp[-2T])((1+2\lambda)\exp[-2T] +1)/(1 + \lambda \exp[-2T])^2 \\
+  %   & \qquad \qquad -(1/2)(1+\lambda)  (1 -  \exp[-2t])/(1 + \lambda \exp[-2t])a(T) \\
+  %   & \qquad \qquad -(3/2)(1- \exp[-2T])(1 - \lambda^2 \exp[-2T])/(1 + \lambda \exp[-2T])^2 \eqsp . 
+  % \end{align}
+  In particular, we have
+  \begin{align}
+    &\textstyle{ \exp[2\int_0^T a(t) \rmd t] - 1 - \int_0^T\exp[2 \int_{T-t}^T a(s) \rmd s] \{ \int_{T-t}^T a(s)^2 \rmd s + a(T) - 3 a(T-t) \} \rmd t } \\
+    & \qquad \qquad =  -2 - (1+\lambda)^2/(4\lambda)\log(1+\lambda) + O(\exp[-2T])  \eqsp . 
+  \end{align}
+\end{proposition}
+
+\begin{proof}
+  Using \Cref{lemma:integral_uno}, we have that
+  \begin{equation}
+    \textstyle{\exp[2\int_0^T a(t) \rmd t] = \exp[-2T] (1+\lambda)^2 /(1+ \lambda\exp[-2T])^2 \eqsp . } \label{eq:uno_exp}
+  \end{equation}
+  Using \Cref{lemma:integral_exp_uno}, we have
+  \begin{equation}
+    \textstyle{ \int_0^T \exp[2  \int_{T-t}^T a(s) \rmd s] \rmd t =  (1/2)(1+\lambda)  (1 -  \exp[-2t])/(1 + \lambda \exp[-2t]) }\eqsp .\label{eq:duo_exp}
+  \end{equation}
+  Using \Cref{lemma:hola_pas_carre}, we have 
+  \begin{align}
+    &\textstyle{
+      \int_0^T \exp[ 2\int_{T-t}^T a(s) \rmd s] a(T-t) \rmd t} \\
+    & \qquad \qquad \textstyle{= -(1/2)(1- \exp[-2T])(1 - \lambda^2 \exp[-2T])/(1 + \lambda \exp[-2T])^2 \eqsp . 
+      } \label{eq:tertio_exp}
+  \end{align}
+  Finally, using \Cref{lemma:hola_carre}, we have
+  \begin{align}
+    &\textstyle{\int_0^T \exp[2\int_{T-t}^T a(s) \rmd s] (\int_{T-t}^T a(s)^2 \rmd s) \rmd t} = - (T/2)(1+\lambda)^2\exp[-2T]/(1+\lambda\exp[-2T]) \\
+    & \qquad \qquad + (1+\lambda)^2/(4\lambda)\log((1+\lambda)/(1 + \lambda \exp[-2T])) \\
+    & \qquad \qquad -(\lambda/2)(1-\exp[-2T])^2/(1 + \lambda \exp[-2T])^2 \eqsp . \label{eq:quatro_exp}
+  \end{align}
+  We conclude upon combining \eqref{eq:uno_exp}, \eqref{eq:duo_exp},
+  \eqref{eq:tertio_exp}, \eqref{eq:quatro_exp} and that
+  $a(T) = 1- 2/(1+\lambda)$.
+\end{proof}
+
+
+\subsection{General setting}
+\label{sec:main-content}
+
+In this section, we prove \Cref{thm:control_diffusion}. In order to compare our
+results with \cite[Theorem 1]{debortoli2021diffusion}, we redefine a few
+processes.  Let $p \in \Pens(\rset^d)$ be the target distribution. Consider the
+Ornstein-Ulhenbeck forward dynamics $(x_t)_{t \in \ccint{0,T}}$ such that
+$\rmd x_t = -x_t \rmd t + \sqrt{2} \rmd w_t$ and $x_0$ has distribution
+$p_0$. We consider the backward chain $(X_k)_{k \in \{0, \dots, N\}}$ such that
+for any $k \in \{0, \dots, N-1\}$,
+\begin{equation}
+  \label{eq:reverse_discrete}
+  X_k = X_{k+1} + \gamma_{k+1} \{ X_{k+1} + 2 \nabla \log p_{t_{k+1}}(X_{k+1}) \} + \sqrt{2 \gamma_{k+1}} Z_{k+1}  ,
+\end{equation}
+with $\{Z_k\}_{k \in \nset}$ a family of i.i.d. Gaussian random variables with
+zero mean and identity covariance matrix, $t_{k} = \sum_{\ell=1}^k \gamma_{\ell}$,
+$\sum_{\ell=1}^{N} \gamma_{\ell} = T$ and $X_N$ has distribution
+$p_0 = \mathrm{N}(0, \Id)$ (independent from $\{Z_k\}_{k \in \nset}$). Notice
+that here we do not consider a score approximation in the recursion in order to
+clarify our approximation results. We recall the following result from
+\cite[Theorem 1]{debortoli2021diffusion}.
+
+\begin{theorem}
+  Assume that $p_0$ admits a bounded density (w.r.t. the Lebesgue measure)
+  $p_0 \in \rmc^3(\rset^d, \ooint{0, +\infty})$  and that there
+  exist $d_1, A_1, A_2, A_3 \geq 0$, $\beta_1, \beta_2, \beta_3 \in \nset$ and
+  $\mtt_1 > 0$ such that for any $x \in \rset^d$ and $i \in \{1, 2, 3\}$
+            \begin{equation}
+              \textstyle{
+              \normLigne{\nabla^i \log p_0(x)} \leq A_i(1 + \normLigne{x}^{\beta_i}) , \quad \langle \nabla \log p_0(x), x \rangle \leq -\mtt_1 \norm{x}^2 + d_1 \norm{x} ,}
+          \end{equation}
+          with $\beta_1 = 1$.  Then  there exist
+          $B, C, D \geq0$ such that for any $N \in \nset$
+          and $\{\gamma_k\}_{k=1}^N$ with $\gamma_k > 0$ for any
+          $k \in \{1, \dots, N\}$ we have 
+          \begin{equation}
+            \label{eq:ineq_thm_1}
+ \tvnormLigne{\mathcal{L}(X_0)-p_0} \leq   C \exp[D T] \sqrt{\gamma^\star} + B \exp[-T]  .          
+          \end{equation}
+          where $\gamma^\star = \sup_{k \in \{1, \dots, N\}} \gamma_k$ and
+          $\mathcal{L}(X_0)$ is the distribution of $X_0$ given in \eqref{eq:reverse_discrete}.
+        \end{theorem}
+
+In the rest of this note we improve the theorem in the following way:
+% \begin{enumerate}[wide, labelwidth=!, labelindent=0pt, label=(\alph*)]
+\begin{enumerate}[label=(\alph*)]
+\item We remove the exponential dependency w.r.t. the time in the first term of the RHS of \eqref{eq:ineq_thm_1}.
+\item We provide explicit bounds $B, C, D \geq 0$ depending on the parameters of $p_0$.
+\end{enumerate}
+
+\begin{lemma}
+  \label{lemma:control_growth}
+  Assume
+  \begin{equation}\label{params:thm2_app}
+    \textstyle{
+  \sup_{x,t} \normLigne{\nabla^2 \log p_t(x)} \leq
+  \Ktt}~~\mbox{and}~~
+  \textstyle{\normLigne{\partial_t \nabla \log p_t(x)} \leq \Mtt\, \rme^{-\alpha t}\,
+  \normLigne{x}}.
+  \end{equation}
+  Then there exists $D \geq 0$ such that for any
+  $x \in \rset^d$ and $t \in \ccint{0,T}$,
+  $\normLigne{\nabla \log p_t(x)} \leq D(1 + \normLigne{x})$ with
+  $D = \normLigne{\nabla \log p_0(0)} + \Ktt + C T$.
+\end{lemma}
+
+\begin{proof}
+  Let $x \in \rset^d$ and $t \in \ccint{0,T}$. Since
+  $(t,x) \mapsto \log p_t(x) \in \rmc^{2}(\ccint{0,T}\times \rset^d,
+  \ooint{0,+\infty})$, we have that
+  \begin{align}
+    \textstyle{
+      \nabla \log p_t(x)} &= \textstyle{\nabla \log p_0(x) + \int_0^t \partial_s \nabla \log p_s(x) \rmd s }\\
+    &=  \textstyle{\nabla \log p_0(0) + \int_0^1 \nabla^2 \log p_{0}(ux)(x) \rmd u +  \int_0^t \partial_s \nabla \log p_s(x) \rmd s .
+      }
+  \end{align}
+  Therefore,  we have that
+  \begin{align}
+    \normLigne{\nabla \log p_t(x)} &\leq \textstyle{\normLigne{\nabla \log p_0(0)} + \Ktt \normLigne{x} +  \int_0^t \normLigne{\partial_s \nabla \log p_s(x)} \rmd s } \\
+                                   &\leq \textstyle{\normLigne{\nabla \log p_0(0)} + \Ktt \normLigne{x} +  \Mtt \sum_{k=0}^{N-1}(t_k - t_{k-1}) \exp[-\alpha t_k] \normLigne{x} } \\
+                                   &\leq \textstyle{\normLigne{\nabla \log p_0(0)} + \Ktt \normLigne{x} +  \Mtt T \normLigne{x} } ,
+  \end{align}
+which concludes the proof.
+\end{proof}
+
+Note that in the previous proposition we can derive a tighter bound for $D$
+which does not depend on the limiting time $T > 0$. However, we do not use the
+bound $D>0$ in our quantitative result and therefore our simple bound suffices.
+
+We also have the following useful lemma.
+
+\begin{lemma}
+  \label{item:bound_p_infty}
+  Let $T \geq \log(2 \expeLigne{\normLigne{X_0}^2}) + \log(2)/2$ and assume that there exists $\eta > 0$ such that $aaa$ Then, we have
+  \begin{equation}    
+    \textstyle{
+      \int_{\rset^d} p_\infty(x_T)^2 / p_T(x_T) \rmd x_T \leq \exp[4] + E_T \eqsp ,
+      }
+    \end{equation}
+    with $E_T  \sim C\exp[-T]$ when $T \to +\infty$ and $C \geq 0$.
+\end{lemma}
+
+If $p_\infty$ satisfies the following $\Phi$-entropy inequality for any
+$f: \ \rset_d \to \ooint{0,\infty}$ measurable
+\begin{equation}
+  \label{eq:functional_inequality}
+  \textstyle{
+    \int_{\rset^d} \normLigne{\nabla f(x)}^2/f(x)^3 p_\infty(x) \rmd x \leq C [\int_{\rset^d} (1/f(x)) p_\infty(x) \rmd x - 1/(\int_{\rset^d} f(x) p_\infty(x) \rmd x)] \eqsp ,
+    }
+  \end{equation}
+  with $C \geq 0$. Then, we have as in  \cite[Proposition 7.6.1]{bakry:gentil:ledoux:2014}
+  \begin{equation}
+    \textstyle{
+      \chi^2(p_\infty||p_t) = \int_{\rset^d} p_\infty^2(x)/p_T(x) \rmd x - 1 \leq \rme^{-Ct} \eqsp ,
+      }
+  \end{equation}
+  which immediately concludes the proof of \Cref{item:bound_p_infty}. However,
+  to the best of our knowledge, establishing \eqref{eq:functional_inequality}
+  remains an open problem. Note that controlling $\chi^2(p_t||p_\infty)$ is much
+  easier as the exponential decay of this divergence is linked with the
+  Poincar\'e inequality which is satisfied in our Gaussian setting. In what
+  follows, we consider another approach which relies on the structure of the
+  Ornstein-Ulhenbeck transition kernel and provide non-tight upper bounds.
+  
+\begin{proof}
+  Let $T \geq 0$, $\vareps >0$ and $x_T \in \rset^d$
+  \begin{equation}
+    \normLigne{x_T - \rme^{-T} x_0}^2 \leq (1 + \vareps) \normLigne{x_T}^2 + (1+1/\vareps) \rme^{-2T} \normLigne{x_0}^2 \eqsp . 
+  \end{equation}
+  Let $\vareps >0$ and $x_T \in \rset^d$, we have
+  \begin{align}
+    &\textstyle{
+      p_T(x_T)^{-2} \leq \exp[(1+\vareps)/\sigma_T^2\normLigne{x_T}^2 ] }\\
+    & \qquad \qquad \qquad \qquad \times \textstyle{(\int_{\rset^d} p(x_0) \exp[-\rme^{-2T}(1+1/\vareps)/(2\sigma_T^2)\normLigne{x_0}^2]\rmd x_0)^{-2} (2\uppi\sigma_T^2)^d  \eqsp .
+      }
+  \end{align}
+  For any $x_T \in \rset^d$, we have
+  \begin{align}
+    p_\infty(x_T)^2/p_T(x_T) &\leq \exp[\{-1+(1+\vareps)/(2\sigma_T^2)\}\normLigne{x_T}^2 ](2\uppi/\sigma_T^2)^{-d/2} \\ & \qquad \qquad \textstyle{ (\int_{\rset^d} p(x_0) \exp[-\rme^{-2T}(1+1/\vareps)/(2\sigma_T^2)\normLigne{x_0}^2] \rmd x_0)^{-1}  \eqsp . }
+  \end{align}
+  In what follows, we set $\vareps = \rme^{-T}$. We have that
+  \begin{equation}
+    -1 + (1+\vareps)/(2\sigma_T^2) = (2\sigma_T^2)^{-1}(-2\sigma_T^2 + 1 + \vareps) = -(1 - 2\rme^{-T} + \vareps)/(2\sigma_T^2) = -(1 - \rme^{-T})/(2\sigma_T^2) \eqsp . 
+  \end{equation}
+  Therefore, we get that
+  \begin{equation}
+    \label{eq:UNO_de}
+    \textstyle{
+      \int_{\rset^d} \exp[\{-1+(1+\vareps)/(2\sigma_T^2)\}\normLigne{x_T}^2 ](2\uppi/\sigma_T^2)^{-d/2} \rmd x_T = (1 - \rme^{-T})^{-d/2} \eqsp .
+      }
+    \end{equation}
+    In addition, we have that for any $R \geq 0$ using that $\sigma_T^2 \geq 1/2$ since $T \geq \log(2)/2$
+    \begin{align}
+      &\textstyle{
+        \int_{\rset^d} p(x_0) \exp[-\rme^{-2T}(1+1/\vareps)/\sigma_T^2\normLigne{x_0}^2] \rmd x_0 } \\
+      & \qquad \qquad  \geq \textstyle{\probaLigne{X_0 \in \cball{0}{R}} \exp[-\rme^{-2T}(1+1/\vareps)/\sigma_T^2R^2]} \\ 
+        & \qquad \qquad  \geq \textstyle{\probaLigne{X_0 \in \cball{0}{R}} \exp[-4\rme^{-T}R^2]
+        } \label{eq:inter_DUO}
+    \end{align}
+    Now let $R^2 = \rme^T$. We obtain
+    \begin{equation}
+      \textstyle{
+        \int_{\rset^d} p(x_0) \exp[-\rme^{-2T}(1+1/\vareps)/\sigma_T^2\normLigne{x_0}^2] \rmd x_0 } \geq \probaLigne{X_0 \in \cball{0}{\rme^{T/2}}} \exp[-4] \eqsp . 
+    \end{equation}
+    In addition, using Markov inequality, we have
+    \begin{equation}
+      \probaLigne{X_0 \in \cball{0}{\rme^{T/2}}} = 1 - \probaLigne{\normLigne{X_0}^2 \geq \rme^T} \geq 1 - \expeLigne{\normLigne{X_0}^2} \rme^{-T} \geq 0 \eqsp . 
+    \end{equation}
+    Therefore, combining this result and \eqref{eq:inter_DUO}, we have
+    \begin{equation}
+      \label{eq:DUO_de}
+      \textstyle{
+        \int_{\rset^d} p(x_0) \exp[-\rme^{-2T}(1+1/\vareps)/\sigma_T^2\normLigne{x_0}^2] \rmd x_0 } \geq \exp[-4] (1 - \expeLigne{\normLigne{X_0}^2} \rme^{-T}) > 0 \eqsp . 
+    \end{equation}
+    We conclude upon combining \eqref{eq:UNO_de} and \eqref{eq:DUO_de}.
+\end{proof}
+
+
+We are now ready to state the following lemma.
+
+\begin{lemma}
+  \label{lemma:strong_solution_backward}
+  There exists a unique strong solution to the SDE
+  $\rmd y_t = \{ y_t + 2 \nabla \log p_{T-t}(y_t)\} \rmd t + \sqrt{2}
+  \rmd w_t$ with initial condition $\mathcal{L}(y_0) = p_\infty$. In
+  addition, we have that
+  $\expeLigne{\sup_{t \in \ccint{0,T}}\normLigne{y_t}^\alpha}<+\infty$ for any 
+  $\alpha >0$.
+\end{lemma}
+
+\begin{proof}
+  Let $b: \ \ccint{0,T} \times \rset^d$ given for any $t \in \ccint{0,T}$ and
+  $x \in \rset^d$ by $b(t,x) = x + 2 \nabla \log p_t(x)$. We have that
+  $b \in \rmc^1(\ccint{0,T} \times \rset^d, \rset^d)$ and in particular is
+  locally Lipschitz. In addition, using \Cref{lemma:control_growth} we have that
+  for any $t \in \ccint{0,T}$ and $x \in \rset^d$,
+  $\normLigne{b(t,x)} \leq (1 + D)\normLigne{x}$. Hence using \cite[Theorem 2.3,
+  Theorem 3.1]{ikeda1989sto} and \cite[Theorem 2.1]{meyn1993criteria_iii} (with
+  $V(x) = (1/2)\normLigne{x}^2$) there exists a unique strong solution to the
+  SDE
+  $\rmd y_t = \{ y_t + 2 \nabla \log p_{T-t}(y_t)\} \rmd t + \sqrt{2}
+  \rmd w_t$ with initial condition $\mathcal{L}(y_0) = p_\infty$. Let
+  $\alpha > 1$, then we have for any $t \in \ccint{0,T}$
+  \begin{align}
+    \textstyle{\sup_{s \in \ccint{0,t}} \normLigne{y_t}^\alpha} &\leq \textstyle{3^{\alpha-1} [\normLigne{y_0}^\alpha + t^{\alpha-1}(1+D)^\alpha\int_0^t \sup_{u \in \ccint{0,s}} \normLigne{y_u}^\alpha \rmd u + 2^{\alpha/2} \sup_{s \in \ccint{0,t}} \normLigne{w_u}^\alpha]} . 
+  \end{align}
+  Using that $\expeLigne{\sup_{s \in \ccint{0,T}} \normLigne{w_u}^\alpha}$
+  and Gr\"onwall's lemma, we get that
+  $\expeLigne{\textstyle{\sup_{t \in \ccint{0,T}}
+      \normLigne{y_t}^\alpha}}<+\infty$ for any $\alpha >1$. The result is
+  extended to any $\alpha >0$ since for any $\alpha \in \ocint{0,1}$ we have
+  that
+  \begin{equation}
+    \textstyle{\expeLigne{\textstyle{\sup_{t \in \ccint{0,T}}
+      \normLigne{y_t}^\alpha}} \leq \expeLigne{\textstyle{\sup_{t \in \ccint{0,T}}
+      \normLigne{y_t}}}^\alpha <+\infty} .
+  \end{equation}
+
+\end{proof}
+
+We are now ready to prove \Cref{thm:control_diffusion}.
+
+\begin{proof}
+  The beginning of the proof is similar to the one of \cite[Theorem
+  1]{debortoli2021diffusion}.  For any $k \in \{1, \dots, N\}$, denote $\Rker_k$
+  the Markov kernel such that for any $x \in \rset^d$, $\msa \in \mcb{\rset^d}$
+  and $k \in \{0, \dots, N-1\}$ we have
+    \begin{equation}
+      \textstyle{\Rker_{k+1}(x, \msa) = (4 \uppi \gamma_{k+1})^{-d/2} \int_{\msa} \exp[-\norm{\tilde{x} - \Tnplusun(x)}^2/(4 \gamma_{k+1})] \rmd \tilde{x}  , }
+    \end{equation}
+    where for any $x \in \rset^d$,
+    $\Tnplusun(x) = x + \gamma_{k+1} \defEnsLigne{x + 2 \nabla \log
+      p_{t_{k+1}}(x)}$. Define for any $k_0, k_1 \in \{1, \dots, N\}$ with
+    $k_1 \geq k_0$ $\Qker_{k_0, k_1} = \prod_{\ell = k_0}^{k_1}
+    \Rker_{k_1 + k_0 - \ell}$. Finally, for ease of notation, we also define for any
+    $k \in \{1, \dots, N\}$, $\Qker_k = \Qker_{k+1,N}$. Note that for any
+    $k \in \{1, \dots, N\}$, $X_k$ has distribution $p_{\infty} \Qker_k$,
+    where $p_{\infty}\in \Pens(\rset^d)$ with density w.r.t. the Lebesgue
+    measure $\pref$. Let $\Pbb \in \Pens(\contspace)$ be the probability measure
+    associated with the diffusion
+    \begin{equation}
+      \rmd x_t = - x_t \rmd t + \sqrt{2} \rmd w_t  , \quad x_0 \sim p_0  , 
+    \end{equation}
+    First, we have for any $\msa \in \mcb{\rset^d}$
+    \begin{equation}
+      p_0 \Pbb_{T|0} (\Pbb^R)_{T|0} (\msa) = \Pbb_T (\Pbb^R)_{T|0} (\msa) = (\Pbb^R)_0 (\Pbb^R)_{T|0} (\msa)  = (\Pbb^R)_T(\msa) = p_0(\msa)  . 
+    \end{equation}
+    Hence $p_0 = p_0 \Pbb_{T|0} (\Pbb^R)_{T|0}$.  Using this result % and
+    % \Cref{lemma:data_processing_tv},
+    we have
+    \begin{align}
+      \tvnormLigne{p_0 - p_{\infty} \Qker_0} &= \tvnormLigne{p_0 \Pbb_{T|0} (\Pbb^R)_{T|0} - p_{\infty} \Qker_0} \\
+                                         &\leq \tvnormLigne{p_0 \Pbb_{T|0} (\Pbb^R)_{T|0} - p_{\infty} (\Pbb^R)_{T|0}} +\tvnormLigne{p_{\infty} (\Pbb^R)_{T|0} - p_{\infty} \Qker_0} \\
+          &\leq \tvnormLigne{p_0 \Pbb_{T|0}- p_{\infty}} +\tvnormLigne{p_{\infty} (\Pbb^R)_{T|0} - p_{\infty} \Qker_0}  .                                  
+    \end{align}
+    Note that $\mathcal{L}(X_0)= p_{\infty} \Qker_0$ and therefore
+    \begin{equation}
+      \tvnormLigne{\mathcal{L}(X_0) - p_0} \leq \tvnormLigne{p_0 \Pbb_{T|0}- p_{\infty}} +\tvnormLigne{p_{\infty} (\Pbb^R)_{T|0} - p_{\infty} \Qker_0}  .
+    \end{equation}
+    We now bound each one of these terms.
+    \begin{enumerate}[wide, labelwidth=!, labelindent=0pt, label=(\alph*)]
+    \item First, we bound $\tvnormLigne{p_0 \Pbb_{T|0}- p_{\infty}}$. Using the 
+      Pinsker inequality \cite[Equation 5.2.2]{bakry:gentil:ledoux:2014} we have
+      that
+      \begin{equation}
+        \label{eq:pinsker}
+        \tvnormLigne{p_0 \Pbb_{T|0}- p_{\infty}} \leq \sqrt{2} \KLLignesqrt{p_0 \Pbb_{T|0}}{p_{\infty}}  . 
+      \end{equation}
+      In addition, $p_\infty$ satisfies the log-Sobolev inequality with
+      constant $C=1$, \cite{gross1975logarithmic}. Namely, for any
+      $f \in \rmc^1(\rset^d, \ooint{0,+\infty})$ such that
+      $f \in \rmL^1(p_\infty)$ and
+      $\int_{\rset^d} \normLigne{\nabla \log f(x)}^2 f(x) \rmd p_\infty(x) <
+      +\infty$ we have
+      \begin{align}
+        &\textstyle{
+          \int_{\rset^d} f(x) \log f(x) \rmd p_{\infty}(x) - (\int_{\rset^d} f(x) \rmd p_{\infty}(x)) (\log \int_{\rset^d} f(x) \rmd p_{\infty}(x)) } \\
+        & \qquad \qquad \qquad \qquad  \textstyle{\leq (C/2) \int_{\rset^d}  \normLigne{\nabla \log f(x)}^2 f(x) \rmd p_\infty(x)  ,          
+          }
+      \end{align}
+      with $C=1$. Therefore, using \cite[Theorem
+      5.2.1]{bakry:gentil:ledoux:2014} we have that for any
+      $f \in \rmL^1(p_\infty)$ with
+      $\int_{\rset^d} \abs{f(x)} \abs{\log f(x)} \rmd p_\infty(x) < +\infty$      
+      \begin{equation}
+        \label{eq:entropy_decay}
+        \Ent{p_\infty}{\Pbb_{T|0}[f]} \leq \exp[-2T]  \Ent{p_\infty}{f}  ,
+      \end{equation}
+      where for any $g \in \rmL^1(p_\infty)$ with 
+      $\int_{\rset^d} \abs{g(x)} \abs{\log g(x)} \rmd p_\infty(x) < +\infty$ we define
+      \begin{equation}
+        \textstyle{
+          \Ent{p_\infty}{g} = \int_{\rset^d} g(x) \log g(x) \rmd p_{\infty}(x) - (\int_{\rset^d} g(x) \rmd p_{\infty}(x)) (\log \int_{\rset^d} g(x) \rmd p_{\infty}(x)) .
+          }
+        \end{equation}
+        Note that
+        $(\rmd p_T / \rmd p_\infty) = \Pbb_{T|0} [\rmd p_0 / \rmd
+        p_\infty]$ and that for any $\mu \in \Pens(\rset^d)$ with
+        $\KL{\mu}{p_\infty} < +\infty$ we have
+        $\Ent{p_\infty}{\rmd \mu / \rmd p_\infty} =
+        \KLLigne{\mu}{p_\infty}$. Using these results, \eqref{eq:pinsker} and 
+        \eqref{eq:entropy_decay} we get that
+        \begin{equation}
+          \label{eq:first_bound_kl}
+        \tvnormLigne{p_0 \Pbb_{T|0}- p_{\infty}} \leq \sqrt{2} \exp[-T] \KLLignesqrt{p_0}{p_\infty}  . 
+      \end{equation}
+      In addition, we have that
+      \begin{equation}
+        \textstyle{
+          \KLLigne{p_0}{p_\infty} = (d/2) \log(2 \uppi) + \int_{\rset^d} \normLigne{x}^2 \rmd p_0(x) - \mathrm{H}(p_0)  ,
+          }
+        \end{equation}
+        where $\mathrm{H}(p_0) = - \int_{\rset^d} \log(p_0(x)) p_0(x) \rmd x$.
+        Combining this result and \eqref{eq:first_bound_kl} we get that
+        \begin{equation}
+          \label{eq:first_bound_kl_clop}
+          \textstyle{
+            \tvnormLigne{p_0 \Pbb_{T|0}- p_{\infty}} \leq \sqrt{2} \exp[-T] ((d/2) \log(2 \uppi) + \int_{\rset^d} \normLigne{x}^2 \rmd p_0(x) - \mathrm{H}(p_0))^{1/2}   ,
+            }
+          \end{equation}
+          which concludes the first part of the proof.
+        \item First, let $\Qbb \in \Pens(\mathcal{C})$ such that
+          $\Qbb = p_\infty \Pbb^R_{|0}$, where $\Pbb^R_{|0}$ is the
+          disintegration of $\Pbb^R$ w.r.t. $\phi: \ \contspace \to \rset^d$
+          given for any $\omega \in \contspace$ by $\phi(\omega) = \omega_T$,
+          see \cite{leonard2014some} for instance. Note that for any
+          $f \in \rmc(\contspace)$ with $f$ bounded we have
+      \begin{align}
+        \textstyle{
+        \Qbb[f] = \int_{\rset^d} \int_{\contspace} f(\omega) \Pbb^{R}_{|0}(\omega_0, \rmd \omega) \rmd p_\infty(\omega_0)} &= \textstyle{\int_{\rset^d} \int_{\contspace} f(\omega) \Pbb^{R}_{|0}(\omega_0, \rmd \omega) (\rmd p_\infty / \rmd p_T)(\omega_0)\rmd p_T(\omega_0) } \\
+&= \textstyle{\int_\contspace f(\omega) (\rmd p_\infty / \rmd p_T)(\omega_0) \rmd \Pbb^R(\omega)}  . 
+      \end{align}
+      Therefore, we get that for any $\omega \in \contspace$,
+      $(\rmd \Qbb / \rmd \Pbb^R)(\omega) = (\rmd p_\infty / \rmd
+      p_T)(\omega_0)$.  Let
+      $\Rbb = p_\infty \Pbb_{|0}$. Note that for any $t \in \ccint{0,T}$,
+      $\Rbb_t = p_\infty$ and that $\Rbb$ is associated with the process
+      $\rmd x_t = -x_t \rmd t + \sqrt{2} \rmd w_t$ with
+      $\mathcal{L}(x_0) = p_\infty$. In particular, $\Rbb$ satisfies
+      \cite[Hypothesis 1.8]{cattiaux2021time}. Using \cite[Theorem
+      2.4]{leonard2014some} we have that
+      \begin{equation}
+        \textstyle{\KLLigne{\Pbb}{\Rbb} = \KLLigne{p_0}{p_\infty} + \int_{\rset^d} \KLLigne{\Pbb_{|0}(x_0)}{\Pbb_{|0}(x_0)} \rmd p_0(x_0) = \KLLigne{p_0}{p_\infty} < +\infty.}
+      \end{equation}
+      Therefore, we can apply \cite[Theorem 4.9]{cattiaux2021time}. Let
+      $u \in \rmc^\infty_c(\rset^d, \rset)$, we have that 
+      $(\bfM_t^u(y))_{t \in \ccint{0,T}}$ is a local martingale, where we
+      have for any $t \in \ccint{0,T}$
+      \begin{equation}
+        \textstyle{\bfM_t^u(y) = u(y_t) - u(y_0) - \int_0^t \{ \langle \nabla u(y_s), y_s + 2\nabla \log p_{T-s}(y_s) \rangle + \Delta u(y_s) \}\rmd s ,}
+      \end{equation}
+      where $\mathcal{L}(y) = \Pbb^R$.  Since $u$ is compactly supported we
+      have that
+      $\sup_{\omega \in \contspace} \sup_{t \in \ccint{0,T}}
+      \absLigne{\bfM_t^u(\omega)} < +\infty$ and therefore
+      $(\bfM_t^u(y))_{t \in \ccint{0,T}}$ is a martingale. We now show that
+      $(\bfM_t^u(y))_{t \in \ccint{0,T}}$ is a martingale, with
+      $\mathcal{L}(y) = \Qbb$. Since
+      $\sup_{\omega \in \contspace} \sup_{t \in \ccint{0,T}}
+      \absLigne{\bfM_t^u(\omega)} < +\infty$, we have that for any
+      $t \in \ \ccint{0,T}$, $\expeLigne{\absLigne{\bfM_t^u}}<+\infty$. Let
+      $t,s \in \ccint{0,T}$ with $t > s$ and $g : \contspace \to \rset^d$
+      bounded.  We have that
+      $\expeLigne{\absLigne{g(\{x_{T-s}\}_{s \in \ccint{0,t}})}^2(\rmd p_\infty / \rmd
+        p_T)(x_T)^2} < +\infty$. Hence, we have that
+      \begin{equation}
+        \expeLigne{(\bfM_t^u(x_{T-\cdot}) - \bfM_s^u(x_{T-\cdot})) g(\{x_{T-s}\}_{s \in \ccint{0,t}})(\rmd p_\infty / \rmd
+        p_T)(x_T)} = 0 .
+      \end{equation}
+      Using this result and that for any $\omega \in \contspace$,
+      $(\rmd \Qbb / \rmd \Pbb^R)(\omega) = (\rmd p_\infty / \rmd
+      p_T)(\omega_0)$ we get
+      \begin{equation}
+        \expeLigne{(\bfM_t^u(y) - \bfM_s^u(y)) g(\{y_s\}_{s \in \ccint{0,t}})} = 0 .
+      \end{equation}
+      Hence, for any $u \in \rmc^2_c(\rset^d, \rset)$,
+      $(\bfM_t^u(y))_{t \in \ccint{0,T}}$ is a martingale. In addition,
+      $(\bfM_t^u(\bfZ))_{t \in \ccint{0,T}}$ is a martingale using
+      \Cref{lemma:strong_solution_backward} and It\^o's lemma, where $\bfZ$ is
+      the solution to the SDE in \Cref{lemma:strong_solution_backward}. In
+      addition, we have that
+      $\mathcal{L}(\bfZ_0) = \mathcal{L}(y_0) = p_\infty$. Using
+      \Cref{lemma:control_growth} and the remark following \cite[Hypothesis
+      1.8]{cattiaux2021time}, we get that
+      $\mathcal{L}(\bfZ) = \mathcal{L}(y) = \Qbb$. We have just shown that the
+      time-reversed process with initialisation $p_\infty$ can be obtained as a
+      strong solution of an SDE.  Using \Cref{lemma:control_growth} and
+      \Cref{lemma:strong_solution_backward}, we have that for any
+      $t \in \ccint{0,T}$
+      \begin{equation}
+        \textstyle{\expeLigne{\int_0^t \normLigne{x_s + 2\nabla \log p_s(x_s)}^2 \rmd s + \int_0^t \normLigne{w_s + 2\nabla \log p_s(w_s)}^2 \rmd s}<+\infty.}
+      \end{equation}
+      Combining this result and \cite[Lemma S13]{debortoli2021diffusion} we have
+      that
+      \begin{equation}
+        \label{eq:girsanov_uno}
+    \textstyle{
+    \tvnormLigne{p_\infty \Pbb^R_{T|0} - p_\infty \Qker_0}^2  \leq  (1/2) \int_0^T \expeLigne{\normLigne{b_1(t, (y_s)_{s \in \ccint{0,T}}) - b_2(t, (y_s)_{s \in \ccint{0,T}})}^2} \rmd t  ,}
+  \end{equation}
+      where for any $t \in \ccint{0,T}$ and $\omega \in \contspace$ we have that
+      \begin{equation}
+        b_1(t, \omega) = \omega_t + 2\nabla \log p_{T-t}(\omega_t)  , \qquad b_2(t, \omega) = \omega_{t_\gamma} + 2\nabla \log p_{T- t_\gamma}(\omega_{t_\gamma})  ,
+      \end{equation}
+      where
+      $t_\gamma = \sum_{k=0}^{N-1} \mathbb{1}_{\coint{T - t_{k+1}, T -
+          t_{k}}}(t) (T - t_{k+1})$. Noting that $(y_t)_{t \in \ccint{0,T}}$
+      is distributed according to $\Qbb$ and using that
+      $(\rmd \Qbb / \rmd \Pbb^R)(\omega) = (\rmd p_\infty / \rmd
+      p_T)(\omega_0)$, \eqref{eq:girsanov_uno} and the Cauchy-Schwarz
+      inequality we have
+      \begin{align}
+        \label{eq:pinsker_girsanov}
+        &\textstyle{
+          \tvnormLigne{p_\infty \Pbb^R_{T|0} - p_\infty \Qker_0}^2}  \\
+        &\textstyle{\leq (1/2) \expeLigne{(\rmd p_\infty / \rmd
+          p_T)(x_T)^2}^{1/2} \int_0^T \expeLignesqrt{\normLigne{b_1(t, (x_{T-s})_{s \in \ccint{0,T}}) - b_2(t, (x_{T-s})_{s \in \ccint{0,T}})}^4} \rmd t }  \\
+        & \textstyle{\leq (1/2) \expeLigne{(\rmd p_\infty / \rmd
+          p_T)(x_T)^2}^{1/2}  }\\
+        & \qquad \textstyle{\times \int_0^T \expeLignesqrt{\normLigne{b_1(T-t, (x_{T-s})_{s \in \ccint{0,T}}) - b_2(T-t, (x_{T-s})_{s \in \ccint{0,T}})}^4} \rmd t }  . 
+      \end{align}
+In addition, we have that for any $t \in \ccint{0,T}$ and $\omega \in \contspace$ we have
+\begin{align}
+  &\normLigne{b_1(t, \omega)  - b_2(t, \omega)} \\
+  & \leq \normLigne{\omega_t - \omega_{t_\gamma}} + 2 \normLigne{\nabla \log p_{T-t}(\omega_t) - \nabla \log p_{T-t_\gamma}(\omega_t)} \\
+  & \qquad \qquad + 2 \normLigne{\nabla \log p_{T-t_\gamma}(\omega_t) - \nabla \log p_{T-t_\gamma}(\omega_{t_\gamma})} \\
+  &  \textstyle{\leq (1 + 2\sup_{s \in \ccint{0,T}} \sup_{x \in \rset^d}\normLigne{\nabla^2 \log p_s(x)})} \normLigne{\omega_t - \omega_{t_\gamma}} \\
+  & \qquad \qquad \textstyle{+ 2 \sup_{s \in \ccint{T-t, T- t_{\gamma}}} \normLigne{\partial_t \nabla \log p_t(\omega_t)}(t - t_\gamma)} \\
+&  \textstyle{\leq (1 + 2\Ktt) \normLigne{\omega_t - \omega_{t_\gamma}} + 2 \sup_{s \in \ccint{T-t, T- t_{\gamma}}} \normLigne{\partial_s \nabla \log p_s(\omega_t)} (t - t_\gamma)  }  . 
+\end{align}
+Note that
+\begin{equation}
+  \textstyle{
+  T - (T - t)_\gamma = T - \sum_{k=0}^{N-1} \mathbb{1}_{\coint{T - t_{k+1}, T -
+          t_{k}}}(T - t) (T - t_{k+1}) = \sum_{k=0}^{N-1} \mathbb{1}_{\ocint{t_k,t_{k+1}}}(t) t_{k+1}  . }
+\end{equation}
+For any $t \in \ccint{0,T}$, denote
+$t^\gamma = T - (T - t)_\gamma = \sum_{k=0}^{N-1}
+\mathbb{1}_{\ocint{t_k,t_{k+1}}}(t) t_{k+1}$. Therefore, we get that for any
+$t \in \ocint{t_k,t_{k+1}}$
+\begin{align}
+  &\normLigne{b_1(T-t, \omega)  - b_2(T-t, \omega)} \\
+  & \qquad \leq \textstyle{(1 + 2 \Ktt) \normLigne{\omega_{T-t} - \omega_{(T-t)_\gamma}} + 2 \sup_{s \in \ccint{t, t^\gamma}} \normLigne{\partial_s \nabla \log p_s(\omega_{T-t})} (t^\gamma - t)} \\
+                                                   & \qquad \leq \textstyle{(1 + 2 \Ktt) \normLigne{\omega_{T-t} - \omega_{(T-t)_\gamma}} + 2 \sup_{s \in \ccint{t_k, t_{k+1}}} \normLigne{\partial_s \nabla \log p_s(\omega_{T-t})} \gamma_{k+1}} \\
+  & \qquad \leq \textstyle{(1 + 2 \Ktt) \normLigne{\omega_{T-t} - \omega_{(T-t)_\gamma}} + 2 \mathrm{S}_{t_{k}}(\omega_{T-t}) \gamma_{k+1}}  . 
+\end{align}
+Combining this result and that for any $a,b \geq 0$, $(a+b)^4 \leq 8 a^4 + 8b^4$ we get that for any $t \in \ocint{t_k, t_{k+1}}$
+\begin{align}
+    \label{eq:almost_there}
+    &\expeLigne{\normLigne{b_1(T-t, (x_{T-s})_{s \in \ccint{0,T}})  - b_2(T-t, (x_{T-s})_{s \in \ccint{0,T}})}^4} \\
+    & \qquad \qquad \leq \textstyle{8(1 + 2 \Ktt)^4 \expeLigne{\normLigne{x_{t} - x_{t_k}}^4} + 16 \expeLigne{\mathrm{S}_{t_{k}}(x_t)^4} \gamma_{k+1}^4}.
+\end{align}
+In addition, we have that for any $t \in \ccint{0,T}$, $x_t = \exp[-t]x_0 + w_{(1-\exp[-2t])^{1/2}}$.
+Hence, for any $s,t \in \ccint{0,T}$ with $t > s$ we have
+\begin{equation}
+  \normLigne{x_t - x_s} \leq \exp[-s](\exp[t- s] - 1) \normLigne{x_0} + \normLigne{w_{(1-\exp[-2t])} - w_{(1-\exp[-2s])}}  . 
+\end{equation}
+Therefore, we have that for any $s,t \in \ccint{0,T}$ with $t > s$
+\begin{align}
+  \expeLigne{\normLigne{x_t - x_s}^4} &\leq 8\exp[-4s](1 - \exp[-t+s])^4 \expeLigne{\normLigne{x_0}^4} + 8 \expeLigne{\normLigne{w_{(1-\exp[-2t])} - w_{(1-\exp[-2s])}}^4} \\
+                                            &\leq 8\exp[-4s](1 - \exp[-t+s])^4 \expeLigne{\normLigne{x_0}^4} + 24 (\exp[-t] - \exp[-s])^2 \\
+                                            &\leq 8\exp[-4s](1 - \exp[-t+s])^4 \expeLigne{\normLigne{x_0}^4} + 24 \exp[-2s](1 - \exp[-t+s])^2 \\
+  &\leq 8\expeLigne{\normLigne{x_0}^4}\exp[-4s](t-s)^4  + 24 \exp[-2s](t-s)^2  . \label{eq:inter_ou}
+\end{align}
+In addition, using that that for any $k \in \{0, \dots, N-1\}$ and
+$x \in \rset^d$, $\mathtt{S}_{t_k}(x) \leq \Mtt \exp[-\alpha t_k] \normLigne{x}$ we get
+that
+\begin{equation}
+  \expeLigne{\mathtt{S}_{t_k}(x_t)^4} \leq 24 \Mtt^4 \exp[-4\alpha t_k] \{1 + \expeLigne{\normLigne{x_0}^4}\}  . 
+\end{equation}
+
+Combining this result, \eqref{eq:almost_there} and \eqref{eq:inter_ou} we get that for any $t \in \ocint{t_k, t_{k+1}}$
+\begin{align}
+  &\expeLigne{\normLigne{b_1(T-t, (x_{T-s})_{s \in \ccint{0,T}})  - b_2(T-t, (x_{T-s})_{s \in \ccint{0,T}})}^4} \\
+  & \qquad \qquad \qquad \leq 64(1 + 2 \Ktt)^4\expeLigne{\normLigne{x_0}^4}\exp[-4t_k]\gamma_{k+1}^4  \\
+  &\qquad \qquad \qquad \qquad   + 192 (1 + 2 \Ktt)^4 \exp[-2t_k]\gamma_{k+1}^2 + 384 \Mtt^4 \exp[-4\alpha t_k] \{1 + \expeLigne{\normLigne{x_0}^4}\} \gamma_{k+1}^4  . 
+\end{align}
+Using this result and that for any $a,b \geq 0$,
+$(a+b)^{1/2} \leq a^{1/2} + b^{1/2}$, we have for any $t \in \ocint{t_k,t_{k+1}}$
+\begin{align}
+  &\expeLignesqrt{\normLigne{b_1(T-t, (x_{T-s})_{s \in \ccint{0,T}})  - b_2(T-t, (x_{T-s})_{s \in \ccint{0,T}})}^4} \\
+  & \qquad \qquad \qquad \leq 8(1 + 2 \Ktt)^2\expeLignesqrt{\normLigne{x_0}^4}\exp[-2t_k]\gamma_{k+1}^2  \\
+  &\qquad \qquad \qquad  \qquad + 14 (1 + 2 \Ktt)^2 \exp[-t_k]\gamma_{k+1} + 20 \Mtt^2 \exp[-2\alpha t_k] \{1 + \expeLignesqrt{\normLigne{x_0}^4}\} \gamma_{k+1}^2  . \label{eq:almost_almost_there}
+\end{align}
+We have that for any $\beta >0$,
+\begin{equation}
+  \textstyle{
+ \sum_{k=0}^{N-1} \exp[-\beta t_k] \leq \sum_{k \in \nset} \exp[-\beta
+ \gamma_\star k] \leq (1 - \exp[-\beta \gamma_\star])^{-1} \leq 1 + \beta / \gamma_\star  .
+ }
+\end{equation}
+Then using this result, \eqref{eq:almost_almost_there} and \eqref{eq:pinsker_girsanov} we get that
+\begin{align}
+        &\tvnormLigne{p_\infty \Pbb^R_{T|0} - p_\infty \Qker_0}^2  \textstyle{\leq  \expeLigne{(\rmd p_\infty / \rmd
+                                                                        p_T)(x_T)^2}^{1/2}} [4(1 + 2 \Ktt)^2\expeLignesqrt{\normLigne{x_0}^4}(1 +/(2\gamma_\star))(\gamma^\star)^3  \\
+  &\qquad \qquad \qquad + 7 (1 + 2 \Ktt)^2 (1 +1/\gamma_\star)(\gamma^\star)^2 + 10 \Mtt^2 \{1 + \expeLignesqrt{\normLigne{x_0}^4}\} (1 +1/(2 \alpha\gamma_\star))  (\gamma^\star)^3]  . 
+\end{align}
+Therefore, we get that
+\begin{align}
+        &\tvnormLigne{p_\infty \Pbb^R_{T|0} - p_\infty \Qker_0}  \textstyle{\leq  \expeLigne{(\rmd p_\infty / \rmd
+                                                                        p_T)(x_T)^2}^{1/4}} [2(1 + 2 \Ktt)\expeLignesqrtt{\normLigne{x_0}^4}(1 +/(2\gamma_\star)^{1/2})(\gamma^\star)^{3/2}  \\
+        &\qquad \qquad \qquad \  + 3 (1 + 2 \Ktt) (1 +1/\gamma_\star^{1/2})\gamma^\star + 4 \Mtt \{1 + \expeLignesqrtt{\normLigne{x_0}^4}\} (1 +1/(2 \alpha\gamma_\star)^{1/2})  (\gamma^\star)^{3/2}] \\
+  &\qquad \textstyle{\leq  \expeLigne{(\rmd p_\infty / \rmd
+    p_T)(x_T)^2}^{1/4}} [6(1 + 2 \Ktt)(1+\expeLignesqrtt{\normLigne{x_0}^4}) \\
+  & \qquad \qquad \qquad + 4 \Mtt \{1 + \expeLignesqrtt{\normLigne{x_0}^4}\} (1 +1/(2 \alpha)^{1/2}) ]((\gamma^\star)^{2}/\gamma_\star)^{1/2} \\
+  &\qquad \textstyle{\leq  6 (1+\expeLignesqrtt{\normLigne{x_0}^4}) \expeLigne{(\rmd p_\infty / \rmd
+                                                                        p_T)(x_T)^2}^{1/4}} [1 +  \Ktt + \Mtt (1 +1/(2 \alpha)^{1/2}) ]((\gamma^\star)^{2}/\gamma_\star)^{1/2}  ,
+\end{align}
+which concludes the proof upon using \Cref{item:bound_p_infty}.
+    \end{enumerate}    
+  \end{proof}
+
+  We now check that the assumption of \Cref{thm:control_diffusion} are satisfied in a Gaussian setting.
+
+\begin{proposition}
+  \label{prop:gaussian_case}
+  Assume that $p_0 = \mathrm{N}(0, \Sigma)$ and that
+  $T \geq 1 +(1/2)[\log^+(\normLigne{\Sigma}) + \log(d+1)]$ then we have that
+  for any $t \in \ccint{0,T}$ and $x \in \rset^d$
+  \begin{equation}
+    \normLigne{\nabla^2 \log p_t(x)} \leq \max(1, \normLigne{\Sigma^{-1}})  , \qquad \normLigne{\partial_t \nabla \log p_t(x)} \leq 2 \exp[-2 t] \max(1, \normLigne{\Sigma^{-1}})^2 \normLigne{\Sigma - \Id}\normLigne{x}  . 
+  \end{equation}
+  In addition, we have that $\int_{\rset^d} p_\infty(x)^2/p_T(x) \rmd x \leq \sqrt{2}$.
+\end{proposition}
+
+\begin{proof}
+  Recall that for any $t \in \ccint{0,T}$,
+  $x_t = \exp[-t] x_0 + w_{1- \exp[-2t]}$. Therefore, we have that for
+  any $t \in \ccint{0,T}$, $p_t = \mathrm{N}(0, \Sigma_t)$ with
+  $\Sigma_t = \exp[-2t] \Sigma + (1- \exp[-2t]) \Id$. Hence, we get that for any
+  $t \in \ccint{0,T}$ and $x \in \rset^d$,
+  $\nabla^2 \log p_t(x) = (\exp[-2t] \Sigma + (1 - \exp[-2t] \Id)^{-1}$. Using
+  this result, we have that for any $t \in \ccint{0,T}$ and $x \in \rset^d$,
+  $\normLigne{\nabla^2 \log p_t(x)} \leq \max(1, \normLigne{\Sigma^{-1}})$.  Similarly,
+  for any $t \in \ccint{0,T}$ and $x \in \rset^d$ we have
+  \begin{equation}
+    \partial_t \nabla \log p_t(x) = \partial_t \Sigma_t^{-1} x = - \Sigma_t^{-1} (\partial_t \Sigma_t) \Sigma_t^{-1} x  . 
+  \end{equation}
+  Hence, for any $t \in \ccint{0,T}$ and $x \in \rset^d$ we have
+  $\normLigne{\partial_t \nabla \log p_t(x)} \leq 2 \exp[-2 t] \max(1,
+  \normLigne{\Sigma^{-1}})^2 \normLigne{\Sigma - \Id}\normLigne{x}$. Finally, we have
+  that for any $t \in \ccint{0,T}$ and $x \in \rset^d$
+  \begin{equation}
+   \langle x, [2 \Id - (\exp[-2t] \Sigma + (1 - \exp[-2t]) \Id)^{-1}]x \rangle \geq (2 - (\exp[-2t] \normLigne{\Sigma^{-1}}^{-1} + (1- \exp[-2t]))^{-1})\normLigne{x}^2  . 
+ \end{equation}
+ Let $\vareps \in \ocint{0,1/2}$.  For any $t \in \ccint{0,T}$, we have that
+ $2 - (\exp[-2t] \normLigne{\Sigma^{-1}}^{-1} + (1- \exp[-2t]))^{-1} \geq 1 -
+ \vareps$ if and only if
+ $\exp[-2t](1 - \normLigne{\Sigma^{-1}}^{-1}) \leq 1 -
+ (1+\vareps)^{-1}$. Using that
+ $-\log(1 - (1+\vareps)^{-1}) = \log(1 + \vareps^{-1})$ we have that for any
+ $t \geq (1/2) \log(1 + \vareps^{-1})$
+ and $x \in \rset^d$
+ \begin{equation}
+   p_\infty(x)^2/p_t(x) \leq \exp[-\normLigne{x}^2/4](2\uppi)^{-d/2} \det(\Sigma_t)  . 
+ \end{equation}
+ Combining this result and the fact that
+ $\int_{\rset^d} \exp[-\normLigne{x}^2/2(1-\vareps)] \rmd x= (2(1-\vareps)
+ \uppi)^{d/2}$, we get that for any 
+ $t \geq (1/2) \log(1 +
+ \vareps^{-1})$ 
+ \begin{equation}
+   \textstyle{
+     \int_{\rset^d} p_\infty(x)^2/p_t(x) \rmd x \leq \int_{\rset^d} \exp[-\normLigne{x}^2/2(1-\vareps)](2\uppi)^{-d/2} \det(\Sigma_t)^{1/2}  \rmd x \leq (1-\vareps)^{d/2} \det(\Sigma_t)^{1/2} .
+     }
+   \end{equation}
+   Let $\vareps = 1/(2d) \leq 1/2$. Note that
+   $T \geq (1/2) \{-\log(\absLigne{\normLigne{\Sigma^{-1}}^{-1}-1}) + \log(1 +
+   2d)\}$. Hence, we have that
+   \begin{equation}
+      \textstyle{
+        \int_{\rset^d} p_\infty(x)^2/p_T(x) \rmd x \leq \exp[-\log(1-1/(2d))(d/2)] \det(\Sigma_T)^{1/2} .
+        }
+   \end{equation}
+Since for any $t \in \coint{0,1/2}$, $-\log(1-t)\leq \log(2)t$ we get that
+\begin{equation}
+  \label{eq:inequality_inter}
+    \textstyle{
+        \int_{\rset^d} p_\infty(x)^2/p_T(x) \rmd x \leq 2^{1/4} \det(\Sigma_T)^{1/2} .
+        }  
+\end{equation}
+Finally, using that $\Sigma_T = \exp[-2T] \Sigma + (1 - \exp[-2T]) \Id$ we have that
+\begin{equation}
+  \det(\Sigma_T)^{1/2} \leq (\exp[-2T]\normLigne{\Sigma} + 1 - \exp[-2T])^{d/2} \leq (1 + \exp[-2T] \normLigne{\Sigma})^{d/2} .
+\end{equation}
+Hence, using that result and that for any $t \geq 0$, $\log(1+t) \leq t$ we have
+\begin{equation}
+  \det(\Sigma_T)^{1/2} \leq \exp[\exp[-2T]\normLigne{\Sigma}(d/2)] \eqsp . 
+\end{equation}
+Since,
+$T \geq (1/2) \{ \log(\normLigne{\Sigma}) + \log(d) + \log(2) -
+\log(\log(2^{1/4})) \}$, we get that $\det(\Sigma_T)^{1/2} \leq 2$, which
+concludes the proof upon combining this result and \eqref{eq:inequality_inter}.
+\end{proof}
+
+Therefore, we get the following simplified result in the Gaussian setting.
+
+\begin{corollary}
+  Assume that $p = \mathrm{N}(0, \Sigma)$, with
+  $\normLigne{\Sigma^{-1}} \geq 1$, $\gamma^\star = \gamma_\star= \gamma >0$ and
+  $T \geq 1 + (1/2)[\log^+(\normLigne{\Sigma}) + \log(d +1)]$, then we have
+  \begin{align}
+    \tvnormLigne{\mathcal{L}(X_0) - p_0} &\leq \textstyle{\exp[-T/2] (\log^+(\normLigne{\Sigma^{-1}}) + \normLigne{\Sigma - \Id})^{1/2}} \\
+    & \qquad \qquad  \textstyle{+ 48  (1+\normLigne{\Sigma}^{1/2}d^{1/2}) \normLigne{\Sigma^{-1}}^2 [1 +  \normLigne{\Sigma - \Id} ]\sqrt{\gamma}  .} 
+  \end{align}  
+\end{corollary}
+
+\begin{proof}
+  Using \eqref{eq:kl_computation} and \Cref{prop:gaussian_case} we have 
+  \begin{align}
+    &\tvnormLigne{\mathcal{L}(X_0) - p_0} \leq \textstyle{\exp[-T/2] (-\log(\det(\Sigma)) + \mathrm{Tr}(\Sigma) -d)^{1/2}} \\
+    & \qquad \qquad \qquad \qquad \qquad   \textstyle{+ 12  (1+(\int_{\rset^d} \normLigne{x}^4 \rmd p_0(x))^{1/4})  [1 +  \Ktt + 2C ]\sqrt{(\gamma^\star)^{2}/\gamma_\star} } \\
+    &\qquad \leq \textstyle{\exp[-T/2] (-\log(\det(\Sigma)) + \mathrm{Tr}(\Sigma) -d)^{1/2}} \\
+    & \qquad \qquad  \textstyle{+ 12  (1+(\int_{\rset^d} \normLigne{x}^4 \rmd p_0(x))^{1/4})  [1 +  \normLigne{\Sigma^{-1}} + 2\normLigne{\Sigma^{-1}}^2 \normLigne{\Sigma - \Id} ]\sqrt{(\gamma^\star)^{2}/\gamma_\star}  } \\
+    &\qquad \leq \textstyle{\exp[-T/2] (-\log(\det(\Sigma)) + \mathrm{Tr}(\Sigma) -d)^{1/2}} \\
+    & \qquad \qquad  \textstyle{+ 12  (1+3^{1/4}\normLigne{\Sigma}^{1/2}d^{1/2})  [1 +  \normLigne{\Sigma^{-1}} + 2\normLigne{\Sigma^{-1}}^2 \normLigne{\Sigma - \Id} ]\sqrt{(\gamma^\star)^{2}/\gamma_\star}  } \\
+    &\qquad \leq \textstyle{\exp[-T/2] (-\log(\det(\Sigma)) + \mathrm{Tr}(\Sigma) -d)^{1/2}} \\
+    & \qquad \qquad  \textstyle{+ 48  (1+\normLigne{\Sigma}^{1/2}d^{1/2}) \normLigne{\Sigma^{-1}}^2 [1 +  \normLigne{\Sigma - \Id} ]\sqrt{(\gamma^\star)^{2}/\gamma_\star}  } \\
+    &\qquad \leq \textstyle{\exp[-T/2] (\log^+(\normLigne{\Sigma^{-1}}) + \normLigne{\Sigma - \Id})^{1/2}} \\
+    & \qquad \qquad  \textstyle{+ 48  (1+\normLigne{\Sigma}^{1/2}d^{1/2}) \normLigne{\Sigma^{-1}}^2 [1 +  \normLigne{\Sigma - \Id} ]\sqrt{(\gamma^\star)^{2}/\gamma_\star}  .}             
+  \end{align}  
+\end{proof}
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

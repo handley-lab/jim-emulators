@@ -1,0 +1,1532 @@
+\documentclass{article}
+
+% if you need to pass options to natbib, use, e.g.:
+%\PassOptionsToPackage{compress}{natbib}
+% before loading neurips_2022
+
+% ready or submission
+\usepackage[preprint]{neurips_2022}
+
+% to compile a preprint version, e.g., for submission to arXiv, add add the
+% [preprint] option:
+%     \usepackage[preprint]{neurips_2021}
+
+% to compile a camera-ready version, add the [final] opt++ion, e.g.:
+%     \usepackage[final]{neurips_2021}
+
+% to avoid loading the natbib package, add option nonatbib:
+%    \usepackage[nonatbib]{neurips_2021}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\hypersetup{colorlinks,citecolor=blue}
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{xcolor}         % colors
+\usepackage{tikz}
+
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{calc}
+ \input{header}
+ \input{def}
+ \usepackage{comment}
+
+
+% Fixes typography of \left/\right and align indices.
+% \let\originalleft\left
+% \let\originalright\right
+% \renewcommand{\left}{\mathopen{}\mathclose\bgroup\originalleft}
+% \renewcommand{\right}{\aftergroup\egroup\originalright}
+% \usepackage{subdepth}
+
+
+
+\title{Wavelet Score-Based Generative Modeling}
+
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to LaTeX to determine where to break the
+% lines. Using \AND forces a line break at that point. So, if LaTeX puts 3 of 4
+% authors names on the first line, and the last on the second line, try using
+% \AND instead of \And before the third author name.
+
+\author{%
+  Florentin Guth \\
+    Computer Science Department, \\
+  ENS, CNRS, PSL University
+  \And
+  Simon Coste
+  \\
+    Computer Science Department, \\
+  ENS, CNRS, PSL University
+  \AND
+  Valentin De Bortoli \\
+    Computer Science Department, \\
+  ENS, CNRS, PSL University  
+  % \thanks{Use footnote for providing further information
+    % about author (webpage, alternative address)---\emph{not} for acknowledging
+    % funding agencies.}  
+  \And
+  St\'ephane Mallat \\
+ Collège de France, Paris, France \\
+Flatiron Institute, New York, USA }
+
+
+\begin{document}
+
+\maketitle
+\begin{abstract}
+Score-based generative models (SGMs) synthesize new data samples from Gaussian white noise by running a time-reversed Stochastic Differential Equation (SDE) whose drift coefficient depends on some probabilistic score. The discretization of such SDEs typically requires a large number of time steps and hence a high computational cost. This is because of ill-conditioning properties of the score that we analyze mathematically. We show that SGMs can be considerably accelerated, by factorizing the data distribution into a product of conditional probabilities of wavelet coefficients across scales. The resulting Wavelet Score-based Generative Model (WSGM) synthesizes wavelet coefficients with the same number of time steps at all scales, and its time complexity therefore grows linearly with the image size. This is proved mathematically over Gaussian distributions, and shown numerically over physical processes at phase transition and natural image datasets.
+\end{abstract}
+
+
+\section{Introduction}
+\label{sec:intro}
+
+Score-based Generative Models (SGMs) have obtained remarkable results to learn
+and sample probability distributions of image and audio signals
+ \citep{song2019generative,nichol2021improved,nichol2021beatgans}.
+They proceed as follows: the data distribution is mapped to a Gaussian white
+distribution by evolving along a Stochastic Differential Equation (SDE), which
+progressively adds noise to the data.  The generation is implemented using the
+time-reversed SDE, which transforms a Gaussian white noise into a data sample.
+At each time step, it pushes samples along the gradient of the log probability,
+also called \emph{score function}.  This score is estimated by leveraging tools
+from score-matching and deep neural networks
+\citep{hyvarinen2005estimation,vincent2011connection}.  At sampling time, the
+computational complexity is therefore proportional to the number of time steps,
+i.e., the number of forward network evaluations.  Early SGMs in
+\cite{song2019generative,song2020score,ho2020denoising} used thousands of time
+steps, and hence had a limited applicability.
+
+Diffusion models map a Gaussian white distribution into a highly
+complex data distribution. We thus expect that this process will require a large number of time
+steps.  It then comes as a surprise that recent approaches have
+drastically reduced the the number of time steps. This is achieved by optimizing the
+discretization schedule or by modifying the original SGM formulation
+\citep{kadkhodaie2020solving,jolicoeur2021gotta,liu2022pseudo,zhang2022exponential,san2021noise,nachmani2021non,song2020denoising,kong2021fast,ho2020denoising,luhman2021knowledge,salimans2022progressive,xiao2021tackling}.
+High-quality score-based generative models have also been improved by cascading
+multiscale image generations \citep{saharia2021image, ho2022cascaded,
+  nichol2021beatgans} or with subspace decompositions
+\citep{jing2022subspace}. We show that with an important modification, these approaches provably improve the performance of SGMs. 
+
+A key idea is that typical high-dimensional probability distributions coming
+from physics or natural images have complex multiscale properties. They can be
+simplified by factorizing them as a product of conditional probabilities of
+normalized wavelet coefficients across scales. These conditional probabilities
+are more similar to Gaussian white noise than the original image distribution,
+and can thus be sampled more efficiently.  On the physics side, this observation
+is rooted in the renormalization group decomposition in statistical physics
+\citep{wilson1971renormalization}, and has been used to estimate physical
+energies from data \cite{WCRG}. In image processing, it relies on statistical
+observations of wavelet coefficient properties \citep{wainwright1999scale}.  A Wavelet Score-based Generative
+Model (WSGM) generates normalized wavelet coefficients from coarse to fine
+scales, as illustrated in \Cref{fig1}.  The conditional probability of
+each set of wavelet coefficients, given coarse scale coefficients, is sampled
+with its own (conditional) SGM. The main result is that a normalization of
+wavelet coefficients allows fixing the same  discretization schedule at all
+scales. Remarkably, and as opposed to existing algorithms, it implies that the
+total number of sampling iterations per image pixel does not depend on the image
+size.
+
+After reviewing score-based generation models,
+\Cref{sec:time-sampling-score} studies the mathematical properties of its time
+discretization, with a focus on Gaussian models and multiscale processes.
+Images and many physical processes are typically non-Gaussian, but do have a
+singular covariance with long- and short-range correlations. In
+\Cref{sec:wavel-diff-score}, we explain how to factorize these processes
+into probability distributions which capture interactions across scales by
+introducing orthogonal wavelet transforms.  We shall prove that it allows considering SGMs
+with the same time schedule at all scales, independently of the image
+size. In \Cref{sec:time-reduct-wavel}, we present numerical results on Gaussian
+distributions, the $\varphi^4$ physical model at phase transition, and the
+CelebA-HQ image dataset \citep{celeba-hq}.  The main contributions of the paper are as follows:
+\begin{itemize}%[wide, labelwidth=!, labelindent=0pt]
+\item A Wavelet Score-based Generative Model (WSGM) which generates conditional
+  probabilities of normalized wavelet coefficients, with the same discretization
+  schedule at all scales. The number of time steps per image pixel does not need
+  to depend upon the image size to reach a fixed error level.
+\item Theorems controlling errors of time discretizations of SGMs, proving
+  accelerations obtained by scale separation with wavelets. These results are
+  empirically verified by showing that WSGM provides an acceleration for the
+  synthesis of physical processes at phase transition and natural image datasets.
+\end{itemize}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{img/wsgm}
+    \caption{
+    An SGM generates images by discretizing a reverse diffusion, which progressively transforms white Gaussian noise into a natural image. A WSGM generates increasingly higher-resolution images by discretizing reverse diffusions on wavelet coefficients at each scale. It begins by generating a first low-resolution image. Renormalized wavelet coefficients are then generated conditionally to this low-resolution image. A fast inverse wavelet transform reconstructs a higher-resolution image from these wavelet coefficients. This process is repeated at each scale. The number of steps is the same at each scale, and can be orders of magnitude smaller than for SGM.
+  }
+        \label{fig1}
+\end{figure}
+
+\section{Sampling and Discretization of Score-Based Generative Models}
+\label{sec:time-sampling-score}
+\subsection{Score-Based Generative Models}
+
+\paragraph{Diffusions and time reversal} 
+A Score-based Generative Model (SGM)
+\citep{song2019generative,song2020score,ho2020denoising} progressively maps the
+distribution of data $x$ into the normal distribution, with a forward SDE which
+iteratively adds Gaussian white noise.
+It is associated with a {\it noising
+process} $(x_t)_t$, with $x_0$ distributed according to the data
+distribution $p$, and satisfying:
+
+\begin{equation}
+  \rmd x_t = -x_t \rmd t + \sqrt{2} \rmd w_t, \label{eq:noising}
+\end{equation}
+where $(w_t)_t$ is a Brownian motion.
+The solution is an Ornstein-Uhlenbeck
+process which admits the following representation for any $t \geq 0$:
+\begin{equation}
+  \label{eq:OU_sol}
+  x_t = \rme^{-t}\, x_0 + (1- \rme^{-2t})^{1/2} z , \qquad z \sim {\cal N}(0,\Id) . 
+\end{equation}
+The process $(x_t)_t$ is therefore an interpolation between a data sample $x_0$ and
+Gaussian white noise. The \emph{generative process} inverts
+\eqref{eq:noising}. Under mild assumptions on $p$
+\citep{cattiaux2021time,haussmann1986time}, for any $T \geq 0$, the reverse time
+process $x_{T-t}$ satisfies:
+\begin{equation} \label{eq:generative_modeling} 
+\rmd x_{T-t} = \{ x_{T-t} + 2
+  \nabla \log p_{T-t}(x_{T-t})\}\, \rmd t + \sqrt{2} \,\rmd w_t,
+\end{equation}
+where $p_t$ is the probability density of $x_t$, and $\nabla \log p_t$ is called
+the {\it Stein score}.  Since $x_T$ is close to a white Gaussian
+variable, one can approximately sample from $x_T$ by sampling from the normal distribution.
+We can generate $x_0$ from $x_T$ by solving this
+time-reversed SDE, if we can estimate an accurate approximation of the score
+$\nabla \log p_t$ at each time $t$, and if we can discretize the SDE without
+introducing large errors.
+
+Efficient approximations of the Stein scores
+are the workhorse of SGM. \cite{hyvarinen2005estimation} shows that
+the score $\nabla \log p_t$ can be approximated with parametric functions
+${\bs}_\theta$ which minimize the following score matching loss:
+    \begin{equation}
+      \label{eq:ism_loss}
+       \textstyle{
+      { s}_t =  \argmin_{\theta} {\mathbb E}_{p_t} [
+      \frac 1 2 \normLigne{ {\bs}_\theta(x_t)}^2 +
+        \mathrm{div}({\bs}_\theta)(x_t)}]  .
+    \end{equation}
+For image generation, $\bs_{\theta}$ is calculated by a neural
+network parameterized by $\theta$. In statistical physics problems where the
+energy can be linearly expanded with coupling parameters, we obtain linear
+models $\bs_\theta(x) = \theta^\top \nabla U(x)$.
+This is the case for Gaussian processes where $U(x) = x x^\top$; it also
+applies to non-Gaussian processes, using non-quadratic terms in $U(x)$. 
+    
+\paragraph{Time discretization of generation} 
+An approximation of the generative process \eqref{eq:generative_modeling} is
+computed by approximating $\nabla \log p_t$ by $\bs_t$ and
+discretizing time. It amounts to approximating the time-reversed SDE by a Markov
+chain which is initialised by $\tx_T \sim {\cal N}(0, \Id)$, and computed over
+times $t_k$ which decrease from $t_N = T$ to $t_0 = 0$, at intervals
+$\delta_k = t_{k} - t_{k-1}$:
+\begin{equation}
+  \label{eq:backward_disc}
+  \tx_{t_{k-1}} = \tx_{t_{k}} + \delta_{k} \{ \tx_{t_{k}} + 2  {\bs}_{ t_{k}}(\tx_{t_{k}})\} + \sqrt{2 \delta_{k}} z_{k} , \qquad z_k  \overset{\textup{i.i.d.}}{\sim} {\cal N}(0,\Id) . 
+\end{equation}
+Ignoring the error due to the score model, the minimum number of time steps is
+limited by the Lipschitz regularity of the score $\nabla \log p_t$, see
+\cite[Theorem 1]{debortoli2021diffusion}. The overall complexity of this
+generation is $O(N)$ evaluations of the score ${\bs}_{ t}(x)$.
+
+\subsection{Discretization of SGM and Score Regularity}
+\label{sec:sampl-accel-accur}
+We study how the regularity of the score $\nabla \log p$ affects the
+discretization of \eqref{eq:backward_disc}. Assuming that the score is known,
+i.e., that $\bs_t = \nabla \log p_t$, we prove that for Gaussian
+processes, the number of time steps to reach a fixed error $\vareps$ depends on
+the condition number of its covariance.  This result is generalized to
+non-Gaussian processes by relating this error to by the regularity
+of $\nabla \log p_t$.
+
+\paragraph{Gaussian distributions}
+Suppose that the data distribution is a Gaussian
+$p =\mathcal{N}(0, \Sigma)$ with covariance matrix $\Sigma$, in dimension $d$. 
+Let $p_t$ be the distribution of $x_t$.
+Using \eqref{eq:OU_sol}, we have:
+\begin{equation}
+  \nabla \log p_t(x) = - (\Id + (\Sigma - \Id)\rme^{-2t})^{-1}x  .
+\end{equation}
+Let $\tilde p_t$ be the distribution of $\tx_t$ obtained by
+the time discretization \eqref{eq:backward_disc}. 
+The approximation error between the distribution $\tilde p_0$
+obtained with the time-reversed SDE and the data distribution $p$ stems from 
+\begin{enumerate*}[label=(\roman*)]
+\item the mismatch between the distributions of $x_T$ and  $\tx_T$, and
+\item the time discretization.
+\end{enumerate*}
+The following theorem relates these two errors to the covariance $\Sigma$ of $x$
+in the particular case of a uniform time sampling at intervals
+$\delta_k = \delta$.  We normalize the signal energy by imposing that ${\rm Tr}(\Sigma) = d$,
+and we write
+$\kappa$ the condition number of $\Sigma$, which is the ratio between its
+largest and smallest eigenvalues.
+
+
+\begin{theorem}
+  \label{prop:approx_gaussian_kl}
+  We have $\KL{p}{\tilde{p}_0} \leq \error_{T} + \error_{\delta} + \error_{T, \delta}$, with :
+     \begin{align}
+  \label{firsteq0}
+    &&\error_T =  f(\rme^{-4T}\,\absLigne{\mathrm{Tr}((\Sigma - \Id)\Sigma))}) , \\ 
+     \label{firsteq0}
+    &&\error_{\delta} = f(\delta \absLigne{\mathrm{Tr}(\Sigma^{-1} - \Sigma (\Sigma - \Id)^{-1} \log(\Sigma)/2 + (\Id - \Sigma^{-1})/3))})  ,
+  \end{align}
+  where $f(t) = t-\log(1+t)$ and $\error_{T, \delta}$ is a higher-order term with $E_{T, \delta} = o(\delta + \rme^{-4T})$ when $\delta \to 0$ and $T \to +\infty$. Furthermore, for any $\vareps > 0$,
+  there exists $T, \delta \geq 0$ such that:
+  \begin{equation}
+    \label{eq:N_conditioning}
+    (1/d) (\error_T + \error_\delta) \leq \vareps~~\mbox{and}~~
+    T/\delta \leq C \vareps^{-2} \kappa^3  .
+  \end{equation}
+  with $C \geq 0$ a universal constant.
+  \end{theorem}
+
+This theorem specifies the dependence of the Kullback-Leibler error on the
+covariance matrix. It computes an upper bound on the number of time steps
+$N = T / \delta$ as a function of the condition number $\kappa$ of $\Sigma$.
+As expected, it indicates that the number of time steps increases with the
+condition number of the covariance. This theorem is proved in a more general case in \Cref{sec:proof-section21}, which includes the case where $p$ has a non-zero mean. An exact expansion of the Kullback-Leibler divergence is also given.
+
+For stationary processes of images, the covariance eigenvalues
+are given by the power spectrum, which typically decays like $|\om|^{-1}$ at a
+frequency $\om$. It results that $\kappa$ is proportional to a power of the
+image size. Many physical phenomena produce such stationary images with a
+power spectrum having a power law decay. In these typical cases, the number of time steps
+must increase with the image size. This is indeed what is observed in
+numerical SGM experiments, as seen in \Cref{sec:wavel-diff-score}.
+
+\paragraph{General processes} \Cref{prop:approx_gaussian_kl} can be
+extended to non-Gaussian processes.  The
+number of time steps then depends on the regularity of the score $\nabla \log p_t$.
+
+\begin{theorem}
+  \label{thm:control_diffusion}
+  Assume that $\nabla \log p_t (x)$ is $\mathscr{C}^2$ in both $t$ and $x$, and that:
+  \begin{equation}\label{params:thm2}
+    \textstyle{
+  \sup_{x,t} \normLigne{\nabla^2 \log p_t(x)} \leq
+  \Ktt}~~\mbox{and}~~
+  \textstyle{\normLigne{\partial_t \nabla \log p_t(x)} \leq \Mtt\, \rme^{-\alpha t}\,
+  \normLigne{x}}.
+  \end{equation}
+  for some $\Ktt, \Mtt , \alpha >0$. Then $\tvnormLigne{p - \tilde p_0} \leq \error_T + \error_\delta + \error_{T, \delta}$, where:
+  \begin{align}
+  \label{firsteq}
+    \error_T &= \sqrt{2} \rme^{-T} \KLLignesqrt{p}{{\mathcal{N}(0, \Id)}}  ,\\
+     \label{secondeq}
+    \error_\delta &= 6\,\sqrt{\delta}\, [1+{\mathbb E}_p (\normLigne{x}^4 )^{1/4}]\, [1 +  \Ktt + \Mtt (1 +1/(2 \alpha)^{1/2}) ]  ,
+  \end{align}
+  and $\error_{\delta, T}$ is a higher order term with $E_{T, \delta} = o(\sqrt{\delta} + \rme^{-T})$ when $\delta \to 0$ and $T \to +\infty$.
+\end{theorem}
+
+The proof of \Cref{thm:control_diffusion} is postponed to
+\Cref{sec:proof-section21} and we show that the result can be strengthened by
+providing a quantitative upper bound on $\tvnormLigne{p - \tilde p_0}$.
+\Cref{thm:control_diffusion} improves on \cite[Theorem
+1]{debortoli2021diffusion} by proving explicit bounds exhibiting the
+dependencies on the regularity constants $\Ktt$ and $\Mtt$ of the score and by
+eliminating an exponential growth term in $T$ in the upper bound.
+\Cref{thm:control_diffusion} is much more general but not as tight as
+\Cref{prop:approx_gaussian_kl}.  
+
+The first error term \eqref{firsteq} is due to
+the fact that $T$ is chosen to be finite. 
+The second error term \eqref{secondeq}
+controls the error depending upon the discretization time step $\delta$.  Since
+$p_t$ is obtained from $p$ through a high-dimensional convolution with a
+Gaussian convolution of variance proportional to $t$, the regularity of
+$\nabla \log p_t (x)$ typically increases with $t$ so
+$\normLigne{\nabla^2 \log p_t(x)}$ and
+$\normLigne{\partial_t \nabla \log p_t(x)}$ rather decrease when $t$
+increase. This qualitatively explains why a \emph{quadratic} discretization
+schedule with non-uniform time steps $\delta_k \propto k$ are usually chosen in numerical
+implementations of SGMs \citep{nichol2021improved,song2020improved}.  For
+simplicity, we focus on the uniform discretization schedule, but our result could
+be adapted to non-uniform time steps with no major difficulties.
+
+If $p$ is Gaussian, then the Hessian $\nabla^2 \log p$ is the negative inverse of the covariance matrix. We verify in \Cref{sec:proof-section21} that in this case, the assumptions of  \Cref{thm:control_diffusion} are satisfied. Furthermore, the constants $\Ktt$ and $\Mtt$, and hence the number of discretization steps, are controlled using the condition number of $\Sigma$. We thus conjecture that  non-Gaussian processes with an ill-conditioned covariance matrix will require many discretization steps to have a small error. This will be verified numerically. As we now explain, such processes are ubiquitous in physics and natural image datasets.
+%It explains why we need very small time steps near $t = 0$ and hence a large total number of time steps even with a non-uniform schedule.  To further reduce the number of time steps we must modify the probability distribution on which SGM is applied.  We saw that its condition number grows when the image size grows
+
+\paragraph{Multiscale processes}
+%\textcolor{blue}{process defined on ??? I want the finite discrete version here}
+ Most images have variations on a wide range of scales.  They require to use
+ many time steps to sample using an SGM, because their score is not well-conditioned.
+ This is also true for a wide range of phenomena encountered in physics,
+ biology, or economics \citep{kolmogorov_1962,mandelbrot1983fractal}.  We define a \emph{multiscale
+ process} as a stationary process whose power spectrum has a power law
+ decay. The stationarity implies that its covariance is diagonalized in a
+ Fourier basis.  Its eigenvalues, also called power spectrum, have a power law
+ decay defined by:
+\begin{equation}\label{eq:power_law_spectrum}
+P(\om) \sim (\xi^\eta + |\om|^\eta)^{-1} ,
+\end{equation}
+where $\eta > 0$ and $2 \pi/\xi$ is the maximum correlation length. 
+% Below the frequency $\xi$, the spectrum becomes flat. 
+Physical processes near phase transitions have such a power-law decay, but it is also the case of many disordered systems such as fluid and gas turbulence. 
+Natural images also typically define stationary processes. Their power spectrum satisfy this property with $\eta = 1$
+and $2\pi / \xi \approx L$ which is the image width.
+To efficiently synthesize images and more general multiscale signals, we must eliminate
+the ill-conditioning properties of the score. This is done by applying a wavelet transform.
+% \textcolor{blue}{Le power spectrum donne les valeurs propres de la covariance qui est l'inverse du Hessien de $\log p$. Donc le $L$ ou le $\lambda_{\max}$ sont l'inverse de la plus petite valeur de $P(\om)$. Il faut farie attention, c'est "confusing". Au passage, l'estimation de $\lambda_{\max}$ risque d'etre  tres bruite.}
+
+\section{Wavelet Score-Based Generative Model}
+\label{sec:wavel-diff-score}
+
+The numerical complexity of the SGM algorithm depends on the number of time steps,
+which itself depends upon the regularity of the score.  
+We show that an important acceleration is obtained by
+factorizing the data distribution into normalized wavelet conditional
+probability distributions, which are closer to normal Gaussian
+distributions, and so whose score is better-conditioned. 
+  
+
+\subsection{Wavelet Whitening and Cascaded SGMs}
+\label{sec:whit-with-wavel}
+
+\paragraph{Normalized orthogonal wavelet coefficients}
+Let $x$ be the input signal of width $L$ and dimension $d = L^n$, with $n=2$ for
+images.  We write $x_j$ its low-frequency
+approximation subsampled at intervals $2^j$, of size $(2^{-j} L)^n$, with
+$x_0 = x$.  At each scale $2^{j-1} \geq 1$, a fast wavelet orthogonal transform
+decomposes $x_{j-1}$ into $(\ox_j , x_j)$ where $\ox_j$ are the wavelet
+coefficient which carries the higher frequency information over $2^{n}-1$
+signals of size $(2^{-j} L)^n$ \cite{mallat1999wavelet}.  They are calculated
+with convolutional and subsampling operators $\rmG$ and $\oG$ specified in
+\Cref{sec:wavelet-transforms}:
+\begin{equation}
+  \label{eq:low_res}
+  \textstyle{
+    x_j = \gamma_j^{-1}\, \rmG\, x_{j-1} ~~\mbox{and}~~
+    \ox_j = \gamma_j^{-1}\, \oG\, x_{j-1} ~.
+    }
+\end{equation}
+The normalization factor $\gamma_j$ guarantees that 
+${\mathbb E}[\|\ox_j \|^2] = (2^n-1) (2^{-j} L)^n$.  We consider wavelet
+orthonormal filters where $(\rmG,\wG)$ is a unitary operator, i.e.:
+\[
+\oG\rmG^\top = \rmG\oG^\top = 0~~\mbox{and}~~\rmG^\top\rmG + \oG^\top\oG = \Id .
+\]
+It results that $x_{j-1}$ is recovered from $(\ox_j,x_j)$ with:
+\begin{equation}
+  \label{eq:reconstruction_UNO}
+x_{j-1} = \gamma_j \, \rmG^\top x_j + \gamma_j \, \oG^\top \ox_j .
+\end{equation}
+The wavelet transform is computed over $J \approx \log_2 L$ scales by iterating
+$J$ times on \eqref{eq:low_res}. The last $x_J$ has a size
+$(2^{-J} L)^n \sim 1$.  The choice of wavelet
+filters $\rmG$ and $\oG$ specifies the properties of the wavelet transform and
+the number of vanishing moments of the wavelet, as explained in 
+\Cref{sec:wavelet-transforms}.
+% We write $\bar{x} = (\bar{x}_1, \dots, \bar{x}_{J} , x_J)$ the normalized wavelet transform of $x$. The fast inverse wavelet transform recovers $x$ from $\ox$ by recursively applying (\ref{eq:reconstruction_UNO}).
+
+
+\paragraph{Renormalized probability distribution}
+A conditional wavelet renormalization 
+factorizes the distribution $p(x)$ of signals $x$ into conditional probabilities over wavelet coefficients:
+\begin{equation}
+  \label{product}
+  \textstyle{
+    p(x) =  \alpha \prod_{j=1}^{J} \bar p_j (\ox_j | x_j)\, p_{J} (x_{J})~.
+    }
+\end{equation}
+where $\alpha$ (the Jacobian) depends upon all $\gamma_j$.
+
+Although $p(x)$ is typically highly non-Gaussian, the factorization
+\eqref{product} involves distributions that are closer to Gaussians.  The
+largest scale distribution $p_{J}$ is usually close to a Gaussian when the image
+has independent structures, because $x_J$ is an averaging of $x$ over large
+domains of size $2^J$.  Remarkably, for large classes of signals and images,
+each conditional probabilities
+$\bar p_j (\ox_j | x_j)$ also
+exhibit Gaussian properties.  In images, the wavelet coefficients $\ox_j$ are
+usually sparse and thus have highly non-Gaussian distribution; however, it has
+been observed \citep{wainwright1999scale} that their conditional distributions
+$\bar p_j (\ox_j | x_j)$ become much more Gaussian, due to dependencies of
+wavelet coefficients across scales.  Similarly, in statistical physics,
+factorization of probabilities of high frequencies 
+conditioned by lower frequencies have been introduced in
+\cite{wilson1983renormalization}. More recently, normalized wavelet
+factorizations \eqref{product} have been introduced in physics to implement
+renormalization group calculations, and model probability distributions with
+maximum likelihood estimators near phase transitions \citep{WCRG}.
+
+
+\paragraph{Wavelet Score-based Generative Model} 
+Instead of computing a Score-based Generative Model (SGM) of the distribution
+$p(x)$, a Wavelet Score-based Generative Model (WSGM) applies an SGM at the
+coarsest scale $p_J (x_J)$ and then on each conditional distribution
+$\bar p_j (\ox_j | x_j)$ for $j \leq J$.  It is thus a cascaded SGM, similarly
+to \cite{ho2022cascaded,saharia2021image}, but calculated on
+$\bar p_j (\ox_j | x_j)$ instead of $p_j (x_{j-1}|x_j)$.  The normalization of
+wavelet coefficients $\ox_j$ effectively produces a whitening which can
+considerably accelerate the algorithm by reducing the number of time steps. This
+is not possible on $x_{j-1}$ because its covariance is ill-conditioned. It will
+be proved for Gaussian processes.
+
+A forward noising process is computed on each $\ox_j$ for $j \leq J$ and $x_J$:
+\begin{equation}\label{eq:noisingscales}
+  \rmd \ox_{j,t} = -\ox_{j,t} \,\rmd t + \sqrt{2} \rmd \bar{w}_{j,t}~~\mbox{and}~~
+  \rmd x_{J,t} = -x_{J,t} \,\rmd t + \sqrt{2} \rmd w_{J,t},
+\end{equation}
+where the $\bar{w}_{j,t}, w_{J,t}$ are Brownian motions.  Since $\bar{x}_j$ is
+nearly white and has Gaussian properties, this diffusion converges much more
+quickly than if applied directly on $x$.  Using \eqref{eq:ism_loss}, we compute a
+score function ${\bs}_{J,t}(x_{J,t})$ which approximates the score
+$\nabla \log p_{J,t}(x_{J,t})$. For each $j \leq J$ we also compute the
+conditional score $\bar {\bs}_{j,t} (\ox_{j,t} | x_{j})$ which
+approximates $\nabla \log \bar p_{j,t}(\ox_{j,t} | x_{j})$.
+
+ 
+The inverse generative process is computed from coarse to fine scales as follows. 
+At the largest scale $2^J$, we sample
+the low-dimensional $x_J$ by time discretizing the inverse SDE. Similarly to 
+\eqref{eq:backward_disc}, the generative process is given by:
+\begin{equation}
+  \label{eq:backward_disc2}
+  \txwav_{J,t_{k+1}} = \txwav_{J,t_{k}} + \delta_{k} \{ \txwav_{J,t_{k}} + 2  {\bs}_{ J,t_{k}}(\txwav_{J,t_{k}})\} + \sqrt{2 \delta_{k}} z_{J,k} , \qquad z_{J,k}  \overset{\textup{i.i.d.}}{\sim} {\cal N}(0,\Id) . 
+\end{equation}
+For $j$ going from $J$ to $1$, we then generate the wavelet
+coefficients $\ox_j$ conditionally to the previously calculated $\txwav_{j}$, by
+keeping the same time discretization schedule at all scales:
+  \begin{equation}
+  \label{eq:backward_disc2}
+  \tox_{j,t_{k+1}} = \tox_{j,t_{k}} + \delta_{k} \{ \tox_{j,t_{k}} + 2  \bar {\bs}_{ j,t_{k}}(\tox_{j,t_{k}}|\txwav_{j})\} + \sqrt{2 \delta_{k}}\, z_{j,k} , \qquad z_{j,k}  \overset{\textup{i.i.d.}}{\sim} {\cal N}(0,\Id) . 
+\end{equation}
+The inverse wavelet transform then approximately computes
+a sample of $x_{j-1}$ from $(\tox_{j,0}, \txwav_{j})$:
+\begin{equation}
+  \label{eq:reconstruction}
+\tx_{j-1} = \gamma_j \, \rmG^\top \txwav_{j} + \gamma_j \, \oG^\top \tox_{j,0} .
+\end{equation}
+The generative process is illustrated in \Cref{fig1} and its pseudocode is given in \Cref{sec:wsgm-pseudocode}, see
+\Cref{alg:cascaded_wavelet}.  The appendix also verifies that if $x$ is of size $d$ then its numerical complexity is $O(N d)$ where $N$ is the number of time steps, which is the same at each scale. For multiscale processes, we shall see that the number of time steps $N$ does not depend upon $d$ to reach a fixed error measured with a KL divergence.
+
+\paragraph{Related work}
+The use of wavelets in multiscale architectures is often motivated by the spectral bias phenomenon \cite{rahaman2019spectral}: \cite{huang2017wavelet} uses a wavelet CNN for super-resolution, \cite{gal2021swagan} incorporates spectral information by training GANs in the wavelet domain. Closer in spirit to our work, \cite{yu2020wavelet} introduces Wavelet Flow, a normalizing flow with a cascade of layers generating wavelet coefficients conditionally on lower-scales, then aggregating them with an inverse wavelet transform. This method yields training time acceleration and high-resolution (1024x1024) generation. 
+
+WSGM is closely related to other cascading diffusion algorithms, such as the ones
+introduced in \cite{ho2022cascaded,saharia2021image,nichol2021beatgans}. The
+main difference lies in that earlier works on cascaded SGMs do not model the
+\emph{wavelet coefficients} $\{\bar{x}_j\}_{j=1}^J$ but the \emph{low-frequency}
+coefficients $\{x_j\}_{j=1}^J$. As a result, cascaded models do not exploit the
+whitening properties of the wavelet transform.   We
+also point out the recent work of \cite{jing2022subspace} which, while not using
+the cascading framework, drop subspaces from the noising process at different
+times. This allows using only one SDE to sample approximately from the data
+distribution. However, the reconstruction is still computed with respect to
+$\{x_j\}_{j=1}^J$ instead of the wavelet coefficients. 
+
+
+
+Finally, we highlight that our work could be combined with other acceleration
+techniques such as the ones of
+\cite{jolicoeur2021gotta,liu2022pseudo,zhang2022exponential,
+  san2021noise,nachmani2021non,song2020denoising,ho2020denoising,kong2021fast,luhman2021knowledge,salimans2022progressive,xiao2021tackling}
+in order to improve the empirical results of WSGM.
+
+
+\subsection{Discretization and Accuracy for Gaussian Processes}
+\label{sec:time-sampl-accur}
+We now illustrate \Cref{prop:approx_gaussian_kl} and the effectiveness of WSGM on Gaussian multiscale processes.  We use the
+whitening properties of the wavelet transform to show that the time
+complexity required in order to reach a given error is linear in the image dimension.
+
+The following result proves that the normalization of wavelet coefficients
+performs a preconditioning of the covariance, whose eigenvalues then remain of the
+order of $1$. This is a consequence of a theorem proved by \cite{Meyer:92c} on
+the representation of classes of singular operators in wavelet bases, see
+\Cref{sec:wavelet-transforms}. As a result, the number of iterations $T/\delta$ required to reach an error $\varepsilon$ is independent of the dimension.
+
+\begin{theorem}
+  \label{lemma:bound_spectrum}
+  Let $x$ be a Gaussian stationary process of power spectrum
+  $P(\om) = c\,(\xi^\eta + |\om|^\eta)^{-1}$ with $\eta > 0$ and $\xi > 0$.
+  If the wavelet has a compact support, $q  \geq \eta$ vanishing moments and is ${\mathscr{C}}^q$, then 
+  $\KL{p}{\tilde{p}_0} = \error_T + \error_{\delta} + \error_{\delta, T}$ with
+  $\error_{\delta, T}$ a higher order term such that $E_{T, \delta} = o(\delta + \rme^{-4T})$ when $\delta \to 0$ and $T \to +\infty$. 
+  Furthermore, for any $\vareps >0$, there exists $C > 0$ such that for any $\delta$, $T$:
+  \begin{equation}
+    \label{eq:N_conditioning_WSGM}
+    (1/d) (\error_T + \error_\delta) \leq  \vareps~~\mbox{and}~~
+    T/\delta \leq C \vareps^{-2}   .
+  \end{equation}
+\end{theorem}
+To prove this result, we show that the conditioning number of the covariance matrix of the renormalized wavelet coefficients does not depend on the dimension using \citep{Meyer:92c}. We conclude upon combining this result, the cascading property of the Kullback-Leibler divergence and an extension of Theorem 1 to the setting with non-zero mean. The detailed proof is postponed to \Cref{sec:proof33}.
+
+\paragraph{Numerical results}
+We illustrate \Cref{lemma:bound_spectrum} on a Gaussian
+field $x$, with power spectrum $P$ as \eqref{eq:power_law_spectrum}. In \Cref{fig:gaussian}, we display the sup-norm between $P$ and
+the power spectrum $\hat{P}$ of the samples obtained using either vanilla SGM or WSGM
+with uniform stepsize $\delta_k = \delta$. In the case of vanilla SGM, the number $N(\varepsilon)$ of time steps needed to reach a small error $\Vert P - \hat{P} \Vert=\varepsilon$ increases with the size of the image $L$ \Cref{fig:gaussian}, right). Equation \eqref{eq:N_conditioning} suggests that $N(\varepsilon)$ scales like a power of the conditioning number $\kappa$ of $\Sigma$, which, for multiscale gaussian processes, is $\kappa \sim L^\eta$. In the WSGM case, we sample conditional distributions $\bar{p}_j$ of wavelets $\bar{x}_j$  given low-frequencies $x_j$. At scale $j$, the conditioning numbers $\bar{\kappa}_j$ of the conditional covariance become dimension-independent (\Cref{sec:wavelet-transforms}), removing the dependency of $N(\varepsilon)$ on the image size $L$ as suggested by \eqref{eq:N_conditioning_WSGM}.
+
+
+\begin{figure}[h!]
+    \centering
+    \begin{tabular}{cc}
+    \includegraphics[height=0.17\textheight]{img/spec_pow_vs_L_2.png}&\includegraphics[height=0.17\textheight]{img/N_versus_L_2.png}
+    \end{tabular}
+    \caption{\textbf{Left and middle:} evolution of the error on the estimated
+      covariance matrix using either SGM or WSGM w.r.t.\ the number of stepsizes
+      used in the model ($T=10$ is fixed). \textbf{Right:} number $N(\varepsilon)$ of discretization steps
+      required to reach a given error $\varepsilon = 0.1$ using either SGM or WSGM.}
+    \label{fig:gaussian}
+\end{figure}
+
+\section{Acceleration with WSGM: Numerical Results}
+\label{sec:time-reduct-wavel}
+
+% Le but est de montrer numeirquement que le wavelet SGM permet d'accelerer le temps et que le nombre de pas de temps n'augmente pas ??? (ou peu) avec la dimension contrairement au cas ou on le fait pas. On l'a deja montre dans le cas Gaussien et le but est de montrer que cela s'etend a des signaux multiechels beaucoup plus compliques telles que des images assez generales.
+
+% On va utiliser le cas de $\varphi^4$ commme model simple que l'on sait que c'est exactement characterise par les moments marginaux (histogrammes) et par les moments d'ordre 2 et on peut tester l'erreur sur ces moments
+
+For multiscale Gaussian processes, we proved that with WSGMs, the number of time steps $N(\varepsilon)$ to reach a fixed error $\varepsilon$ does not depend on the signal size, as opposed to SGMs. This section
+shows that this result applies to non-Gaussian multiscale processes. We consider
+a physical process near a phase transition and images from the CelebA-HQ database \citep{celeba-hq}.
+
+
+\subsection{Physical Processes with Scalar Potentials}\label{sec:results_phi4}
+
+Gaussian stationary processes are maximum entropy processes conditioned by second order moments defined by a circulant matrix. More complex physical processes are modeled by imposing a constraint on their marginal distribution, with a so-called scalar potential. 
+The marginal distribution of $x$ is the probability distribution of $x(u)$, which does not depend upon $u$ if $x$ is stationary. Maximum entropy processes conditioned by second order moments and marginal distributions have a probability density which is a Gibbs distribution
+$p (x) = Z^{-1}\, \rme^{-E (x)}$ with:
+\begin{equation} \label{eq:gibbs}
+  \textstyle{
+    E(x) = \frac{1}{2}x^\top C x + \sum_u V(x(u)) ~~,
+    }
+\end{equation}
+where $C$ is a circulant matrix and $V\colon\R\to\R$ is a scalar potential.
+\Cref{sec:deta-varph-model} explains how to parametrize $V$ as a linear combination of a family of fixed elementary functions. The $\varphi^4$ model is a particular example where $C = \Delta$ is a Laplacian and $V$ is a fourth order polynomial, adjusted in order to imposes that $x(u) = \pm 1$ with high probability. For so-called critical values of these parameters, the resulting process becomes multiscale with long range interactions and a power law spectrum, see
+\Cref{fig:phi4synthesis}-(c).
+
+We train SGMs and WSGMs on critical $\varphi^4$ processes of different sizes; for the score model ${\bs}_\theta$, we use a simple linear parametrization detailed in \Cref{app:score_phi4}. To evaluate the quality of the generated samples, it is sufficient to verify that
+these samples have the same second order moment and marginals as $\varphi^4$. We define the error metric as the sum of the $\mathrm{L}^2$ error on the power spectrum and the total-variation distance between marginal distributions. \Cref{fig:phi4synthesis}-(a) shows the decay of this error as a function of the number of time steps used in an SGM and
+WSGM with a uniform discretization. With vanilla SGM, the loss has a strong dependency in $L$, but becomes almost independent of $L$ for WSGM. 
+This empirically verifies the claim that an ill-conditioned covariance matrix leads to slow sampling of SGM, and that WSGM is unaffected by this issue by working with the conditional distributions of normalized wavelet coefficients.
+
+
+
+\begin{figure}\centering
+    \includegraphics[height=0.14\textheight]{img/perf_vs_steps_phi4_langevin0.png} \hfill \includegraphics[height=0.14\textheight]{img/examples_syntheses_true.png} \hfill \includegraphics[height=0.14\textheight]{img/psd_of_phi4.png}
+    \caption{\textbf{Left:} error between ground-truth $\varphi^4$ datasets in various dimensions $L$, and the synthetized datasets with SGM and WSGM, for various number of discretization steps. \textbf{Middle:} realizations of $\varphi^4$ (top) and WSGM samples (bottom). \textbf{Right:} power spectrum of $\varphi^4$ for $L=32$. }
+    \label{fig:phi4synthesis}
+\end{figure}
+
+
+
+
+
+\subsection{Scale-Wise Time Reduction in Natural Images }
+
+Images are highly non-Gaussian multiscale processes whose power spectrum has a power law decay. We now show that WSGM also provides an acceleration over SGM in this case, by being independent of the image size. 
+
+We focus on the CelebA-HQ dataset \citep{liu2015faceattributes} at a $128\times 128$ resolution. Though non-stationary, its power spectrum still has a power law decay, as shown in \Cref{fig:celeba}. We compare SGM \cite{ho2020denoising} samples at the $128 \times 128$ resolution with WSGM samples which start from the $32 \times 32$ resolution. Though smaller, the $32 \times 32$ resolution still suffers from a power law decay of its spectrum over several orders of magnitude. The reason why we limit this coarsest resolution is because border effects become dominant at lower image sizes. To simplify the handling of border conditions, we use Haar wavelets. 
+
+Following \cite{nichol2021improved}, the global scores $\bs_\theta(x)$ are parametrized by a neural network with a UNet architecture. It has 3 residual blocks at each scale, and includes multi-head attention layers at lower scales. The conditional scores $\bs_\theta(\bar x_j | x_j)$ are parametrized in the same way, and the conditioning on the low frequencies $x_j$ is done with a simple input concatenation along channels  \citep{nichol2021improved,saharia2021image}. The details of the architecture are in \Cref{sec:exper-deta-addit}. We use a uniform discretization of the backward SDE to stay in the setting of \Cref{thm:control_diffusion}. 
+
+The generation results are given in \Cref{fig:celeba}. With the same computational budget of $16$ discretizations steps at the largest scale (iterations at smaller scales having a negligible cost due to the exponential decrease in image size), WSGM achieves a much better perceptual generation quality. Notably, SGM generates noisy images due to discretization errors. This is confirmed quantitatively with the Fréchet Inception Distance (FID) \citep{fid}. The FID of the WSGM generations decreases with the number of steps, until it plateaus. This plateau is reached with at least 2 orders of magnitude less steps for WSGM than SGM. This number of steps is also independent of the image size for WSGM, thus confirming the intuition given in the Gaussian case by \Cref{prop:approx_gaussian_kl}-\ref{lemma:bound_spectrum}. Our results confirm that vanilla SGM on a wide range of multiscale processes, including natural images, suffers from ill-conditioning, in the sense that the number of discretization steps grows with the image size. WSGM, on the contrary, leads to uniform discretization schemes whose number of steps at each scale does not depend on the image size.
+
+We also stress that there exists many techniques \citep{kadkhodaie2020solving,jolicoeur2021gotta,liu2022pseudo,zhang2022exponential,san2021noise,nachmani2021non,song2020denoising,kong2021fast,ho2020denoising,luhman2021knowledge,salimans2022progressive,xiao2021tackling} to accelerate the sampling of vanilla SGMs, with sometimes better FID-time complexity tradeoff curves. Notably, the FID plateaus at a relatively high value of 20 because the coarsest resolution $32 \times 32$ is still ill-conditioned and requires thousands of steps with a non-uniform discretization schedule to achieve FIDs less than 10 with vanilla SGM \cite{nichol2021improved}. Such improvements (including proper handling of border conditions) are beyond of the scope of this paper. The contribution of WSGM is rather to show the reason behind this sampling inefficiency and mathematically prove in the Gaussian setting that wavelet decompositions of the probability distribution allow solving this problem. We believe that extending this theoretical result to a wider class of non-Gaussian multiscale processes and combining WSGM with other sampling accelerations are interesting avenues for future work.
+
+\begin{figure}
+    \centering
+    \includegraphics[height=0.15\textheight]{img/generations_sgm_celeba128.png} 
+    \hfill
+    \includegraphics[height=0.15\textheight]{img/generations_wsgm_celeba128.png}
+    \hfill
+    \includegraphics[height=0.12\textheight]{img/spectrum}
+    \\[0.5em]
+    \includegraphics[height=0.12\textheight]{img/fid_sgm_vs_wsgm}
+    \hfill
+    \includegraphics[height=0.12\textheight]{img/fid_sgm}
+    \hfill
+    \includegraphics[height=0.12\textheight]{img/fid_wsgm}
+    \caption{\textbf{Top.} (a): Generations from SGM with 16 discretization steps. (b): Generations from WSGM with 16 discretization steps at each scale. (c): Power spectrum of CelebA-HQ. \textbf{Bottom.} (a): Evolution of the FID w.r.t.\ the number of diffusion steps for SGM and WSGM with $L = 128$. (b): Evolution of the FID w.r.t.\ the number of diffusion steps for SGM at several image sizes $L$. (c) Evolution of the FID w.r.t.\ the number of diffusion steps for WSGM at several image sizes $L$.}
+    \label{fig:celeba}
+\end{figure}
+
+\section{Discussion}
+
+This paper introduces a Wavelet Score-based Generative Model (WSGM)
+which applies an SGM to normalized wavelet coefficients conditioned by lower frequencies.
+We prove that the number of
+stepsizes in SGMs is controlled by the regularity of the score of the target
+distribution. For multiscale processes such as images, it requires a considerable number
+of time steps to achieve a good accuracy, which increases quickly with the image size.
+We show that a WSGM eliminates ill-conditioning issues by normalizing 
+wavelet coefficients. As a result, the number of stepsizes in WSGM does not increase
+with the image dimension.
+We illustrated our results on Gaussian
+distributions, physical processes and image datasets.
+
+One of the main limitations of WSGM is that it is limited to multiscale processes for which the conditional wavelet probabilities are close to white Gaussian distributions. A promising direction for future work is to combine WSGM with other acceleration techniques such as adaptive time discretizations to handle such cases.
+In another direction, one could strengthen the theoretical
+study of SGM and extend our results beyond the Gaussian setting, in
+order to fully describe SGM on physical processes which can be seen as
+perturbations of Gaussian distributions.
+
+\subsubsection*{Acknowledgments}
+This work was supported by a grant from the PRAIRIE 3IA Institute of the French ANR-19-P3IA-0001 program. We would like to thank the Scientific Computing Core at the Flatiron Institute for the use of their computing resources.
+
+\bibliographystyle{apalike}
+\bibliography{bibliography.bbl}
+
+% \section*{Checklist}
+
+
+% %%% BEGIN INSTRUCTIONS %%%
+% % The checklist follows the references.  Please
+% % read the checklist guidelines carefully for information on how to answer these
+% % questions.  For each question, change the default \answerTODO{} to \answerYes{},
+% % \answerNo{}, or \answerNA{}.  You are strongly encouraged to include a {\bf
+% % justification to your answer}, either by referencing the appropriate section of
+% % your paper or providing a brief inline description.  For example:
+% % \begin{itemize}
+% %   \item Did you include the license to the code and datasets? \answerYes{See Section....}
+% %   \item Did you include the license to the code and datasets? \answerNo{The code and the data are proprietary.}
+% %   \item Did you include the license to the code and datasets? \answerNA{}
+% % \end{itemize}
+% % Please do not modify the questions and only use the provided macros for your
+% % answers.  Note that the Checklist section does not count towards the page
+% % limit.  In your paper, please delete this instructions block and only keep the
+% % Checklist section heading above along with the questions/answers below.
+% %%% END INSTRUCTIONS %%%
+
+
+% \begin{enumerate}
+
+
+% \item For all authors...
+% \begin{enumerate}
+%   \item Do the main claims made in the abstract and introduction accurately reflect the paper's contributions and scope?
+%     \answerYes{}
+%   \item Did you describe the limitations of your work?
+%     \answerYes{See the end of \Cref{sec:time-reduct-wavel}}
+%   \item Did you discuss any potential negative societal impacts of your work?
+%     \answerNo{Like all generative models, WCRG can reproduce or amplify biases present in the data, or could be used to generate deceptive content. We stress that this work is theoretical in nature and should not be used for practical applications without a careful consideration of the aforementioned issues.}
+%   \item Have you read the ethics review guidelines and ensured that your paper conforms to them?
+%     \answerYes{}
+% \end{enumerate}
+
+
+% \item If you are including theoretical results...
+% \begin{enumerate}
+%   \item Did you state the full set of assumptions of all theoretical results?
+%     \answerYes{Assumptions are stated in the respective theorems.}
+%         \item Did you include complete proofs of all theoretical results?
+%     \answerYes{See \Cref{sec:proof-section21,sec:proof33}.}
+% \end{enumerate}
+
+
+% \item If you ran experiments...
+% \begin{enumerate}
+%   \item Did you include the code, data, and instructions needed to reproduce the main experimental results (either in the supplemental material or as a URL)?
+%     \answerYes{All the code needed to reproduce the experiments is provided in the supplemental material.}
+%   \item Did you specify all the training details (e.g., data splits, hyperparameters, how they were chosen)?
+%     \answerYes{See \Cref{sec:exper-deta-addit}.}
+%         \item Did you report error bars (e.g., with respect to the random seed after running experiments multiple times)?
+%     \answerNo{Standard errors are negligible for the comparisons we perform.}
+%         \item Did you include the total amount of compute and the type of resources used (e.g., type of GPUs, internal cluster, or cloud provider)?
+%     \answerNo{We estimate the total amount of compute used during the preparation of this paper, including preliminary experiments, at around 10k hours of NVIDIA A100 GPUs.}
+% \end{enumerate}
+
+
+% \item If you are using existing assets (e.g., code, data, models) or curating/releasing new assets...
+% \begin{enumerate}
+%   \item If your work uses existing assets, did you cite the creators?
+%     \answerYes{}
+%   \item Did you mention the license of the assets?
+%     \answerNo{}
+%   \item Did you include any new assets either in the supplemental material or as a URL?
+%     \answerNo{}
+%   \item Did you discuss whether and how consent was obtained from people whose data you're using/curating?
+%     \answerNo{}
+%   \item Did you discuss whether the data you are using/curating contains personally identifiable information or offensive content?
+%     \answerNo{}
+% \end{enumerate}
+
+
+% \item If you used crowdsourcing or conducted research with human subjects...
+% \begin{enumerate}
+%   \item Did you include the full text of instructions given to participants and screenshots, if applicable?
+%     \answerNA{}
+%   \item Did you describe any potential participant risks, with links to Institutional Review Board (IRB) approvals, if applicable?
+%     \answerNA{}
+%   \item Did you include the estimated hourly wage paid to participants and the total amount spent on participant compensation?
+%     \answerNA{}
+% \end{enumerate}
+
+
+% \end{enumerate}
+
+
+% % \clearpage
+% \appendix
+
+
+% \theoremstyle{plain}
+% \newtheorem{unlemma}{Lemma S}
+% \newtheorem{unproposition}{Proposition S}
+% \newtheorem{uncorollary}{Corollary S}
+% \newtheorem{untheorem}{Theorem S}
+
+% \setcounter{equation}{0}
+% \setcounter{figure}{0}
+% \setcounter{table}{0}
+% \setcounter{page}{1}
+% \makeatletter
+% \renewcommand{\theequation}{S\arabic{equation}}
+% \renewcommand{\thefigure}{S\arabic{figure}}
+% \renewcommand{\thetheorem}{S\arabic{theorem}}
+% \renewcommand{\thedefinition}{S\arabic{definition}}
+% \renewcommand{\thelemma}{S\arabic{lemma}}
+% \renewcommand{\thesection}{S\arabic{section}}
+% \renewcommand{\theremark}{S\arabic{remark}}
+% \renewcommand{\theproposition}{S\arabic{proposition}}
+% \renewcommand{\thecorollary}{S\arabic{corollary}}
+% \setcounter{tocdepth}{1}
+
+
+
+\section{Organization of the Supplemental Material}
+
+We provide the pseudocode for the WSGM algorithm in
+\Cref{sec:wsgm-pseudocode}. Details about wavelet transforms and their whitening
+properties are presented in \Cref{sec:wavelets-introduction,sec:wavelet-transforms}.  The proofs of
+\Cref{sec:time-sampling-score} and \Cref{sec:wavel-diff-score} are gathered
+\Cref{sec:proof-section21} and \Cref{sec:proof33} respectively. Details about
+the Gaussian model and the $\varphi^4$ model are given in
+\Cref{app:gaussian_exps} and \Cref{sec:deta-varph-model} respectively. Finally,
+experimental details and additional experiments are described in
+\Cref{sec:exper-deta-addit}.
+
+
+\section{WSGM Algorithm}
+\label{sec:wsgm-pseudocode}
+
+In \Cref{alg:cascaded_wavelet}, we provide the pseudo code for WSGM. Notice that the training of score models at each scale can be done in parallel, while the sampling is done sequentially one scale after the next. The sequential nature of sampling is the price to pay for the conditional decomposition, as we model only the conditional scores $\nabla_{\bar x_j} \log \bar p_j(\bar x_j | x_j)$. Generating all scales simultaneously would require learning the so-called free energy gradient $\nabla_{x_j} \log \bar p_j(\bar x_j | x_j)$. It is also required for likelihood computation. However, the conditional decomposition of WSGM allows not learning this free energy gradient and possibly reduces score estimation errors.
+
+%In \Cref{alg:non_cascaded_wavelet}, we provide the pseudo code for a \emph{non-cascaded} version of WSGM. The main difference resides in the conditioning of the score. In WSGM we estimate $\nabla \log \bar{p}_t(\bar{x}_{j,t}|\bar{x}_{j+1,0}, \dots,\bar{x}_{J+1, 0})$ whereas in the \emph{non-cascaded} version, we estimate $\nabla \log \bar{p}_t(\bar{x}_{j,t}|\bar{x}_{-j,t})$, where $\bar{x}_{-j,t}$ is the vector of $\bar{x}_{\ell, t}$ without $\bar{x}_{j,t}$. Estimating, this score we can sample the backward process in parallel. However, we do not preserve the hierarchic structure of WSGM. The difference between the two algorithms are higlighted in \textcolor{red}{red}. We emphasize that the \emph{non-cascaded} version of our algorithm enjoy the same properties as WSGM in the Gaussian setting. This can be clearly seen as the algorithm is nothing but a vanilla SGM applied to $\bar{x}$. One of the main difference between WSGM and its non-cascaded version is that in the cascaded version we do not learn the free-energy gradient $\nabla_{\bar{x}_{\ell}} \bar{p}_t (\bar{x}_j|\bar{x}_{j+1}, \dots, \bar{x}_{J+1})$ for $\ell \geq j+1$. As a result, we cannot easily compute likelihoods with cascaded models but sampling is facilitated.
+
+\begin{algorithm}[!h]
+\caption{\small Wavelet Score-based Generative Model}
+\label{alg:cascaded_wavelet}
+\begin{algorithmic}[1]
+  \small
+  \Require $J$, $N_{\textrm{iter}}$, $N$, $T$,$\{\bar\theta_{j,0}, \theta_{J, 0}\}_{j=0}^{J}$, $\{x^m_0\}_{m=1}^M$
+  \State{\color{commentcolor}{/// WAVELET TRANSFORM ///}}
+  \For{$j \in \{1, \dots, J\}$} 
+  \For{$m \in \{1, \dots, M\}$}
+  \State $x_{j}^m = \gamma_j^{-1} \rmG x_{j-1}^m$,  $\bar{x}_{j}^m =  \gamma_j^{-1} \wG x_{j-1}^m$ \Comment Wavelet transform of the dataset
+  \EndFor
+  \EndFor
+  \State{\color{commentcolor}{/// TRAINING ///}}
+  \State Train score network $\bs_{\theta^\star_{J}}$ at scale $J$ with dataset $\{ x_{J}^m\}_{m=0}^M$ \Comment Unconditional SGM training
+\For{$j \in \{J, \dots, 1\}$} \Comment Can be run in parallel
+\For{$n \in \{0, \dots, N_{\textrm{iter}}-1\}$}
+\State Sample $(\bar{x}_{j,0}, x_{j})$ from $\{\bar{x}_j^m, x_{j}^m\}_{m=1}^M$ 
+\State Sample $t$ in $\ccint{0, T}$ and $\bar{Z} \sim \mathrm{N}(0, \Id)$
+\State $\bar{x}_{j,t} = \rme^{-t} \bar{x}_{j,0} + (1 - \rme^{-2t})^{1/2} \bar{Z}$ 
+% % \State $\ell(\theta_n) = \ell(\theta_n) + \textrm{LOSS-COMPUTE}(T, N, \{X_0^{m_b}\}_{b=1}^{B_M}, \mathrm{loss}, \mathrm{thres}, \bs_{\theta_n}, \vareps)$ \Comment \Cref{alg:loss}
+%% 
+\State $\ell(\bar\theta_{j,n}) = \normLigne{(\rme^{-t}\bar{x}_{j,0} - \bar{x}_{j,t}) - (1 - \rme^{-2t})^{1/2} \bar\bs_{\bar\theta_{j,n}}(t, \bar{x}_{j,t} | x_{j})}^2$ 
+\State $\bar\theta_{j,n+1} = \verb|optimizer_update|(\bar\theta_{j,n}, \ell(\bar\theta_{j,n}))$ \Comment ADAM optimizer step %\verb{optimizer_update}
+\EndFor
+\State $\bar\theta^\star_j = \bar\theta_{j, N_{\textrm{iter}}}$
+\EndFor
+\State{\color{commentcolor}{/// SAMPLING ///}}
+%\State $\tilde{x}_{J,T} \sim \mathrm{N}(0,\Id)$
+\State ${\txwav}_{J} = \verb|unconditionalSGM|(T, N, \bs_{\theta_J^\star})$ \Comment Unconditional SGM sampling
+\For{$j \in \{ J, \dots, 1\}$}
+%\State $\txwav_{j,T} \sim \mathrm{N}(0,\Id)$
+\State $\tox_{j} = \verb|EulerMaruyama|(T, N, \bar\bs_{\bar\theta_j^\star}(\cdot, \cdot | \txwav_{j}))$ \Comment
+Euler-Maruyama recursion following \eqref{eq:backward_disc}
+\State $\txwav_{j-1} = \gamma_j \rmG^\top \txwav_{j} + \gamma_j \wG^\top \tox_{j}$ \Comment Wavelet reconstruction
+\EndFor
+\State {\bfseries return} $\{\bar\theta^\star_{j}, \theta^\star_J\}_{j=1}^{J}$, $\txwav_{0}$
+\end{algorithmic}
+\end{algorithm}
+
+% \begin{algorithm}[!h]
+% \caption{\small Wavelet Parallel Score-based Generative Model}
+% \label{alg:non_cascaded_wavelet}
+% \begin{algorithmic}[1]
+%   \small
+%   \Require $L$, $N$, $\delta$, $\rmG$, $N_{\textrm{iter}}$, $\{X^m_0\}_{m=1}^M$, $T$, $\{\theta_{j,0}\}_{j=0}^L$
+%   \State{\color{commentcolor}{/// WAVELET TRANSFORM ///}}
+%   \For{$j \in \{0, \dots, L-1\}$}
+%   \For{$m \in \{1, \dots, M\}$}
+%   \State $x_{j+1}^m = \gamma_j^{-1} \rmG x_j^m$,  $\bar{x}_{j+1}^m =  \gamma_j^{-1} \wG x_j^m$ \Comment Wavelet transform of the dataset
+%   \EndFor
+%   \EndFor
+%   \State{\color{commentcolor}{/// TRAINING ///}}
+%   \State Train score network $\bs_{\theta^\star_0}$ at scale $L$ with dataset $\{ x_{L}^m\}_{m=0}^M$ \Comment Unconditional SGM training
+% \For{$j \in \{L, \dots, 1\}$} \Comment Can be run in parallel
+% \For{$n \in \{0, \dots, N_{\textrm{iter}}-1\}$}
+% \State $(\bar{x}_{j,0}, x_{j, 0}) \sim (1/M) \sum_{m=1}^M \updelta_{\bar{x}_j^m, x_{j}^m}$ 
+% \State $t \sim U(\ccint{0, T})$, $\bar{Z}, Z \sim \mathrm{N}(0, \Id)$
+% \State $\bar{x}_{j,t} = \rme^{-t} \bar{x}_{j,0} + (1 - \rme^{-2t})^{1/2} \bar{Z}$
+% \State \textcolor{red}{$x_{j,t} = \rme^{-t} x_{j,0} + (1 - \rme^{-2t})^{1/2} Z$}
+% % % \State $\ell(\theta_n) = \ell(\theta_n) + \textrm{LOSS-COMPUTE}(T, N, \{X_0^{m_b}\}_{b=1}^{B_M}, \mathrm{loss}, \mathrm{thres}, \bs_{\theta_n}, \vareps)$ \Comment \Cref{alg:loss}
+% %% 
+% \State $\ell(\theta_{j,n}) = \normLigne{(\rme^{-t}\bar{x}_{j,0} - \bar{x}_{j,t}) - (1 - \rme^{-2t})^{1/2} \bs_{\theta_{j,n}}(t, \bar{x}_{j,t}, \textcolor{red}{x_{j,t}})}^2$ 
+% \State $\theta_{j,n+1} = \verb|optimizer_update|(\theta_{j,n}, \ell(\theta_{j,n}))$ \Comment ADAM optimizer step %\verb{optimizer_update}
+% \State $\theta^\star_j = \theta_{j, N_{\textrm{epoch}}}$
+% \EndFor
+% \EndFor
+% \State{\color{commentcolor}{/// SAMPLING ///}}
+% \State $\tilde{x}_{L,T} \sim \mathrm{N}(0,\Id)$
+% \State $\tilde{x}_{L,0} = \verb|unconditionalSGM|(T, N, \bs_{\theta_0^\star})$ \Comment Unconditional SGM sampling
+% \For{$j \in \{ L, \dots, 1\}$} ]\Comment \textcolor{red}{Can be run in parallel}
+% \State $\twx_{j,T} \sim \mathrm{N}(0,\Id)$
+% \State $\twx_{j,0} = \verb|EulerMaruyama|(T, N, \bs_{\theta_j^\star}(t, \cdot, \textcolor{red}{\twx_{-j,t}}))$ \Comment
+% Euler-Maruyama recursion following \eqref{eq:backward_disc}
+% \State $\tilde{x}_{j-1, t} = \gamma_j \rmG^\top \tilde{x}_{j,t} + \gamma_j \wG^\top \twx_{j,t}$ for any $t$ \Comment Wavelet reconstruction
+% \EndFor
+% \State {\bfseries return} $\theta^\star_{j}, \tilde{x}_{0,T}$
+% \end{algorithmic}
+% \end{algorithm}
+
+\section{Introduction to Orthogonal Wavelet Bases}
+\label{sec:wavelets-introduction}
+
+This section introduces properties of orthogonal wavelet bases as specified by the operators $G$ and $\bar G$. In this section, we drop the normalizing factors $\gamma_j$ for clarity.
+
+Let $x_0$ be a signal. The index $u$ in $x_0(u)$ belongs to an $n$-dimensional grid of linear size $L$ and hence with $L^n$ sites, with $n=2$ for images.
+
+Let us denote $x_j$ the coarse-grained version of $x_0$ at a scale $2^j$ defined over a coarser grid with intervals $2^j$ and hence $(2^{-j} L)^n$ sites. The coarser signal $x_j$ is iteratively computed from $x_{j-1}$ by applying a coarse-graining operator, which acts as a scaling filter $G$ which eliminates high frequencies and subsamples
+the grid \cite{Mallat:89}:
+\begin{equation}
+  \label{low-pass200}
+(G x_{j-1}) (u) =  \sum_{u'} x_{j-1} (u')\, G (2u-u')\,\, .
+\end{equation}
+The index $u$ on the left-hand side runs on the coarser grid, whereas $u'$ runs on the finer one. 
+% In order to guarantee that the
+% fluctuations of $x_{j}$ 
+% remains of the order of one, we normalise $G$ with a
+% factor $\gamma_j$ which guarantees that $\langle x^2_{j}(i) \rangle_{p_j}=1$ with $\langle x_{j}(i) \rangle_{p_j}=0$:
+% \[
+% x_j = \gamma_j^{-1}\, G\, x_{j-1} .
+% \]
+
+\newcommand\aphi{x}
+\newcommand\dphi{\bar x}
+The degrees of freedom of $\aphi_{j-1}$ that are not in  $\aphi_{j}$ are encoded in orthogonal wavelet coefficients $\dphi_j$.
+The representation $(\aphi_j , \dphi_j)$ 
+is an orthogonal change of basis calculated from $\aphi_{j-1}$. The coarse signal
+$\aphi_j$ is calculated in \eqref{low-pass200} with a low-pass scaling filter $G$ and a subsampling. In dimension $n$,
+the wavelet coefficients $\dphi_j$ have $2^n-1$ channels computed with a convolution and subsampling operator $\bar G$. We thus have:
+\begin{equation}
+  \label{fastdec30}
+\aphi_j = G\, \aphi_{j-1} ~~\mbox{and}~~
+\dphi_j = \bar G\, \aphi_{j-1} .
+\end{equation}
+The wavelet filter
+$\bar G$ computes $2^n-1$ wavelet coefficients $\dphi_j (u,k)$ indexed by $1 \leq k \leq 2^n-1$, 
+with separable high-pass filters $\bar G_k(u)$:
+\[
+\dphi_{j} (u,k) =  \sum_{u'} \aphi_{j-1} (u')\, \bar G_k (2u-u').
+\]
+
+As an example, the Haar wavelet leads to a block averaging filter $G$:
+\[
+\aphi_j(u)= \frac{\aphi_{j-1}(2u)+\aphi_{j-1}(2u+1)}{\sqrt{2}}.
+\]
+In $n=1$ dimension, there is a single wavelet channel in $\dphi_j$. The corresponding wavelet filter $\bar G$ computes the wavelet coefficients with normalized increments:
+\begin{equation}
+    \label{Harwnsdf}
+\dphi_j(u)= \frac{\aphi_{j-1}(2u)-\aphi_{j-1}(2u+1)}{\sqrt{2}}.
+\end{equation}
+If $n = 2$, then there are $3$ channels as illustrated in \Cref{fig1}.
+
+
+The fast wavelet transform cascades \eqref{fastdec30} for $1 \leq j \leq J$ 
+to compute the decomposition of the high-resolution signal $\aphi_0$ into its orthogonal wavelet representation
+over $J$ scales:
+\begin{equation}
+\label{orthowave}
+\left\{ \aphi_J\, ,\, \dphi_j \right\}_{1 \leq j \leq J} .
+\end{equation}
+
+The wavelet orthonormal filters $G$ and $\bar G$ define
+a unitary transformation, which satisfies:
+\begin{equation}
+  \label{consdsf}
+\bar G G^\top = G \bar G^\top = 0~~\mbox{and}~~G^\top G + \bar G^T \bar G = \mathrm{Id}~,
+\end{equation}
+where $\mathrm{Id}$ is the identity. \cite{Mallat:89} gives a condition on the Fourier transforms of $G$ and $\bar G$ to build such filters.
+The filtering equations \eqref{fastdec30}
+can then be inverted with the adjoint operators:
+\begin{equation}
+  \label{fastrec3}
+  \aphi_{j-1} = G^\top \aphi_j + \bar G^\top \dphi_j~.
+\end{equation}
+The adjoint $G^\top$ enlarge the grid size of $\aphi_j$ by inserting a zero between each coefficients, and then filters the output:
+\[
+(G^\top \aphi_j)(u) = \sum_{u'} \aphi_j (u' )\, G (2u'-u) .
+\]
+The adjoint of $\bar G$ performs the same operations over the $2^n-1$ channels and adds them:
+\[
+(\bar G^\top \dphi_j )(u) = \sum_{k=1}^{2^n-1} \sum_{u'} \dphi_j (u',k )\, \bar G_k (2u'-u) .
+\]
+The fast inverse wavelet transform \cite{Mallat:89} recovers 
+$\aphi_0$ from its wavelet representation \eqref{orthowave} 
+by progressively recovering $\aphi_{j-1}$ from $\aphi_j$ and $\dphi_j$
+with \eqref{fastrec3}, for $j$ going from $J$ to $1$.
+
+% The fast wavelet transform computes each wavelet field $\dphi_j$ from $\aphi_0$ by
+% cascading $j-1$ averaging filters $G$ and subsamplings, followed by a collection of high-pass filters
+% $\bar G$ followed by a subsampling. This cascade computes a single linear transformation with an 
+% equivalent filter which is called a wavelet. When $j$ increases, 
+% the wavelet theory \cite{Mallat:89b,Meyer:92c} proves that
+% these filters converges to wavelet functions which belong to the space ${\bf L^2} (\R^d)$
+% of square-integrable functions. Wavelet fields $\dphi_j$ are
+% decomposition coefficients in an wavelet orthonormal basis of ${\bf L^2} (\R^d)$, 
+% obtained by dilating and and translating $2^d -1$ wavelet functions in dimension $d$.
+% This basis plays an important role to understand the properties
+% of wavelet fields, depending upon the representation of operators involved in energy functions.
+
+\section{Orthogonal Wavelet Transform}
+\label{sec:wavelet-transforms}
+
+This appendix relates the fast discrete wavelet transform to decomposition of
+finite energy functions in orthonormal bases of $\Ld([0,1]^n)$.  We shall then
+prove that the covariance of normalized wavelet coefficients is a well-conditioned matrix, independently from scales. This is a central result to prove \Cref{lemma:bound_spectrum}.  The results of this appendix are based on
+the multiresolution theory \cite{mallat1999wavelet} and the representation of
+singular operators in wavelet orthonormal bases \cite{Meyer:92c}.
+
+
+\paragraph{Orthonormal wavelet transform}
+From an input discrete signal $x_0 (u) = x(u)$ defined over an $n$-dimensional
+grid of width $L$, we introduced in \eqref{eq:low_res}
+a normalized wavelet transform which
+computes wavelet coefficients $\ox_j(u,k)$ having
+$2^n -1$ channels $1 \leq k < 2^n$.
+A non-normalized orthonormal wavelet transform is obtained 
+by setting $\gamma_j = 1$:
+\begin{equation}
+  \label{fastdec3}
+x^w_j = G\, x^w_{j-1} ~~\mbox{and}~~
+\ox^w_j = \oG\, x^w_{j-1} ,
+\end{equation}
+with $x^w_0 = x_0$ and where $G$ is a low-pass filtering and subsampling by $2$:
+\begin{equation}
+  \label{low-pass20}
+  \textstyle{
+    G x^w_{j-1} (u) =  \sum_{u'} x_{j-1} (u')\, G (2u-u')\,.
+    }
+\end{equation}
+The wavelet convolutional and subsampling operator
+$\oG$ computes $2^n-1$ wavelet signals $\ox^w_j (u,k)$, 
+with  $2^n-1$ high-pass filters $\oG_k(u)$ indexed by $1 \leq k \leq 2^n-1$: 
+\[
+  \textstyle{
+    \ox^w_{j-1} (u,k) =  \sum_{u'} x^w_{j-1} (u')\, \oG_k (2u-u').
+    }
+\]
+We write $\ox^w = (\ox^w_j , x^w_J)_{j \leq J}$ the vector of non-normalized wavelet coefficients.
+
+The multiresolution wavelet theory \cite{mallat1999wavelet,Meyer:92c} proves
+that the coefficients of $\ox^w$ can also be written as the decomposition
+coefficients of a finite energy function, in a wavelet orthonormal basis of the
+space $\Ld(\R^n)$ of finite energy functions.  These wavelets arise from the
+cascade of the convolutional filters $G$ and $\oG$ in \eqref{fastdec3} when we
+iterate on $j$ \cite{mallat1999wavelet}.  This wavelet orthonormal basis is thus
+entirely specified by the choice of the filters $G$ and $\oG$.  A wavelet
+orthonormal basis is defined by a \emph{scaling function} $\psi^0 (v)$ for
+$v \in \R^n$ which has a unit integral $\int {\psi^0 (v)} \,\rmd v = 1$, and $2^n-1$
+\emph{wavelets} which have a zero integral $\int \psi^k(v)\, \rmd v = 0$ for
+$1 \leq k < 2^n$.  Each of these functions are dilated and translated by
+$u \in \Z^n$, for $1 \leq k <2^n$ and $j \in \Z$:
+\begin{equation}
+  \label{wavensdof}
+\psi^k_{j,u} (v) = 2^{- nj/2}\, \psi^k (2^{-j} v - u).    
+\end{equation}
+The main result  proved in \cite{mallat1999wavelet,Meyer:92c},
+is that for appropriate filters $G$ and $\bar G$ such that
+$(G,\oG)$ is unitary, 
+the family of translated and dilated wavelets
+up to the scale $2^J$:
+\begin{equation}
+  \label{waveletbasis}
+  \textstyle{
+    \{ \psi^0_{J,u}\,,\,\psi^k_{j,u}  \}_{1 \leq k < 2^n\,,\,j \leq J \,,\,u \in \Z^n}
+    }
+\end{equation}
+is an orthonormal basis of ${\bf L^2}(\R^n)$.
+A periodic wavelet basis of ${\bf L^2}([0,1]^n)$ is defined
+by replacing each  wavelet $\psi^k_{j,u}$ by the periodic function
+$\sum_{r \in \Z^n} \psi^k_{j,u}(v- r)$ which we shall still
+write $\psi^k_{j,u}$. 
+
+The properties of the wavelets $\psi^k_{j,u}$ depend upon the choice of the
+filters $G$ and $\oG$. If these filters have a compact support then one can
+verify \cite{mallat1999wavelet} 
+that all wavelets $\psi^k_{j,u}$ have a compact support of size proportional
+to $2^j$.
+With an appropriate choice of filters, one can also define wavelets having
+$q$ vanishing moments, which means that they are orthogonal to any polynomial $Q(v)$ of degree strictly smaller than $q$:
+\[
+  \textstyle{
+    \int_{[0,1]^n} Q(v)\,\psi_{j,u}^k (v)\, \rmd v = 0 .
+    }
+\]
+One can also ensure that wavelet are $q$ times continuously differentiable.
+Daubechies wavelets \cite{mallat1999wavelet} are examples of orthonormal wavelets which can have $q$ vanishing moments and be ${\bf C}^q$ for any $q$.
+
+
+The relation between the fast wavelet transform and these wavelet orthonormal
+bases proves \cite{mallat1999wavelet} that any discrete signal $x_0 (u)$ of
+width $L$ can be written as a discrete approximation at a scale $2^{\ell}=L^{-1}$ ($\ell < 0$) of a 
+(non-unique) function $f \in \Ld([0,1]^n)$. The support of $f$ is normalized whereas the
+approximation scale $2^\ell$ decreases as the number of samples $L$ increases. The coefficients $x_0(u)$ are inner
+products of $f$ with the orthogonal family of scaling functions at the scale
+$2^{\ell}$ for all $u \in \Z^n$ and $2^{\ell} u \in [0,1]^n$:
+\[
+  \textstyle{
+    x_0 (u) = \int_{[0,1]^n} f(v)\, \psi^0_{\ell,u} (v) \, \rmd v = \lb f , \psi^0_{\ell,u}\rb .
+    }
+\]
+Let $V_{\ell}$ be the space generated by the orthonormal family of scaling functions
+$\{ \psi^0_{\ell,u} \}_{2^{\ell} u \in [0,1]^n}$, and  $P_{V_{\ell}} f$ be
+the orthogonal projection  of $f$ in $V_{\ell}$.
+The signal $x_0$ gives the orthogonal 
+decomposition coefficients of  $P_{V_{\ell}} f$ in this
+family of scaling functions. One can prove \cite{mallat1999wavelet} that
+the non-normalized wavelet coefficients $\ox^w_j$ of $x_0$ computed with a fast
+wavelet transform are equal to the orthogonal wavelet coefficients of $f$
+at the scale $2^{j+\ell}$, for all $u \in \Z^n$ and $2^{j+\ell} u \in [0,1]^n$:
+\[
+  \textstyle{
+    \ox_j^w (u,k) = \int_{[0,1]^n} f(v)\, \psi^k_{j+\ell,u} (v) \, \rmd v = \lb f , \psi^k_{j+\ell,u}\rb .
+    }
+\]
+and at the largest scale $2^J$
+\[
+  \textstyle{
+    x_J^w (u,k) = \int_{[0,1]^n} f(v)\, \psi^0_{J+\ell,u} (v) \, \rmd v = \lb f , \psi^k_{j+J,u}\rb .
+    }
+\]
+ 
+
+\paragraph{Normalized covariances}
+We now consider a periodic stationary multiscale random process $x(u)$ of width $L$.
+It covariance is diagonalised in a Fourier basis
+and its power spectrum (eigenvalues) has a power-law decay
+$P(\om) = c (\xi^\eta + |\om|^\eta)^{-1}$, for frequencies $\om = 2 \pi m / L$
+with $m \in \{0, \dots, L-1\}^n$.  The following lemma proves that the covariance matrix
+$\bar \Sigma$ of the normalized wavelet coefficients $\ox$ of $x$ is well
+conditioned, with a condition number which does not depend upon $L$. It relies on an equivalence between Sobolev norms and weighted norms in a wavelet orthonormal basis.
+
+\begin{lemma}
+  \label{sec:norm-covar}
+  For a wavelet transform corresponding to wavelets having $q > \eta$ vanishing
+  moments, which have a compact support and are $q$ times continuously differentiable, there exists
+  $C_2 \geq C_1 > 0$ such that for any $L$ the covariance $\bar \Sigma$
+  of $\bar x = (\ox_j , x_J)_{j \leq J}$ satisfies:
+\begin{equation}
+    \label{stability}
+  C_1\, \Id \leq \bar \Sigma \leq C_2 \,\Id .
+\end{equation}
+\end{lemma}
+
+The remaining of the appendix is a proof of this lemma.  Without loss of
+generality, we shall suppose that ${\mathbb E}[x] = 0$.  Let $\sigma_{j,k}^2$ be
+the variance of $\ox^w_{j} (u,k)$, and $D$ be the diagonal matrix whose
+diagonal values are $\sigma_{j,k}^{-1}$ .  The vector of normalized wavelet
+coefficients $\ox = (\ox_j , x_J)_{j \leq J}$ are related to the non-normalized
+wavelet coefficients $\ox^w$ by a multiplication by $D$:
+\[
+\ox = D\, \ox^w .
+\]
+ Let $\bar \Sigma_w$ be the covariance of $\ox^w$.  It
+results from this equation that the covariance $\bar \Sigma$ of $\ox$ and the
+covariance $\bar \Sigma_w$ of $\ox^w$ satisfy:
+\begin{equation}
+    \label{xwx}
+\bar \Sigma = D \bar \Sigma_w  D .
+\end{equation}
+The diagonal normalization $D$ is adjusted so that the variance of each coefficient of $\ox$ is equal to $1$, which implies that
+the diagonal of $\bar \Sigma$ is the identity. We must now prove that $\bar \Sigma$
+satisfies \eqref{stability}, which is equivalent to prove
+that there exists $C_1$ and $C_2$ such that:
+\begin{equation}
+\label{intermdres}
+C_1\, \Id \leq  D \bar \Sigma_w  D \leq C_2\, \Id .
+\end{equation}
+To prove \eqref{intermdres},
+we relate it to Sobolev norm equivalences that have been
+proved in harmonic analysis. We begin by stating the result on Sobolev inequalities and then prove that it implies \eqref{intermdres} for appropriate constants $C_1$ and $C_2$.
+
+Let $\Sigma_\infty$ be the singular self-adjoint
+convolutional operator over $\Ld(\R^n)$
+defined in the Fourier domain for all $\om \in \R^n$:
+\[
+\widehat{\Sigma_\infty f}(\om) = \hat f(\om) \,(\xi^\eta + |\om|^\eta) .
+\]
+Observe that:
+\[
+  \textstyle{
+\lb \Sigma_\infty f , f \rb = \frac 1 {(2 \pi)^n} \int_{\R^n}
+|\hat f(\om)|^2 \,(\xi^\eta + |\om|^\eta)\, \rmd\om 
+}
+\]
+is a Sobolev norm of exponent $\eta$.  Such Sobolev norms are equivalent to
+weighted norms in wavelet bases, as proved in Theorem 4, Chapter 3 in
+\cite{Meyer:92c}. To take into account the constant $\xi$, we introduce
+a maximum scale $2^{J'} = \xi^{-1}$. 
+For all $f \in \Ld(\R^n)$, there exists $B \geq A > 0$ such that:
+\begin{align}
+  \label{Sobolev0}
+  &A\, \lb \Sigma_\infty f , f \rb \leq   \textstyle{
+    \sum_{u \in \Z^n} 2^{-J \eta} |\lb f , \psi^0_{{J'},u} \rb|^2} \\
+  &\qquad \qquad \qquad \textstyle{+
+  \sum_{j =-\infty}^{J'} \sum_{u \in \Z^n} \sum_{k=1}^{2^n-1}
+  2^{-j \eta}\, |\lb f , \psi^k_{j,u} \rb|^2 \leq 
+  B\, \lb \Sigma_\infty f , f \rb .}
+\end{align}
+The remaining of the proof shows that these inequalities imply similar inequalities
+over the covariance of discrete wavelet coefficients. This is done by first restricting it to a finite support and then using the correspondence between the orthonormal wavelet coefficients of
+$f$ and the discrete wavelet coefficients $\ox^w$ of $x_0$. 
+
+One can verify that the equivalence \eqref{Sobolev0} remains valid for 
+functions $f \in \Ld([0,1]^n)$ decomposed over periodic wavelet bases,
+because functions in $\Ld([0,1]^n)$ can be written $f(v) = \sum_{r \in \Z^n} \tilde f(v-r)$
+with $\tilde f \in \Ld(\R^n)$:
+\begin{align}
+  \label{Sobolev2}
+&\textstyle{A\, \lb \Sigma_\infty f , f \rb \leq 
+  \sum_{2^j u \in [0,1]^n} 2^{-{J'} \eta} |\lb f , \psi^0_{{J'},u} \rb|^2} \\
+  & \qquad \qquad \qquad \textstyle{+
+ \sum_{j =-\infty}^{J'} \sum_{2^j u \in [0,1]^n} \sum_{k=1}^{2^n-1}
+2^{-j \eta}\, |\lb f , \psi^k_{j,u} \rb|^2 \leq 
+B\, \lb \Sigma_\infty f , f \rb .}
+\end{align}
+Applying this result to $f \in V_{\ell}$ is equivalent to restricting
+$\Sigma_\infty$ to $V_{\ell}$, which proves that $\Sigma_\ell = P_{V_\ell} \Sigma_\infty P_{V_\ell}$ satisfies:
+\begin{align}
+  \label{Sobolev4}
+&\textstyle{A\, \lb \Sigma_\ell f , f \rb \leq 
+  \sum_{2^{J'} u\in [0,1]^n} 2^{-{J'} \eta} |\lb f , \psi^0_{{J'},u} \rb|^2 }
+\\ & \qquad \qquad \qquad \textstyle{+
+ \sum_{j=\ell+1}^{J'} \sum_{2^j u \in [0,1]^n} \sum_{k=1}^{2^n-1}
+2^{-j \eta}\, |\lb f , \psi^k_{j,u} \rb|^2 \leq 
+B\, \lb  \Sigma_\ell f , f \rb .}
+\end{align}
+The operator $\Sigma_\ell = P_{V_\ell} \,\Sigma_\infty\,P_{V_\ell}$
+is covariant with respect to shifts by any $m 2^{\ell}$ for $m \in \Z^n$
+because $P_{V_\ell}$ and $\Sigma_\infty$ are covariant to such shifts. 
+Its representation in the basis of scaling functions $\{ \psi^0_{\ell,u} \}_{2^{\ell} u \in  [0,1]^n}$ is thus a Toeplitz matrix which is diagonalized by a Fourier transform.
+There exists $0 < A_1 \leq B_1$ such that for all $\ell < 0$ and all 
+$\om \in [-2^{-\ell} \pi , 2^{-\ell} \pi]^n$,
+\begin{equation}
+    \label{spec-rest}
+A_1 \, (\xi^\eta + |\om|^\eta) \leq P_\ell (\om) \leq B_1\, (\xi^\eta + |\om|^\eta) .
+\end{equation}
+Indeed, the spectrum of $\Sigma_\infty$ is $c\, (\xi^\eta + |\om|^\eta)$ for $\om \in \R^n$
+and $P_{\V_\ell}$ performs a filtering with the scaling function $\psi^0_\ell$ whose
+support is essentially restricted to the frequency interval $[- \pi 2^{-\ell} , \pi 2^{-\ell}]$ so that the spectrum of $P_{V_\ell} \,\Sigma_\infty\,P_{V_\ell}$ is equivalent
+to the spectrum of $\Sigma_\infty$ restricted to this interval. 
+
+The lemma hypothesis supposes that the covariance $\widetilde \Sigma$ of $x_0$
+has a spectrum equal to $c\, (\xi^\eta + |\om|^\eta)^{-1}$ and hence that the
+spectrum of $\widetilde \Sigma^{-1}$ is $c^{-1}\, (\xi^\eta + |\om|^\eta)$.
+Since $x_0$ are decomposition coefficients of $f \in \V_\ell$ in the basis of
+scaling functions, \eqref{spec-rest} can be rewritten for any $f \in \V_\ell$:
+\begin{equation}
+    \label{spec-rest3}
+A_1\,c\,\lb  \widetilde \Sigma^{-1} x_0 , x_0\rb \leq \lb  \Sigma_\ell f , f \rb
+\leq B_1\, c \,\lb  \widetilde \Sigma^{-1} x_0 , x_0\rb .
+\end{equation}
+Since the orthogonal wavelet coefficients $\bar x^w$ defines an orthonormal representation
+of $x_0$, the covariance $\bar \Sigma_w$ of $\bar x^w$ satisfies
+$ \lb \bar \Sigma_w^{-1} \bar x^w , \bar x^w\rb = 
+\lb  \widetilde \Sigma^{-1} x_0 , x_0\rb $. 
+Moreover, we saw that that the wavelet coefficients $\bar x^w$ of $x_0$ satisfy
+$\ox^w_j (u,k) = \lb f , \psi^k_{j+\ell,u}\rb$ and at the largest scale
+$\ox^w_J (u,k) = \lb f , \psi^0_{J+\ell,u}\rb$. Hence for $J +\ell = J'$,
+we derive from
+\eqref{Sobolev4} and \eqref{spec-rest3} that:
+\begin{align}
+  \label{Sobolev}
+&\textstyle{A\,A_1\,c\, \lb \bar \Sigma_w^{-1} \bar x^w , \bar x^w \rb \leq 
+  \sum_{2^J u\in [0,1]^n} 2^{-(J+\ell) \eta} \,| x^w_J (u)|^2 }
+\\ & \qquad \qquad \qquad \textstyle{+
+ \sum_{j=1}^J \sum_{2^j u \in [0,1]^n} \sum_{k=1}^{2^n-1}
+2^{-(j+\ell) \eta}\, |\ox^w_j (u,k)|^2 \leq 
+B\,B_1\,c\, \lb \bar \Sigma_w^{-1} \bar x^w , \bar x^w \rb .}
+\end{align}
+It results that for $A_2 = A\,A_1\,c$ and $B_2 = B\,B_1\,c$ we have:
+\begin{equation}
+    \label{nonsdf0asd}
+A_2\,\lb \bar \Sigma_w ^{-1}\bar x^w , \bar x^w \rb \leq
+2^{-(J+\ell) \eta}\, \|x^w_J \|^2 + \sum_{j=1}^J
+2^{-(j+\ell) \eta}\, \|\ox_j^w \|^2
+\leq B_2\,\lb \bar \Sigma_w^{-1} \bar x^w , \bar x^w \rb .
+\end{equation}
+Let $\tilde D$ be the diagonal operator over the wavelet coefficients $\ox^w$,
+whose diagonal values are $2^{-\eta (j+\ell)/2}$ at all scales $2^j$.
+These inequalities can be rewritten as operator inequalities:
+\begin{equation}
+    \label{nonsdf0asd2}
+A_2 \,\bar \Sigma_w^{-1} \leq \tilde D^{2} \leq B_2\, \bar \Sigma_w^{-1},
+\end{equation}
+and hence:
+\begin{equation}
+  \label{Dinequal0}
+A_2 \Id \leq \tilde D \bar \Sigma_w \tilde D \leq B_2 \Id .
+\end{equation}
+
+Since $D^{-2}$ is the diagonal of $\bar \Sigma_w$, we derive from \eqref{Dinequal0} that:
+\begin{equation}
+  \label{Dinequal}
+A_2\,  \tilde D^{-2} \leq   D^{-2} \leq B_2\,  \tilde D^{-2} .
+\end{equation}
+Inserting this equation in \eqref{Dinequal0}
+proves that:
+\[
+ A_2\,B_2^{-1}\, \Id \leq D\,\bar \Sigma_w\,D \leq B_2\,A^{-1}_2 \,\Id ,
+\]
+and since $\bar \Sigma = D\,\bar \Sigma_w\,D$ it proves
+the lemma result \eqref{intermdres}, with $C_1 = A_2 B^{-1}_2$ and $C_2 = B_2 A_2^{-1}$. 
+
+
+
+\input{proof21.tex}
+
+\input{proof33}
+
+
+\section{Experimental Details on Gaussian Experiments}\label{app:gaussian_exps}
+
+
+We now give some details on the experiments in \Cref{sec:time-sampl-accur} (\Cref{fig:gaussian}). We use the exact formulas for the Stein score of $p_t$ in this case: if $x_0 \sim \mathcal{N}(M,\Sigma)$, then $x_t \sim N(M_t, \Sigma_t)$ with $M_t = e^{-t}M$ and
+$$ \Sigma_t = \mathrm{e}^{-2t}\Sigma + (1 - \mathrm{e}^{-2t})\Id.$$
+Under an ideal situation where there is no score error, the discretization of the (backward) generative process is given by equation \eqref{eq:recur_recu}: 
+\begin{equation}
+  x_{k+1} = ((1 + \delta) \Id - 2\delta \Sigma_{T - k \delta}^{-1}) x_k  + 2 \delta \Sigma_{T - k \delta}^{-1} M_{T-k \delta}+ \sqrt{2 \delta} z_{k+1} \eqsp ,
+\end{equation}
+where $\delta$ is the uniform step size and $z_k$ are iid white Gaussian random variables. For the SGM case, $M=0$. The starting step of this discretization is itself $x_0 \sim \mathcal{N}(0,\Id)$. From this formula, the covariance matrix $\hat{\Sigma}_k$ of $x_k$ satisfies the recursion \eqref{eq:recursion_cov}: 
+\begin{equation}
+  \hat{\Sigma}_{k+1} = ((1 + \delta) \Id - 2\delta \Sigma_{T - k \delta}^{-1}) \hat{\Sigma}_k ((1 + \delta) \Id - 2\delta \Sigma_{T - k \delta}^{-1}) + 2 \delta \Id \eqsp ,
+\end{equation}
+from which we can exactly compute $\hat{\Sigma}_k$ for very $k$, and especially for $k=N=T/\delta$, as a function of $\Sigma$, the final time $T$, and the step size $\delta$. In all our experiments, we choose stationary processes: their covariance $\Sigma$ is diagonal in a Fourier basis, with eigenvalues (\emph{power spectrum}) noted $\hat{P}_k$. All the $x_k$ remain stationary so $\hat{\Sigma}_k$ is still diagonal in a Fourier basis, with power spectrum noted $\hat{P}_k$. The error displayed in the left panel of  \Cref{fig:gaussian} is: $$\Vert \hat{P}_N - P\Vert = \max_\omega |\hat{P}_N(\omega) - P(\omega)|/\max_\omega |P(\omega)|,$$ normalized by the operator norm of $\Sigma$. 
+
+The illustration in the middle panel of \Cref{fig:gaussian}, for WSGM, is done for simplicity only at one scale (ie, at $j=1$ in \Cref{alg:cascaded_wavelet}): instead of stacking the full cascade of conditional distributions for all $j=J, \dotsc, 1$, we use the true low-frequencies $\txwav_{j,0} = x_1$. Here, we use Daubechies-4 wavelets. We sample $\tox_{j,0}$ using the Euler-Maruyama recursion \eqref{eq:recur_recu}-\eqref{eq:recursion_cov} for the conditional distribution. We recall that in the Gaussian case, $\bar{x}_1$ and $x_1$ are jointly Gaussian. The conditional distribution of $\bar{x}_1$ given $x_1$ is known to be $\mathcal{N}(Ax_1, \Gamma)$, where:
+\begin{align}
+    &A = - \mathrm{Cov}(\bar{x}_1, x_1)\mathrm{Var}(x_1)^{-1}, && \Gamma = \mathrm{Var}(\bar{x}_1) - \mathrm{Cov}(\bar{x}_1, x_1)\mathrm{Var}(x_1)^{-1}\mathrm{Cov}(\bar{x}_1, x_1)^\top.
+\end{align}
+We solve the recursion \eqref{eq:recursion_cov} with a step size $\delta$ and $N = T/\delta$ steps; the sampled conditional wavelet coefficients $\tox_{j,0}$ have conditional distribution noted $\mathcal{N}(\hat{A}_N x, \hat{\Gamma}_N)$. The full covariance of $(\tx_{j,0}, \tox_{j,0})$, written in the basis given by the high/low frequencies, is now given by
+$$ \hat{\Sigma}_N = \begin{bmatrix}\hat{\Gamma}_N & \mathrm{Cov}(x_1, \bar{x}_1)\hat{A}_N^\top \\ \hat{A}_N \mathrm{Cov}(x_1, \bar{x}_1)^\top & \mathrm{Cov}(x_1, x_1) \end{bmatrix}.$$
+\Cref{fig:gaussian}, middle panel compares the eigenvalues (power spectrum) of these covariances, as a function of $\delta$, with the ones of $\Sigma$. 
+
+The right panel of \Cref{fig:gaussian} gives the smallest $N$ needed to reach $\Vert \hat{P}_N - P \Vert = 0.1$ in both cases (SGM and WSGM), based on a power law extrapolation of the curves $N\mapsto \hat{P}_N$. 
+
+
+\begin{comment}
+
+\begin{table}[h!]
+  \begin{center}
+    \caption{The score matrix is better conditioned when lower-frequencies are frozen}
+    \label{tab:table1}
+    \begin{tabular}{r | c  c  c  c} % <-- Alignments: 1st column left, 2nd middle and 3rd right, with vertical lines in between
+      potential $U(\x)$  & $(\x)$ & $(\x, \x^4)$ & $(\bx, \bx_+)$ & $(\bx, \bx_+, \x^4)$ \\
+      $L=32$ & 1497.60 & 8242.13 & 4.16 & 19.24 \\
+    $L=16$ & 775.15 & 3542.35 & 4.60 & 22.43 \\
+      $L=8$ & 261.66 & 1165.65 & 4.54 & 24.44 \\
+    \end{tabular}
+  \end{center}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{img/conditioning_along_diffusion_32.png}
+    \caption{Evolution of the four types of potentials of Table 1 along the steps of an Ornstein-Uhlenbeck diffusion (todo: améliorer les légendes, etc)}
+    \label{fig:my_label}
+\end{figure}
+\end{comment}
+
+
+\section{Experimental Details on the $\varphi^4$ Model}
+\label{sec:deta-varph-model}
+In this section, we develop and precise the results in \Cref{sec:results_phi4}. 
+
+
+\subsection{The Critical $\varphi^4$ Process and its Stein Score Regularity }
+
+The macroscopic energy of non-Gaussian distributions can be specified as shown in \eqref{eq:gibbs}, 
+where $K$ is a coupling matrix and $V$ is non-quadratic potential. The $\varphi^4$-model over the $L\times L$ periodic grid is the special case defined by $C=\Delta$ (the two-dimensional discrete Laplacian) and $V$ is a quartic potential: 
+\begin{equation}\label{eq:defin_energy}
+  \textstyle{
+    E(x) = \frac{\beta}{2}\sum_{|u-v|=1} (x(u) - x(v))^2 + \sum_u (x(u)^2 - 1)^2.
+    }
+\end{equation}
+Here, $\beta$ is a parameter proportional to an inverse temperature.
+
+
+In physics, the $\varphi^4$ model is a typical example of second-order phase transitions: the quadratic part reduces spatial fluctuations, and $V$ favors configurations whose entries remain close to $\pm 1$ (in physics, this is often called a \emph{double-well potential}). In the thermodynamic limit $L\to \infty$, both term compete according to the value of $\beta$. 
+\begin{itemize}
+    \item For $\beta \ll 1$, the quadratic term becomes negligible and the marginals of the field become independent; this is the disordered state.
+    \item For $\beta \gg 1$, the quadratic term favors configuration which are spatially smooth and the potential term drives the values towards $\pm 1$, resulting in an ordered state, where all values of the field are simultaneously close to either $+1$ or to $-1$.
+\end{itemize}
+
+
+
+\begin{figure}
+  \begin{center}
+    \includegraphics[width=0.2\textwidth]{img/phi4.png}    \includegraphics[width=0.2\textwidth]{img/phi4_wavelets.png}
+  \end{center}
+  \caption{Example of a realization of a $\varphi^4$ critical field ($L=256$) with its wavelet decomposition on the left (lower-frequencies are on bottom right panel). }
+\end{figure}
+
+ A phase transition occurs between these two regimes at a critical temperature $\beta_c \sim 0.68$ \cite{milchev1986finite,  kaupuvzs2016corrections}. At this point, the $\varphi^4$ field display very long-range correlations and an ill-conditioned Hessian $\nabla^2 \log p$. The sampling of $\varphi^4$ at this critical point becomes very difficult. This ``critical slowing down'' phenomenon is why, from a machine learning point of view, the critical $\varphi^4$ field is an excellent example of hard-to-learn and hard-to-sample distribution, still accessible for mathematical analysis. 
+
+
+Our wavelet diffusion considers the sampling of the conditional probability $p(\bar{x}_1|x_1)$ instead of $p(x_0)$, by inverting the noise diffusion projected on the wavelet coefficients. \Cref{thm:control_diffusion} indicates that the loss obtained with any SGM-type method depends on the regularity parameters of $\nabla \log p_t$ in \eqref{params:thm2}. 
+
+Strictly speaking, to get a bound on $K$ we should control the norm of $\nabla^2 \log p_t$ over all $x$ and $t$. However, a look at the proof of the theorem indicates that this control does not have to be uniform in $x$; for instance, there is no need to control this Hessian in domains which have an extremely small probability under $p_t$. Moreover, since $p_t$ is a convolution between $p_0$ and a Gaussian, we expect that a control over $\nabla^2 \log p_0(x)$ will actually be sufficient to control $\nabla^2\log p_t(x)$ for all $t>0$; these facts are non-rigorous for the moment. The distribution of some spectral statistics of $\nabla^2 \log p_0$ over samples drawn from the $\varphi^4$-model are shown in  \Cref{fig:hessian_conditioning} (blue). 
+
+
+
+Considering conditional probabilities $\bar{p}$ instead of $p$ acts on the Hessian of the $\varphi^4$-energy as a projection over the wavelet field: in the general context of \eqref{eq:gibbs}, 
+
+\begin{align}\label{eq:hessian_cond}
+ -\nabla^2_x \log p(x_0) = K + \nabla^2 V(x_0) , \qquad -\nabla^2_{\bar{x}_1} \log p(\bar{x}_1|x_1) =  \gamma^2 \bar{G}(K  +  \nabla^2 V(x_0)) \bar{G}^\top .
+\end{align} 
+The proof is in \Cref{sec:deta-varph-model}. The  distribution of the conditioning number of $\nabla_x^2 \log p$ and $ \nabla^2_{\bar{x}}\log p$ over samples drawn from the $\varphi^4$ model is shown at \Cref{fig:hessian_conditioning}: the Hessian of the wavelet log-probability is orders-of-magnitude better conditioned than its single-scale counterpart, with a very concentrated distribution. The same phenomenon occurs at each scale $j$, and the same is true for $\lambda_{\min},\lambda_{\max}$. It turns out that considering wavelet coefficient not only concentrates these eigenvalues, but also drives $\lambda_{\min}$ away from 0. In the context of multiscale Gaussian processes, \Cref{sec:norm-covar} gives a rigorous proof of this phenomenon. In the general case, $\nabla^2 \log p_t$ is not reduced to the inverse of a covariance matrix, but we expect the same phenomenon to be true. 
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/hessian_eigenvalues.png}
+    \caption{Histograms of $10^5$ realizations of $\lambda_{\min}, \lambda_{\max}$ and $\kappa = \lambda_{\max}/\lambda_{\min}$ of the  Hessian matrices in \eqref{eq:hessian_cond} for the critical $\varphi^4$ model in dimension $L=32$. The mean values of $\kappa$ are respectively $\mu=18.32$ and $\bar{\mu} = 210.53$; standard deviations are $\sigma = 1.78$ and $\bar{\sigma} = 9451.37$.  }
+    \label{fig:hessian_conditioning}
+\end{figure}
+
+
+
+
+
+\subsection{Score Models and Details on our Numerical Experiments of $\varphi^4$}\label{app:score_phi4}
+
+In this section, we give some details on our numerical experiments from \Cref{sec:results_phi4}. 
+
+\subsubsection*{Training Data and Wavelets}
+
+We used samples from the $\varphi^4$ model generated using a classical MCMC algorithm --- the sampling script will be publicly available in our repository. 
+
+The wavelet decompositions of our fields were performed using Python's \texttt{pywavelets} package and \texttt{Pytorch Wavelets} package. For synthetic experiments, we used the Daubechies wavelets with $p=4$ vanishing moments (see \cite[Section 7.2.3]{mallat1999wavelet}). 
+
+
+\subsubsection*{Score Model}
+
+At the first scale $j=0$, the distribution of the $\varphi^4$ models falls into the general form given in \eqref{eq:gibbs}, and it is assumed that at each scale $j$, the distribution of the field at scale $j$ still assumes this shape --- with modified constants and coupling parameters. The score model we use at each scale is given by:
+\begin{equation}\label{eq:phi4score}
+  \textstyle{
+    {\bs}_{K,\theta}(x) = \frac{1}{2}x^\top K x + \sum_{u}(\theta_1v_1(x(u)) + \dotsb + \theta_m v_m(x(u))),
+    }
+\end{equation}
+where the parameters are $K,\theta_1, \dotsc, \theta_m$ and $v_i$ are a family of smooth functions. One can also represent this score as $s_{K,\theta} = K \cdot xx^\top + \theta^\top U(x)$ where $U_i(x) = \sum_u v_i(x(u))$. 
+
+
+
+\subsubsection*{Learning}
+
+We trained our various algorithms using SGM or WSGM up to a time $T=5$ with $n_{\mathrm{train}} = 2000$ steps of forward diffusion. At each step $t$, the parameters were learned by minimizing the score loss:
+$$ \ell(K,\theta) = \mathbb{E}[|\nabla s_{K,\theta}(x_t)|^2 + 2 \Delta_x s_{K,\theta}(x_t)]$$
+using the Adam optimiser with learning rate $\texttt{lr} = 0.01$ and default parameters $\alpha, \beta$. At the start of the diffusion ($t=0$) we use 10000 steps of gradient descent. For $t>1$, we use only 100 steps of gradient descent, but initialized at $(K_{t-1}, \theta_{t-1})$.
+
+\subsubsection*{Sampling}
+
+For the sampling, we used uniform steps of discretization. %Each step of backward diffusion is corrected with 10 steps of Langevin sampling on the learnt distribution at time $t$, which is $\hat{p}_t(x) \propto \exp(-x^\top K_t x + \theta_t U(x))$. 
+
+For the error metric, we first measure the $L^2$-norm between the power spectra $P, \hat{P}$ of the true $\varphi^4$ samples, and our syntheses; more precisely, we set: 
+$$ D_1 = \Vert P - \hat{P}\Vert^2.$$
+This error on second-order statistics is perfectly suitable for Gaussian processes, but must be refined for non-Gaussian processes. We also consider the total variation distance between the histograms of the marginal distributions (in the case of two-dimensions, pixel-wise histograms). We note this error $D_2$; our final error measure is $D_1 + D_2$. This is the error used in Figure \Cref{fig:hessian_conditioning}. 
+
+\subsection{Proofs of \eqref{eq:hessian_cond}}
+
+
+In the sequel, $\nabla f$ is the gradient of a function $f$, and $\nabla^2$ is the Hessian matrix of $f$. The \emph{Laplacian} of $f$ is the trace of the Hessian. 
+
+\begin{lemma}
+Let $U:\mathbb{R}^n \to \mathbb{R}$ be smooth and $M$ be a $n\times m$ matrix. We set $F(x) = U(Mx)$ where $x\in \mathbb{R}^m$. Then, $\nabla^2 F(x) = M^\top \nabla^2 U(x) M$. 
+\end{lemma}
+\begin{proof}
+  Let $U:\mathbb{R}^n \to \mathbb{R}$ be smooth and $M$ be a $n\times m$ matrix. Then, $$\partial_k F(x) = \sum_{i=1}^n M_{i,k} (\partial_i U)(Mx).$$ Similarly,  
+  \begin{equation}\label{p:partialij}\partial_{k,\ell}F(x) = \sum_{i=1}^n \sum_{j=1}^n M_{i,k}M_{j,\ell}\partial_{j}(\partial_iU)(Mx).\end{equation}
+  This is equal to $(M^\top \nabla^2U M)_{k,\ell}$. 
+\end{proof}
+
+\begin{lemma}Under the setting of the preceding lemma, if $U(x) = \sum_{i=1}^n f(x_i)$, then (1) $\nabla^2 U(x) = \mathrm{diag}(u''(x_1), \dotsc, u''(x_n))$ and (2) the Laplacian of $F(x) = U(Mx)$ is given by 
+$$ \Delta F(x) = \sum_{i=1}^n (M^\top M)_{i,i}u''(x_i). $$
+\end{lemma}
+
+\begin{proof}
+  The proof of (1) comes from the fact that $\partial_i U(x) = u'(x_i)$, hence $\partial_j \partial_i U(x) = u''(x_i)$ if $i=j$, zero otherwise. The proof of (2)  consists in summing the $k=\ell$ terms in \eqref{p:partialij} and using (1). 
+\end{proof}
+
+
+
+For simplicity, let us note $p(x) = \rme^{-H(x)}/Z$ where $Z_0$ is a normalization constant and $H(x) = x^\top K x /2 + V(x)$. Then, 
+\begin{align}\nabla_x p(x) = -\nabla_x H(x), && \nabla^2 _x p(x)  = - \nabla^2_x H(x),\end{align}and the formula in the left of \eqref{eq:hessian_cond} comes from the fact that the Hessian of $x^\top K x$ is $2K$. 
+
+For the second term, let us first recall that if $\bar{x}_1$ and $x_1$ are the wavelet coefficients and low-frequencies of $x$, they are linked by \eqref{eq:reconstruction}. Consequently, the joint density of $(\bar{x}_1, x_1)$ is: 
+$$ q(\bar{x}_1, x_1) = \rme^{-H(\gamma G^\top x_1 + \gamma \bar{G}^\top \bar{x}_1)} / Z_1$$
+where $Z_1$ is another normalization constant. The conditional distribution of $\bar{x}_1$ given $x_1$ is: 
+$$ q(\bar{x}_1 | x_1) = \frac{q(\bar{x}_1, x_1)}{Z_1(x_1)}$$
+where $Z_1(x) = \int q(\bar{x}_1, u)\rmd u$. Consequently, 
+\begin{align} \nabla_{\bar{x}_1} \log q(\bar{x}_1|x_1) &= \nabla_{\bar{x}_1}(-H(\gamma G^\top x_1 + \gamma \bar{G}^\top \bar{x}_1) - \log Z_1) - \nabla_{\bar{x}_1} Z_1(x_1)\\
+&= - \nabla_{\bar{x}_1}H(\gamma G^\top x_1 + \gamma \bar{G}^\top \bar{x}_1)
+\end{align}
+and additionally: 
+$$ \nabla^2_{\bar{x}_1}q(\bar{x}_1 | x_1) = - \nabla^2_{\bar{x}_1}H(\gamma G^\top x_1 + \gamma \bar{G}^\top \bar{x}_1). $$
+The RHS of \eqref{eq:hessian_cond} then follows from the lemmas in the preceding section. 
+
+
+\section{Experimental Details on CelebA-HQ}
+\label{sec:exper-deta-addit}
+
+\paragraph{Data} We use Haar wavelets. The $128 \times 128$ original images are thus successively brought to the $64 \times 64$ and $32 \times 32$ resolutions, separately for each color channel. Each of the $3$ channels of $x_j$ and $9$ channels of $\bar x_j$ are normalized to have zero mean and unit variance.
+
+\paragraph{Architecture}  Following \cite{nichol2021improved}, both the conditional and unconditional scores are parametrized by a neural network with a UNet architecture. It has $3$ residual blocks at each scale, with a base number of channels of $C = 128$. The number of channels at the $k$-th scale is $a_k C$, where the multipliers $(a_k)_k$ depend on the resolution of the generated images. They are $(1,2,2,4,4)$ for models at the $128 \times 128$ resolution, $(2,2,4,4)$ for models at the $64 \times 64$ resolution, $(4,4)$ for the conditional model at the $32 \times 32$ resolution, and $(1,2,2,2)$ for the unconditional model at the $32 \times 32$ resolution. All models include multi-head attention layers at in blocks operating on images at resolutions $16 \times 16$ and $8 \times 8$. The conditioning on the low frequencies $x_j$ is done with a simple input concatenation along channels, while conditioning on time is done through affine rescalings with learned time embeddings at each GroupNorm layer \citep{nichol2021improved,saharia2021image}.
+
+\paragraph{Training} The networks are trained with the (conditional) denoising score matching losses:
+\begin{align}
+    \ell(\theta_J) &= \mathbb E_{x_J, t, z}\left[ || s_{\theta_J}(t, e^{-t} x_{J} + \sqrt{1 - e^{-2t}} z) - z  ||^2 \right] \\
+    \ell(\bar \theta_j) &= \mathbb E_{\bar x_j, x_j, t, z}\left[ || \bar s_{\bar \theta_j}(t, e^{-t} \bar x_{j} + \sqrt{1 - e^{-2t}} z \,|\, x_j) - z  ||^2 \right]
+\end{align}
+where $z \sim \mathcal N(0, \Id)$ and the time $t$ is distributed as $T u^2$
+with $u \sim \mathcal U([0, 1])$. We fix the maximum time $T = 5$ for all
+scales. Networks are trained for $5\times{10}^5$ gradient steps with a batch
+size of $128$ at the $32 \times 32$ resolution and $64$ otherwise. We use the
+Adam optimizer with a learning rate of ${10}^{-4}$ and no weight decay.
+
+\paragraph{Sampling} For sampling, we use model parameters from an exponential moving average with a rate of $0.9999$. For each number of discretization steps $N$, we use the Euler-Maruyama discretization with a uniform step size $\delta_k = T/N$ starting from $T = 5$. This discretization scheme is used at all scales. For FID computations, we generate $30,000$ samples in each setting.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
+
+
+
+\end{document}
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

@@ -1,0 +1,30 @@
+\section{Proof of \Cref{lemma:bound_spectrum}}
+\label{sec:proof33}
+
+\begin{proof}
+  For any $x$ and $j$, denote $\bar{p}_{j,0}(\cdot|x)$ the distribution of
+  $\twx_{j,0}$ given $x_j = x$ and $p_{j,0}$ the distribution of
+  $\tx_{j,0}$. For any $j$ we have
+  \begin{equation}
+    \KLLigne{p_j}{p_{j,0}} = \KLLigne{p_{j+1}}{p_{j+1,0}} + \expeLigne{\KLLigne{\bar{p}_{j+1}(\cdot|x_{j+1})}{\bar{p}_{j+1,0}(\cdot|x_{j+1}) }}  . 
+  \end{equation}
+  By recursion, we have that
+  \begin{equation}
+    \textstyle{
+      \KLLigne{p}{p_{0}} = \KLLigne{p_{J}}{p_{j,0}} + \sum_{j=1}^{J} \expeLigne{\KLLigne{\bar{p}_{j}(\cdot|x_{j})}{\bar{p}_{j,0}(\cdot|x_{j}) }}  .
+    }
+    \end{equation}
+    Combining \Cref{sec:conv-results-discr-2} and \Cref{sec:norm-covar},
+    we get that
+  \begin{equation}
+    \textstyle{
+      \KLLigne{p}{p_{0}} \leq (\delta + \exp[-4T]) (2^{-J}L)^n + \sum_{j=1}^J (\delta + \exp[-4T]) (2^{-j}L)^n(2^n-1) +E_{T, \delta}  .
+    }
+  \end{equation}
+  Therefore, $\KLLigne{p}{p_{0}} \leq (\delta + \exp[-4T]) L^n + E_{T, \delta}$, which concludes the proof.
+\end{proof}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

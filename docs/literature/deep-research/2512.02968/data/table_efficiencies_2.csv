@@ -1,0 +1,25 @@
+Event,Detectors,baseline,random,data
+\text{GW200209\_085452},HLV,\text{\gradient{1.39}},\text{\gradient{3.97}},\text{\gradient{2.52}}
+\text{GW200216\_220804},HLV,\text{\gradient{5.31}},\text{\gradient{4.67}},\text{\gradient{2.2}}
+\text{GW200219\_094415},HLV,\text{\gradient{4.09}},\text{\gradient{3.11}},\text{\gradient{5.12}}
+\text{GW200220\_061928},HLV,\text{\gradient{0.62}},\text{\gradient{1.81}},\text{\gradient{10.17}}
+\text{GW200224\_222234},HLV,\text{\gradient{0.23}},\text{\gradient{2.67}},\text{\gradient{5.49}}
+\text{GW200311\_115853},HLV,\text{\gradient{1.83}},\text{\gradient{6.59}},\text{\gradient{9.2}}
+\text{GW190421\_213856},HL,-,\text{\gradient{9.33}},\text{\gradient{17.8}}
+\text{GW190514\_065416}$^{*\dagger \mathrm{L}}$,HL,-,\text{\gradient{6.83}},\text{\gradient{15.22}}
+\text{GW190521\_074359},HL,-,\text{\gradient{0.17}},\text{\gradient{1.28}}
+\text{GW190527\_092055},HL,-,\text{\gradient{7.2}},\text{\gradient{9.04}}
+\text{GW190719\_215514},HL,-,\text{\gradient{6.26}},\text{\gradient{14.56}}
+\text{GW190731\_140936},HL,-,\text{\gradient{26.71}},\text{\gradient{18.22}}
+\text{GW191109\_010717}$^{\diamond \mathrm{HL}}$,HL,-,\text{\gradient{0.19}},\text{\gradient{1.52}}
+\text{GW191204\_110529},HL,-,\text{\gradient{0.11}},\text{\gradient{0.07}}
+\text{GW191222\_033537},HL,-,\text{\gradient{16.03}},\text{\gradient{15.61}}
+\text{GW200128\_022011},HL,-,\text{\gradient{4.49}},\text{\gradient{8.28}}
+\text{GW200220\_124850},HL,-,\text{\gradient{3.83}},\text{\gradient{12.94}}
+\text{GW200306\_093714},HL,-,\text{\gradient{0.57}},\text{\gradient{0.09}}
+\text{GW190925\_232845},HV,-,\text{\gradient{0.06}},\text{\gradient{0.86}}
+\text{GW200302\_015811},HV,-,\text{\gradient{0.5}},\text{\gradient{1.4}}
+\text{GW190620\_030421},LV,-,\text{\gradient{0.63}},\text{\gradient{0.81}}
+\text{GW190630\_185205},LV,-,\text{\gradient{0.61}},\text{\gradient{1.15}}
+\text{GW190910\_112807},LV,-,\text{\gradient{0.73}},\text{\gradient{3.22}}
+\text{GW200112\_155838},LV,-,\text{\gradient{1.67}},\text{\gradient{5.79}}

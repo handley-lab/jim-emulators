@@ -1,0 +1,191 @@
+% Template for ICASSP-2021 paper; to be used with:
+%          spconf.sty  - ICASSP/ICIP LaTeX style file, and
+%          IEEEbib.bst - IEEE bibliography style file.
+% --------------------------------------------------------------------------
+\documentclass{article}
+\usepackage{amsmath,amsfonts,amssymb,amsthm,graphicx}
+\pdfoutput=1
+\usepackage[preprint]{spconf}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{caption}
+\captionsetup[table]{skip=5pt}
+
+% Example definitions.
+% --------------------
+\def\x{{\mathbf x}}
+\def\L{{\cal L}}
+
+\usepackage{balance}
+\usepackage{bm}
+\def\vz{{\bm{z}}}
+\def\vx{{\bm{x}}}
+\def\vy{{\bm{y}}}
+\def\vs{{\bm{s}}}
+
+\def\CC{{\mathbb C}}
+\def\RR{{\mathbb R}}
+\usepackage{cite}
+\usepackage{xcolor}
+\usepackage{multirow}
+\usepackage{etoolbox,siunitx}
+\usepackage{svg}
+\robustify\bfseries
+\usepackage{booktabs}
+
+\usepackage{enumitem}
+
+% Additional packages --
+\usepackage{mathtools}
+\usepackage{siunitx} % Scientific Notions
+\usepackage{tabularx, booktabs} % \tabularx
+
+\setcounter{topnumber}{4}
+
+\let\OLDthebibliography\thebibliography
+\renewcommand\thebibliography[1]{
+  \OLDthebibliography{#1}
+  \setlength{\parskip}{.5pt}
+  \setlength{\itemsep}{.5pt plus 0.3ex}
+}
+\newcommand{\gael}[1]{ {\textcolor{purple}{\textbf{Gael:}~#1}} }
+
+\newcommand\blfootnote[1]{%
+  \begingroup
+  \renewcommand\thefootnote{}\footnote{#1}%
+  \addtocounter{footnote}{-1}%
+  \endgroup
+}
+
+\makeatletter
+\def\blfootnote{\gdef\@thefnmark{}\@footnotetext}
+\makeatother
+
+% Title.
+% ------
+%\title{AUTHOR GUIDELINES FOR ICASSP 2021 PROCEEDINGS MANUSCRIPTS}
+\title{GLA-Grad: A Griffin-Lim Extended Waveform Generation Diffusion Model}
+ 
+%
+% Single address.
+% ---------------
+
+% \name{Author(s) Name(s)\thanks{Thanks to XYZ agency for funding.}}
+% \address{Author Affiliation(s)}
+\name{Haocheng Liu$^{1}$,
+    \quad Teysir Baoueb$^{1}$, 
+    \quad Mathieu Fontaine$^{1}$, 
+    \quad Jonathan Le Roux$^{2}$, 
+    \quad Gaël Richard$^{1}$}
+  
+\address{$^{1}$LTCI, T\'el\'ecom Paris, Institut polytechnique de Paris, France\\
+      $^{2}$Mitsubishi Electric Research Laboratories (MERL), Cambridge, MA, USA}
+
+%
+% For example:
+% ------------
+%\address{School\\
+%	Department\\
+%	Address}
+%
+% Two addresses (uncomment and modify for two-address case).
+% ----------------------------------------------------------
+%\twoauthors
+%  {A. Author-one, B. Author-two\sthanks{Thanks to XYZ agency for funding.}}
+%	{School A-B\\
+%	Department A-B\\
+%	Address A-B}
+%  {C. Author-three, D. Author-four\sthanks{The fourth author performed the work
+%	while at ...}}
+%	{School C-D\\
+%	Department C-D\\
+%	Address C-D}
+%
+
+\input{definition}
+
+\copyrightnotice{\copyright 2024 IEEE. Personal use of this material is permitted. Permission from IEEE must be obtained for all other uses, in any current or future media, including reprinting/republishing this material for advertising or promotional purposes, creating new collective works, for resale or redistribution to servers or lists, or reuse of any copyrighted component of this work in other works.}
+\begin{document}
+
+\ninept
+\maketitle
+
+
+\begin{abstract}
+Diffusion models are receiving a growing interest for a variety of signal generation tasks such as speech or music synthesis. WaveGrad, for example, is a successful diffusion model that conditionally uses the mel spectrogram to guide a diffusion process for the generation of high-fidelity audio.  However, such models face important challenges concerning the noise diffusion process for training and inference, and they have difficulty generating high-quality speech for speakers that were not seen during training.  % could also say "for unseen speakers."
+With the aim of minimizing the conditioning error and increasing the efficiency of the noise diffusion process, we propose in this paper a new scheme called GLA-Grad, which consists in introducing a phase recovery algorithm such as the Griffin-Lim algorithm (GLA) at each step of the regular diffusion process.  Furthermore, it can be directly applied to an already-trained waveform generation model, without additional training or fine-tuning. We show that our algorithm outperforms state-of-the-art diffusion models for speech generation, especially when generating speech for a previously unseen target speaker.
+\end{abstract}
+%
+\begin{keywords}
+Diffusion models, speech generation, Griffin-Lim algorithm, domain adaptation
+\end{keywords}
+
+
+\input{sections/01_Introduction}
+
+\input{sections/02_Related_Work}
+
+\input{sections/03_Proposed_Method}
+
+\input{sections/04_Experiments}
+
+\input{sections/05_Conclusion}
+
+% \clearpage
+%\vfill\pagebreak
+\balance
+\bibliographystyle{IEEEtran}
+\bibliography{refs}
+
+\end{document}
+
+%These guidelines include complete descriptions of the fonts, spacing, and related information for producing your proceedings manuscripts. Please follow them and if you have any questions, direct them to Conference Management Services, Inc.: Phone +1-979-846-6800 or email to \\\texttt{papers@2021.ieeeicassp.org}.
+
+%All printed material, including text, illustrations, and charts, must be kept within a print area of 7 inches (178 mm) wide by 9 inches (229 mm) high. Do not write or print anything outside the print area. The top margin must be 1 inch (25 mm), except for the title page, and the left margin must be 0.75 inch (19 mm).  All {\it text} must be in a two-column format. Columns are to be 3.39 inches (86 mm) wide, with a 0.24 inch (6 mm) space between them. Text must be fully justified.
+%The paper title (on the first page) should begin 1.38 inches (35 mm) from the top edge of the page, centered, completely capitalized, and in Times 14-point, boldface type.  The authors' name(s) and affiliation(s) appear below the title in capital and lower case letters.  Papers with multiple authors and affiliations may require two or more lines for this information. Please note that papers should not be submitted blind; include the authors' names on the PDF.
+
+%To achieve the best rendering both in printed proceedings and electronic proceedings, we strongly encourage you to use Times-Roman font.  In addition, this will give the proceedings a more uniform look.  Use a font that is no smaller than nine point type throughout the paper, including figure captions.
+
+%In nine point type font, capital letters are 2 mm high.  {\bf If you use the smallest point size, there should be no more than 3.2 lines/cm (8 lines/inch) vertically.}  This is a minimum spacing; 2.75 lines/cm (7 lines/inch) will make the paper much more readable.  Larger type sizes require correspondingly larger vertical spacing.  Please do not double-space your paper.  TrueType or Postscript Type 1 fonts are preferred.
+
+%The first paragraph in each section should not be indented, but all the following paragraphs within the section should be indented as these paragraphs demonstrate.
+
+%Major headings, for example, "1. Introduction", should appear in all capital letters, bold face if possible, centered in the column, with one blank line before, and one blank line after. Use a period (".") after the heading number, not a colon.
+%Subheadings should appear in lower case (initial word capitalized) in boldface. They should start at the left margin on a separate line.
+
+%Sub-subheadings, as in this paragraph, are discouraged. However, if you must use them, they should appear in lower case (initial word capitalized) and start at the left margin on a separate line, with paragraph text beginning on the following line.  They should be in italics.
+
+%Print your properly formatted text on high-quality, 8.5 x 11-inch white printer paper. A4 paper is also acceptable, but please leave the extra 0.5 inch (12 mm) empty at the BOTTOM of the page and follow the top and left margins as specified.  If the last page of your paper is only partially filled, arrange the columns so that they are evenly balanced if possible, rather than having one long column.
+
+%In LaTeX, to start a new column (but not a new page) and help balance the last-page column lengths, you can use the command ``$\backslash$pagebreak'' as demonstrated on this page (see the LaTeX source below).
+
+%Please do {\bf not} paginate your paper.  Page numbers, session numbers, and conference identification will be inserted when the paper is included in the proceedings.
+
+%Illustrations must appear within the designated margins.  They may span the two columns.  If possible, position illustrations at the top of columns, rather than in the middle or at the bottom.  Caption and number every illustration. All halftone illustrations must be clear black and white prints. Colors may be used, but they should be selected so as to be readable when printed on a black-only printer.
+
+%Since there are many ways, often incompatible, of including images (e.g., with experimental results) in a LaTeX document, below is an example of how to do this \cite{Lamp86}.
+
+%Use footnotes sparingly (or not at all!) and place them at the bottom of the column on the page on which they are referenced. Use Times 9-point type, single-spaced. To help your readers, avoid using footnotes altogether and include necessary peripheral observations in the text (within parentheses, if you prefer, as in this sentence).
+
+% Below is an example of how to insert images. Delete the ``\vspace'' line,
+% uncomment the preceding line ``\centerline...'' and replace ``imageX.ps''
+% with a suitable PostScript file name.
+
+% To start a new column (but not a new page) and help balance the last-page
+% column length use \vfill\pagebreak.
+% -------------------------------------------------------------------------
+%\vfill
+%\pagebreak
+
+%You must submit your fully completed, signed IEEE electronic copyright release form when you submit your paper. We {\bf must} have this form before your paper can be published in the proceedings.
+
+%The text of the paper should contain discussions on how the paper's contributions are related to prior work in the field. It is important to put new work in  context, to give credit to foundational work, and to provide details associated with the previous work that have appeared in the literature. This discussion may be a separate, numbered section or it may appear elsewhere in the body of the manuscript, but it must be present.
+
+%You should differentiate what is new and how your work expands on or takes a different path from the prior studies. An example might read something to the effect: "The work presented here has focused on the formulation of the ABC algorithm, which takes advantage of non-uniform time-frequency domain analysis of data. The work by Smith and Cohen \cite{Lamp86} considers only fixed time-domain analysis and the work by Jones et al \cite{C2} takes a different approach based on fixed frequency partitioning. While the present study is related to recent approaches in time-frequency analysis [3-5], it capitalizes on a new feature space, which was not considered in these earlier studies."
+
+%List and number all bibliographical references at the end of the paper. The references can be numbered in alphabetic order or in order of appearance in the document. When referring to them in the text, type the corresponding reference number in square brackets as shown at the end of this sentence \cite{C2}. An additional final page (the fifth page, in most cases) is allowed, but must contain only references to the prior literature.
+
+% References should be produced using the bibtex program from suitable
+% BiBTeX files (here: strings, refs, manuals). The IEEEbib.bst bibliography
+% style file from IEEE produces unsorted bibliography list.
+% -------------------------------------------------------------------------
