@@ -141,6 +141,7 @@ Meeting transcripts documenting planning discussions and decisions:
 | `2025-12-22-09-07-00.txt` | Initial planning: project goals, parameterization (Mf, η, χ), domain choices, CosmoPower/Speculator approach |
 | `2025-12-22-12-10-00.txt` | Progress review: LAL wrapper, sensitivity plots, mode additivity discovery, per-mode emulation strategy |
 | `2025-12-22-13-33-00.txt` | Strategy consolidation: start with (2,2) mode, aligned spins; literature gap analysis; mlgw_NN paper discovery |
+| `2025-12-22-14-39-00.txt` | Training session: data generation debugging, phase aliasing fix, IFFT issues, 100k sample training, mismatch $2.5 \times 10^{-4}$ achieved |
 
 **Key insights from transcripts:**
 - Waveforms depend on Mf (mass × frequency), enabling mass-independent training
