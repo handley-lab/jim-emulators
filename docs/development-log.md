@@ -378,6 +378,115 @@ jim-emulators/
 
 ---
 
+---
+
+## Session: 2024-12-22 (Continued - Parallel Work)
+
+### 19. Review of Parameter Sensitivity Plots
+
+Reviewed the sensitivity plots generated in the previous session. Key observations from discussion:
+
+**Amplitude and Phase vs Real/Imaginary:**
+- Looking at the plots, it's clear that **amplitude and phase** vary much more smoothly than real/imaginary parts
+- Real/imaginary show rapid oscillations that would be difficult to emulate
+- This confirms the CosmoPower/Speculator approach: emulate log-amplitude and unwrapped phase separately
+
+**Higher-Order Mode Effects (XPHM):**
+- In high-mass, high-spin cases, see dramatic amplitude reductions from higher-order modes
+- "Wiggles" in the waveform come from precession effects (beating patterns)
+- These are real physics, not numerical artifacts
+- The "ratty" behavior at high frequencies is below the noise floor
+
+**Time Domain Observations:**
+- Geometric time (t/M) gives mass-independent waveforms
+- Time domain shows much lower dynamic range than frequency domain
+- Some waveforms look "crazy" in time domain - suggests frequency domain is the natural choice
+- However, time domain might be useful for hybrid approaches where frequency domain looks ratty
+
+**Mismatch Benchmarks (for context):**
+- Waveform models vs numerical relativity: ~10⁻⁵ mismatch
+- Machine precision (C vs Python floating point): ~10⁻¹⁶ mismatch
+- Our target: 10⁻³ mismatch - well above model uncertainty
+
+### 20. Future Ideas Captured
+
+**Hybrid Time/Frequency Approach:**
+- If certain parameter regions look "ratty" in frequency domain but smooth in time domain, could switch between representations
+- Not for MVP, but worth exploring later
+
+**Amplitude-Phase Regularization:**
+- For time domain: h(t) = A(t) × exp(iφ(t))
+- Neural net learning A(t) and φ(t) directly might be smoother than learning Re(h), Im(h)
+- Would need regularization: φ should be monotonic, φ̇ ≠ 0
+- Similar to WKB approximation concept
+
+**Error Estimation:**
+- CosmoPower doesn't provide uncertainty estimates
+- Could add neural network uncertainty quantification later
+- Mismatch itself provides good independent error estimate
+
+### 21. XAS Comparison Plots
+
+Started generating comparison plots with IMRPhenomXAS (aligned-spin only, no higher modes):
+- XAS waveforms are much smoother (no HM wiggles)
+- Useful sanity check: XPHM with aligned spins should give similar results to XAS
+- Confirms higher-mode effects are the source of complex structure
+
+### 22. Parallel Work Streams
+
+Split into parallel tasks:
+1. **Deep research** (Will): Survey existing GW emulation literature
+2. **JAX/Flax preparation** (this session): Prepare documentation and snippets for neural network implementation
+
+### 23. JAX/Flax Neural Network Preparation
+
+Created comprehensive reference material for neural network implementation in `snippets/flax_nn.py`:
+
+**Key Components Implemented:**
+
+1. **SpeculatorActivation (Flax Module)**:
+   - Implements Eq. 4 from Alsing et al. (2019): σ(x) = [γ + sigmoid(β·x)·(1-γ)]·x
+   - Learnable α (sigmoid steepness) and γ (linear mixing) per neuron
+   - Properties: smooth, infinitely differentiable (suitable for HMC)
+
+2. **EmulatorMLP**:
+   - 4 hidden layers × 512 units (CosmoPower default)
+   - Input: normalized parameters (η, χ₁, χ₂)
+   - Output: PCA coefficients (linear output layer)
+   - Total parameters: ~820k
+
+3. **Training Utilities**:
+   - `create_train_state()`: Initialize with AdamW optimizer
+   - `create_learning_rate_schedule()`: Warmup + cosine decay
+   - `train_step()` / `eval_step()`: JIT-compiled training
+
+4. **WaveformPCA Class**:
+   - JAX-compatible PCA for waveform compression
+   - Automatic component selection (99.99% variance)
+   - `fit()`, `transform()`, `inverse_transform()` methods
+
+5. **GWEmulator Class**:
+   - Complete pipeline: params → NN → PCA → amplitude/phase
+   - Ready for integration
+
+**Verified:**
+```
+$ python snippets/flax_nn.py
+Input shape: (1, 3)
+Output shape: (1, 50)
+Number of parameters: 819762
+Speculator activation test:
+  Input range: [-3.00, 3.00]
+  Output range: [-0.28, 2.86]
+```
+
+**Dependencies Installed:**
+- flax 0.12.2
+- optax 0.2.6
+- jax 0.8.2, jaxlib 0.8.2
+
+---
+
 ### Next Steps
 
 1. ☐ Create data generation script (LAL XPHM → HDF5 training data)
@@ -386,3 +495,5 @@ jim-emulators/
 4. ☐ Training pipeline with optax
 5. ☐ Validation: mismatch < 10⁻³ target
 6. ☐ Integration with ripple interface
+7. ☐ XAS comparison plots (verify XPHM aligned-spin ≈ XAS)
+8. ☐ Literature review: existing GW emulation approaches
