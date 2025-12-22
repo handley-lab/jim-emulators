@@ -81,9 +81,13 @@ def generate_synthetic_data(n_samples: int, n_outputs: int = 50, seed: int = 42)
 # =============================================================================
 
 def create_train_state(rng, model, learning_rate, input_dim):
-    """Initialize training state."""
+    """Initialize training state with gradient clipping (per GPT-5/Gemini review)."""
     params = model.init(rng, jnp.ones((1, input_dim)))
-    tx = optax.adamw(learning_rate=learning_rate, weight_decay=1e-4)
+    # Add gradient clipping for stability (recommended by both reviewers)
+    tx = optax.chain(
+        optax.clip_by_global_norm(1.0),
+        optax.adamw(learning_rate=learning_rate, weight_decay=1e-4)
+    )
     return train_state.TrainState.create(
         apply_fn=model.apply,
         params=params,

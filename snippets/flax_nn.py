@@ -29,29 +29,36 @@ class SpeculatorActivation(nn.Module):
     """
     Speculator activation function from Alsing et al. (2019), Eq. 4.
 
-    σ(x) = [γ + sigmoid(β·x) · (1 - γ)] · x
+    σ(x) = [γ + sigmoid(α·x) · (1 - γ)] · x
 
-    Where β (alpha) and γ (beta) are learnable parameters per neuron.
-    This provides smooth, infinitely differentiable activations suitable for HMC.
-
-    In CosmoPower notation:
-    - alpha = β (controls sigmoid steepness)
-    - beta = γ (controls linear vs sigmoid mixing)
+    Where α and γ are learnable parameters per neuron.
+    γ is constrained to (0,1) via sigmoid on learnable logits.
 
     Properties:
     - When γ → 1: becomes linear (identity)
-    - When γ → 0: becomes x·sigmoid(β·x) (smooth ReLU-like)
+    - When γ → 0: becomes x·sigmoid(α·x) (smooth ReLU-like)
     - Learnable parameters allow network to interpolate between regimes
+    - Smooth, infinitely differentiable (suitable for HMC)
+
+    Updated based on GPT-5/Gemini review:
+    - Uses shape inference (no explicit features arg)
+    - Constrains γ ∈ (0,1) via sigmoid on logits
     """
-    features: int
 
     @nn.compact
     def __call__(self, x):
-        # Learnable parameters (one per feature/neuron)
-        # Initialize alpha (beta in paper) to 1.0 for moderate sigmoid steepness
-        alpha = self.param('alpha', nn.initializers.ones, (self.features,))
-        # Initialize gamma (beta in CosmoPower) to 0.0 for ReLU-like start
-        gamma = self.param('gamma', nn.initializers.zeros, (self.features,))
+        # Infer feature dimension from input (lazy initialization)
+        features = x.shape[-1]
+
+        # α controls sigmoid steepness (unconstrained)
+        alpha = self.param('alpha', nn.initializers.ones, (features,))
+
+        # γ stored as logits, mapped through sigmoid to (0,1)
+        # Initialize logits to -2.0 so sigmoid(-2) ≈ 0.12 (mostly gated, slight linear)
+        gamma_logits = self.param('gamma_logits',
+                                   nn.initializers.constant(-2.0),
+                                   (features,))
+        gamma = jax.nn.sigmoid(gamma_logits)
 
         # Speculator activation: (gamma + sigmoid(alpha * x) * (1 - gamma)) * x
         sigmoid_term = jax.nn.sigmoid(alpha * x)
@@ -80,6 +87,9 @@ class EmulatorMLP(nn.Module):
     - Output: PCA coefficients (linear, no activation)
 
     Typical config: 4 hidden layers × 512 units
+
+    Updated based on GPT-5/Gemini review:
+    - SpeculatorActivation uses shape inference (no features arg)
     """
     n_hidden: int = 4
     n_units: int = 512
@@ -90,7 +100,7 @@ class EmulatorMLP(nn.Module):
         # Hidden layers with Speculator activation
         for i in range(self.n_hidden):
             x = nn.Dense(self.n_units, name=f'dense_{i}')(x)
-            x = SpeculatorActivation(self.n_units, name=f'activation_{i}')(x)
+            x = SpeculatorActivation(name=f'activation_{i}')(x)  # Shape inference
 
         # Output layer (linear, no activation)
         x = nn.Dense(self.n_outputs, name='output')(x)
