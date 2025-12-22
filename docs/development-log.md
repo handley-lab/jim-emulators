@@ -513,6 +513,18 @@ Speed:         ~9 epochs/second on CPU
 
 The JAX/Flax/Optax training infrastructure is ready for real waveform data.
 
+### 25. Training Visualization
+
+Added visualization to the toy training example (`figures/training/`):
+
+1. **toy_training_results.png**: Training curves, prediction scatter, residual histogram, per-dimension MSE
+2. **toy_predictions_overlay.png**: 6 random samples showing ground truth (blue) vs emulation (red dashed) - nearly perfect overlap
+3. **toy_parameter_variation.png**: How output "spectrum" varies with each input parameter, comparing truth (solid) vs emulation (dashed) across parameter range
+
+These plots demonstrate the network learns smooth interpolation across the parameter space - exactly what's needed for waveform emulation.
+
+**Implementation Note:** The Flax/JAX implementation was done from existing knowledge of the framework (no external lookup needed). The Speculator activation formula was extracted from CosmoPower's TensorFlow code and translated to Flax Linen API.
+
 ---
 
 ### Next Steps

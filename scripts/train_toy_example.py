@@ -16,6 +16,8 @@ import flax.linen as nn
 from flax.training import train_state
 import optax
 import numpy as np
+import matplotlib.pyplot as plt
+from pathlib import Path
 from tqdm import tqdm
 
 # Enable 64-bit precision
@@ -199,10 +201,17 @@ def main():
     patience_counter = 0
     patience = 20
 
+    # Track losses for plotting
+    train_losses = []
+    val_losses = []
+
     for epoch in tqdm(range(n_epochs), desc="Epochs"):
         rng, epoch_rng = jax.random.split(rng)
         state, train_loss = train_epoch(state, train_x, train_y, batch_size, epoch_rng)
         val_loss = eval_loss(state, val_x, val_y)
+
+        train_losses.append(float(train_loss))
+        val_losses.append(float(val_loss))
 
         # Early stopping check
         if val_loss < best_val_loss:
@@ -253,6 +262,159 @@ def main():
     print("\n" + "=" * 60)
     print("JAX/Flax training pipeline verified!")
     print("=" * 60)
+
+    # Create visualization
+    print("\nGenerating plots...")
+    output_dir = Path("figures/training")
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+
+    # Plot 1: Training curves
+    ax = axes[0, 0]
+    epochs = range(1, len(train_losses) + 1)
+    ax.semilogy(epochs, train_losses, label='Train', linewidth=2)
+    ax.semilogy(epochs, val_losses, label='Validation', linewidth=2)
+    ax.set_xlabel('Epoch')
+    ax.set_ylabel('MSE Loss')
+    ax.set_title('Training Curves')
+    ax.legend()
+    ax.grid(True, alpha=0.3)
+
+    # Plot 2: Predictions vs Targets (first 5 output dimensions)
+    ax = axes[0, 1]
+    predictions = np.array(state.apply_fn(state.params, val_x))
+    targets = np.array(val_y)
+    for i in range(5):
+        ax.scatter(targets[:100, i], predictions[:100, i], alpha=0.5, s=10, label=f'Dim {i}')
+    # Perfect prediction line
+    lims = [min(targets[:100, :5].min(), predictions[:100, :5].min()),
+            max(targets[:100, :5].max(), predictions[:100, :5].max())]
+    ax.plot(lims, lims, 'k--', linewidth=1, label='Perfect')
+    ax.set_xlabel('Target')
+    ax.set_ylabel('Prediction')
+    ax.set_title('Predictions vs Targets (first 5 dims)')
+    ax.legend(fontsize=8)
+    ax.grid(True, alpha=0.3)
+
+    # Plot 3: Residuals distribution
+    ax = axes[1, 0]
+    residuals = (predictions - targets).flatten()
+    ax.hist(residuals, bins=50, density=True, alpha=0.7, edgecolor='black')
+    ax.axvline(0, color='red', linestyle='--', linewidth=2)
+    ax.set_xlabel('Residual (Prediction - Target)')
+    ax.set_ylabel('Density')
+    ax.set_title(f'Residual Distribution (std={residuals.std():.4f})')
+    ax.grid(True, alpha=0.3)
+
+    # Plot 4: Per-dimension error
+    ax = axes[1, 1]
+    per_dim_mse = np.mean((predictions - targets) ** 2, axis=0)
+    ax.bar(range(n_outputs), per_dim_mse, alpha=0.7)
+    ax.set_xlabel('Output Dimension')
+    ax.set_ylabel('MSE')
+    ax.set_title('Per-Dimension MSE')
+    ax.grid(True, alpha=0.3, axis='y')
+
+    plt.tight_layout()
+    filepath = output_dir / "toy_training_results.png"
+    plt.savefig(filepath, dpi=150)
+    plt.close()
+    print(f"  Saved: {filepath}")
+
+    # Plot 2: Ground truth vs emulation for individual samples
+    fig, axes = plt.subplots(2, 3, figsize=(14, 8))
+    fig.suptitle('Ground Truth vs Emulation: Example Predictions', fontsize=14)
+
+    # Pick 6 random validation samples
+    rng_plot = np.random.default_rng(42)
+    sample_indices = rng_plot.choice(len(val_x), 6, replace=False)
+
+    for idx, (ax, sample_idx) in enumerate(zip(axes.flat, sample_indices)):
+        # Get input parameters for this sample
+        params = val_x[sample_idx]
+        true_output = np.array(val_y[sample_idx])
+        pred_output = np.array(state.apply_fn(state.params, val_x[sample_idx:sample_idx+1]))[0]
+
+        # Plot as "spectrum" (output dimension on x-axis)
+        dims = np.arange(n_outputs)
+        ax.plot(dims, true_output, 'b-', linewidth=2, label='Ground Truth', alpha=0.8)
+        ax.plot(dims, pred_output, 'r--', linewidth=2, label='Emulation', alpha=0.8)
+
+        # Show input parameters in title
+        ax.set_title(f'Sample {sample_idx}\n(x₀={params[0]:.2f}, x₁={params[1]:.2f}, x₂={params[2]:.2f})',
+                    fontsize=10)
+        ax.set_xlabel('Output Dimension')
+        ax.set_ylabel('Value')
+        ax.grid(True, alpha=0.3)
+        if idx == 0:
+            ax.legend(fontsize=8)
+
+    plt.tight_layout()
+    filepath2 = output_dir / "toy_predictions_overlay.png"
+    plt.savefig(filepath2, dpi=150)
+    plt.close()
+    print(f"  Saved: {filepath2}")
+
+    # Plot 3: How the output "spectrum" varies with one input parameter
+    fig, axes = plt.subplots(1, 3, figsize=(14, 4))
+    fig.suptitle('Output Spectrum vs Input Parameters (Truth vs Emulation)', fontsize=14)
+
+    param_names = ['x₀ (like η)', 'x₁ (like χ₁)', 'x₂ (like χ₂)']
+    cmap = plt.cm.viridis
+
+    for param_idx, (ax, pname) in enumerate(zip(axes, param_names)):
+        # Vary one parameter while fixing others at 0.5
+        n_curves = 10
+        param_vals = np.linspace(0.1, 0.9, n_curves)
+
+        for i, pval in enumerate(param_vals):
+            color = cmap(i / (n_curves - 1))
+
+            # Create input with varied parameter
+            test_input = np.array([[0.5, 0.5, 0.5]])
+            test_input[0, param_idx] = pval
+
+            # Get ground truth
+            true_y = np.zeros(n_outputs)
+            for j in range(n_outputs):
+                freq = 2 * np.pi * (j + 1) / n_outputs
+                phase = j * 0.1
+                x = test_input[0]
+                true_y[j] = (
+                    np.sin(freq * x[0] + phase) * np.cos(freq * x[1]) +
+                    0.5 * x[2] ** 2 +
+                    0.3 * x[0] * x[1] +
+                    0.1 * np.sin(3 * freq * x[2])
+                )
+
+            # Get prediction
+            pred_y = np.array(state.apply_fn(state.params, jnp.array(test_input)))[0]
+
+            # Plot truth (solid) and prediction (dashed)
+            ax.plot(range(n_outputs), true_y, '-', color=color, linewidth=1.5, alpha=0.7)
+            ax.plot(range(n_outputs), pred_y, '--', color=color, linewidth=1.5, alpha=0.7)
+
+        ax.set_xlabel('Output Dimension')
+        ax.set_ylabel('Value')
+        ax.set_title(f'Varying {pname}\n(solid=truth, dashed=emulation)')
+        ax.grid(True, alpha=0.3)
+
+        # Add colorbar
+        sm = plt.cm.ScalarMappable(cmap=cmap, norm=plt.Normalize(0.1, 0.9))
+        sm.set_array([])
+
+    # Single colorbar for all
+    cbar = fig.colorbar(sm, ax=axes, shrink=0.8, pad=0.02)
+    cbar.set_label('Parameter Value')
+
+    plt.tight_layout()
+    filepath3 = output_dir / "toy_parameter_variation.png"
+    plt.savefig(filepath3, dpi=150)
+    plt.close()
+    print(f"  Saved: {filepath3}")
+
+    print("\nDone!")
 
 
 if __name__ == "__main__":
