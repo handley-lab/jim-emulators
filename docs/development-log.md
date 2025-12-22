@@ -377,13 +377,43 @@ The time-domain framework (§12-14) addresses fully general waveforms with prece
 theory/
 ├── general-waveform-decomposition.tex  # Time-domain (approved)
 ├── general-waveform-decomposition.pdf  # 12 pages
-├── frequency-domain-emulation.tex      # Frequency-domain
-├── frequency-domain-emulation.pdf      # 14 pages
+├── frequency-domain-emulation.tex      # Frequency-domain (approved)
+├── frequency-domain-emulation.pdf      # 15 pages
 ├── .gitignore                          # LaTeX ephemera
 └── reviews/
     ├── openai-review.md                # GPT-5.2 review
     └── gemini-review.md                # Gemini review
 ```
+
+### 16. Frequency-Domain Document Review
+
+The frequency-domain document underwent iterative review using the same OpenAI (GPT-5.2) and Gemini reviewers.
+
+**Iteration 1 → 2 (addressing initial reviews):**
+- Fixed geometric units section with proper τ_☉ = GM_☉/c³ definition
+- Reframed mass scaling as explicit *definition* of H_ℓm with PN consistency check
+- Fixed reality condition (h₊, h× are real, not h = h₊ - ih×)
+- Rewrote conjugate symmetry with proper frequency-domain relation
+- Added critical time alignment requirement for training data
+- Fixed phase derivative "bounded" claim (actually unbounded at low f)
+- Added IFFT note for mismatch t_c maximization
+- Clarified twisting-up t(f) mapping from (2,2) mode
+
+**Iteration 2 → 3 (OpenAI feedback):**
+- Added explicit strain reconstruction formula (m>0 sum only)
+- Removed confusing equation involving h̃_ℓm(-f)
+- Fixed spin notation consistency (χ₁,χ₂ → χ₁z,χ₂z)
+
+**Iteration 3 → 4 (final fixes):**
+- Simplified strain reconstruction to one-sided convention
+- Softened "m>0 carry power" to "m>0 and m<0 not independent"
+- Fixed grid indexing (k=0,...,N-1 for N points)
+
+**Final Review Status:**
+| Reviewer | Approved at |
+|----------|-------------|
+| Gemini-3-pro | Iteration 2 |
+| GPT-5.2 | Iteration 4 |
 
 ---
 
