@@ -23,7 +23,7 @@ This is the IMRPhenomXAS case - a good starting point.
 **Handled analytically outside the emulator:**
 - Distance: scales as `1/D_L`
 - Reference phase: adds `phi_c`
-- Inclination angles (`beta_jn`, `phi_jl`) are reparameterizations of the 6 spin components
+- Inclination angles (`theta_jn`, `phi_jl`) are reparameterizations of the 6 spin components
 
 ### Frequency Scaling
 
