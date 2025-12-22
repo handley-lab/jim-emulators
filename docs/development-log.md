@@ -1346,10 +1346,67 @@ tests/test_lal_waveforms.py                    # +4 tests for frequency sequence
 
 ---
 
+### 22. Training Pipeline Documentation
+
+Created comprehensive LaTeX documentation for the neural network training pipeline in `implementation/`.
+
+**Document:** `implementation/training-pipeline.tex` (12 pages)
+
+**Contents:**
+
+1. **Data Characteristics** (§1) - Analysis of validation plots showing:
+   - Log amplitude range: [-26, -20] (span of ~6)
+   - Phase range: [-200, 0] radians (span of ~200)
+   - Bimodal amplitude distribution (inspiral vs merger/ringdown)
+   - Phase correctly aligned at Mf_ref = 0.006
+
+2. **Normalization Strategy** (§2):
+   - **Per-frequency standardization** for outputs: compute mean/std at each of the 2000 frequency bins, normalize independently
+   - **Input normalization**: η → [-1,1] via linear map, χ → [-1,1] by dividing by 0.99
+   - **Differentiability**: Normalization constants are precomputed and fixed, so gradients flow through trivially (just linear transformations)
+
+3. **PCA Compression** (§3):
+   - Separate PCA for amplitude and phase (different characteristics)
+   - Target: 99.99% variance retention
+   - Expected: 30-80 components per quantity
+
+4. **Network Architecture** (§4):
+   - 4×512 MLP with Speculator activation
+   - Input: 3 normalized parameters (η̂, χ̂₁z, χ̂₂z)
+   - Output: K_A + K_Φ PCA coefficients (~128 total)
+   - ~850,000 parameters
+
+5. **Training Configuration** (§5):
+   - Loss: MSE on PCA coefficients
+   - Optimizer: Adam with gradient clipping (global norm ≤ 1.0)
+   - Learning rate: 10⁻³ with cosine decay to 10⁻⁵
+   - Batch size: 256, epochs: 1000 with early stopping
+
+6. **Inference Pipeline** (§6):
+   - Full algorithm: params → normalize → MLP → PCA reconstruct → denormalize
+   - Computational cost: ~1.1M FLOPs/waveform
+   - Expected speedup: ~1000× over LALSimulation
+
+7. **Validation Metrics** (§7):
+   - Target mismatch: < 10⁻³
+   - Amplitude error: < 1% relative
+   - Phase error: < 0.1 radians
+
+**Files created:**
+```
+implementation/
+├── training-pipeline.tex         # Source (25 KB)
+├── training-pipeline.pdf         # Compiled (12 pages)
+└── waveforms_22mode_validation.png  # Reference plot
+```
+
+---
+
 ### Next Steps
 
-1. ☐ Generate full 10,000 sample training dataset
-2. ☐ Train emulator on (2,2) mode data
-3. ☐ Validate mismatch < 10⁻³
-4. ☐ Extend to higher modes (2,1), (3,3), etc.
-5. ☐ Address linear frequency grid for jim integration if needed
+1. ☑ Generate full 10,000 sample training dataset
+2. ☐ Implement PCA compression (sklearn fit, JAX transform)
+3. ☐ Train emulator on (2,2) mode data
+4. ☐ Validate mismatch < 10⁻³
+5. ☐ Extend to higher modes (2,1), (3,3), etc.
+6. ☐ Address linear frequency grid for jim integration if needed
