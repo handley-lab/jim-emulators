@@ -129,6 +129,12 @@ Let $\mathbf{A} \in \mathbb{R}^{N_{\rm train} \times N_{\rm freq}}$ be the matri
     \mu^{(A)}_k &= \frac{1}{N_{\rm train}} \sum_{i=1}^{N_{\rm train}} A_{ik} \\
     \sigma^{(A)}_k &= \sqrt{\frac{1}{N_{\rm train}} \sum_{i=1}^{N_{\rm train}} (A_{ik} - \mu^{(A)}_k)^2}
 \end{align}
+To avoid numerical instability at frequencies where waveforms vary little across the parameter space, we apply a floor to the standard deviation:
+\begin{equation}
+    \sigma^{(A)}_k \leftarrow \max(\sigma^{(A)}_k, \sigma_{\rm floor})
+\end{equation}
+with $\sigma_{\rm floor} = 10^{-6}$ (or a small fraction of the typical variation). This prevents division by near-zero values that would amplify numerical noise.
+
 The normalized log-amplitude is:
 \begin{equation}
     \boxed{\hat{A}_{ik} = \frac{A_{ik} - \mu^{(A)}_k}{\sigma^{(A)}_k}}
@@ -141,7 +147,7 @@ Similarly, let $\mathbf{\Phi} \in \mathbb{R}^{N_{\rm train} \times N_{\rm freq}}
     \mu^{(\Phi)}_k &= \frac{1}{N_{\rm train}} \sum_{i=1}^{N_{\rm train}} \Phi_{ik} \\
     \sigma^{(\Phi)}_k &= \sqrt{\frac{1}{N_{\rm train}} \sum_{i=1}^{N_{\rm train}} (\Phi_{ik} - \mu^{(\Phi)}_k)^2}
 \end{align}
-The normalized phase is:
+The same $\sigma_{\rm floor}$ is applied to prevent instabilities. The normalized phase is:
 \begin{equation}
     \boxed{\hat{\Phi}_{ik} = \frac{\Phi_{ik} - \mu^{(\Phi)}_k}{\sigma^{(\Phi)}_k}}
     \label{eq:phase_norm}
@@ -205,6 +211,9 @@ For inference, we need the inverse mappings:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 After normalization, we apply Principal Component Analysis to compress the waveforms from $N_{\rm freq} = 2000$ dimensions to $K \ll N_{\rm freq}$ components.
+
+\paragraph{Important: No double standardization.}
+The input to PCA is the \emph{already-normalized} data $\hat{\mathbf{A}}$ and $\hat{\mathbf{\Phi}}$ from \S\ref{sec:normalization}. The PCA step should \textbf{not} re-standardize the data internally. Since the per-frequency normalization produces zero-mean data at each frequency, PCA centering is already satisfied. Applying a second standardization would conflict with the per-frequency normalization and produce incorrect coefficients.
 
 \subsection{Separate PCA for Amplitude and Phase}
 
@@ -283,6 +292,33 @@ The exact values will be determined empirically from the training data.
 \State $\hat{\bm{\phi}} \gets \mathbf{c}^{(\Phi)} \mathbf{V}^{(\Phi)}$
 \end{algorithmic}
 \end{algorithm}
+
+\subsection{PCA Coefficient Standardization}
+\label{sec:pca_coeff_std}
+
+Following CosmoPower~\cite{cosmopower}, the PCA coefficients are standardized before being used as training targets. This ensures all coefficients have comparable scale, which improves neural network training stability.
+
+For each PCA coefficient $j$, compute the mean and standard deviation across the training set:
+\begin{align}
+    \mu^{(c)}_j &= \frac{1}{N_{\rm train}} \sum_{i=1}^{N_{\rm train}} C_{ij} \\
+    \sigma^{(c)}_j &= \sqrt{\frac{1}{N_{\rm train}} \sum_{i=1}^{N_{\rm train}} (C_{ij} - \mu^{(c)}_j)^2}
+\end{align}
+The standardized coefficients are:
+\begin{equation}
+    \hat{C}_{ij} = \frac{C_{ij} - \mu^{(c)}_j}{\sigma^{(c)}_j}
+\end{equation}
+
+This standardization is applied separately to the amplitude and phase coefficients. At inference, the network outputs standardized coefficients, which are then denormalized:
+\begin{equation}
+    C_{ij} = \hat{C}_{ij} \cdot \sigma^{(c)}_j + \mu^{(c)}_j
+\end{equation}
+
+\paragraph{Storage requirements.}
+We must store:
+\begin{itemize}
+    \item $\bm{\mu}^{(c,A)}, \bm{\sigma}^{(c,A)} \in \mathbb{R}^{K_A}$ for amplitude coefficients
+    \item $\bm{\mu}^{(c,\Phi)}, \bm{\sigma}^{(c,\Phi)} \in \mathbb{R}^{K_\Phi}$ for phase coefficients
+\end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Neural Network Architecture}
@@ -471,7 +507,11 @@ At inference time, we reconstruct waveforms from physical parameters via the tra
 \State $\hat{\chi}_{1z} \gets \chi_{1z} / 0.99, \quad \hat{\chi}_{2z} \gets \chi_{2z} / 0.99$
 
 \State \textbf{Neural network forward pass:}
-\State $[\mathbf{c}^{(A)}, \mathbf{c}^{(\Phi)}] \gets \text{MLP}(\hat{\eta}, \hat{\chi}_{1z}, \hat{\chi}_{2z})$
+\State $[\hat{\mathbf{c}}^{(A)}, \hat{\mathbf{c}}^{(\Phi)}] \gets \text{MLP}(\hat{\eta}, \hat{\chi}_{1z}, \hat{\chi}_{2z})$ \Comment{Standardized coefficients}
+
+\State \textbf{Denormalize PCA coefficients:}
+\State $c^{(A)}_j \gets \hat{c}^{(A)}_j \cdot \sigma^{(c,A)}_j + \mu^{(c,A)}_j$
+\State $c^{(\Phi)}_j \gets \hat{c}^{(\Phi)}_j \cdot \sigma^{(c,\Phi)}_j + \mu^{(c,\Phi)}_j$
 
 \State \textbf{PCA reconstruction:}
 \State $\hat{\mathbf{a}} \gets \mathbf{c}^{(A)} \mathbf{V}^{(A)}$ \Comment{$K_A \times N_{\rm freq}$ matrix-vector}
@@ -507,28 +547,31 @@ This represents a $\sim 1000\times$ speedup over LALSimulation.
 
 \begin{center}
 \begin{tikzpicture}[
-    node distance=0.8cm,
-    box/.style={rectangle, draw, minimum width=2.2cm, minimum height=0.7cm, align=center, font=\small},
-    data/.style={rectangle, rounded corners, draw, fill=blue!10, minimum width=1.8cm, minimum height=0.6cm, align=center, font=\small},
+    node distance=0.6cm,
+    box/.style={rectangle, draw, minimum width=1.8cm, minimum height=0.6cm, align=center, font=\footnotesize},
+    data/.style={rectangle, rounded corners, draw, fill=blue!10, minimum width=1.5cm, minimum height=0.5cm, align=center, font=\footnotesize},
     arrow/.style={-{Stealth[length=2mm]}, thick}
 ]
     % Input
     \node[data] (params) {$\eta, \chi_{1z}, \chi_{2z}$};
 
-    % Normalize
+    % Normalize inputs
     \node[box, right=of params] (norm_in) {Normalize\\inputs};
 
     % MLP
     \node[box, right=of norm_in] (mlp) {MLP};
 
-    % PCA coeffs
-    \node[data, right=of mlp] (coeffs) {$\mathbf{c}^{(A)}, \mathbf{c}^{(\Phi)}$};
+    % Standardized PCA coeffs
+    \node[data, right=of mlp] (coeffs_std) {$\hat{\mathbf{c}}$};
+
+    % Denorm coeffs
+    \node[box, right=of coeffs_std] (denorm_c) {Denorm\\coeffs};
 
     % PCA recon
-    \node[box, right=of coeffs] (pca) {PCA\\reconstruct};
+    \node[box, right=of denorm_c] (pca) {PCA\\recon};
 
-    % Denorm
-    \node[box, right=of pca] (denorm) {Denormalize\\outputs};
+    % Denorm outputs
+    \node[box, right=of pca] (denorm) {Denorm\\outputs};
 
     % Output
     \node[data, right=of denorm] (output) {$\mathbf{A}, \mathbf{\Phi}$};
@@ -536,8 +579,9 @@ This represents a $\sim 1000\times$ speedup over LALSimulation.
     % Arrows
     \draw[arrow] (params) -- (norm_in);
     \draw[arrow] (norm_in) -- (mlp);
-    \draw[arrow] (mlp) -- (coeffs);
-    \draw[arrow] (coeffs) -- (pca);
+    \draw[arrow] (mlp) -- (coeffs_std);
+    \draw[arrow] (coeffs_std) -- (denorm_c);
+    \draw[arrow] (denorm_c) -- (pca);
     \draw[arrow] (pca) -- (denorm);
     \draw[arrow] (denorm) -- (output);
 

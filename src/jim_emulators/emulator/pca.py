@@ -1,8 +1,13 @@
 """
 PCA compression for gravitational waveforms.
 
-Compresses high-dimensional waveforms (N_freq ~ 1000 points) to
-low-dimensional representations (N_pca ~ 20-60 coefficients).
+Compresses high-dimensional waveforms (N_freq ~ 2000 points) to
+low-dimensional representations (N_pca ~ 50-100 coefficients).
+
+IMPORTANT: This PCA class assumes the input data is ALREADY NORMALIZED
+(zero mean at each frequency). It does NOT perform internal standardization.
+The per-frequency normalization should be done externally using
+PerFrequencyNormalizer before calling this class.
 """
 
 from typing import Optional, Tuple, Dict, Any
@@ -12,17 +17,16 @@ import jax.numpy as jnp
 
 class WaveformPCA:
     """
-    PCA for waveform compression.
+    PCA for waveform compression (without internal standardization).
 
-    Compresses waveforms to PCA coefficients for neural network training.
-    Uses standardization before SVD for numerical stability.
+    This class performs pure SVD-based dimensionality reduction.
+    It assumes the input data has already been normalized externally.
 
     Pipeline:
-    1. Standardize: Y' = (Y - mean) / std
-    2. SVD: Y' = U @ S @ V.T
-    3. Keep top k components (99.99% variance)
-    4. Coefficients: α = Y' @ V[:, :k]
-    5. Reconstruction: Y' ≈ α @ V[:, :k].T
+    1. SVD: X = U @ S @ V.T  (no standardization!)
+    2. Keep top k components (99.99% variance)
+    3. Coefficients: α = X @ V[:, :k]
+    4. Reconstruction: X ≈ α @ V[:, :k].T
 
     Attributes
     ----------
@@ -30,10 +34,6 @@ class WaveformPCA:
         Number of PCA components to keep.
     explained_variance_target : float
         Target explained variance ratio (default 0.9999).
-    mean_ : ndarray
-        Mean of training data, shape (n_features,).
-    std_ : ndarray
-        Std of training data, shape (n_features,).
     components_ : ndarray
         PCA basis vectors, shape (n_components, n_features).
     explained_variance_ratio_ : ndarray
@@ -59,8 +59,6 @@ class WaveformPCA:
         self.explained_variance_target = explained_variance_target
 
         # Fitted attributes
-        self.mean_: Optional[np.ndarray] = None
-        self.std_: Optional[np.ndarray] = None
         self.components_: Optional[np.ndarray] = None
         self.singular_values_: Optional[np.ndarray] = None
         self.explained_variance_ratio_: Optional[np.ndarray] = None
@@ -69,10 +67,13 @@ class WaveformPCA:
         """
         Fit PCA on training data.
 
+        IMPORTANT: X should already be normalized (zero mean at each feature).
+        This class does NOT perform internal standardization.
+
         Parameters
         ----------
         X : ndarray, shape (n_samples, n_features)
-            Training data (e.g., log_amplitude or phase).
+            Normalized training data (e.g., normalized log_amplitude or phase).
 
         Returns
         -------
@@ -82,25 +83,21 @@ class WaveformPCA:
         X = np.asarray(X)
         n_samples, n_features = X.shape
 
-        # Standardize
-        self.mean_ = np.mean(X, axis=0)
-        self.std_ = np.std(X, axis=0)
-        # Avoid division by zero for constant features
-        self.std_ = np.where(self.std_ < 1e-10, 1.0, self.std_)
-
-        X_std = (X - self.mean_) / self.std_
-
-        # SVD (full matrices=False for efficiency)
-        U, S, Vt = np.linalg.svd(X_std, full_matrices=False)
+        # SVD directly on the (externally normalized) data
+        # No internal standardization to avoid double normalization
+        U, S, Vt = np.linalg.svd(X, full_matrices=False)
 
         # Compute explained variance ratio
         explained_var = (S ** 2) / (n_samples - 1)
         total_var = explained_var.sum()
-        self.explained_variance_ratio_ = explained_var / total_var
+        if total_var > 0:
+            explained_variance_ratio = explained_var / total_var
+        else:
+            explained_variance_ratio = np.zeros_like(explained_var)
 
         # Determine number of components
         if self.n_components is None:
-            cumsum = np.cumsum(self.explained_variance_ratio_)
+            cumsum = np.cumsum(explained_variance_ratio)
             n_components = int(np.searchsorted(cumsum, self.explained_variance_target) + 1)
             self.n_components = min(n_components, len(S))
         else:
@@ -109,7 +106,7 @@ class WaveformPCA:
         # Store top components
         self.components_ = Vt[:self.n_components]  # Shape: (n_components, n_features)
         self.singular_values_ = S[:self.n_components]
-        self.explained_variance_ratio_ = self.explained_variance_ratio_[:self.n_components]
+        self.explained_variance_ratio_ = explained_variance_ratio[:self.n_components]
 
         return self
 
@@ -120,7 +117,7 @@ class WaveformPCA:
         Parameters
         ----------
         X : ndarray, shape (n_samples, n_features)
-            Data to transform.
+            Normalized data to transform.
 
         Returns
         -------
@@ -128,8 +125,7 @@ class WaveformPCA:
             PCA coefficients.
         """
         X = np.asarray(X)
-        X_std = (X - self.mean_) / self.std_
-        return X_std @ self.components_.T
+        return X @ self.components_.T
 
     def inverse_transform(self, coeffs: np.ndarray) -> np.ndarray:
         """
@@ -143,11 +139,10 @@ class WaveformPCA:
         Returns
         -------
         X : ndarray, shape (n_samples, n_features)
-            Reconstructed data.
+            Reconstructed (normalized) data.
         """
         coeffs = np.asarray(coeffs)
-        X_std = coeffs @ self.components_
-        return X_std * self.std_ + self.mean_
+        return coeffs @ self.components_
 
     def fit_transform(self, X: np.ndarray) -> np.ndarray:
         """Fit and transform in one step."""
@@ -161,7 +156,7 @@ class WaveformPCA:
         Parameters
         ----------
         X : ndarray, shape (n_samples, n_features)
-            Original data.
+            Original normalized data.
 
         Returns
         -------
@@ -185,13 +180,11 @@ class WaveformPCA:
 
     def transform_jax(self, X: jnp.ndarray) -> jnp.ndarray:
         """JAX-compatible transform for use in JIT-compiled functions."""
-        X_std = (X - self.mean_) / self.std_
-        return X_std @ self.components_.T
+        return X @ self.components_.T
 
     def inverse_transform_jax(self, coeffs: jnp.ndarray) -> jnp.ndarray:
         """JAX-compatible inverse transform for use in JIT-compiled functions."""
-        X_std = coeffs @ self.components_
-        return X_std * self.std_ + self.mean_
+        return coeffs @ self.components_
 
     # =========================================================================
     # Serialization
@@ -202,8 +195,6 @@ class WaveformPCA:
         return {
             "n_components": self.n_components,
             "explained_variance_target": self.explained_variance_target,
-            "mean_": self.mean_,
-            "std_": self.std_,
             "components_": self.components_,
             "singular_values_": self.singular_values_,
             "explained_variance_ratio_": self.explained_variance_ratio_,
@@ -216,8 +207,6 @@ class WaveformPCA:
             n_components=d["n_components"],
             explained_variance_target=d["explained_variance_target"],
         )
-        pca.mean_ = d["mean_"]
-        pca.std_ = d["std_"]
         pca.components_ = d["components_"]
         pca.singular_values_ = d["singular_values_"]
         pca.explained_variance_ratio_ = d["explained_variance_ratio_"]
