@@ -1046,29 +1046,74 @@ L_anchor = α(t_ref)² + γ(t_ref)²        # frame anchoring
 - Added: +165 lines from initial version
 - Reviews stored: `theory/reviews/openai-review.md`, `theory/reviews/gemini-review.md`
 
+### 15. Frequency-Domain Theory Document
+
+The time-domain framework (§12-14) addresses fully general waveforms with precession, but the project's immediate target is IMRPhenomXHM—a frequency-domain model for non-precessing (aligned-spin) waveforms with higher harmonics. A dedicated frequency-domain document was written to address this case.
+
+**Key insight**: In frequency domain, the waveform depends on the dimensionless product Mf (mass × frequency), not M and f separately. This follows from GR's scale invariance—there is no intrinsic mass scale in vacuum GR.
+
+**Document created:** `theory/frequency-domain-emulation.tex` (14 pages)
+
+**Key content:**
+1. **Mass scaling**: Total mass M is not an intrinsic parameter. The network learns H_ℓm(Mf; η, χ₁, χ₂), and M only enters when converting to physical frequency at inference.
+
+2. **Extrinsic parameters enter analytically**:
+   - Distance: h̃ ∝ 1/D_L
+   - Coalescence time: h̃(f; t_c) = h̃(f; 0) × exp(-2πift_c)
+   - Coalescence phase: h̃_ℓm(f; φ_c) = h̃_ℓm(f; 0) × exp(-imφ_c)
+   - Inclination/azimuth: via spherical harmonics Y_ℓm(ι, φ₀)
+
+3. **No coprecessing frame needed** for non-precessing systems—just smooth amplitude Ã_ℓm(Mf) and phase Φ_ℓm(Mf) functions.
+
+4. **Conjugate symmetry** for aligned spins: h̃_{ℓ,-m}(f) = (-1)^ℓ h̃*_ℓm(f), halving the modes to emulate.
+
+5. **Representation choices**:
+   - Amplitude: log-amplitude (handles 5 orders of magnitude)
+   - Phase: direct unwrapped or PN-residual
+   - Frequency grid: log-spaced in Mf
+
+6. **Architecture**: PCA + MLP (CosmoPower-style) recommended
+
+7. **Precession**: Handled via "twisting-up" approximation (separate from aligned-spin emulator)
+
+8. **Validation**: Mismatch metric, target M < 10⁻³
+
+**Comparison with time-domain framework:**
+
+| Aspect | Time Domain | Frequency Domain |
+|--------|-------------|------------------|
+| Natural variable | t/M | Mf |
+| Coprecessing frame | Yes (precessing) | No (approximated) |
+| Extrinsic params | Mixed in | Analytic factors |
+| Best for | Precessing, eccentric | Aligned-spin, circular |
+
 ---
 
 ### Current State
 
-**Theory document:** `theory/general-waveform-decomposition.tex` (12 pages, approved by both reviewers)
+**Two theory documents:**
 
-Key content:
-- General waveform decomposition framework (spherical harmonic → coprecessing → amplitude/phase)
-- Clear separation of coordinate choices vs restrictive assumptions
-- Three NN architecture options with Option 3 (end-to-end learning) recommended
-- Comprehensive regularization addressing gauge non-identifiability
-- Initialization strategy for training stability
-- Full conventions specification
+1. `theory/general-waveform-decomposition.tex` (12 pages, approved)
+   - Time-domain framework for fully general waveforms
+   - Coprecessing frame decomposition + Euler angle dynamics
+   - End-to-end learning with regularization
+
+2. `theory/frequency-domain-emulation.tex` (14 pages)
+   - Frequency-domain framework for aligned-spin waveforms
+   - Mass scaling (Mf as domain variable)
+   - PCA + MLP architecture
 
 **Files:**
 ```
 theory/
-├── general-waveform-decomposition.tex  # Main document (approved)
-├── general-waveform-decomposition.pdf  # Compiled (12 pages)
+├── general-waveform-decomposition.tex  # Time-domain (approved)
+├── general-waveform-decomposition.pdf  # 12 pages
+├── frequency-domain-emulation.tex      # Frequency-domain
+├── frequency-domain-emulation.pdf      # 14 pages
 ├── .gitignore                          # LaTeX ephemera
 └── reviews/
-    ├── openai-review.md                # GPT-5.2 review (iteration 1)
-    └── gemini-review.md                # Gemini review (iteration 1)
+    ├── openai-review.md                # GPT-5.2 review
+    └── gemini-review.md                # Gemini review
 ```
 
 ---
@@ -1076,14 +1121,15 @@ theory/
 ### Next Steps
 
 1. ☑ Add multibanding control to wrapper (done)
-2. ☐ Create data generation script (LAL XPHM → HDF5 training data)
-3. ☐ Implement PCA compression for amplitude/phase (per-mode)
-4. ☐ Build neural network with Speculator activation (Flax)
-5. ☐ Training pipeline with optax
+2. ☑ Create data generation script (LAL XHM → HDF5 training data)
+3. ☑ Implement PCA compression for amplitude/phase (per-mode)
+4. ☑ Build neural network with Speculator activation (Flax)
+5. ☑ Training pipeline with optax
 6. ☐ Validation: mismatch < 10⁻³ target
 7. ☐ Integration with ripple interface
 8. ☑ XAS comparison plots (verify XPHM aligned-spin ≈ XAS)
 9. ☒ Literature review: existing GW emulation approaches
 10. ☒ General waveform decomposition theory document
+11. ☒ Frequency-domain emulation theory document
 
-**Theory document:** Complete and approved. Ready to proceed with implementation.
+**Theory:** Complete. Two complementary documents cover frequency-domain (immediate target) and time-domain (future precessing/eccentric extension).
