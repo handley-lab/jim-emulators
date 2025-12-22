@@ -38,9 +38,8 @@ PARAM_BOUNDS = {
 }
 
 # Linear Mf grid
-# For M_REF=50 Msun: Mf=0.005 -> f~20Hz, Mf=0.25 -> f~1015Hz
-MF_MIN = 0.005   # Start above where waveform begins (~20 Hz for 50 Msun)
-MF_MAX = 0.25
+MF_MIN = 0.005   # ~20 Hz for M=50 Msun - above waveform start
+MF_MAX = 0.25    # ~1015 Hz for M=50 Msun
 N_FREQ = 1000
 
 # Reference mass (fixed for all waveforms)
@@ -71,7 +70,7 @@ def eta_to_masses(eta: float, M_total: float) -> Tuple[float, float]:
 # =============================================================================
 
 def generate_waveform(eta: float, chi1z: float, chi2z: float, f_min: float, f_max: float, delta_f: float):
-    """Generate waveform - raw LAL output, no manipulation."""
+    """Generate waveform - raw LAL output, sliced to f >= f_min."""
     m1, m2 = eta_to_masses(eta, M_REF)
 
     params = WaveformParameters(
@@ -89,6 +88,11 @@ def generate_waveform(eta: float, chi1z: float, chi2z: float, f_min: float, f_ma
     )
 
     freqs, hp, _ = generate_fd_waveform(params, mode_array=MODE_22_ONLY, disable_multibanding=True)
+
+    # LAL returns data from f=0, slice to keep only f >= f_min
+    valid_mask = freqs >= f_min
+    freqs = freqs[valid_mask]
+    hp = hp[valid_mask]
 
     # Raw output
     log_amp = np.log10(np.maximum(np.abs(hp), 1e-100))
@@ -169,7 +173,6 @@ def main():
         args.output = "data/waveforms_22mode_test.h5"
 
     # Convert linear Mf grid to physical f grid
-    # Mf = f * M * G/c^3, so f = Mf / (M * G/c^3)
     f_min = float(geometric_to_physical_frequency(MF_MIN, M_REF))
     f_max = float(geometric_to_physical_frequency(MF_MAX, M_REF))
     delta_f = (f_max - f_min) / (N_FREQ - 1)
