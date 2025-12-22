@@ -939,6 +939,78 @@ Second deep research (seeded with mlgw_NN paper 2402.06587) revealed the actual 
 
 ---
 
+## Session: 2024-12-22 (Afternoon - Theory Development)
+
+### 40. General Waveform Decomposition Framework
+
+Developed a comprehensive theoretical document addressing how to build a fully general neural network emulator that can handle arbitrary waveform complexity (precession, higher modes, eccentricity).
+
+**Key Questions Addressed:**
+
+1. **Where does inclination fit?** Inclination (ι) is an extrinsic parameter - enters only through spin-weighted spherical harmonics Y_{ℓm}(ι,φ₀). Neural network learns intrinsic modes; inclination handled analytically at inference.
+
+2. **Is the coprecessing frame a restrictive assumption?** No - it's a coordinate transformation, not a physical assumption. Can be applied to any waveform including eccentric ones. What IS restrictive is the conjugate symmetry assumption made within that frame.
+
+3. **Can we get eccentricity from XHM/XPHM?** No. Eccentricity affects intrinsic mode evolution. The coprecessing frame transformation handles precession, not eccentricity. Must start from an eccentric model (SEOBNRE, TEOBResumS-GIOTTO).
+
+4. **How to handle Euler angles?** Proposed three architectural options:
+   - Option 1: Extract then learn (classical → NN)
+   - Option 2: Learn inertial modes directly
+   - Option 3: Build Wigner rotation into network, learn decomposition end-to-end (recommended)
+
+**Document Created:**
+- `theory/general-waveform-decomposition.tex` (8 pages)
+- `theory/general-waveform-decomposition.pdf`
+
+**Key Equations:**
+```
+h(t; λ; ι, φ₀) = Σ_{ℓm} h_{ℓm}(t; λ) ⁻²Y_{ℓm}(ι, φ₀)           [spherical harmonic]
+h_{ℓm}(t; λ) = Σ_{m'} D^ℓ_{mm'}(α,β,γ; t,λ) h^{cp}_{ℓm'}(t; λ)  [coprecessing rotation]
+h^{cp}_{ℓm}(t; λ) = A_{ℓm}(t; λ) e^{i φ_{ℓm}(t; λ)}            [amplitude/phase]
+```
+
+### 13. External LLM Review
+
+Submitted the theory document to OpenAI (GPT-5.2) and Gemini for critical review.
+
+**Reviews stored:** `theory/reviews/openai-review.md`, `theory/reviews/gemini-review.md`
+
+**Common Critical Feedback:**
+
+1. **Gauge/Identifiability Problem in Option 3**: Both reviewers identified that the coprecessing decomposition is non-unique. Without regularization, network might set α=β=γ=0 and shove all oscillations into coprecessing modes, defeating the purpose.
+
+2. **Angle Periodicity**: Should output sin(α), cos(α) rather than raw angles to avoid discontinuities at 2π wrapping.
+
+3. **Missing Conventions**: Need to specify h = h₊ - ih× vs h₊ + ih×, Euler angle convention (ZYZ vs ZXZ), active vs passive rotation.
+
+4. **Missing Citations**: Both noted the document should cite foundational NR surrogate work (Blackman et al. 2015/2017, Varma et al. 2019 NRSur7dq4, Boyle et al. 2011).
+
+5. **Eccentricity Clarification**: "Eccentricity affects Euler angles" is only true when precession is also present.
+
+**Suggested Improvements:**
+- Add regularization term penalizing temporal variance in coprecessing modes
+- Use sin/cos or quaternion representation for angles
+- Specify time-series parameterization (basis coefficients, not raw functions)
+- Add "Conventions" subsection
+
+### Branch Created
+
+`theory-decomposition` branch created from master for this work.
+
+### Files Added
+
+```
+theory/
+├── general-waveform-decomposition.tex
+├── general-waveform-decomposition.pdf
+├── .gitignore                          # LaTeX ephemera
+└── reviews/
+    ├── openai-review.md
+    └── gemini-review.md
+```
+
+---
+
 ### Next Steps
 
 1. ☑ Add multibanding control to wrapper (done)
@@ -950,3 +1022,10 @@ Second deep research (seeded with mlgw_NN paper 2402.06587) revealed the actual 
 7. ☐ Integration with ripple interface
 8. ☑ XAS comparison plots (verify XPHM aligned-spin ≈ XAS)
 9. ☒ Literature review: existing GW emulation approaches
+10. ☒ General waveform decomposition theory document
+
+**Theory document updates needed:**
+- Address gauge/identifiability with regularization section
+- Add conventions subsection
+- Add NR surrogate citations (Blackman, Varma, Boyle)
+- Clarify eccentricity + precession interaction
