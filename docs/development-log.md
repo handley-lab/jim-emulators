@@ -546,6 +546,18 @@ A follow-up deep research seeded with the mlgw_NN paper found the actual PCA+NN 
 
 Key insight from second survey: The PCA+NN architecture is a "stable design pattern" that has been validated across multiple groups (Utrecht, Pisa, SXS). The "manifold hypothesis" for GW - that valid waveforms lie on a low-dimensional manifold - is validated by PCA's success.
 
+**Key Background Paper (missing from both surveys):**
+
+`2205.14066` (SEOBNN) - Neural network surrogate for **SEOBNRv4PHM** (precessing + higher modes). This is the closest existing work to our IMRPhenomXPHM target:
+
+- Decomposes precessing waveform into co-precessing frame modes (8 components) + Euler angles (3 components)
+- Uses reduced basis + empirical interpolation + neural networks
+- Achieves 100× speedup on CPU (18ms per waveform from 20Hz for 44 M☉)
+- GPU batching provides further acceleration
+- Reduces inference timescale from weeks to hours
+
+This paper provides the template for handling precession in our emulator.
+
 ---
 
 ### Next Steps
