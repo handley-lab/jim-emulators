@@ -84,3 +84,19 @@ Comprehensive framework for arbitrary GW waveforms including precession:
 - Use sin/cos representation for angles to avoid 2π discontinuities
 
 **Citations:** Blackman (2015/2017), Varma (2019), Boyle (2011), Schmidt (2011)
+
+## Literature Research
+
+### Deep Research: Computational Paradigms in GW Modeling
+
+**Source:** https://gemini.google.com/share/3500cf3dbd3a
+
+**Document:** `docs/literature/deep-research/computational-paradigms-gw-modeling.md`
+
+Comprehensive literature review of waveform surrogate techniques across time and frequency domains. Key findings:
+
+- **Universal Triad**: Decomposition → Compression (SVD/PCA) → Regression (NN/GPR)
+- **Validates our approach**: PCA + MLP, Mf as domain variable, aligned-spin first
+- **Future techniques**: EIM for fast evaluation, GPR for uncertainty, Fourier feature embeddings
+
+**Papers analyzed:** 2402.06587 (TD HOMs), 2205.14066 (TD precession), 2411.14893 (TD eccentric), 2504.12420 (FD gwharmone), 2510.00116 (mean anomaly)
