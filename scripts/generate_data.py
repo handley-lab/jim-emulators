@@ -106,8 +106,8 @@ def generate_mode_amplitude(
     freqs = freqs[valid_mask]
     hp = hp[valid_mask]
 
-    # Raw log amplitude
-    log_amp = np.log10(np.maximum(np.abs(hp), 1e-100))
+    # Raw log amplitude (floor at -30 to avoid confusing interpolator)
+    log_amp = np.log10(np.maximum(np.abs(hp), 1e-30))
 
     return freqs, log_amp
 
