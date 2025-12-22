@@ -1,0 +1,172 @@
+Will Handley  0:00  
+Yeah, the fact that we can only do this outside term, I mean, that is why term exists. But there's still a point where you think, and I don't think, all of the stuff we do is conceptual, if we want to really analyze it for us as much. Okay, so let's see. It's a different conversation, but it
+
+Unknown Speaker  0:20  
+was starting to really great me by the end of last term, where I was like, I'm not, this is a joke.
+
+Will Handley  0:28  
+Still looks off so that that's still junk, yeah, this shouldn't Yeah, that's still junk. Give the plotting scripts, yeah, sorry. Give the plotting scripts and the plots to Gemini, and also make sure that you include the transformation we're currently doing? And the original theory tech so it can understand, so it can work out where we're Going at theory slash,
+
+Unknown Speaker  2:00  
+getting into check whether this understanding of the phase convention matches with what you're doing on the data generation side. Yes, that's very helpful. It seems, honestly, relatively simple. So what happens is basically the following, there's some F rep, and it takes whatever phase you have, and it always sets that to be two times 5c, minus three pi by four. It was minus two pi 5c plus pi by four, but actually that's minus psi of F. It turns out fine. So you pick up a minus sign, and then you get two pi minus pi by four, which is three pi by four. So then you can say, Okay, well, if I change phi c, what happens? Well, it changes everything by two times, Delta, phi c. And then if you change TC, everything shifts by two pi, FTC. And it check those. There are some scripts there which check that with calling loud, directly with the value of Tc, and then looking at the phase that it had and predicting it compared to the phase of TC equal to zero. So that should be and like, apart from that, I mean, as long as you get the phase difference correct, it doesn't really matter, right? Like, as long as it's only differences order two pi, then you're all good. But what it what it suggests doing then, is store the phase minus the phase of 5f. ReFS, what's
+
+Unknown Speaker  3:39  
+wrong with you?
+
+Speaker 1  3:43  
+Okay, let's see if Gemini comes back with the right answer, saying, Don't do that.
+
+Will Handley  3:51  
+So to be clear, interpolation is almost certainly the wrong thing to do. Will be introducing all kinds of errors. Can you update the Claude MD to strongly forbid interpolating things when moving between objects. This is a scientific anti pattern. So what
+
+Unknown Speaker  4:17  
+it suggests is, take the phase, subtract off the phase at F ref. So the phase is, then you're enforcing the phase to be zero, because now we know how it's predicted. So then if I apply it on a different F ref, all I do is I put that phase, I add on like two pi, two 5c, minus two, pi by four at that F ref, and that's what? Is that? What Geminis, yeah, the bucket did. So this is a Claude say, oh,
+
+Will Handley  4:53  
+I'll just interpret. Don't worry.
+
+Unknown Speaker  4:56  
+It'll be fine. Can see it doing Bayesian inference. Don't worry. Let me just seven
+
+Unknown Speaker  5:04  
+Euro, yeah, just do like Katie's. That'll work. No,
+
+Will Handley  5:19  
+please do an iterative review using the iterative review skill with Gemini, until it I put it as a skill does do
+
+Will Handley  5:49  
+now checking what happens mode by mode, you probably want to also provide the PNG File each time, as it proves with each change you Sorry, I'm
+
+Unknown Speaker  6:03  
+checking it there. Applies at the node level as well, because that's quite
+
+Unknown Speaker  6:19  
+important, starting to look a bit better, not wise, time for merger? Yeah, I don't know that's some black thing that's done fairly
+
+Will Handley  6:29  
+but that now is getting closer. Yeah. Why is it only plotting time from merger I, or otherwise, it only showing code after the merger. I would ideally like to see the code before as well.
+
+Unknown Speaker  6:56  
+Yeah, that's weird. Yeah.
+
+Unknown Speaker  7:09  
+Yeah, now the phase is looking pretty good as well, and I see it's like 10 to the minus four. Or is this on the updated code? I don't know. It generating training plants been staged anyway.
+
+Will Handley  7:26  
+But like, that's, yeah, I don't know for the problem, phase, field value zero, because a massive discontinuity. I'll address all the feedback into The plot industry. Right?
+
+Unknown Speaker  7:40  
+Says, I
+
+Unknown Speaker  8:05  
+glad you fixed the failures. Actually might go shortly. I should probably go shortly. So try and wrap up. I
+
+Unknown Speaker  8:32  
+it. Let's give you the PNG backs generally, okay. What are you doing? There's still nothing before T equals zero.
+
+Will Handley  8:47  
+There's still nothing before T equals zero. Please ask Gemini explicitly what's going wrong here.
+
+Unknown Speaker  9:04  
+What have the latest you check whether you push. I
+
+Unknown Speaker  9:17  
+mean, it says, I have everything. It's a master Yeah,
+
+Unknown Speaker  9:37  
+we commit to
+
+Will Handley  9:44  
+that looks like it's the wrong way round, definitely does, doesn't it? Yeah, but that's fine. That's just a sign then sure and
+
+Unknown Speaker  9:57  
+that that's better, yeah?
+
+Unknown Speaker  10:02  
+Inspiring.
+
+Unknown Speaker  10:08  
+It's close. I think this is
+
+Will Handley  10:11  
+okay. I mean, that's definitely an improvement, but it looks like it's inspiring backwards in time. Are you sure you've got your assignments right? And then you might want to adjust the ranges appropriately. That looks like it's inspiring backwards in time, although that's definitely an improvement. Can you seek any other problems like that?
+
+Will Handley  10:39  
+Updates on one of the branches, pull merge and then push, please.
+
+Unknown Speaker  10:50  
+Different mouth on these different face complexes. I
+
+Unknown Speaker  11:01  
+hate this code. Oh, why? Why would you do that? Apparently, if you simulate the four waveform, then it references at the minus three pi by four individual mode, it flips the sign,
+
+Unknown Speaker  11:30  
+why? The
+
+Unknown Speaker  12:08  
+cool thing is that this is basically xas, Okay, that's the question.
+
+Unknown Speaker  12:47  
+You can holler at that, yeah, so
+
+Unknown Speaker  13:44  
+what was the, what was the main difference between? Well, what's the change between one more? Sorry. Does this look kind of consistent at this point? 008, yeah. So this
+
+Unknown Speaker  13:57  
+would run away to 500 Okay, let's see what happens. There we go. I
+
+Unknown Speaker  14:07  
+was like, it's definitely goes absolutely better. You should be looking the pmgs to then you
+
+Will Handley  14:24  
+so you can see here that's close for the amount of phase which propagates to a from a 10 point 18 to 10 plus 19 error, yeah, that's the kind of thing where small phasing conventions could be causing damaging,
+
+Unknown Speaker  14:44  
+yeah,
+
+Unknown Speaker  14:48  
+please update the development Log and point to this image that should
+
+Unknown Speaker  15:00  
+be teaching the tech file with
+
+Unknown Speaker  15:09  
+this I'm Loving a formal complaint
+
+Unknown Speaker  15:19  
+coming Home. Yes, I would run. I
+
+Unknown Speaker  15:58  
+Right? Does that have script generate that time to mainstream?
+
+Unknown Speaker  16:14  
+It's not bad. Day's work. No, particularly those two, yeah, yeah. Branches
+
+Speaker 2  16:37  
+in I can't keep well. I promise no festive calling. Keep that promise so me, yeah, if
+
+Unknown Speaker  17:17  
+you take out about two hours the College Council, right? That would
+
+Unknown Speaker  17:29  
+this is looking so much better now, like how it scales up. We have to see, right? But I
+
+Unknown Speaker  18:21  
+record changes from the first attempt, where the base was actually being called properly, which helps the
+
+Unknown Speaker  18:40  
+network was normalizing the data first. I
+
+Unknown Speaker  19:41  
+bulk all tech files, the search
+
+Unknown Speaker  19:53  
+basically Python code to jump and
+
+Unknown Speaker  20:05  
+that is to make a daily
+
+Unknown Speaker  20:17  
+sorry. I.
+
+Transcribed by https://otter.ai
