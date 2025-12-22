@@ -67,6 +67,19 @@ See `docs/literature/deep-research/` for survey of advanced NN architectures for
 | `2408.02470/` | **obiwann**: SVD-NN interpolant | Validates SVD+MLP approach (10⁻⁴ mismatch) |
 | `2512.02968/` | **Dingo-T1**: Transformers for GW PE | Uses IMRPhenomXPHM - validates our target model |
 
-**Key background (2205.14066 SEOBNN)**: Closest existing work to our goal. Shows how to handle precession by decomposing into co-precessing frame modes + Euler angles. Achieves 100× speedup. Template for our IMRPhenomXPHM emulator.
+**Key background (2205.14066 SEOBNN)**: Closest existing work to our goal. Template for our IMRPhenomXPHM emulator.
+
+**Coprecessing frame technique (from SEOBNN):**
+1. Transform to frame tracking orbital plane → waveform simplifies
+2. Model separately: coprecessing modes (smooth) + Euler angles α(t), β(t), γ(t)
+3. SVD for dimensionality reduction
+4. Neural networks predict coefficients at empirical interpolation nodes
+5. Rotate back to inertial frame for final waveform
+
+**Performance targets** (based on SEOBNN benchmarks):
+- CPU: ~18 ms/waveform (100-200× speedup)
+- GPU batch: <0.01 ms/waveform (>100,000× speedup)
+
+**Design principle**: "Bake domain knowledge into architecture" - use physics-informed decomposition (coprecessing frame, amp/phase split) rather than learning raw physics.
 
 **Training data insight**: All papers train on semi-analytical approximants (SEOBNR, IMRPhenom, EOB), not raw NR. This validates our approach of emulating IMRPhenomXPHM directly.

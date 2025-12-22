@@ -558,6 +558,25 @@ Key insight from second survey: The PCA+NN architecture is a "stable design patt
 
 This paper provides the template for handling precession in our emulator.
 
+**Third Survey (seeded with 2205.14066 - SEOBNN deep-dive):**
+
+The best survey - detailed technical breakdown of the coprecessing frame technique:
+
+1. **Coprecessing frame**: Transform to non-inertial frame tracking orbital plane → waveform simplifies to resemble aligned-spin case
+2. **Decomposition**: Model separately - coprecessing modes (smooth, easy for NN) + Euler angles α(t), β(t), γ(t) (precession dynamics)
+3. **SVD basis**: Dimensionality reduction ensures output "looks like a gravitational wave"
+4. **Empirical interpolation**: Predict waveform at specific time nodes rather than abstract coefficients → better generalization
+
+**Performance benchmarks (SEOBNN):**
+
+| Hardware | Mode | Time/waveform | Speedup vs SEOBNRv4PHM |
+|----------|------|---------------|------------------------|
+| CPU | Serial | 18 ms | 100-200× |
+| GPU | Single | 0.5 ms | 4,000× |
+| GPU | Batch 10⁴ | <0.01 ms | >100,000× |
+
+**Key insight**: "The most successful 'AI for Science' models are those that bake domain knowledge into the architecture or data preprocessing, rather than relying on the network to learn the laws of physics from scratch."
+
 ---
 
 ### Next Steps
