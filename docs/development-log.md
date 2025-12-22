@@ -528,6 +528,10 @@ Almost all papers train on semi-analytical approximants, not raw NR:
 
 This validates our CosmoPower/Speculator approach - simple SVD+MLP achieves state-of-the-art results.
 
+**Appraisal of Deep Research:**
+
+The survey skewed toward fancier architectures (transformers, diffusion, HNNs) rather than the straightforward approaches that actually work well for this problem. Notably, it missed `2402.06587` (mlgw_NN) - a February 2024 paper using the exact same methodology we're pursuing (amp/phase → PCA → NN), achieving 10⁻⁴ mismatch with higher modes. This should have been a top hit for any survey on "neural network gravitational wave emulation." Paper was added manually after the survey.
+
 ---
 
 ### Next Steps

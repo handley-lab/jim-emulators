@@ -6,6 +6,10 @@ Literature survey on neural network approaches beyond standard SVD+MLP.
 
 - `advanced-nn-architectures-survey.md` - Comprehensive review from Google Deep Research
 
+## Appraisal
+
+The deep research survey skewed toward fancier architectures (transformers, diffusion, HNNs) rather than the straightforward approaches that actually work well for this problem. Notably, it missed `2402.06587` (mlgw_NN) - a February 2024 paper using the exact same methodology we're pursuing (amp/phase → PCA → NN), achieving 10⁻⁴ mismatch with higher modes. This should have been a top hit for any survey on "neural network gravitational wave emulation."
+
 ## Papers by Category
 
 ### SVD-NN / PCA-NN Interpolants (Most Relevant)
