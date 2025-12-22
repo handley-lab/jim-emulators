@@ -54,18 +54,30 @@ All paper sources downloaded to project root.
 | `ripple/` | `git@github.com:tedwards2412/ripple.git` | JAX-based differentiable GW waveforms |
 | `lalsuite/lalsimulation/` | `https://git.ligo.org/lscsoft/lalsuite.git` (sparse) | LIGO waveform implementations (IMRPhenomX etc.)
 
-## Theory Document
+## Theory Documents
+
+### Frequency Domain (Immediate Target)
+
+**`theory/frequency-domain-emulation.tex`** (14 pages)
+
+Framework for emulating IMRPhenomXHM (aligned-spin, higher modes):
+- Mass scaling: network learns H_ℓm(Mf; η, χ₁, χ₂), total mass M is not an intrinsic parameter
+- Extrinsic parameters (D_L, t_c, φ_c, ι) enter as analytic multiplicative factors
+- Conjugate symmetry halves mode count: only need m > 0 modes
+- Representation: log-amplitude, unwrapped phase, log-spaced Mf grid
+- Architecture: PCA + MLP (CosmoPower-style) recommended
+
+### Time Domain (Future: Precessing/Eccentric)
 
 **`theory/general-waveform-decomposition.tex`** (12 pages, approved)
 
-Comprehensive framework for NN emulation of arbitrary GW waveforms:
+Comprehensive framework for arbitrary GW waveforms including precession:
 - General decomposition: spherical harmonic → coprecessing frame → amplitude/phase
 - Coordinate choices vs restrictive assumptions (conjugate symmetry, circular orbits)
 - Three architecture options with Option 3 (end-to-end learning) recommended
 - Regularization addressing gauge non-identifiability: L_mode + L_angle + L_minrot + L_anchor
-- Initialization strategy for training stability
 
-**Key design decisions:**
+**Key design decisions (time domain):**
 - Regularize instantaneous frequency (ω̈), not raw phase (φ̈) - avoids fighting physical chirp
 - Penalize angle velocities (α̇, β̇, γ̇) to prevent stealing orbital frequency
 - Anchor frame at reference time: α(t_ref) = γ(t_ref) = 0
