@@ -148,6 +148,7 @@ Meeting transcripts documenting planning discussions and decisions:
 | `2025-12-22-12-10-00.txt` | Progress review: LAL wrapper, sensitivity plots, mode additivity discovery, per-mode emulation strategy |
 | `2025-12-22-13-33-00.txt` | Strategy consolidation: start with (2,2) mode, aligned spins; literature gap analysis; mlgw_NN paper discovery |
 | `2025-12-22-14-39-00.txt` | Training session: data generation debugging, phase aliasing fix, IFFT issues, 100k sample training, mismatch $2.5 \times 10^{-4}$ achieved |
+| `2025-12-22-17-02-00.txt` | Summary review: daily summary generation, author/model attribution, EMU TODO, file references |
 | `2025-12-22-18-40-00.txt` | Final validation: IFFT sign convention fix, time-domain plotting, iterative Gemini review, wrap-up |
 
 **Key insights from transcripts:**

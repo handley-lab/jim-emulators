@@ -1,0 +1,73 @@
+Unknown Speaker  1:39  
+Are The 211,002nd
+
+Will Handley  1:40  
+at the 211 1000 tokens from today, all the deep researches, tech files, transcripts and things like that, are now going to be fed to Gemini To try and make a data. Sorry, we'll see
+
+Speaker 1  1:58  
+today. Plus that burn some watering,
+
+Unknown Speaker  2:04  
+and There's mint supply left. Ah, it works right
+
+Unknown Speaker  3:41  
+acre brought him to
+
+Speaker 1  3:47  
+Sorry, yeah, that's Fine.
+
+Will Handley  4:02  
+Do okay,
+
+Speaker 1  4:23  
+I mean, I think also, like, we use the system relatively similarly. So my point is that, like, I'm not surprised by anything you do, right? But that's because we discuss it a lot, yeah, and so it'd be more beneficial when you have someone who's not exactly used it as much, right?
+
+Unknown Speaker  4:51  
+We have James Alby in their face
+
+Speaker 2  4:57  
+on the same line as Claude code I Hour,
+
+Will Handley  5:11  
+2300 so that's a piece to be like, hey. Here.
+
+Will Handley  5:23  
+Okay, this is looking pretty good. Can we have will Handley and James ally please? We should also note the models we've been using, which are Claude 4.5 sonnets via Claude code, Gemini three and GPT 5.2 for two. We finished the day at 1900 not 2300 what else?
+
+Will Handley  6:05  
+Whilst I remember, can you add a future to do of including emu in this ie Harry Bevan's global emu as an alternative to the speculator and Cosmo power set up?
+
+Unknown Speaker  6:23  
+Please add that to the
+
+Will Handley  6:28  
+to somewhere prominent on a to do dot txt that you should update documentation and in the plot.md rather than this document actually, please do
+
+Will Handley  6:58  
+going to use this To link. Can you mention the key files of reference relevance here Throughout
+
+Unknown Speaker  7:10  
+that's training on 10 Times sooner. Be good. I
+
+Unknown Speaker  9:08  
+so
+
+Unknown Speaker  9:25  
+great. I That's the transcript you want to mention what we just talked about over tea.
+
+Will Handley  9:54  
+Yeah, why not? I mean, So lessons learned. I think I spent too much time putting around with theory, not enough time getting started? Yeah, I think there's an ever which you spent a bit too much time trying to go too fast and fixing problems that when, that when there were issues at the bedrock, yeah, my approach didn't have that, partly because I benefited from your observing mistakes that came through the rapid approach. But also because there was quite a lot of time spent with the theory tech document and forming a tech document that forms, effectively a plan that's called then follows, yeah, you can also achieve this new claw plan, I think. Yeah, indeed. What else do? I mean, honestly,
+
+Unknown Speaker  10:50  
+apart from that, I think it was, in general, a pretty well executed day. I think perhaps if we were to pick up this, so, you know, that was kind of what you I think you always have to get something into your head somehow. And now, on a kind of day two day
+
+Unknown Speaker  11:02  
+of this project, I think we can put a few more processes in parallel,
+
+Unknown Speaker  11:08  
+for example, like testing some hyperparameting While we then went and really said, Okay, are we sure we're doing, like with the phase and the different modes and stuff like that, and those could start to be parallelized, yeah, But I don't think we could do that now we can
+
+Will Handley  11:22  
+also, as experiments, see how well we can resume post Christmas. Yeah, I would very much like to keep doing more of this shit.
+
+Transcribed by https://otter.ai
