@@ -1,5 +1,11 @@
 # Jim Emulators Project
 
+**Repository**: https://github.com/handley-lab/jim-emulators
+
+**Goal**: Emulate GW waveforms in JAX for the jim ecosystem, following CosmoPower/Speculator approach.
+
+**Documentation**: See `docs/project-overview.md` for full project details.
+
 ## Reference Papers
 
 All paper sources downloaded to project root.
