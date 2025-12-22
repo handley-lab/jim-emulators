@@ -485,6 +485,34 @@ Speculator activation test:
 - optax 0.2.6
 - jax 0.8.2, jaxlib 0.8.2
 
+### 24. Training Pipeline Verification
+
+Created `scripts/train_toy_example.py` to verify the full training pipeline works before using real waveform data.
+
+**Toy Problem:**
+- 3D input → 50D output (mimicking (η, χ₁, χ₂) → PCA coefficients)
+- Smooth nonlinear target function (sinusoids + polynomials)
+- 10k training samples, 1k validation samples
+
+**Results:**
+```
+Initial loss:  0.464
+Final loss:    0.0002
+Improvement:   2370x
+Training time: ~11 seconds (96 epochs)
+Speed:         ~9 epochs/second on CPU
+```
+
+**Verified:**
+- SpeculatorActivation module works correctly
+- EmulatorMLP with 4×256 hidden layers trains successfully
+- AdamW optimizer converges smoothly
+- Early stopping triggers appropriately
+- JIT compilation works
+- Gradients are computable (critical for HMC inference)
+
+The JAX/Flax/Optax training infrastructure is ready for real waveform data.
+
 ---
 
 ### Next Steps
