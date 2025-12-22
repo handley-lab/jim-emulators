@@ -168,37 +168,112 @@ def main():
         Mf_grid, args.eta, args.chi1z, args.chi2z, args.mass
     )
 
-    # Compute mismatch
-    mismatch, overlap = compute_mismatch(h_true, h_pred)
-    print(f"\nSimple (unweighted) overlap: {overlap:.6f}")
-    print(f"Simple mismatch: {mismatch:.2e}")
+    # Compute mismatch with proper df weights for log-spaced grid
+    df = np.empty_like(f_physical)
+    df[1:-1] = 0.5 * (f_physical[2:] - f_physical[:-2])
+    df[0] = f_physical[1] - f_physical[0]
+    df[-1] = f_physical[-1] - f_physical[-2]
 
-    # Time domain via IFFT
-    n_freq = len(Mf_grid)
-    n_fft = 2 ** int(np.ceil(np.log2(2 * n_freq)))
+    inner = np.abs(np.sum(np.conj(h_true) * h_pred * df))
+    norm_true = np.sqrt(np.real(np.sum(np.conj(h_true) * h_true * df)))
+    norm_pred = np.sqrt(np.real(np.sum(np.conj(h_pred) * h_pred * df)))
+    overlap = inner / (norm_true * norm_pred)
+    mismatch = 1 - overlap
 
-    h_pred_full = np.zeros(n_fft, dtype=complex)
-    h_true_full = np.zeros(n_fft, dtype=complex)
+    print(f"\nWeighted overlap: {overlap:.6f}")
+    print(f"Weighted mismatch: {mismatch:.2e}")
 
-    h_pred_full[1:n_freq+1] = h_pred
-    h_true_full[1:n_freq+1] = h_true
+    # Time domain via IFFT - must interpolate to uniform frequency grid first
+    # Key insight: interpolate SMOOTH quantities (log-amp, phase) not oscillatory (real, imag)
+    from scipy.interpolate import interp1d
 
-    # Conjugate symmetry
-    h_pred_full[n_fft-n_freq+1:] = np.conj(h_pred[::-1][:-1])
-    h_true_full[n_fft-n_freq+1:] = np.conj(h_true[::-1][:-1])
+    # Setup time/frequency grid
+    # Choose sampling rate > 2 * f_max and duration long enough for the chirp
+    Fs = 4096.0  # Hz - sufficient for 50 Msun (ringdown ~300 Hz)
+    dt = 1.0 / Fs
+    T_obs = 4.0  # seconds - plenty for BBH at this mass
+    N = int(T_obs * Fs)
 
-    h_pred_td = np.fft.ifft(h_pred_full) * n_fft
-    h_true_td = np.fft.ifft(h_true_full) * n_fft
+    # Create exact FFT frequency grid (rfftfreq gives [0, df, ..., Nyquist])
+    f_uniform = np.fft.rfftfreq(N, d=dt)
 
-    # Time array
-    dt = 1.0 / (2 * f_physical[-1])
+    # Interpolate SMOOTH quantities: log-amplitude and unwrapped phase
+    # DO NOT interpolate real/imag - they are highly oscillatory!
+    phase_true_unwrapped = np.unwrap(np.angle(h_true))
 
-    # Find merger
-    peak_idx_pred = np.argmax(np.abs(h_pred_td))
+    # Interpolators for LAL waveform
+    # Use extrapolate for phase to avoid discontinuity at boundaries
+    interp_log_amp_true = interp1d(f_physical, np.log(np.abs(h_true)), kind='cubic',
+                                   bounds_error=False, fill_value=-np.inf)
+    interp_phase_true = interp1d(f_physical, phase_true_unwrapped, kind='cubic',
+                                 bounds_error=False, fill_value="extrapolate")
+
+    # Interpolators for emulator (already have log_amp and unwrapped phase)
+    interp_log_amp_pred = interp1d(f_physical, log_amp_pred * np.log(10), kind='cubic',
+                                   bounds_error=False, fill_value=-np.inf)
+    interp_phase_pred = interp1d(f_physical, phase_pred, kind='cubic',
+                                 bounds_error=False, fill_value="extrapolate")
+
+    # Evaluate on uniform grid
+    log_amp_true_uniform = interp_log_amp_true(f_uniform)
+    phase_true_uniform = interp_phase_true(f_uniform)
+    log_amp_pred_uniform = interp_log_amp_pred(f_uniform)
+    phase_pred_uniform = interp_phase_pred(f_uniform)
+
+    # Reconstruct complex waveform on uniform grid
+    amp_true_uniform = np.exp(log_amp_true_uniform)
+    amp_true_uniform[~np.isfinite(amp_true_uniform)] = 0.0
+
+    amp_pred_uniform = np.exp(log_amp_pred_uniform)
+    amp_pred_uniform[~np.isfinite(amp_pred_uniform)] = 0.0
+
+    h_true_fft = amp_true_uniform * np.exp(1j * phase_true_uniform)
+    h_pred_fft = amp_pred_uniform * np.exp(1j * phase_pred_uniform)
+
+    # Apply tapering to avoid Gibbs ringing from sharp cutoff at f_min
+    # IMPORTANT: Taper must be strictly zero below f_min_phys (where we have no data)
+    # and smoothly rise starting AT f_min_phys (not before!)
+    f_min_phys = f_physical[0]
+    f_max_phys = f_physical[-1]
+    taper_width = 10.0  # Hz
+
+    taper = np.ones_like(f_uniform)
+
+    # Strictly zero below f_min_phys
+    taper[f_uniform < f_min_phys] = 0.0
+
+    # Smooth rise from f_min_phys to f_min_phys + taper_width (sin^2 window)
+    mask_rise = (f_uniform >= f_min_phys) & (f_uniform < f_min_phys + taper_width)
+    x_rise = (f_uniform[mask_rise] - f_min_phys) / taper_width
+    taper[mask_rise] = np.sin(np.pi / 2 * x_rise) ** 2
+
+    # Optional: taper down at high frequencies too
+    mask_fall = (f_uniform > f_max_phys - taper_width) & (f_uniform <= f_max_phys)
+    x_fall = (f_max_phys - f_uniform[mask_fall]) / taper_width
+    taper[mask_fall] = np.sin(np.pi / 2 * x_fall) ** 2
+    taper[f_uniform > f_max_phys] = 0.0
+
+    h_true_fft *= taper
+    h_pred_fft *= taper
+
+    # IFFT to time domain (irfft includes 1/N, multiply by Fs to recover integral)
+    h_true_td = np.fft.irfft(h_true_fft) * Fs
+    h_pred_td = np.fft.irfft(h_pred_fft) * Fs
+
+    # Roll arrays to center the waveform - FFT wraps "past" to end of array
+    n_samples = len(h_true_td)
+    h_true_td = np.roll(h_true_td, n_samples // 2)
+    h_pred_td = np.roll(h_pred_td, n_samples // 2)
+
+    t = np.arange(len(h_true_td)) * dt
+
+    # Find merger (peak amplitude)
     peak_idx_true = np.argmax(np.abs(h_true_td))
+    peak_idx_pred = np.argmax(np.abs(h_pred_td))
 
-    t_centered_pred = (np.arange(n_fft) - peak_idx_pred) * dt * 1000  # ms
-    t_centered_true = (np.arange(n_fft) - peak_idx_true) * dt * 1000  # ms
+    n_td = len(h_true_td)
+    t_centered_pred = (np.arange(n_td) - peak_idx_pred) * dt * 1000  # ms
+    t_centered_true = (np.arange(n_td) - peak_idx_true) * dt * 1000  # ms
 
     # Plot
     fig, axes = plt.subplots(2, 2, figsize=(14, 10))
@@ -227,31 +302,32 @@ def main():
     ax.legend()
     ax.grid(True, alpha=0.3)
 
-    # Time domain
+    # Time domain - show inspiral before merger and ringdown after
     ax = axes[1, 0]
-    window = 50  # ms
-    mask_true = np.abs(t_centered_true) < window
-    mask_pred = np.abs(t_centered_pred) < window
-    ax.plot(t_centered_true[mask_true], np.real(h_true_td)[mask_true], 'b-', label='LAL', linewidth=1)
-    ax.plot(t_centered_pred[mask_pred], np.real(h_pred_td)[mask_pred], 'r--', label='Emulator', linewidth=1)
+    window_before = 500  # ms before merger (inspiral)
+    window_after = 50    # ms after merger (ringdown)
+    mask_true = (t_centered_true > -window_before) & (t_centered_true < window_after)
+    mask_pred = (t_centered_pred > -window_before) & (t_centered_pred < window_after)
+    ax.plot(t_centered_true[mask_true], np.real(h_true_td)[mask_true], 'b-', label='LAL', linewidth=0.8)
+    ax.plot(t_centered_pred[mask_pred], np.real(h_pred_td)[mask_pred], 'r--', label='Emulator', linewidth=0.8)
     ax.set_xlabel('Time from merger [ms]')
     ax.set_ylabel('h(t)')
     ax.set_title(f'Time Domain Waveform (M={args.mass} M☉)')
     ax.legend()
     ax.grid(True, alpha=0.3)
-    ax.set_xlim(-window, window)
+    ax.set_xlim(-window_before, window_after)
 
     # Residual
     ax = axes[1, 1]
     shift = peak_idx_true - peak_idx_pred
     h_pred_aligned = np.roll(h_pred_td, shift)
     residual = np.real(h_true_td - h_pred_aligned)
-    ax.plot(t_centered_true[mask_true], residual[mask_true], 'g-', linewidth=1)
+    ax.plot(t_centered_true[mask_true], residual[mask_true], 'g-', linewidth=0.8)
     ax.set_xlabel('Time from merger [ms]')
     ax.set_ylabel('Residual h_true - h_pred')
     ax.set_title('Time Domain Residual')
     ax.grid(True, alpha=0.3)
-    ax.set_xlim(-window, window)
+    ax.set_xlim(-window_before, window_after)
 
     fig.suptitle(
         f'Emulator vs LAL: η={args.eta}, χ₁z={args.chi1z}, χ₂z={args.chi2z}, M={args.mass} M☉\n'
