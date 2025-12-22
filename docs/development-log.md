@@ -1272,6 +1272,32 @@ This still covers the LIGO/Virgo sensitive band (>10-20 Hz) for typical BBH sour
 - Phase correctly aligned at reference (deviation = 0)
 - All samples pass verification at machine precision
 
+### 20. External Review (OpenAI GPT-5.2)
+
+Consulted OpenAI to validate the phase aliasing fix. Key feedback:
+
+**Confirmation**: The fix is correct. Raising `MF_MIN` until the maximum adjacent phase jump is safely below π is a valid and commonly-used approach, provided the emulator doesn't need to represent that region.
+
+**Mass range implications**:
+| Total Mass | MF_MIN=0.004 corresponds to | Verdict |
+|------------|----------------------------|---------|
+| 50 M☉ | ~16 Hz | Fine (analyses often start at 15-20 Hz) |
+| 20 M☉ | ~40 Hz | Lose 20-40 Hz band |
+| 10 M☉ | ~81 Hz | Lose most of inspiral below 80 Hz |
+
+For BBH with M ≳ 30-40 M☉ and typical f_min ~ 15-20 Hz: **our fix is appropriate**.
+For lower-mass BBH (10-20 M☉) with f_min ~ 20 Hz: would need a different approach.
+
+**Better approaches for future** (if we need low-Mf coverage):
+1. **Grid in PN variable**: Sample uniformly in v = (πMf)^(1/3) instead of log(Mf) - phase is more polynomial in v
+2. **Piecewise grid**: Dense at low Mf, log-spaced at higher Mf
+3. **Residual phase**: Subtract a PN baseline phase, train on slowly-varying residual, add back at inference
+4. **Train complex directly**: Use (Re(h), Im(h)) to bypass unwrapping entirely
+
+**Recommendation for NN training**: Training on **residual phase** (subtract PN baseline) is usually the best balance for waveform emulators - reduces sampling density requirements and improves learning.
+
+**Current status**: Our MF_MIN=0.004 fix is appropriate for the initial (2,2) mode emulator targeting typical BBH sources. For future extension to lower masses, consider residual phase or grid redesign.
+
 ### Files Changed
 
 ```
