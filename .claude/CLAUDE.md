@@ -53,3 +53,27 @@ All paper sources downloaded to project root.
 | `cosmopower/` | `git@github.com:alessiospuriomancini/cosmopower.git` | Neural network emulator for cosmological power spectra |
 | `ripple/` | `git@github.com:tedwards2412/ripple.git` | JAX-based differentiable GW waveforms |
 | `lalsuite/lalsimulation/` | `https://git.ligo.org/lscsoft/lalsuite.git` (sparse) | LIGO waveform implementations (IMRPhenomX etc.)
+
+## Implementation
+
+### JAX/Flax Neural Network (`snippets/flax_nn.py`)
+
+Reference implementation for Speculator-style emulator:
+- **SpeculatorActivation**: σ(x) = [γ + sigmoid(αx)·(1-γ)]·x with γ ∈ (0,1) via sigmoid constraint
+- **EmulatorMLP**: 4 hidden layers × 512 units with Speculator activation
+- **WaveformPCA**: JAX-compatible PCA for waveform compression
+- **GWEmulator**: Full pipeline: params → NN → PCA → amplitude/phase
+
+Key design decisions (see `docs/jax-flax-best-practices.md`):
+- gamma_logits initialized to -2.0 (mostly gated) - empirically outperforms linear start
+- Shape inference (no explicit features argument)
+- Gradient clipping with `optax.clip_by_global_norm(1.0)`
+- `jax_enable_x64` set only at process start, not in library modules
+
+### Training Scripts (`scripts/`)
+
+- `train_toy_example.py`: Verifies training pipeline with synthetic data (1330x loss improvement)
+
+### Transcripts
+
+Meeting transcripts stored as `transcript-HHMM` files document discussions and decisions.
