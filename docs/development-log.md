@@ -1298,6 +1298,42 @@ For lower-mass BBH (10-20 M☉) with f_min ~ 20 Hz: would need a different appro
 
 **Current status**: Our MF_MIN=0.004 fix is appropriate for the initial (2,2) mode emulator targeting typical BBH sources. For future extension to lower masses, consider residual phase or grid redesign.
 
+### 21. Grid Comparison Study
+
+Investigated whether using the PN variable v = (πMf)^(1/3) instead of log(Mf) for the frequency grid would help with phase aliasing.
+
+**Finding 1: v-uniform grid doesn't help**
+
+At Mf_min=0.004, comparing grids:
+- Log(Mf) grid: max phase jump = 0.88 rad
+- v-uniform grid: max phase jump = 1.95 rad
+
+The log(Mf) grid is actually *better* because it concentrates points at low Mf where phase evolves fastest. The v-uniform grid spreads points too evenly.
+
+**Finding 2: More points can extend to lower Mf_min**
+
+Testing log(Mf) grid with varying N_FREQ and Mf_min:
+
+| Mf_min | 1000 pts | 2000 pts | 4000 pts | 8000 pts | 16000 pts |
+|--------|----------|----------|----------|----------|-----------|
+| 0.0005 | 3.1 | 3.1 | 3.1 | 3.1 | 3.1 |
+| 0.0010 | 3.1 | 3.1 | 3.1 | 2.9 | 1.5 |
+| 0.0020 | 3.1 | 3.1 | 1.6 | 0.8 | 0.4 |
+| 0.0030 | 3.0 | 1.5 | 0.8 | 0.4 | 0.2 |
+| 0.0040 | 1.8 | 0.9 | 0.4 | 0.2 | 0.1 |
+
+(Values are max phase jump in radians; need < π ≈ 3.14 for safe unwrapping)
+
+**Practical recommendations:**
+
+| Use Case | Mf_min | N_FREQ | f_min @ 50 M☉ | f_min @ 20 M☉ |
+|----------|--------|--------|---------------|---------------|
+| Current (M ≳ 40 M☉) | 0.004 | 2000 | 16 Hz | 41 Hz |
+| Extended (M ≳ 20 M☉) | 0.002 | 4000 | 8 Hz | 20 Hz |
+| Low-mass (M ≳ 10 M☉) | 0.001 | 8000 | 4 Hz | 10 Hz |
+
+**Conclusion**: The log(Mf) grid is optimal. To support lower masses, increase N_FREQ rather than changing grid type. Our current setup (Mf_min=0.004, N_FREQ=2000) is appropriate for M ≳ 30-40 M☉ with f_min ~ 15-20 Hz.
+
 ### Files Changed
 
 ```
