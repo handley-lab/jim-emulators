@@ -211,6 +211,24 @@ Comprehensive framework for arbitrary GW waveforms including precession:
 
 **Citations:** Blackman (2015/2017), Varma (2019), Boyle (2011), Schmidt (2011)
 
+## Scientific Computing Anti-Patterns
+
+### Interpolation Between Grids
+
+**NEVER interpolate data when converting between different grid representations.** This is a major source of errors in scientific computing.
+
+Problems with interpolation:
+- Introduces numerical artifacts and smoothing errors
+- Destroys high-frequency information
+- Can create spurious oscillations (Runge phenomenon)
+- Errors compound when interpolating oscillatory functions (e.g., Real/Imag parts of complex waveforms)
+
+**Instead:**
+- Design the workflow to avoid grid conversions entirely
+- If grid conversion is unavoidable, interpolate SMOOTH quantities only (e.g., log-amplitude and phase, not real and imaginary parts)
+- Consider whether the target operation (e.g., FFT) can be done analytically or via alternative methods
+- Document any unavoidable interpolation as technical debt with clear justification
+
 ## Literature Research
 
 ### Deep Research: Computational Paradigms in GW Modeling
