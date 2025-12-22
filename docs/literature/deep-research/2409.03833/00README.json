@@ -1,0 +1,20 @@
+{
+   "stamp" : true,
+   "sources" : [
+      {
+         "usage" : "toplevel",
+         "filename" : "main.tex"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "elsarticle-harv.bst"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "iopart12.clo"
+      }
+   ],
+   "process" : {
+      "compiler" : "pdflatex"
+   }
+}

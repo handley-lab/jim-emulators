@@ -2,13 +2,16 @@
 
 Literature survey on neural network approaches beyond standard SVD+MLP.
 
-## Survey Document
+## Survey Documents
 
-- `advanced-nn-architectures-survey.md` - Comprehensive review from Google Deep Research
+- `advanced-nn-architectures-survey.md` - Initial survey (skewed toward fancy architectures)
+- `pca-nn-survey.md` - **Better survey** seeded with 2402.06587, found the actual PCA+NN lineage
 
 ## Appraisal
 
-The deep research survey skewed toward fancier architectures (transformers, diffusion, HNNs) rather than the straightforward approaches that actually work well for this problem. Notably, it missed `2402.06587` (mlgw_NN) - a February 2024 paper using the exact same methodology we're pursuing (amp/phase → PCA → NN), achieving 10⁻⁴ mismatch with higher modes. This should have been a top hit for any survey on "neural network gravitational wave emulation."
+The first deep research survey skewed toward fancier architectures (transformers, diffusion, HNNs) rather than the straightforward approaches that actually work well for this problem. Notably, it missed `2402.06587` (mlgw_NN) - a February 2024 paper using the exact same methodology we're pursuing (amp/phase → PCA → NN), achieving 10⁻⁴ mismatch with higher modes.
+
+A second survey seeded with 2402.06587 found the actual lineage: mlgw → mlgw_bns → NRSurNN → SEOBNRE_AI. This is the "design pattern" we should follow.
 
 ## Papers by Category
 
@@ -16,9 +19,12 @@ The deep research survey skewed toward fancier architectures (transformers, diff
 
 | ArXiv ID | Title | Notes |
 |----------|-------|-------|
+| `2402.06587/` | **mlgw_NN**: ML model for time-domain GW with HM | Amp/phase → PCA → NN, SEOBNRv4HM, 10⁻⁴ mismatch |
+| `2412.06946/` | **NRSurNN3dq4**: Deep learning NR surrogate | Transfer learning on NR data, 10⁻³ mismatch |
+| `2411.14893/` | **SEOBNRE_AI**: Eccentric BBH waveforms | Adaptive resampling for variable-length signals |
+| `2409.03833/` | Transformer for HOM modeling | Sequence-to-sequence, better generalization |
 | `2408.02470/` | obiwann: NN-based GW interpolant for low-latency | 4-layer MLP, 10⁻⁴ mismatch, ms generation |
 | `2008.12932/` | ANN-Sur: Gravitational-wave surrogate models | SVD + NN interpolation |
-| `2402.06587/` | **mlgw_NN**: ML model for time-domain GW with HM | Amp/phase → PCA → NN, SEOBNRv4HM, 10⁻⁴ mismatch |
 
 ### Latent Manifold / Autoencoders
 
@@ -61,9 +67,11 @@ The deep research survey skewed toward fancier architectures (transformers, diff
 
 | Paper | Training Data |
 |-------|---------------|
+| `2402.06587` (mlgw_NN) | SEOBNRv4HM (time domain, higher modes) |
+| `2412.06946` (NRSurNN3dq4) | **NR (SXS)** via transfer learning |
+| `2411.14893` (SEOBNRE_AI) | SEOBNRE (eccentric) |
 | `2408.02470` (obiwann) | SEOBNRv4_ROM (BBH), TaylorF2 (BNS) |
 | `2008.12932` (ANN-Sur) | SEOBNRv4 |
-| `2402.06587` (mlgw_NN) | SEOBNRv4HM (time domain, higher modes) |
 | `2101.06685` (cAE) | EOB waveforms |
 | `2107.04312` (Spiral) | SEOBNRv4, EOBNRv2 |
 | `2102.12695` (UDE) | **NR trajectories** (SXS) - learns dynamics, not waveforms |
