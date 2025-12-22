@@ -48,3 +48,6 @@ htmlcov/
 # Generated figures (can be regenerated with scripts/parameter_sensitivity.py)
 # figures/
 .DS_Store
+
+# Generated training data (large files, regenerate with scripts/generate_data.py)
+data/
